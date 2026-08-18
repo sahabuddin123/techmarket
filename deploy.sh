@@ -1,0 +1,60 @@
+#!/bin/bash
+# ==============================================================================
+# TechMarket BD — Production Zero-Downtime Deployment Script for aaPanel
+# Domain: techmarket.com.bd
+# Path:   /www/wwwroot/techmarket.com.bd
+# Usage:  bash deploy.sh
+# ==============================================================================
+
+set -e
+
+echo "🚀 Starting Production Deployment for techmarket.com.bd..."
+
+# 1. Update Codebase (if using Git)
+if [ -d ".git" ]; then
+    echo "📦 Pulling latest production code from Git repository..."
+    git pull origin main
+fi
+
+# 2. Install/Update PHP Dependencies without dev overhead
+echo "🐘 Installing Composer production dependencies..."
+composer install --no-dev --optimize-autoloader --no-interaction
+
+# 3. Build Production React/Inertia/Vite Bundle
+echo "⚡ Building Frontend Assets with Vite..."
+npm ci --silent || npm install --silent
+npm run build
+
+# 4. Run Database Migrations
+echo "🗄️ Running Database Migrations..."
+php artisan migrate --force
+
+# 5. Clear Old Caches & Generate High-Speed Production Caches
+echo "⚡ Generating Optimized Laravel Caches..."
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+
+# 6. Ensure Storage Public Symlink
+php artisan storage:link || true
+
+# 7. Set Strict Permissions for aaPanel 'www' User
+echo "🔒 Fixing file and folder permissions for aaPanel www user..."
+chown -R www:www .
+find . -type f -exec chmod 644 {} \;
+find . -type d -exec chmod 755 {} \;
+chmod -R 775 storage bootstrap/cache
+chmod -R +x node_modules/.bin 2>/dev/null || true
+chmod +x deploy.sh
+
+# 8. Restart Background Queue Workers
+echo "🔄 Restarting Background Queue Workers..."
+php artisan queue:restart
+
+echo "✅ Production Deployment for https://techmarket.com.bd Completed Successfully!"

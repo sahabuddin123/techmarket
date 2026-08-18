@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Enterprise Admin Design System Tokens */
+:root {
+  --admin-bg: #090d16;
+  --admin-surface: #0f172a;
+  --admin-surface-elevated: #131e35;
+  --admin-border: #1e293b;
+  --admin-border-subtle: #182234;
+  --admin-text-primary: #f8fafc;
+  --admin-text-secondary: #94a3b8;
+  --admin-text-muted: #64748b;
+  --admin-accent: #f59e0b;
+  --admin-accent-glow: rgba(245, 158, 11, 0.15);
+}
+
+.light {
+  --admin-bg: #f8fafc;
+  --admin-surface: #ffffff;
+  --admin-surface-elevated: #f1f5f9;
+  --admin-border: #e2e8f0;
+  --admin-border-subtle: #cbd5e1;
+  --admin-text-primary: #0f172a;
+  --admin-text-secondary: #475569;
+  --admin-text-muted: #94a3b8;
+  --admin-accent: #d97706;
+  --admin-accent-glow: rgba(217, 119, 6, 0.1);
+}
+
+/* Premium Admin Scrollbars (Thin, Non-intrusive, Theme-Aware) */
+.custom-scrollbar::-webkit-scrollbar,
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track,
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb,
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Firefox */
+.custom-scrollbar,
+.admin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+/* Typography Hierarchy Helpers */
+.admin-font {
+  font-family: 'Poppins', sans-serif;
+}
+
+.admin-title {
+  font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.admin-metric {
+  font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.admin-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+@media print {
+  /* Hide standard web navigation, footers, and floating chat/support widgets */
+  header, 
+  nav, 
+  footer, 
+  .no-print, 
+  .print\:hidden,
+  [data-no-print="true"],
+  .fixed,
+  button {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    margin: 10mm 12mm;
+    size: A4 portrait;
+  }
+
+  .print-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+  }
+}
