@@ -10,10 +10,20 @@ set -e
 
 echo "🚀 Starting Production Deployment for techmarket.com.bd..."
 
-# 1. Update Codebase (if using Git)
-if [ -d ".git" ]; then
-    echo "📦 Pulling latest production code from Git repository..."
-    git pull origin main
+# 1. Update Codebase from GitHub Repository
+REPO_URL="https://github.com/sahabuddin123/techmarket.git"
+
+if [ ! -d ".git" ]; then
+    echo "⚙️ Initializing Git repository and linking to GitHub..."
+    git init
+    git remote add origin "$REPO_URL" || git remote set-url origin "$REPO_URL"
+    git fetch origin main
+    git checkout -f -B main origin/main
+else
+    echo "📦 Pulling latest production code from GitHub ($REPO_URL)..."
+    git remote set-url origin "$REPO_URL" 2>/dev/null || git remote add origin "$REPO_URL"
+    git fetch origin main
+    git reset --hard origin/main
 fi
 
 # 2. Install/Update PHP Dependencies without dev overhead
@@ -23,6 +33,7 @@ composer install --no-dev --optimize-autoloader --no-interaction
 # 3. Build Production React/Inertia/Vite Bundle
 echo "⚡ Building Frontend Assets with Vite..."
 npm ci --silent || npm install --silent
+chmod -R +x node_modules/.bin 2>/dev/null || true
 npm run build
 
 # 4. Run Database Migrations
