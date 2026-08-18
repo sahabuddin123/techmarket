@@ -10,6 +10,10 @@ set -e
 
 echo "🚀 Starting Production Deployment for techmarket.com.bd..."
 
+# 0. Fix Git Safe Directory for aaPanel root/www users
+git config --global --add safe.directory /www/wwwroot/techmarket.com.bd 2>/dev/null || true
+git config --global --add safe.directory "*" 2>/dev/null || true
+
 # 1. Update Codebase from GitHub Repository
 REPO_URL="https://github.com/sahabuddin123/techmarket.git"
 
