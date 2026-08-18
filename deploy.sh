@@ -43,9 +43,11 @@ fi
 
 # 3. Build Production React/Inertia/Vite Bundle
 echo "⚡ Building Frontend Assets with Vite..."
+rm -f public/hot
 npm ci --silent || npm install --silent
 chmod -R +x node_modules/.bin 2>/dev/null || true
 npm run build
+rm -f public/hot
 
 # 4. Run Database Migrations
 echo "🗄️ Running Database Migrations..."
