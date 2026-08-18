@@ -68,12 +68,12 @@ php artisan storage:link || true
 
 # 7. Set Strict Permissions for aaPanel 'www' User
 echo "🔒 Fixing file and folder permissions for aaPanel www user..."
-chown -R www:www .
-find . -type f -exec chmod 644 {} \;
-find . -type d -exec chmod 755 {} \;
-chmod -R 775 storage bootstrap/cache
+chown -R www:www . 2>/dev/null || true
+find . -type f -not -name '.user.ini' -exec chmod 644 {} \; 2>/dev/null || true
+find . -type d -exec chmod 755 {} \; 2>/dev/null || true
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 chmod -R +x node_modules/.bin 2>/dev/null || true
-chmod +x deploy.sh
+chmod +x deploy.sh 2>/dev/null || true
 
 # 8. Restart Background Queue Workers
 echo "🔄 Restarting Background Queue Workers..."
