@@ -31,8 +31,15 @@ else
 fi
 
 # 2. Install/Update PHP Dependencies without dev overhead
-echo "🐘 Installing Composer production dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction
+if command -v composer &> /dev/null; then
+    echo "🐘 Installing Composer production dependencies..."
+    composer install --no-dev --optimize-autoloader --no-interaction
+elif [ -f "/usr/local/bin/composer" ]; then
+    echo "🐘 Installing Composer production dependencies via /usr/local/bin/composer..."
+    php /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
+else
+    echo "ℹ️ Composer command not found in global PATH, skipping composer install..."
+fi
 
 # 3. Build Production React/Inertia/Vite Bundle
 echo "⚡ Building Frontend Assets with Vite..."
