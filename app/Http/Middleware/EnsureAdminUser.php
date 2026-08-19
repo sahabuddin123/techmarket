@@ -15,7 +15,14 @@ class EnsureAdminUser
     {
         $user = $request->user();
 
-        if (!$user || !$user->isAdmin()) {
+        if (!$user) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+            return redirect()->guest(route('admin.login'));
+        }
+
+        if (!$user->isAdmin()) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Forbidden. Administrator privileges required.'], 403);
             }

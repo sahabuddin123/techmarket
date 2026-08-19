@@ -61,3 +61,19 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
+
+// Dedicated Administrator Authentication Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [\App\Http\Controllers\Auth\AdminAuthController::class, 'create'])
+            ->name('login');
+
+        Route::post('login', [\App\Http\Controllers\Auth\AdminAuthController::class, 'store'])
+            ->middleware('throttle:30,1');
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::post('logout', [\App\Http\Controllers\Auth\AdminAuthController::class, 'destroy'])
+            ->name('logout');
+    });
+});
