@@ -155,20 +155,26 @@ export default function MobileNavigation({ isOpen, onClose, categories = [], aut
                         </div>
                     ) : (
                         <div className="flex gap-2">
-                            <Link
-                                href="/login"
-                                onClick={onClose}
-                                className="flex-1 py-1.5 text-center bg-gray-200 text-gray-800 rounded font-semibold text-xs hover:bg-gray-300"
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    onClose();
+                                    window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'login' } }));
+                                }}
+                                className="flex-1 py-2 text-center bg-slate-200 text-slate-800 rounded-lg font-bold text-xs hover:bg-slate-300 transition-colors"
                             >
                                 Sign In
-                            </Link>
-                            <Link
-                                href="/register"
-                                onClick={onClose}
-                                className="flex-1 py-1.5 text-center bg-red-600 text-white rounded font-bold text-xs hover:bg-red-700"
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    onClose();
+                                    window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'register' } }));
+                                }}
+                                className="flex-1 py-2 text-center bg-[#002a5c] text-white rounded-lg font-bold text-xs hover:bg-[#001f44] transition-colors"
                             >
                                 Register
-                            </Link>
+                            </button>
                         </div>
                     )}
                 </div>

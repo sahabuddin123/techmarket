@@ -108,35 +108,37 @@ class HomepageService
             ->take(6)
             ->get();
 
-        // 8. Latest Products (6 Products)
+        // 8. Latest Products (8 Products)
         $latestProducts = Product::with(['category', 'brand'])
             ->latest()
-            ->take(6)
+            ->take(8)
             ->get();
 
-        // 9. Best Sellers (6 Products resolved from Order Items or highest stock)
+        // 9. Best Sellers (8 Products resolved from Order Items or highest stock)
         $bestSellerIds = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_qty'))
             ->groupBy('product_id')
             ->orderByDesc('total_qty')
-            ->take(6)
+            ->take(8)
             ->pluck('product_id');
 
         $bestSellers = Product::with(['category', 'brand'])
             ->whereIn('id', $bestSellerIds)
             ->get();
 
-        if ($bestSellers->count() < 6) {
+        if ($bestSellers->count() < 8) {
             $existingIds = $bestSellers->pluck('id')->toArray();
             $fillers = Product::with(['category', 'brand'])
                 ->whereNotIn('id', $existingIds)
                 ->orderBy('price', 'desc')
-                ->take(6 - $bestSellers->count())
+                ->take(8 - $bestSellers->count())
                 ->get();
             $bestSellers = $bestSellers->merge($fillers);
         }
 
-        // 10. Brands
-        $brands = Brand::all();
+        // 10. Active Brands
+        $brands = Brand::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
 
         // 11. Store Settings (cached)
         $settings = Setting::pluck('value', 'key')->toArray();
@@ -156,6 +158,7 @@ class HomepageService
             'brands' => $brands,
             'settings' => $settings,
             // Backwards compatibility for any components referencing banners/dealsOfDay
+            'storefront_version' => $settings['storefront_version'] ?? 'v1',
             'banners' => $allBanners,
             'dealsOfDay' => $flashSaleData ? $flashSaleData['products'] : [],
             'categories' => $navCategories,

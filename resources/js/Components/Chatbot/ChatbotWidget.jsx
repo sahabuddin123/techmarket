@@ -241,7 +241,7 @@ export default function ChatbotWidget() {
   return (
     <>
       {/* 1. FLOATING CHAT TRIGGER BUTTON (Compact Circular Icon on Mobile, Pill on Desktop) */}
-      <div className="fixed bottom-16 sm:bottom-6 left-3 sm:left-6 z-50 flex items-center select-none">
+      <div className="fixed bottom-20 sm:bottom-6 left-3.5 sm:left-6 z-40 sm:z-50 flex items-center select-none">
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}

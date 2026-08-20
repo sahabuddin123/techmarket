@@ -114,15 +114,25 @@ export default function HomepageIndex({
             </p>
           </div>
 
-          <a
-            href="/"
-            target="_blank"
-            rel="noreferrer"
-            className="bg-slate-800 hover:bg-slate-700 text-[#3b82f6] font-bold px-4 py-2 rounded-lg text-xs flex items-center space-x-2 border border-slate-700 w-fit"
-          >
-            <ExternalLink className="w-4 h-4" />
-            <span>Preview Live Homepage</span>
-          </a>
+          <div className="flex items-center space-x-2.5">
+            <a
+              href="/admin/settings?tab=storefront"
+              className="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold px-3.5 py-2 rounded-lg text-xs flex items-center space-x-2 transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Design: <strong className="text-amber-400">{settings?.storefront_version === 'v2' ? 'v2 Modern Tech' : 'v1 Classic'}</strong></span>
+            </a>
+
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="bg-slate-800 hover:bg-slate-700 text-[#3b82f6] font-bold px-4 py-2 rounded-lg text-xs flex items-center space-x-2 border border-slate-700 w-fit"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>Preview Live</span>
+            </a>
+          </div>
         </div>
 
         {/* Navigation Tabs */}

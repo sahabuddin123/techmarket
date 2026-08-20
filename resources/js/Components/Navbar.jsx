@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import DesktopNavigation from './Navigation/DesktopNavigation';
 import MobileNavigation from './Navigation/MobileNavigation';
+import AuthModal from './AuthModal';
 
 export default function Navbar({ onOpenCart }) {
   const { auth, cart = { count: 0, total: 0 }, categories = [], settings = {}, footerNavigations = {}, unreadCount = 0, compareCount = 0 } = usePage().props;
@@ -15,7 +16,21 @@ export default function Navbar({ onOpenCart }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState('login');
   const dropdownRef = useRef(null);
+
+  // Listen to custom window event for opening AuthModal anywhere in the app
+  useEffect(() => {
+    const handleOpenAuthModal = (e) => {
+      const targetTab = e?.detail?.tab || 'login';
+      setAuthModalTab(targetTab);
+      setAuthModalOpen(true);
+    };
+
+    window.addEventListener('open-auth-modal', handleOpenAuthModal);
+    return () => window.removeEventListener('open-auth-modal', handleOpenAuthModal);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -354,13 +369,18 @@ export default function Navbar({ onOpenCart }) {
               )}
             </div>
           ) : (
-            <Link
-              href="/login"
-              className="hidden sm:flex items-center space-x-1 px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors font-bold"
+            <button
+              type="button"
+              onClick={() => {
+                setAuthModalTab('login');
+                setAuthModalOpen(true);
+              }}
+              className="hidden sm:flex p-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition-colors shadow-xs"
+              title="Account Login / Register"
+              aria-label="Account Login"
             >
-              <User className="w-3.5 h-3.5 text-slate-400" />
-              <span>Login</span>
-            </Link>
+              <User className="w-4 h-4 text-blue-400" />
+            </button>
           )}
 
           {/* Desktop/Tablet Menu Toggle Button */}
@@ -405,6 +425,13 @@ export default function Navbar({ onOpenCart }) {
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
         categories={categories}
+      />
+
+      {/* 4. IN-SITE AUTHENTICATION MODAL (Customer Login / Register / Forgot Password) */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialTab={authModalTab}
       />
     </header>
   );

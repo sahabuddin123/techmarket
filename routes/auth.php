@@ -37,6 +37,16 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->middleware('throttle:20,1')
         ->name('password.store');
+
+    Route::post('forgot-phone', [\App\Http\Controllers\Auth\ForgotPhoneController::class, 'store'])
+        ->middleware('throttle:20,1')
+        ->name('phone.forgot');
+
+    Route::get('auth/{provider}/redirect', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirect'])
+        ->name('oauth.redirect');
+
+    Route::get('auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'callback'])
+        ->name('oauth.callback');
 });
 
 Route::middleware('auth')->group(function () {

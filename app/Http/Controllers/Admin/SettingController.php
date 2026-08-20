@@ -62,6 +62,8 @@ class SettingController extends Controller
                 $group = 'shipping';
             } elseif (str_starts_with($key, 'hotline') || str_starts_with($key, 'showroom_') || str_starts_with($key, 'whatsapp_') || str_starts_with($key, 'facebook_') || str_starts_with($key, 'youtube_') || str_starts_with($key, 'instagram_') || str_starts_with($key, 'messenger_')) {
                 $group = 'contact_social';
+            } elseif (str_starts_with($key, 'storefront_')) {
+                $group = 'storefront';
             } elseif (str_starts_with($key, 'maintenance_')) {
                 $group = 'maintenance';
             }

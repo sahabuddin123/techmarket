@@ -36,6 +36,12 @@ export default function MobileBottomNav({ onOpenCart }) {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={(e) => {
+                  if (item.label === 'Account' && !auth?.user) {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'login' } }));
+                  }
+                }}
                 className={`flex flex-col items-center justify-center py-1 transition-colors ${
                   isActive ? 'text-[#3b82f6]' : 'text-white/80 hover:text-white'
                 }`}

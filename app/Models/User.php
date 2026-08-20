@@ -26,6 +26,9 @@ class User extends Authenticatable
         'phone',
         'address',
         'referral_code',
+        'google_id',
+        'facebook_id',
+        'avatar',
     ];
 
     public function isAdmin(): bool

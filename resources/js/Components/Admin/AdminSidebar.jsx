@@ -58,6 +58,7 @@ export default function AdminSidebar({
       key: 'content',
       title: 'Content & Media',
       items: [
+        { label: 'Storefront Appearance', href: '/admin/settings?tab=storefront', icon: Sparkles, badge: 'v1/v2' },
         { label: 'Header & Footer Builder', href: '/admin/header-footer', icon: Sliders, badge: 'Dynamic' },
         { label: 'Media Library', href: '/admin/media', icon: ImageIcon, badge: 'Central' },
         { label: 'Homepage Builder', href: '/admin/homepage', icon: Store },

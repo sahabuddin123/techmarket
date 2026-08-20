@@ -47,7 +47,7 @@ class CheckoutController extends Controller
         }, array_values($cart));
 
         $couponCode = session()->get('cart_coupon');
-        $pricing = PricingService::calculateOrderTotal($cartPayload, $couponCode, 60.00);
+        $pricing = PricingService::calculateOrderTotal($cartPayload, $couponCode, 0.00);
 
         // Format items with regular_price & savings
         $formattedCart = array_map(function ($item) {
@@ -102,8 +102,9 @@ class CheckoutController extends Controller
             'summary' => [
                 'subtotal' => $pricing['subtotal'],
                 'discount' => $pricing['discount'],
-                'shipping_cost' => $pricing['shipping_cost'],
-                'total' => $pricing['total'],
+                'shipping_cost' => null,
+                'shipping_label' => 'Calculated later',
+                'total' => max(0, $pricing['subtotal'] - $pricing['discount']),
                 'coupon_code' => $couponCode,
             ],
         ]);
@@ -154,7 +155,7 @@ class CheckoutController extends Controller
             ? $validated['customer_email']
             : (auth()->check() ? auth()->user()->email : $validated['customer_phone'] . '@customer.techlandbd.com');
 
-        $shippingCost = $validated['district'] === 'Dhaka' ? 60.00 : 120.00;
+        $shippingCost = 0.00; // Shipping calculated later based on weight/dimensions/location
 
         // Transform cart array for PricingService
         $cartPayload = array_map(function ($item) {

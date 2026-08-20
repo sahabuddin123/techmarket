@@ -11,14 +11,40 @@ import {
 } from 'lucide-react';
 
 export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) {
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('tab') || 'general';
+    }
+    return 'general';
+  });
   const [isPurgingCache, setIsPurgingCache] = useState(false);
 
   const { data, setData, post, processing, wasSuccessful } = useForm({
-    // 1. General
+    // 1. General & Storefront
     site_name: settings.site_name || 'TechMarket BD',
     site_tagline: settings.site_tagline || 'Leading Computer & Gaming Hardware Store in Bangladesh',
     site_url: settings.site_url || 'https://techmarketbd.com',
+    storefront_version: settings.storefront_version || 'v1',
+    storefront_v2_promo_title: settings.storefront_v2_promo_title || 'Professional CCTV Installation Service',
+    storefront_v2_promo_bullets: settings.storefront_v2_promo_bullets || 'Residential, Office, Factory, Apartment, Shop, All Over Bangladesh',
+    storefront_v2_promo_cta_text: settings.storefront_v2_promo_cta_text || 'Book Installation',
+    storefront_v2_promo_cta_url: settings.storefront_v2_promo_cta_url || '/servicing',
+    storefront_v2_stat1_num: settings.storefront_v2_stat1_num || '5000+',
+    storefront_v2_stat1_label: settings.storefront_v2_stat1_label || 'Happy Customers',
+    storefront_v2_stat2_num: settings.storefront_v2_stat2_num || '10K+',
+    storefront_v2_stat2_label: settings.storefront_v2_stat2_label || 'Products Sold',
+    storefront_v2_stat3_num: settings.storefront_v2_stat3_num || '50+',
+    storefront_v2_stat3_label: settings.storefront_v2_stat3_label || 'Expert Members',
+    storefront_v2_stat4_num: settings.storefront_v2_stat4_num || '5+',
+    storefront_v2_stat4_label: settings.storefront_v2_stat4_label || 'Years of Trust',
+    storefront_v2_show_category_bar: settings.storefront_v2_show_category_bar !== undefined ? (settings.storefront_v2_show_category_bar === '1' || settings.storefront_v2_show_category_bar === true) : true,
+    storefront_v2_show_trust_strip: settings.storefront_v2_show_trust_strip !== undefined ? (settings.storefront_v2_show_trust_strip === '1' || settings.storefront_v2_show_trust_strip === true) : true,
+    storefront_v2_show_featured: settings.storefront_v2_show_featured !== undefined ? (settings.storefront_v2_show_featured === '1' || settings.storefront_v2_show_featured === true) : true,
+    storefront_v2_show_deal_of_day: settings.storefront_v2_show_deal_of_day !== undefined ? (settings.storefront_v2_show_deal_of_day === '1' || settings.storefront_v2_show_deal_of_day === true) : true,
+    storefront_v2_show_brands: settings.storefront_v2_show_brands !== undefined ? (settings.storefront_v2_show_brands === '1' || settings.storefront_v2_show_brands === true) : true,
+    storefront_v2_show_promo_banner: settings.storefront_v2_show_promo_banner !== undefined ? (settings.storefront_v2_show_promo_banner === '1' || settings.storefront_v2_show_promo_banner === true) : true,
+    storefront_v2_show_stats: settings.storefront_v2_show_stats !== undefined ? (settings.storefront_v2_show_stats === '1' || settings.storefront_v2_show_stats === true) : true,
     admin_email: settings.admin_email || 'admin@techmarketbd.com',
     support_email: settings.support_email || 'support@techmarketbd.com',
     support_phone: settings.support_phone || '01700-000000',
@@ -108,13 +134,14 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
 
   const tabs = [
     { id: 'general', label: '1. General Info', icon: Globe },
-    { id: 'branding', label: '2. Branding & Media', icon: ImageIcon },
-    { id: 'store', label: '3. Store & Inventory', icon: Store },
-    { id: 'seo', label: '4. SEO & Analytics', icon: Search },
-    { id: 'contact', label: '5. Contact & Social', icon: Phone },
-    { id: 'payment', label: '6. Payment Gateways', icon: CreditCard },
-    { id: 'shipping', label: '7. Delivery & Shipping', icon: Truck },
-    { id: 'system', label: '8. System & Diagnostics', icon: Activity },
+    { id: 'storefront', label: '2. Storefront Design', icon: Sparkles },
+    { id: 'branding', label: '3. Branding & Media', icon: ImageIcon },
+    { id: 'store', label: '4. Store & Inventory', icon: Store },
+    { id: 'seo', label: '5. SEO & Analytics', icon: Search },
+    { id: 'contact', label: '6. Contact & Social', icon: Phone },
+    { id: 'payment', label: '7. Payment Gateways', icon: CreditCard },
+    { id: 'shipping', label: '8. Delivery & Shipping', icon: Truck },
+    { id: 'system', label: '9. System & Diagnostics', icon: Activity },
   ];
 
   return (
@@ -261,7 +288,435 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
             </SectionCard>
           )}
 
-          {/* TAB 2: BRANDING & MEDIA */}
+          {/* TAB 2: STOREFRONT DESIGN / APPEARANCE */}
+          {activeTab === 'storefront' && (
+            <SectionCard 
+              title="Storefront Design & Appearance Version" 
+              subtitle="Choose which storefront presentation version is dynamically displayed to public customers across all devices." 
+              icon={Sparkles}
+            >
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                  
+                  {/* Option 1: Version 1 (Classic Storefront) */}
+                  <div 
+                    onClick={() => setData('storefront_version', 'v1')}
+                    className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden ${
+                      data.storefront_version === 'v1'
+                        ? 'bg-slate-900 border-amber-500 shadow-lg shadow-amber-500/10'
+                        : 'bg-slate-950/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                    }`}
+                  >
+                    {data.storefront_version === 'v1' && (
+                      <div className="absolute top-0 right-0 bg-amber-500 text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-xs flex items-center space-x-1">
+                        <CheckCircle2 className="w-3 h-3 stroke-[3]" />
+                        <span>ACTIVE VERSION</span>
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      {/* Visual Mock Preview Box */}
+                      <div className="h-32 rounded-xl bg-[#f4f7f9] border border-slate-300/40 p-3 overflow-hidden flex flex-col justify-between select-none">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                          <span className="text-[10px] font-mono text-slate-500 pl-2 truncate">Classic Storefront (v1)</span>
+                        </div>
+                        {/* Mock Layout Wireframe */}
+                        <div className="grid grid-cols-12 gap-1.5 h-16">
+                          <div className="col-span-8 bg-[#0a0e17] rounded p-1 flex items-center justify-center">
+                            <span className="text-[9px] font-bold text-white/80">Hero Carousel</span>
+                          </div>
+                          <div className="col-span-4 flex flex-col gap-1">
+                            <div className="h-1/2 bg-blue-100 rounded flex items-center justify-center text-[8px] font-bold text-blue-900">Promo 1</div>
+                            <div className="h-1/2 bg-indigo-100 rounded flex items-center justify-center text-[8px] font-bold text-indigo-900">Promo 2</div>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-1">
+                          <div className="h-3 bg-slate-200 rounded" />
+                          <div className="h-3 bg-slate-200 rounded" />
+                          <div className="h-3 bg-slate-200 rounded" />
+                          <div className="h-3 bg-slate-200 rounded" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <h4 className="text-sm font-black text-white">Version 1 — Classic Storefront</h4>
+                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-mono">v1</span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-1">
+                          The original classic retail ecommerce design across Homepage and Category listing pages with multi-banner carousel, compact filters, and dense product matrix.
+                        </p>
+                      </div>
+
+                      <ul className="space-y-1.5 text-xs text-slate-300 border-t border-slate-800/80 pt-3">
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                          <span>Original multi-banner carousel & classic category filter tree</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                          <span>4 quick action utility shortcuts (PC Builder, Servicing, Deals)</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                          <span>Classic 4-column category listing & specification filter sidebar</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-5 pt-3 border-t border-slate-800 flex items-center justify-between">
+                      <label className="flex items-center space-x-2 text-xs font-bold text-slate-300 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="storefront_version"
+                          value="v1"
+                          checked={data.storefront_version === 'v1'}
+                          onChange={() => setData('storefront_version', 'v1')}
+                          className="text-amber-500 focus:ring-amber-500 bg-slate-900 border-slate-700"
+                        />
+                        <span>{data.storefront_version === 'v1' ? 'Selected as Active' : 'Switch to Version 1'}</span>
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() => setData('storefront_version', 'v1')}
+                        className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all ${
+                          data.storefront_version === 'v1'
+                            ? 'bg-amber-500 text-slate-950 font-black'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        }`}
+                      >
+                        {data.storefront_version === 'v1' ? 'Active' : 'Select'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Option 2: Version 2 (Modern Tech Storefront) */}
+                  <div 
+                    onClick={() => setData('storefront_version', 'v2')}
+                    className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden ${
+                      data.storefront_version === 'v2'
+                        ? 'bg-slate-900 border-sky-400 shadow-lg shadow-sky-400/10'
+                        : 'bg-slate-950/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                    }`}
+                  >
+                    {data.storefront_version === 'v2' && (
+                      <div className="absolute top-0 right-0 bg-sky-400 text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-xs flex items-center space-x-1">
+                        <CheckCircle2 className="w-3 h-3 stroke-[3]" />
+                        <span>ACTIVE VERSION</span>
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      {/* Visual Mock Preview Box */}
+                      <div className="h-32 rounded-xl bg-[#080f1e] border border-blue-900/40 p-3 overflow-hidden flex flex-col justify-between relative select-none">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                            <span className="text-[10px] font-mono text-sky-400 pl-2 truncate">Modern Tech UI (v2)</span>
+                          </div>
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-400/20 text-sky-300">Modern</span>
+                        </div>
+                        {/* Mock Layout Wireframe */}
+                        <div className="bg-gradient-to-r from-blue-950 to-indigo-950 rounded p-1.5 flex items-center justify-between border border-blue-800/40">
+                          <div>
+                            <div className="text-[8px] font-bold text-sky-400">SMART TECH.</div>
+                            <div className="text-[7px] text-slate-300">BETTER LIFE</div>
+                          </div>
+                          <div className="w-8 h-8 rounded bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-[7px] text-sky-300">
+                            CAM/RIG
+                          </div>
+                        </div>
+                        {/* Floating bar wireframe */}
+                        <div className="bg-white rounded p-1 shadow-xs flex items-center justify-between">
+                          <div className="w-4 h-2 bg-blue-100 rounded" />
+                          <div className="w-4 h-2 bg-blue-100 rounded" />
+                          <div className="w-4 h-2 bg-blue-100 rounded" />
+                          <div className="w-4 h-2 bg-blue-100 rounded" />
+                          <div className="w-4 h-2 bg-blue-100 rounded" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <h4 className="text-sm font-black text-white">Version 2 — Modern Tech Storefront</h4>
+                          <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-mono font-bold">v2 • Premium</span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-1">
+                          New high-tech electronics marketplace UI with dark navy animated hero, floating categories, modern category listing hero, and refined product cards.
+                        </p>
+                      </div>
+
+                      <ul className="space-y-1.5 text-xs text-slate-300 border-t border-slate-800/80 pt-3">
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                          <span>Cinematic animated hero slider & floating category navigation</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                          <span>Modern Category listing hero with explore chips & active filter badges</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                          <span>Refined product cards with smooth hover lift, blue glow & fast actions</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                          <span>Mobile slide-over filter drawer with smooth touch interactions</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-5 pt-3 border-t border-slate-800 flex items-center justify-between">
+                      <label className="flex items-center space-x-2 text-xs font-bold text-slate-300 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="storefront_version"
+                          value="v2"
+                          checked={data.storefront_version === 'v2'}
+                          onChange={() => setData('storefront_version', 'v2')}
+                          className="text-sky-400 focus:ring-sky-400 bg-slate-900 border-slate-700"
+                        />
+                        <span>{data.storefront_version === 'v2' ? 'Selected as Active' : 'Switch to Version 2'}</span>
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() => setData('storefront_version', 'v2')}
+                        className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all ${
+                          data.storefront_version === 'v2'
+                            ? 'bg-sky-400 text-slate-950 font-black shadow-sm'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        }`}
+                      >
+                        {data.storefront_version === 'v2' ? 'Active' : 'Select'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Version 2 Section Visibility Toggles */}
+                <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
+                  <div className="flex items-center space-x-2 pb-2 border-b border-slate-800/80">
+                    <Sliders className="w-4 h-4 text-sky-400" />
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Version 2 — Section Visibility Controls
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <label className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 font-bold text-xs cursor-pointer hover:border-slate-700">
+                      <span>Floating Category Bar</span>
+                      <input
+                        type="checkbox"
+                        checked={data.storefront_v2_show_category_bar}
+                        onChange={(e) => setData('storefront_v2_show_category_bar', e.target.checked)}
+                        className="rounded bg-slate-900 border-slate-700 text-sky-400 focus:ring-sky-400 h-4 w-4"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 font-bold text-xs cursor-pointer hover:border-slate-700">
+                      <span>Trust / Service Strips</span>
+                      <input
+                        type="checkbox"
+                        checked={data.storefront_v2_show_trust_strip}
+                        onChange={(e) => setData('storefront_v2_show_trust_strip', e.target.checked)}
+                        className="rounded bg-slate-900 border-slate-700 text-sky-400 focus:ring-sky-400 h-4 w-4"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 font-bold text-xs cursor-pointer hover:border-slate-700">
+                      <span>Featured Products</span>
+                      <input
+                        type="checkbox"
+                        checked={data.storefront_v2_show_featured}
+                        onChange={(e) => setData('storefront_v2_show_featured', e.target.checked)}
+                        className="rounded bg-slate-900 border-slate-700 text-sky-400 focus:ring-sky-400 h-4 w-4"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 font-bold text-xs cursor-pointer hover:border-slate-700">
+                      <span>Deal of the Day Card</span>
+                      <input
+                        type="checkbox"
+                        checked={data.storefront_v2_show_deal_of_day}
+                        onChange={(e) => setData('storefront_v2_show_deal_of_day', e.target.checked)}
+                        className="rounded bg-slate-900 border-slate-700 text-sky-400 focus:ring-sky-400 h-4 w-4"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 font-bold text-xs cursor-pointer hover:border-slate-700">
+                      <span>Top Brands Strip</span>
+                      <input
+                        type="checkbox"
+                        checked={data.storefront_v2_show_brands}
+                        onChange={(e) => setData('storefront_v2_show_brands', e.target.checked)}
+                        className="rounded bg-slate-900 border-slate-700 text-sky-400 focus:ring-sky-400 h-4 w-4"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 font-bold text-xs cursor-pointer hover:border-slate-700">
+                      <span>Promotional Service Banner</span>
+                      <input
+                        type="checkbox"
+                        checked={data.storefront_v2_show_promo_banner}
+                        onChange={(e) => setData('storefront_v2_show_promo_banner', e.target.checked)}
+                        className="rounded bg-slate-900 border-slate-700 text-sky-400 focus:ring-sky-400 h-4 w-4"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Promotional Service Banner Configurator */}
+                <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
+                  <div className="flex items-center space-x-2 pb-2 border-b border-slate-800/80">
+                    <ShieldCheck className="w-4 h-4 text-sky-400" />
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Version 2 — Promotional Service Banner Customizer
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-slate-300 font-bold">Banner Headline</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_promo_title}
+                        onChange={(e) => setData('storefront_v2_promo_title', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-sky-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-300 font-bold">CTA Button Text</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_promo_cta_text}
+                        onChange={(e) => setData('storefront_v2_promo_cta_text', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-sky-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1 sm:col-span-2">
+                      <label className="block text-slate-300 font-bold">Feature Bullets (comma separated)</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_promo_bullets}
+                        onChange={(e) => setData('storefront_v2_promo_bullets', e.target.value)}
+                        placeholder="Residential, Office, Factory, Apartment, Shop, All Over Bangladesh"
+                        className="w-full bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-sky-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Statistics Configurator */}
+                <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
+                  <div className="flex items-center space-x-2 pb-2 border-b border-slate-800/80">
+                    <Activity className="w-4 h-4 text-sky-400" />
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Version 2 — Trust Statistics Cards
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="space-y-1">
+                      <label className="block text-slate-400 text-[11px] font-bold">Stat 1 Number</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat1_num}
+                        onChange={(e) => setData('storefront_v2_stat1_num', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-100 p-2 rounded-lg border border-slate-800 text-xs font-bold font-mono"
+                      />
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat1_label}
+                        onChange={(e) => setData('storefront_v2_stat1_label', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800 text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-400 text-[11px] font-bold">Stat 2 Number</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat2_num}
+                        onChange={(e) => setData('storefront_v2_stat2_num', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-100 p-2 rounded-lg border border-slate-800 text-xs font-bold font-mono"
+                      />
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat2_label}
+                        onChange={(e) => setData('storefront_v2_stat2_label', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800 text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-400 text-[11px] font-bold">Stat 3 Number</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat3_num}
+                        onChange={(e) => setData('storefront_v2_stat3_num', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-100 p-2 rounded-lg border border-slate-800 text-xs font-bold font-mono"
+                      />
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat3_label}
+                        onChange={(e) => setData('storefront_v2_stat3_label', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800 text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-400 text-[11px] font-bold">Stat 4 Number</label>
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat4_num}
+                        onChange={(e) => setData('storefront_v2_stat4_num', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-100 p-2 rounded-lg border border-slate-800 text-xs font-bold font-mono"
+                      />
+                      <input
+                        type="text"
+                        value={data.storefront_v2_stat4_label}
+                        onChange={(e) => setData('storefront_v2_stat4_label', e.target.value)}
+                        className="w-full bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800 text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <div className="text-white font-bold text-xs flex items-center space-x-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                      <span>Shared Data & Business Logic Architecture</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400">
+                      Both versions share identical products, categories, cart, wishlist, checkout, and inventory without duplication.
+                    </p>
+                  </div>
+
+                  <a
+                    href="/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl font-bold text-xs flex items-center space-x-1.5 border border-slate-800 transition-colors"
+                  >
+                    <span>View Public Storefront</span>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  </a>
+                </div>
+              </div>
+            </SectionCard>
+          )}
+
+          {/* TAB 3: BRANDING & MEDIA */}
           {activeTab === 'branding' && (
             <SectionCard title="Centralized Branding & Media Assets" subtitle="Brand logos, favicon, and default social share graphics" icon={ImageIcon}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
