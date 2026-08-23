@@ -4,7 +4,7 @@ import {
   Search, ShoppingBag, User, Menu, X, Gift, 
   ChevronDown, ChevronRight, LogOut, Package, 
   ShieldCheck, LayoutGrid, Heart, Sparkles, Phone, Mail,
-  Cpu, KeyRound, Bell, Settings
+  Cpu, KeyRound, Bell, Settings, Video
 } from 'lucide-react';
 import AuthModal from '@/Components/AuthModal';
 import TopUtilityBarV3 from './TopUtilityBarV3';
@@ -75,6 +75,7 @@ export default function NavbarV3({ onOpenCart }) {
     { label: 'Home', href: '/' },
     { label: 'Shop', href: '/catalog' },
     { label: 'Brands', href: '/brands' },
+    { label: 'CCTV Estimator', href: '/cctv-estimator' },
     { label: 'Top Trending', href: '/catalog?sort=trending' },
     { label: 'About Us', href: '/about-us' },
     { label: 'Contact Us', href: '/about-us#contact' },
@@ -139,8 +140,18 @@ export default function NavbarV3({ onOpenCart }) {
             </div>
           </form>
 
-          {/* Right Action Icons (Offers, Account, Cart) */}
+          {/* Right Action Icons (CCTV Est, Offers, Account, Cart) */}
           <div className="flex items-center space-x-2 shrink-0">
+            {/* CCTV Estimator Button */}
+            <Link
+              href="/cctv-estimator"
+              className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[11px] sm:text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-all border border-slate-800 hover:border-slate-700"
+              title="CCTV System Builder & Estimator"
+            >
+              <Video className="w-3.5 h-3.5 text-sky-400" />
+              <span>CCTV Est</span>
+            </Link>
+
             {/* Offers Button */}
             <Link
               href="/offers"
