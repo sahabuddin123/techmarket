@@ -1,78 +1,100 @@
 #!/bin/bash
 
 # ==============================================================================
-# TechMarket BD - Automated Live Production Deployment Script
+# TechMarket BD - Automated Live Production Deployment Script (aaPanel / Linux)
 # ==============================================================================
 
 set -e
 
+echo "================================================================"
 echo "🚀 [1/7] Starting Live Production Deployment for TechMarket BD..."
+echo "================================================================"
 
-# Auto-detect PHP binary
-PHP_BIN="php"
-if command -v /usr/local/lsws/lsphp83/bin/php &> /dev/null; then
-    PHP_BIN="/usr/local/lsws/lsphp83/bin/php"
-elif command -v /usr/local/lsws/lsphp82/bin/php &> /dev/null; then
-    PHP_BIN="/usr/local/lsws/lsphp82/bin/php"
-elif command -v /www/server/php/83/bin/php &> /dev/null; then
-    PHP_BIN="/www/server/php/83/bin/php"
-elif command -v /www/server/php/82/bin/php &> /dev/null; then
-    PHP_BIN="/www/server/php/82/bin/php"
-elif command -v php8.3 &> /dev/null; then
-    PHP_BIN="php8.3"
-elif command -v php8.2 &> /dev/null; then
-    PHP_BIN="php8.2"
-fi
+# 1. Smart PHP Binary Auto-Detection (aaPanel / LiteSpeed / Native with mbstring validation)
+PHP_BIN=""
+CANDIDATES=(
+    "/www/server/php/84/bin/php"
+    "/www/server/php/83/bin/php"
+    "/www/server/php/82/bin/php"
+    "/usr/local/lsws/lsphp84/bin/php"
+    "/usr/local/lsws/lsphp83/bin/php"
+    "/usr/local/lsws/lsphp82/bin/php"
+    "php8.4"
+    "php8.3"
+    "php8.2"
+    "php"
+)
 
-echo "ℹ️ Using PHP Binary: $($PHP_BIN -v 2>/dev/null | head -n 1 || echo $PHP_BIN)"
-
-# Auto-detect or download Composer
-COMPOSER_BIN="composer"
-if ! command -v composer &> /dev/null; then
-    if [ -f "/usr/local/bin/composer" ]; then
-        COMPOSER_BIN="/usr/local/bin/composer"
-    elif [ -f "./composer.phar" ]; then
-        COMPOSER_BIN="$PHP_BIN ./composer.phar"
-    else
-        echo "📥 Composer not found globally, downloading composer.phar..."
-        curl -sS https://getcomposer.org/installer | $PHP_BIN
-        COMPOSER_BIN="$PHP_BIN ./composer.phar"
+for candidate in "${CANDIDATES[@]}"; do
+    if command -v "$candidate" &> /dev/null; then
+        # Check if this PHP binary has required mbstring (mb_split)
+        if "$candidate" -r 'exit(function_exists("mb_split") ? 0 : 1);' 2>/dev/null; then
+            PHP_BIN="$candidate"
+            break
+        fi
     fi
-else
-    COMPOSER_BIN="$PHP_BIN $(which composer)"
+done
+
+# Fallback to standard command if all candidate tests fail
+if [ -z "$PHP_BIN" ]; then
+    for candidate in "${CANDIDATES[@]}"; do
+        if command -v "$candidate" &> /dev/null; then
+            PHP_BIN="$candidate"
+            break
+        fi
+    done
 fi
 
-# 1. Pull Latest Changes from Git
+PHP_BIN="${PHP_BIN:-php}"
+echo "ℹ️ Using Validated PHP Binary: $PHP_BIN ($($PHP_BIN -v 2>/dev/null | head -n 1 || echo 'Active PHP'))"
+
+# 2. Auto-detect Composer
+COMPOSER_BIN="composer"
+if [ -f "/usr/local/bin/composer" ]; then
+    COMPOSER_BIN="$PHP_BIN /usr/local/bin/composer"
+elif [ -f "./composer.phar" ]; then
+    COMPOSER_BIN="$PHP_BIN ./composer.phar"
+elif command -v composer &> /dev/null; then
+    COMPOSER_BIN="$PHP_BIN $(which composer)"
+else
+    echo "📥 Downloading composer.phar..."
+    curl -sS https://getcomposer.org/installer | $PHP_BIN
+    COMPOSER_BIN="$PHP_BIN ./composer.phar"
+fi
+
+# 3. Pull Latest Changes from Git
 if [ -d ".git" ]; then
-    echo "📦 [2/7] Pulling latest code from GitHub..."
+    echo "📦 [2/7] Pulling latest updates from GitHub..."
     git fetch --all
     git reset --hard origin/main || git reset --hard origin/master
 fi
 
-# 2. Install/Update Composer Dependencies for Production
-echo "🐘 [3/7] Installing Composer Dependencies..."
+# 4. Install/Update Composer Dependencies for Production
+echo "🐘 [3/7] Optimizing Composer Autoloader..."
 $COMPOSER_BIN install --no-dev --no-interaction --prefer-dist --optimize-autoloader || true
 
-# 3. Build Frontend Assets (if npm is available)
-echo "⚡ [4/7] Checking Frontend Build..."
-if command -v npm &> /dev/null; then
-    echo "🔨 Running npm build..."
+# 5. Build Frontend Assets (if npm is present and needed)
+echo "⚡ [4/7] Verifying Frontend Assets..."
+if command -v npm &> /dev/null && [ ! -d "public/build" ]; then
+    echo "🔨 Building frontend..."
     npm run build || true
 fi
 
-# 4. Run Database Migrations
-echo "🗄️ [5/7] Running Database Migrations..."
+# 6. Run Database Migrations
+echo "🗄️ [5/7] Running Database Migrations (CCTV, Analytics & Reports)..."
 $PHP_BIN artisan migrate --force
 
-# 5. Clear and Cache System
+# 7. Clear and Rebuild Laravel Caches
 echo "⚡ [6/7] Optimizing Laravel Caches..."
 $PHP_BIN artisan optimize:clear || true
-$PHP_BIN artisan optimize || true
+$PHP_BIN artisan config:cache || true
+$PHP_BIN artisan route:cache || true
+$PHP_BIN artisan view:cache || true
 $PHP_BIN artisan storage:link || true
 $PHP_BIN artisan queue:restart || true
 
-# 6. Set Directory Permissions (supports www, www-data, nobody)
-echo "🔒 [7/7] Fixing Storage & Cache Permissions..."
+# 8. Set Strict aaPanel Permissions (www:www)
+echo "🔒 [7/7] Fixing Storage & Bootstrap Permissions for aaPanel (www)..."
 chmod -R 775 storage bootstrap/cache || true
 if id "www" &>/dev/null; then
     chown -R www:www storage bootstrap/cache || true
