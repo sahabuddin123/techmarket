@@ -80,9 +80,14 @@ if command -v npm &> /dev/null && [ ! -d "public/build" ]; then
     npm run build || true
 fi
 
-# 6. Run Database Migrations
+# 6. Run Database Migrations & Safe Seeders
 echo "🗄️ [5/7] Running Database Migrations (CCTV, Analytics & Reports)..."
 $PHP_BIN artisan migrate --force
+
+echo "🌱 Seeding TechMarket Gadgets & CCTV Products (Safe Upsert)..."
+$PHP_BIN artisan db:seed --class=Database\\Seeders\\StorefrontVersionSeeder --force || true
+$PHP_BIN artisan db:seed --class=Database\\Seeders\\TechMarketGadgetSeeder --force || true
+$PHP_BIN artisan db:seed --class=Database\\Seeders\\CctvEnterpriseSeeder --force || true
 
 # 7. Clear and Rebuild Laravel Caches
 echo "⚡ [6/7] Optimizing Laravel Caches..."

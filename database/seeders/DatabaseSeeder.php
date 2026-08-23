@@ -1782,10 +1782,13 @@ class DatabaseSeeder extends Seeder
         \App\Services\Sms\SmsManager::seedDefaultGateways();
         \App\Services\Sms\SmsNotificationService::seedDefaultTemplates();
 
-        // 20. Seed Email Gateways & 23 Default Templates
+        // 20. Seed Email Gateways, Gadget Catalog, Storefront Versions & CCTV Surveillance Ecosystem
         $this->call([
             \Database\Seeders\EmailGatewaySeeder::class,
             \Database\Seeders\EmailTemplateSeeder::class,
+            \Database\Seeders\StorefrontVersionSeeder::class,
+            \Database\Seeders\TechMarketGadgetSeeder::class,
+            \Database\Seeders\CctvEnterpriseSeeder::class,
         ]);
     }
 }
