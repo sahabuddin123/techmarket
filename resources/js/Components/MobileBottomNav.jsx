@@ -6,10 +6,18 @@ import {
   MapPin, Wrench, BookOpen 
 } from 'lucide-react';
 
+import MobileBottomNavV3 from '@/Pages/Storefront/Version3/Components/MobileBottomNavV3';
+
 export default function MobileBottomNav({ onOpenCart }) {
   const page = usePage();
   const currentUrl = page.url || (typeof window !== 'undefined' ? window.location.pathname : '/');
-  const { auth = {}, cart = { count: 0, total: 0 } } = page.props || {};
+  const { auth = {}, cart = { count: 0, total: 0 }, settings = {}, storefront_version } = page.props || {};
+  const version = storefront_version || settings.storefront_version || 'v1';
+
+  if (version === 'v3') {
+    return <MobileBottomNavV3 onOpenCart={onOpenCart} />;
+  }
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [

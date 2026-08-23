@@ -62,12 +62,22 @@ class HandleInertiaRequests extends Middleware
             ];
         });
 
+        // Resolve Active Storefront Version & Theme Configuration from Database
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $storefrontVersionKey = $activeVersion ? $activeVersion->key : ($settings['storefront_version'] ?? 'v3');
+        $themeConfig = $activeVersion ? $activeVersion->theme_config : null;
+        $versionConfig = $activeVersion ? $activeVersion->version_config : null;
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
             ],
             'settings' => $settings,
+            'storefront_version' => $storefrontVersionKey,
+            'activeStorefrontVersion' => $activeVersion,
+            'storefrontTheme' => $themeConfig,
+            'storefrontConfig' => $versionConfig,
             'categories' => $navCategories,
             'footerNavigations' => $footerNavigations,
             'cart' => [

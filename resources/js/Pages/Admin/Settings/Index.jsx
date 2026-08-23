@@ -296,7 +296,7 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
               icon={Sparkles}
             >
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                   
                   {/* Option 1: Version 1 (Classic Storefront) */}
                   <div 
@@ -310,59 +310,54 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                     {data.storefront_version === 'v1' && (
                       <div className="absolute top-0 right-0 bg-amber-500 text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-xs flex items-center space-x-1">
                         <CheckCircle2 className="w-3 h-3 stroke-[3]" />
-                        <span>ACTIVE VERSION</span>
+                        <span>ACTIVE</span>
                       </div>
                     )}
 
                     <div className="space-y-4">
                       {/* Visual Mock Preview Box */}
-                      <div className="h-32 rounded-xl bg-[#f4f7f9] border border-slate-300/40 p-3 overflow-hidden flex flex-col justify-between select-none">
+                      <div className="h-28 rounded-xl bg-[#f4f7f9] border border-slate-300/40 p-2.5 overflow-hidden flex flex-col justify-between select-none">
                         <div className="flex items-center space-x-2">
-                          <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                          <span className="text-[10px] font-mono text-slate-500 pl-2 truncate">Classic Storefront (v1)</span>
+                          <div className="w-2 h-2 rounded-full bg-rose-400" />
+                          <div className="w-2 h-2 rounded-full bg-amber-400" />
+                          <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                          <span className="text-[9px] font-mono text-slate-500 pl-1 truncate">Classic (v1)</span>
                         </div>
-                        {/* Mock Layout Wireframe */}
-                        <div className="grid grid-cols-12 gap-1.5 h-16">
+                        <div className="grid grid-cols-12 gap-1 h-12">
                           <div className="col-span-8 bg-[#0a0e17] rounded p-1 flex items-center justify-center">
-                            <span className="text-[9px] font-bold text-white/80">Hero Carousel</span>
+                            <span className="text-[8px] font-bold text-white/80">Carousel</span>
                           </div>
-                          <div className="col-span-4 flex flex-col gap-1">
-                            <div className="h-1/2 bg-blue-100 rounded flex items-center justify-center text-[8px] font-bold text-blue-900">Promo 1</div>
-                            <div className="h-1/2 bg-indigo-100 rounded flex items-center justify-center text-[8px] font-bold text-indigo-900">Promo 2</div>
+                          <div className="col-span-4 flex flex-col gap-0.5">
+                            <div className="h-1/2 bg-blue-100 rounded flex items-center justify-center text-[7px] font-bold text-blue-900">Promo 1</div>
+                            <div className="h-1/2 bg-indigo-100 rounded flex items-center justify-center text-[7px] font-bold text-indigo-900">Promo 2</div>
                           </div>
                         </div>
                         <div className="grid grid-cols-4 gap-1">
-                          <div className="h-3 bg-slate-200 rounded" />
-                          <div className="h-3 bg-slate-200 rounded" />
-                          <div className="h-3 bg-slate-200 rounded" />
-                          <div className="h-3 bg-slate-200 rounded" />
+                          <div className="h-2 bg-slate-200 rounded" />
+                          <div className="h-2 bg-slate-200 rounded" />
+                          <div className="h-2 bg-slate-200 rounded" />
+                          <div className="h-2 bg-slate-200 rounded" />
                         </div>
                       </div>
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h4 className="text-sm font-black text-white">Version 1 — Classic Storefront</h4>
+                          <h4 className="text-sm font-black text-white">Version 1 — Classic</h4>
                           <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-mono">v1</span>
                         </div>
                         <p className="text-xs text-slate-400 mt-1">
-                          The original classic retail ecommerce design across Homepage and Category listing pages with multi-banner carousel, compact filters, and dense product matrix.
+                          Original retail ecommerce design with multi-banner carousel and dense grid.
                         </p>
                       </div>
 
-                      <ul className="space-y-1.5 text-xs text-slate-300 border-t border-slate-800/80 pt-3">
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                          <span>Original multi-banner carousel & classic category filter tree</span>
+                      <ul className="space-y-1.5 text-[11px] text-slate-300 border-t border-slate-800/80 pt-3">
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                          <span>Multi-banner carousel & category filter tree</span>
                         </li>
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                          <span>4 quick action utility shortcuts (PC Builder, Servicing, Deals)</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                          <span>Classic 4-column category listing & specification filter sidebar</span>
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                          <span>Classic 4-column category listing</span>
                         </li>
                       </ul>
                     </div>
@@ -377,13 +372,13 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                           onChange={() => setData('storefront_version', 'v1')}
                           className="text-amber-500 focus:ring-amber-500 bg-slate-900 border-slate-700"
                         />
-                        <span>{data.storefront_version === 'v1' ? 'Selected as Active' : 'Switch to Version 1'}</span>
+                        <span>{data.storefront_version === 'v1' ? 'Selected' : 'Switch to v1'}</span>
                       </label>
 
                       <button
                         type="button"
                         onClick={() => setData('storefront_version', 'v1')}
-                        className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all ${
+                        className={`px-3 py-1 rounded-xl font-bold text-xs transition-all ${
                           data.storefront_version === 'v1'
                             ? 'bg-amber-500 text-slate-950 font-black'
                             : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
@@ -406,68 +401,56 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                     {data.storefront_version === 'v2' && (
                       <div className="absolute top-0 right-0 bg-sky-400 text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-xs flex items-center space-x-1">
                         <CheckCircle2 className="w-3 h-3 stroke-[3]" />
-                        <span>ACTIVE VERSION</span>
+                        <span>ACTIVE</span>
                       </div>
                     )}
 
                     <div className="space-y-4">
                       {/* Visual Mock Preview Box */}
-                      <div className="h-32 rounded-xl bg-[#080f1e] border border-blue-900/40 p-3 overflow-hidden flex flex-col justify-between relative select-none">
+                      <div className="h-28 rounded-xl bg-[#080f1e] border border-blue-900/40 p-2.5 overflow-hidden flex flex-col justify-between relative select-none">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                            <span className="text-[10px] font-mono text-sky-400 pl-2 truncate">Modern Tech UI (v2)</span>
+                            <div className="w-2 h-2 rounded-full bg-rose-400" />
+                            <div className="w-2 h-2 rounded-full bg-amber-400" />
+                            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                            <span className="text-[9px] font-mono text-sky-400 pl-1 truncate">Modern (v2)</span>
                           </div>
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-400/20 text-sky-300">Modern</span>
+                          <span className="text-[8px] font-bold px-1 py-0.2 rounded bg-sky-400/20 text-sky-300">Modern</span>
                         </div>
-                        {/* Mock Layout Wireframe */}
-                        <div className="bg-gradient-to-r from-blue-950 to-indigo-950 rounded p-1.5 flex items-center justify-between border border-blue-800/40">
+                        <div className="bg-gradient-to-r from-blue-950 to-indigo-950 rounded p-1 flex items-center justify-between border border-blue-800/40">
                           <div>
-                            <div className="text-[8px] font-bold text-sky-400">SMART TECH.</div>
-                            <div className="text-[7px] text-slate-300">BETTER LIFE</div>
+                            <div className="text-[7px] font-bold text-sky-400">SMART TECH</div>
                           </div>
-                          <div className="w-8 h-8 rounded bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-[7px] text-sky-300">
-                            CAM/RIG
+                          <div className="w-6 h-6 rounded bg-sky-500/20 text-[6px] text-sky-300 flex items-center justify-center">
+                            CAM
                           </div>
                         </div>
-                        {/* Floating bar wireframe */}
-                        <div className="bg-white rounded p-1 shadow-xs flex items-center justify-between">
-                          <div className="w-4 h-2 bg-blue-100 rounded" />
-                          <div className="w-4 h-2 bg-blue-100 rounded" />
-                          <div className="w-4 h-2 bg-blue-100 rounded" />
-                          <div className="w-4 h-2 bg-blue-100 rounded" />
-                          <div className="w-4 h-2 bg-blue-100 rounded" />
+                        <div className="bg-white rounded p-0.5 shadow-xs flex items-center justify-between">
+                          <div className="w-3 h-1.5 bg-blue-100 rounded" />
+                          <div className="w-3 h-1.5 bg-blue-100 rounded" />
+                          <div className="w-3 h-1.5 bg-blue-100 rounded" />
+                          <div className="w-3 h-1.5 bg-blue-100 rounded" />
                         </div>
                       </div>
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h4 className="text-sm font-black text-white">Version 2 — Modern Tech Storefront</h4>
-                          <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-mono font-bold">v2 • Premium</span>
+                          <h4 className="text-sm font-black text-white">Version 2 — Modern Tech</h4>
+                          <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-mono font-bold">v2</span>
                         </div>
                         <p className="text-xs text-slate-400 mt-1">
-                          New high-tech electronics marketplace UI with dark navy animated hero, floating categories, modern category listing hero, and refined product cards.
+                          Dark navy animated hero, floating categories, and refined electronics store layout.
                         </p>
                       </div>
 
-                      <ul className="space-y-1.5 text-xs text-slate-300 border-t border-slate-800/80 pt-3">
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                          <span>Cinematic animated hero slider & floating category navigation</span>
+                      <ul className="space-y-1.5 text-[11px] text-slate-300 border-t border-slate-800/80 pt-3">
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                          <span>Animated hero slider & floating bar</span>
                         </li>
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                          <span>Modern Category listing hero with explore chips & active filter badges</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                          <span>Refined product cards with smooth hover lift, blue glow & fast actions</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                          <span>Mobile slide-over filter drawer with smooth touch interactions</span>
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                          <span>Mobile slide-over filter drawer</span>
                         </li>
                       </ul>
                     </div>
@@ -482,13 +465,13 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                           onChange={() => setData('storefront_version', 'v2')}
                           className="text-sky-400 focus:ring-sky-400 bg-slate-900 border-slate-700"
                         />
-                        <span>{data.storefront_version === 'v2' ? 'Selected as Active' : 'Switch to Version 2'}</span>
+                        <span>{data.storefront_version === 'v2' ? 'Selected' : 'Switch to v2'}</span>
                       </label>
 
                       <button
                         type="button"
                         onClick={() => setData('storefront_version', 'v2')}
-                        className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all ${
+                        className={`px-3 py-1 rounded-xl font-bold text-xs transition-all ${
                           data.storefront_version === 'v2'
                             ? 'bg-sky-400 text-slate-950 font-black shadow-sm'
                             : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
@@ -498,6 +481,101 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                       </button>
                     </div>
                   </div>
+
+                  {/* Option 3: Version 3 (TechJhuli Gadget Hub) */}
+                  <div 
+                    onClick={() => setData('storefront_version', 'v3')}
+                    className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden ${
+                      data.storefront_version === 'v3'
+                        ? 'bg-slate-900 border-[#0153FD] shadow-lg shadow-blue-500/20'
+                        : 'bg-slate-950/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                    }`}
+                  >
+                    {data.storefront_version === 'v3' && (
+                      <div className="absolute top-0 right-0 bg-[#0153FD] text-white font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-xs flex items-center space-x-1">
+                        <CheckCircle2 className="w-3 h-3 stroke-[3]" />
+                        <span>ACTIVE</span>
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      {/* Visual Mock Preview Box */}
+                      <div className="h-28 rounded-xl bg-white border border-[#8BB1FF] p-2.5 overflow-hidden flex flex-col justify-between relative select-none shadow-[0_0_10px_#CAE0FF]">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-1">
+                            <span className="text-[9px] font-black text-[#0153FD]">Tech</span>
+                            <span className="text-[9px] font-black text-[#002268]">Jhuli</span>
+                          </div>
+                          <span className="text-[8px] font-bold px-2 py-0.5 rounded-full bg-[#0153FD] text-white">v3 Hub</span>
+                        </div>
+                        {/* Section Card Wireframe with Floating Pill */}
+                        <div className="relative bg-[#F4F7FC] border border-[#8BB1FF]/70 rounded-lg p-2 text-center">
+                          <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.2 bg-[#0153FD] text-white rounded-full text-[6px] font-black">
+                            Trending Gadgets
+                          </div>
+                          <div className="grid grid-cols-3 gap-1 pt-1">
+                            <div className="h-4 bg-white rounded border border-slate-200" />
+                            <div className="h-4 bg-white rounded border border-slate-200" />
+                            <div className="h-4 bg-white rounded border border-slate-200" />
+                          </div>
+                        </div>
+                        {/* Blue gradient footer line */}
+                        <div className="h-2 rounded bg-gradient-to-r from-[#0153FD] to-[#002268]" />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <h4 className="text-sm font-black text-white">Version 3 — TechJhuli Hub</h4>
+                          <span className="px-2 py-0.5 rounded bg-[#0153FD]/20 text-blue-400 text-[10px] font-mono font-bold">v3 • New</span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Signature TechJhuli gadget hub UI with electric blue colors, section card glow boxes, floating pill badges, and royal blue footer.
+                        </p>
+                      </div>
+
+                      <ul className="space-y-1.5 text-[11px] text-slate-300 border-t border-slate-800/80 pt-3">
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#0153FD] shrink-0" />
+                          <span>Exact color tokens (#0153FD, #002268, #8BB1FF)</span>
+                        </li>
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#0153FD] shrink-0" />
+                          <span>Floating pill section headers & card glow boxes</span>
+                        </li>
+                        <li className="flex items-center space-x-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#0153FD] shrink-0" />
+                          <span>Black discount pills & full-width blue Add to Cart</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-5 pt-3 border-t border-slate-800 flex items-center justify-between">
+                      <label className="flex items-center space-x-2 text-xs font-bold text-slate-300 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="storefront_version"
+                          value="v3"
+                          checked={data.storefront_version === 'v3'}
+                          onChange={() => setData('storefront_version', 'v3')}
+                          className="text-[#0153FD] focus:ring-[#0153FD] bg-slate-900 border-slate-700"
+                        />
+                        <span>{data.storefront_version === 'v3' ? 'Selected' : 'Switch to v3'}</span>
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() => setData('storefront_version', 'v3')}
+                        className={`px-3 py-1 rounded-xl font-bold text-xs transition-all ${
+                          data.storefront_version === 'v3'
+                            ? 'bg-[#0153FD] text-white font-black shadow-sm'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        }`}
+                      >
+                        {data.storefront_version === 'v3' ? 'Active' : 'Select'}
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
 
                 {/* Version 2 Section Visibility Toggles */}

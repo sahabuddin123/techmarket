@@ -19,10 +19,12 @@ class OrderItem extends Model
         'price',
         'quantity',
         'total',
+        'cctv_snapshot',
     ];
 
     protected $casts = [
         'specs_snapshot' => 'array',
+        'cctv_snapshot' => 'array',
         'price' => 'float',
         'total' => 'float',
     ];

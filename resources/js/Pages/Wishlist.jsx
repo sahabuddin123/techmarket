@@ -1,33 +1,59 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 import CartDrawer from '@/Components/CartDrawer';
-import ProductCard from '@/Components/ProductCard';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart, ShoppingBag, ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function Wishlist() {
+  const { settings = {} } = usePage().props;
   const [cartOpen, setCartOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-amber-500 selection:text-slate-950">
-      <Head title="My Wishlist - TechMarket BD" />
+    <div className="storefront-v3 min-h-screen bg-[#F4F7FC] text-slate-900 font-sans flex flex-col selection:bg-[#0153FD] selection:text-white">
+      <Head title={`My Wishlist - ${settings.site_name || 'TechMarket BD'}`} />
 
       <Navbar onOpenCart={() => setCartOpen(true)} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-6">
-        <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-          <Heart className="w-6 h-6 text-rose-500 fill-current" />
-          <span>MY SAVED WISHLIST HARDWARE</span>
-        </h1>
+      {/* Breadcrumb Header */}
+      <div className="w-full bg-white border-b border-slate-100 py-2.5 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1240px] mx-auto flex items-center justify-between text-xs text-slate-500 font-medium">
+          <div className="flex items-center space-x-2 truncate">
+            <Link href="/" className="hover:text-[#0153FD] transition-colors">Home</Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-slate-900 font-semibold truncate">My Wishlist</span>
+          </div>
+        </div>
+      </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400 space-y-4">
-          <Heart className="w-16 h-16 stroke-1 text-slate-700 mx-auto" />
-          <h3 className="text-base font-bold text-white">Your Wishlist is currently empty</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">Explore our tech catalog and click the heart icon on product cards to save items to your wishlist.</p>
-          <Link href="/catalog" className="inline-block bg-[#1c4289] text-white font-bold text-xs px-6 py-2.5 rounded-lg shadow-md">
-            Browse Store Catalog
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 space-y-6">
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold uppercase tracking-wider">
+            <Heart className="w-3.5 h-3.5 fill-current" />
+            <span>FAVORITE ITEMS</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            My Saved Wishlist
+          </h1>
+        </div>
+
+        <div className="bg-white border border-[#8BB1FF]/70 rounded-[24px] p-10 sm:p-14 text-center text-slate-500 space-y-5 shadow-[0_0_20px_rgba(202,224,255,0.6)]">
+          <div className="w-20 h-20 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto shadow-xs border border-rose-100">
+            <Heart className="w-10 h-10 stroke-[1.5]" />
+          </div>
+          <div className="space-y-1.5">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">Your Wishlist is currently empty</h3>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+              Explore our tech catalog and click the heart icon on any gadget to save items for future purchases.
+            </p>
+          </div>
+          <Link
+            href="/catalog"
+            className="inline-flex items-center space-x-2 bg-[#0153FD] hover:bg-[#0042cf] text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-full shadow-lg shadow-blue-500/25 transition-all cursor-pointer"
+          >
+            <span>Browse Products</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </main>

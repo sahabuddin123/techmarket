@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import NavbarV2 from './Storefront/Version2/Components/NavbarV2';
-import FooterV2 from './Storefront/Version2/Components/FooterV2';
+import Navbar from '@/Components/Navbar';
+import Footer from '@/Components/Footer';
 import CartDrawer from '@/Components/CartDrawer';
 import { 
   AlertTriangle, Check, ShieldCheck, ChevronRight, 
@@ -91,8 +91,8 @@ export default function Checkout(props) {
     <div className="storefront-v2 min-h-screen bg-[#f3f6fa] text-slate-900 font-sans flex flex-col selection:bg-blue-600 selection:text-white">
       <Head title="Secure Checkout | TechMarket BD" />
 
-      {/* 1. TOP HEADER & NAVIGATION (V2 Header) */}
-      <NavbarV2 onOpenCart={() => setIsCartDrawerOpen(true)} />
+      {/* 1. TOP HEADER & NAVIGATION */}
+      <Navbar onOpenCart={() => setIsCartDrawerOpen(true)} />
       <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
 
       {/* MAIN CONTAINER (Centered max-w-[1360px]) */}
@@ -649,8 +649,8 @@ export default function Checkout(props) {
 
       </main>
 
-      {/* FOOTER (V2 Footer) */}
-      <FooterV2 onOpenCart={() => setIsCartDrawerOpen(true)} />
+      {/* FOOTER */}
+      <Footer onOpenCart={() => setIsCartDrawerOpen(true)} />
     </div>
   );
 }

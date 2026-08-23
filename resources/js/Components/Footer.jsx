@@ -7,9 +7,21 @@ import {
 } from 'lucide-react';
 import ChatbotWidget from '@/Components/Chatbot/ChatbotWidget';
 import MobileBottomNav from '@/Components/MobileBottomNav';
+import FooterV2 from '@/Pages/Storefront/Version2/Components/FooterV2';
+import FooterV3 from '@/Pages/Storefront/Version3/Components/FooterV3';
 
 export default function Footer({ onOpenCart }) {
-  const { settings = {}, footerNavigations = {} } = usePage().props;
+  const { settings = {}, footerNavigations = {}, storefront_version } = usePage().props;
+  const version = storefront_version || settings.storefront_version || 'v1';
+
+  if (version === 'v3') {
+    return <FooterV3 onOpenCart={onOpenCart} />;
+  }
+
+  if (version === 'v2') {
+    return <FooterV2 onOpenCart={onOpenCart} />;
+  }
+
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);

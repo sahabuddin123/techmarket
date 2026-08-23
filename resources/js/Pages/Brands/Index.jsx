@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import Navbar from '../../Components/Navbar';
 import Footer from '../../Components/Footer';
+import BrandsV3 from '../Storefront/Version3/BrandsV3';
 import { Search, ChevronRight, Sparkles, Tag, ArrowRight } from 'lucide-react';
 
 export default function BrandsIndex({ brands = [], featuredBrands = [], filters = {} }) {
+  const { settings = {} } = usePage().props;
+  const version = settings.storefront_version || 'v1';
+
+  if (version === 'v3') {
+    return <BrandsV3 brands={brands} featuredBrands={featuredBrands} settings={settings} />;
+  }
+
   const [searchTerm, setSearchTerm] = useState(filters.search || '');
   const currentLetter = filters.letter || 'all';
 

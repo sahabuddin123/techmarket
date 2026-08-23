@@ -6,10 +6,14 @@ import {
 } from 'lucide-react';
 
 export default function CartDrawer({ isOpen, onClose }) {
-  const { cart = { count: 0, total: 0, items: [] }, settings = {} } = usePage().props;
+  const { storefront_version, cart = { count: 0, total: 0, items: [] }, settings = {} } = usePage().props;
+  const version = storefront_version || settings.storefront_version || 'v3';
   const [updatingId, setUpdatingId] = useState(null);
 
   if (!isOpen) return null;
+
+  const isV3 = version === 'v3';
+  const isV2 = version === 'v2';
 
   const updateQty = (productId, newQty) => {
     if (newQty < 1) return;
@@ -50,11 +54,17 @@ export default function CartDrawer({ isOpen, onClose }) {
         <div className="w-screen w-full sm:w-[440px] md:w-[460px] max-w-full sm:max-w-[460px] bg-[#f8fafc] text-slate-900 flex flex-col h-full shadow-2xl border-l border-slate-200/90 z-10 animate-in slide-in-from-right duration-300">
           
           {/* ========================================================================= */}
-          {/* 1. STICKY HEADER (Deep Navy V2 Header) */}
+          {/* 1. STICKY HEADER (Dynamically styled per version) */}
           {/* ========================================================================= */}
-          <div className="px-5 sm:px-6 py-4 bg-[#0b1a36] text-white flex items-center justify-between border-b border-blue-950 shrink-0">
+          <div className={`px-5 sm:px-6 py-4 text-white flex items-center justify-between shrink-0 shadow-sm ${
+            isV3
+              ? 'bg-gradient-to-r from-[#0153FD] to-[#002268] border-b border-[#8BB1FF]/30'
+              : isV2
+              ? 'bg-[#0b1a36] border-b border-blue-950'
+              : 'bg-[#002a5c] border-b border-[#001f44]'
+          }`}>
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-sky-400 shadow-xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-white shadow-xs shrink-0">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div className="min-w-0">
@@ -62,11 +72,11 @@ export default function CartDrawer({ isOpen, onClose }) {
                   <h3 className="font-black text-sm sm:text-base text-white tracking-tight truncate">
                     Your Shopping Cart
                   </h3>
-                  <span className="bg-blue-600/30 border border-sky-400/30 text-sky-300 text-[11px] px-2.5 py-0.5 rounded-full font-black shrink-0">
+                  <span className="bg-white/20 border border-white/30 text-white text-[11px] px-2.5 py-0.5 rounded-full font-black shrink-0">
                     {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">
+                <p className="text-[11px] text-white/80 font-medium mt-0.5 truncate">
                   {settings.cart_trust_text || '100% Genuine Tech with Official Warranty'}
                 </p>
               </div>
@@ -75,7 +85,7 @@ export default function CartDrawer({ isOpen, onClose }) {
             <button 
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors cursor-pointer shrink-0 ml-2"
+              className="text-white/70 hover:text-white p-2 rounded-xl hover:bg-white/15 transition-colors cursor-pointer shrink-0 ml-2"
               aria-label="Close Shopping Cart Drawer"
             >
               <X className="w-5 h-5" />
@@ -283,7 +293,13 @@ export default function CartDrawer({ isOpen, onClose }) {
                 <Link
                   href="/checkout"
                   onClick={onClose}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider py-3.5 px-5 rounded-2xl flex items-center justify-center space-x-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  className={`flex-1 text-white font-black text-xs uppercase tracking-wider py-3.5 px-5 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg transition-all cursor-pointer ${
+                    isV3
+                      ? 'bg-[#0153FD] hover:bg-[#0042cf] rounded-full'
+                      : isV2
+                      ? 'bg-blue-600 hover:bg-blue-700 rounded-2xl'
+                      : 'bg-[#e11b22] hover:bg-[#c9151c] rounded-md'
+                  }`}
                 >
                   <span>PROCEED TO CHECKOUT</span>
                   <ArrowRight className="w-4 h-4" />

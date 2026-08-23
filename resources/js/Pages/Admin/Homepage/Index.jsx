@@ -120,7 +120,7 @@ export default function HomepageIndex({
               className="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold px-3.5 py-2 rounded-lg text-xs flex items-center space-x-2 transition-colors"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Design: <strong className="text-amber-400">{settings?.storefront_version === 'v2' ? 'v2 Modern Tech' : 'v1 Classic'}</strong></span>
+              <span>Design: <strong className="text-amber-400">{settings?.storefront_version === 'v3' ? 'v3 TechJhuli Hub' : settings?.storefront_version === 'v2' ? 'v2 Modern Tech' : 'v1 Classic'}</strong></span>
             </a>
 
             <a

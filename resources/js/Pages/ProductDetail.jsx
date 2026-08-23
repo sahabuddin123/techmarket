@@ -1,20 +1,15 @@
 import React from 'react';
-import ProductDetailV1 from './Storefront/Version1/ProductDetailV1';
-import ProductDetailV2 from './Storefront/Version2/ProductDetailV2';
+import { getStorefrontVersion } from '@/Core/Storefront/versionRegistry';
 
 /**
- * Dynamic Storefront Product Detail Page Dispatcher
- * Automatically resolves and renders either:
- * - Version 1 (Classic Storefront Product Detail Page - preserved 100%)
- * - Version 2 (Modern Tech Storefront Product Detail Page - premium modern UI)
- * based on admin setting `storefront_version`.
+ * Dynamic Storefront Product Detail Dispatcher
+ * Resolves active product detail component from the centralized version registry.
  */
 export default function ProductDetail(props) {
-  const version = props.storefront_version || props.settings?.storefront_version || 'v1';
+  const versionKey = props.storefront_version || props.settings?.storefront_version || 'v3';
+  const activeDef = getStorefrontVersion(versionKey);
+  const ProductDetailComponent = activeDef.ProductDetailPage;
 
-  if (version === 'v2') {
-    return <ProductDetailV2 {...props} />;
-  }
-
-  return <ProductDetailV1 {...props} />;
+  return <ProductDetailComponent {...props} />;
 }
+

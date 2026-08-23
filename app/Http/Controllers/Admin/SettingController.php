@@ -75,6 +75,10 @@ class SettingController extends Controller
 
             Setting::set($key, $value, $group);
             $updatedKeys[] = $key;
+
+            if ($key === 'storefront_version') {
+                \App\Models\StorefrontVersion::activateVersion($value);
+            }
         }
 
         // Invalidate global caches

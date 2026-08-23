@@ -53,6 +53,21 @@ Route::post('/pc-builder/save', [\App\Http\Controllers\PcBuilderController::clas
 Route::post('/pc-builder/load/{savedBuild}', [\App\Http\Controllers\PcBuilderController::class, 'loadBuild'])->name('pcBuilder.load');
 Route::delete('/pc-builder/builds/{savedBuild}', [\App\Http\Controllers\PcBuilderController::class, 'deleteBuild'])->name('pcBuilder.delete');
 
+// CCTV Estimator / Surveillance System Builder
+Route::get('/cctv-estimator', [\App\Http\Controllers\CctvEstimatorController::class, 'index'])->name('cctvEstimator.index');
+Route::post('/cctv-estimator/add-to-cart', [\App\Http\Controllers\CctvEstimatorController::class, 'addToCart'])->name('cctvEstimator.addToCart');
+
+// CCTV Commercial Quotation & Lifecycle
+Route::get('/quotes/{token}', [\App\Http\Controllers\CctvQuoteViewController::class, 'show'])->name('cctvQuote.show');
+Route::get('/quotes/{token}/print', [\App\Http\Controllers\CctvQuoteViewController::class, 'print'])->name('cctvQuote.print');
+Route::post('/quotes/{token}/approve', [\App\Http\Controllers\CctvQuoteViewController::class, 'approve'])->name('cctvQuote.approve');
+Route::post('/quotes/{token}/convert-to-cart', [\App\Http\Controllers\CctvQuoteViewController::class, 'convertToCart'])->name('cctvQuote.convertToCart');
+
+// CCTV Site Survey & Engineering Assessment
+Route::get('/site-survey', [\App\Http\Controllers\CctvSiteSurveyController::class, 'create'])->name('cctvSurvey.create');
+Route::post('/site-survey', [\App\Http\Controllers\CctvSiteSurveyController::class, 'store'])->name('cctvSurvey.store');
+Route::get('/site-survey/{surveyNumber}', [\App\Http\Controllers\CctvSiteSurveyController::class, 'show'])->name('cctvSurvey.show');
+
 // Storefront Content Pages
 Route::get('/about-us', [\App\Http\Controllers\ContentPageController::class, 'aboutUs'])->name('about-us');
 Route::get('/brands', [\App\Http\Controllers\PublicBrandController::class, 'index'])->name('brands.index');
@@ -182,6 +197,13 @@ Route::get('/refund-and-return-policy', function () {
     ]);
 })->name('refund-and-return-policy');
 
+Route::get('/refund-policy', fn () => redirect()->route('refund-and-return-policy'));
+Route::get('/shipping-delivery', fn () => redirect()->route('delivery-policy'));
+Route::get('/shipping-policy', fn () => redirect()->route('delivery-policy'));
+Route::get('/terms-conditions', fn () => redirect()->route('terms-and-conditions'));
+Route::get('/privacy', fn () => redirect()->route('privacy-policy'));
+Route::get('/warranty', fn () => redirect()->route('warranty-policy'));
+
 Route::get('/terms-and-conditions', function () {
     $page = CmsPage::where('slug', 'terms-and-conditions')->first();
     return Inertia::render('CmsPage', [
@@ -305,13 +327,24 @@ Route::middleware('auth')->group(function () {
 
 // Customer Account Suite (TechLand Reference UI)
 Route::middleware('auth')->prefix('account')->group(function () {
+    Route::get('/', fn () => redirect()->route('account.profile'))->name('account');
     Route::get('/profile', [AccountController::class, 'profile'])->name('account.profile');
-    Route::get('/notifications', [AccountController::class, 'notifications'])->name('account.notifications');
+    Route::get('/orders', fn () => redirect()->route('account.orders.history'))->name('account.orders');
     Route::get('/orders/history', [AccountController::class, 'orderHistory'])->name('account.orders.history');
+    Route::get('/notifications', [AccountController::class, 'notifications'])->name('account.notifications');
     Route::get('/password/change', [AccountController::class, 'changePassword'])->name('account.password.change');
     Route::get('/reward-points', [AccountController::class, 'rewardPoints'])->name('account.reward-points');
     Route::get('/saved-pc-builds', [AccountController::class, 'savedPcBuilds'])->name('account.saved-pc-builds');
     Route::get('/service-requests', [AccountController::class, 'serviceRequests'])->name('account.service-requests');
+    Route::get('/cctv-equipment', [\App\Http\Controllers\CctvCustomerServiceController::class, 'equipment'])->name('account.cctv.equipment');
+    Route::get('/cctv-services', [\App\Http\Controllers\CctvCustomerServiceController::class, 'serviceRequests'])->name('account.cctv.services');
+    Route::get('/cctv-services/create', [\App\Http\Controllers\CctvCustomerServiceController::class, 'createServiceRequest'])->name('account.cctv.services.create');
+    Route::post('/cctv-services', [\App\Http\Controllers\CctvCustomerServiceController::class, 'storeServiceRequest'])->name('account.cctv.services.store');
+    Route::get('/cctv-projects', [\App\Http\Controllers\CctvEnterpriseProjectController::class, 'index'])->name('account.cctv.projects');
+    Route::get('/cctv-projects/{id}', [\App\Http\Controllers\CctvEnterpriseProjectController::class, 'show'])->name('account.cctv.projects.show');
+    Route::post('/cctv-projects', [\App\Http\Controllers\CctvEnterpriseProjectController::class, 'store'])->name('account.cctv.projects.store');
+    Route::post('/cctv-projects/{projectId}/sites', [\App\Http\Controllers\CctvEnterpriseProjectController::class, 'storeSite'])->name('account.cctv.projects.sites.store');
+    Route::post('/cctv-projects/{projectId}/change-requests', [\App\Http\Controllers\CctvEnterpriseProjectController::class, 'storeChangeRequest'])->name('account.cctv.projects.cr.store');
 });
 
 // Admin Panel Routes
@@ -622,6 +655,56 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/settings/email', [\App\Http\Controllers\Admin\EmailController::class, 'updateSettings'])->name('admin.email.settings.update');
     Route::post('/settings/email-gateways/{emailGateway?}', [\App\Http\Controllers\Admin\EmailController::class, 'updateGateway'])->name('admin.email.gateways.update');
     Route::post('/settings/email-gateways/{emailGateway}/test', [\App\Http\Controllers\Admin\EmailController::class, 'testGateway'])->name('admin.email.gateways.test');
+
+    // CCTV Estimator Administration Suite
+    Route::prefix('cctv')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\CctvAdminController::class, 'index'])->name('admin.cctv.dashboard');
+        Route::get('/profiles', [\App\Http\Controllers\Admin\CctvAdminController::class, 'profiles'])->name('admin.cctv.profiles');
+        Route::post('/profiles', [\App\Http\Controllers\Admin\CctvAdminController::class, 'storeProfile'])->name('admin.cctv.profiles.store');
+        Route::delete('/profiles/{id}', [\App\Http\Controllers\Admin\CctvAdminController::class, 'destroyProfile'])->name('admin.cctv.profiles.destroy');
+
+        Route::get('/rules', [\App\Http\Controllers\Admin\CctvAdminController::class, 'rules'])->name('admin.cctv.rules');
+        Route::post('/rules', [\App\Http\Controllers\Admin\CctvAdminController::class, 'storeRule'])->name('admin.cctv.rules.store');
+        Route::post('/rules/{id}/toggle-status', [\App\Http\Controllers\Admin\CctvAdminController::class, 'toggleRuleStatus'])->name('admin.cctv.rules.toggle');
+        Route::delete('/rules/{id}', [\App\Http\Controllers\Admin\CctvAdminController::class, 'destroyRule'])->name('admin.cctv.rules.destroy');
+
+        Route::get('/estimates', [\App\Http\Controllers\Admin\CctvAdminController::class, 'estimates'])->name('admin.cctv.estimates');
+        Route::delete('/estimates/{id}', [\App\Http\Controllers\Admin\CctvAdminController::class, 'destroyEstimate'])->name('admin.cctv.estimates.destroy');
+
+        Route::get('/quotes', [\App\Http\Controllers\Admin\CctvAdminController::class, 'quotes'])->name('admin.cctv.quotes');
+
+        Route::get('/surveys', [\App\Http\Controllers\Admin\CctvAdminController::class, 'surveys'])->name('admin.cctv.surveys');
+        Route::post('/surveys/{id}/status', [\App\Http\Controllers\Admin\CctvAdminController::class, 'updateSurveyStatus'])->name('admin.cctv.surveys.status');
+        Route::post('/surveys/{id}/report', [\App\Http\Controllers\Admin\CctvAdminController::class, 'storeSurveyReport'])->name('admin.cctv.surveys.report');
+
+        Route::get('/installations', [\App\Http\Controllers\Admin\CctvAdminController::class, 'installations'])->name('admin.cctv.installations');
+        Route::post('/installations/{id}/status', [\App\Http\Controllers\Admin\CctvAdminController::class, 'updateInstallationStatus'])->name('admin.cctv.installations.status');
+
+        Route::get('/services', [\App\Http\Controllers\Admin\CctvAdminController::class, 'services'])->name('admin.cctv.services');
+        Route::post('/services', [\App\Http\Controllers\Admin\CctvAdminController::class, 'storeServiceType'])->name('admin.cctv.services.store');
+
+        Route::get('/service-center', [\App\Http\Controllers\Admin\CctvAdminController::class, 'serviceCenterDashboard'])->name('admin.cctv.serviceCenter');
+        Route::get('/service-requests', [\App\Http\Controllers\Admin\CctvAdminController::class, 'serviceRequests'])->name('admin.cctv.serviceRequests');
+        Route::post('/service-requests/{id}/status', [\App\Http\Controllers\Admin\CctvAdminController::class, 'updateServiceRequestStatus'])->name('admin.cctv.serviceRequests.status');
+
+        Route::get('/installed-equipment', [\App\Http\Controllers\Admin\CctvAdminController::class, 'installedEquipment'])->name('admin.cctv.installedEquipment');
+        Route::post('/installed-equipment', [\App\Http\Controllers\Admin\CctvAdminController::class, 'storeInstalledEquipment'])->name('admin.cctv.installedEquipment.store');
+
+        Route::get('/projects', [\App\Http\Controllers\Admin\CctvAdminController::class, 'projects'])->name('admin.cctv.projects');
+        Route::get('/projects/{id}', [\App\Http\Controllers\Admin\CctvAdminController::class, 'projectDetails'])->name('admin.cctv.projects.details');
+        Route::post('/projects/{id}/status', [\App\Http\Controllers\Admin\CctvAdminController::class, 'updateProjectStatus'])->name('admin.cctv.projects.status');
+
+        Route::get('/settings', [\App\Http\Controllers\Admin\CctvAdminController::class, 'settings'])->name('admin.cctv.settings');
+        Route::post('/settings', [\App\Http\Controllers\Admin\CctvAdminController::class, 'updateSettings'])->name('admin.cctv.settings.update');
+
+        Route::get('/analytics', [\App\Http\Controllers\Admin\CctvAnalyticsAdminController::class, 'dashboard'])->name('admin.cctv.analytics');
+        Route::get('/reports', [\App\Http\Controllers\Admin\CctvAnalyticsAdminController::class, 'reportBuilder'])->name('admin.cctv.reports');
+        Route::post('/reports/save', [\App\Http\Controllers\Admin\CctvAnalyticsAdminController::class, 'saveReport'])->name('admin.cctv.reports.save');
+        Route::get('/alerts', [\App\Http\Controllers\Admin\CctvAnalyticsAdminController::class, 'alertCenter'])->name('admin.cctv.alerts');
+
+        Route::get('/test', [\App\Http\Controllers\Admin\CctvAdminController::class, 'ruleTester'])->name('admin.cctv.tester');
+        Route::post('/test/run', [\App\Http\Controllers\Admin\CctvAdminController::class, 'runRuleTest'])->name('admin.cctv.tester.run');
+    });
 });
 
 // Public Unsubscribe Endpoints

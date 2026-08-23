@@ -178,6 +178,24 @@ class CheckoutController extends Controller
                 $fullShippingAddress .= ' (' . $validated['area'] . ')';
             }
 
+            $cart = session()->get('cart', []);
+            $cctvQuoteId = null;
+            $cctvConfiguration = [];
+
+            foreach ($cart as $cartItem) {
+                if (!empty($cartItem['cctv_quote_id'])) {
+                    $cctvQuoteId = $cartItem['cctv_quote_id'];
+                    $cctvConfiguration[] = [
+                        'product_id' => $cartItem['id'] ?? null,
+                        'title' => $cartItem['title'] ?? null,
+                        'sku' => $cartItem['sku'] ?? null,
+                        'price' => $cartItem['price'] ?? 0,
+                        'quantity' => $cartItem['quantity'] ?? 1,
+                        'is_cctv_item' => true,
+                    ];
+                }
+            }
+
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => auth()->id(),
@@ -194,6 +212,8 @@ class CheckoutController extends Controller
                 'total' => $pricing['total'],
                 'status' => 'Pending',
                 'notes' => $validated['notes'] ?? null,
+                'cctv_quote_id' => $cctvQuoteId,
+                'cctv_configuration_snapshot' => !empty($cctvConfiguration) ? $cctvConfiguration : null,
             ]);
 
             // Save immutable item snapshots & deduct inventory with audit trail
@@ -201,6 +221,9 @@ class CheckoutController extends Controller
                 $product = $itemData['product'];
                 $qty = $itemData['quantity'];
                 $unitPrice = $itemData['unit_price'];
+
+                $cartMatch = $cart[$product->id] ?? null;
+                $isCctv = !empty($cartMatch['is_cctv_item']);
 
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -212,10 +235,30 @@ class CheckoutController extends Controller
                     'price' => $unitPrice,
                     'quantity' => $qty,
                     'total' => $itemData['subtotal'],
+                    'cctv_snapshot' => $isCctv ? [
+                        'is_cctv' => true,
+                        'quote_id' => $cartMatch['cctv_quote_id'] ?? null,
+                        'estimate_id' => $cartMatch['cctv_estimate_id'] ?? null,
+                    ] : null,
                 ]);
 
                 // Atomically reserve/deduct stock with audit movement
                 InventoryService::reserveStock($product->id, $qty, $order->id);
+            }
+
+            // Auto-create CCTV Installation Job if CCTV quote attached
+            if ($cctvQuoteId) {
+                $cctvQuote = \App\Models\Cctv\CctvQuote::find($cctvQuoteId);
+                \App\Models\Cctv\CctvInstallationJob::create([
+                    'order_id' => $order->id,
+                    'quote_id' => $cctvQuoteId,
+                    'estimate_id' => $cctvQuote?->estimate_id,
+                    'customer_name' => $order->customer_name,
+                    'customer_phone' => $order->customer_phone,
+                    'customer_address' => $order->shipping_address,
+                    'camera_count' => count($cctvConfiguration) ?: 4,
+                    'status' => 'pending',
+                ]);
             }
 
             $methodLabel = Order::formatPaymentMethodName($pmNormalized);

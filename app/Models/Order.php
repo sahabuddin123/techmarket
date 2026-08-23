@@ -46,7 +46,8 @@ class Order extends Model
         'gclid',
         'campaign_id',
         'adset_id',
-        'ad_id',
+        'cctv_quote_id',
+        'cctv_configuration_snapshot',
     ];
 
     protected $casts = [
@@ -55,6 +56,7 @@ class Order extends Model
         'shipping_cost' => 'float',
         'discount' => 'float',
         'total' => 'float',
+        'cctv_configuration_snapshot' => 'array',
     ];
 
     protected $appends = [

@@ -97,6 +97,26 @@ class Product extends Model
         return $this->hasMany(ProductQuestion::class);
     }
 
+    public function cctvProfile()
+    {
+        return $this->hasOne(\App\Models\Cctv\CctvProductProfile::class);
+    }
+
+    public function cctvDeviceProfile()
+    {
+        return $this->hasOne(\App\Models\Cctv\CctvDeviceProfile::class);
+    }
+
+    public function cctvStorageProfile()
+    {
+        return $this->hasOne(\App\Models\Cctv\CctvStorageProfile::class);
+    }
+
+    public function cctvCableProfile()
+    {
+        return $this->hasOne(\App\Models\Cctv\CctvCableProfile::class);
+    }
+
     /**
      * Get dynamic SEO score breakdown.
      */

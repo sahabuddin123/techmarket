@@ -9,9 +9,21 @@ import {
 import DesktopNavigation from './Navigation/DesktopNavigation';
 import MobileNavigation from './Navigation/MobileNavigation';
 import AuthModal from './AuthModal';
+import NavbarV2 from '@/Pages/Storefront/Version2/Components/NavbarV2';
+import NavbarV3 from '@/Pages/Storefront/Version3/Components/NavbarV3';
 
 export default function Navbar({ onOpenCart }) {
-  const { auth, cart = { count: 0, total: 0 }, categories = [], settings = {}, footerNavigations = {}, unreadCount = 0, compareCount = 0 } = usePage().props;
+  const { auth, cart = { count: 0, total: 0 }, categories = [], settings = {}, footerNavigations = {}, unreadCount = 0, compareCount = 0, storefront_version } = usePage().props;
+  const version = storefront_version || settings.storefront_version || 'v1';
+
+  if (version === 'v3') {
+    return <NavbarV3 onOpenCart={onOpenCart} />;
+  }
+
+  if (version === 'v2') {
+    return <NavbarV2 onOpenCart={onOpenCart} />;
+  }
+
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);

@@ -1,20 +1,15 @@
 import React from 'react';
-import HomeV1 from './Storefront/Version1/HomeV1';
-import HomeV2 from './Storefront/Version2/HomeV2';
+import { getStorefrontVersion } from '@/Core/Storefront/versionRegistry';
 
 /**
- * Dynamic Storefront Dispatcher
- * Automatically resolves and renders either:
- * - Version 1 (Classic Storefront - preserved exactly)
- * - Version 2 (Modern Tech Storefront - premium modern UI)
- * based on admin setting `storefront_version`.
+ * Dynamic Storefront Home Dispatcher
+ * Resolves active home component from the centralized version registry.
  */
 export default function Home(props) {
-  const version = props.storefront_version || props.settings?.storefront_version || 'v1';
+  const versionKey = props.storefront_version || props.settings?.storefront_version || 'v3';
+  const activeDef = getStorefrontVersion(versionKey);
+  const HomeComponent = activeDef.HomePage;
 
-  if (version === 'v2') {
-    return <HomeV2 {...props} />;
-  }
-
-  return <HomeV1 {...props} />;
+  return <HomeComponent {...props} />;
 }
+

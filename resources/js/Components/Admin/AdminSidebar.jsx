@@ -8,7 +8,8 @@ import {
   FileText, BookOpen, Wrench, Landmark, Bot, HelpCircle,
   CreditCard, ShieldCheck, ChevronDown, ChevronRight, Bell, LogOut,
   ExternalLink, Search, Sparkles, Plus, Upload, PanelLeftClose, PanelLeft, Rss,
-  Share2, Mail, Cpu, RefreshCw, Truck, MessageSquare, Send, Radio
+  Share2, Mail, Cpu, RefreshCw, Truck, MessageSquare, Send, Radio,
+  AlertTriangle, Video, MapPin, DollarSign
 } from 'lucide-react';
 
 export default function AdminSidebar({
@@ -52,6 +53,29 @@ export default function AdminSidebar({
         { label: 'Brands & Vendors', href: '/admin/brands', icon: Tag },
         { label: 'Inventory Ledger', href: '/admin/inventory', icon: Warehouse },
         { label: 'Specification Matrix', href: '/admin/specifications', icon: Layers },
+      ],
+    },
+    {
+      key: 'cctv',
+      title: 'CCTV & Surveillance System',
+      items: [
+        { label: 'CCTV Dashboard', href: '/admin/cctv', icon: ShieldCheck, badge: 'v2.4' },
+        { label: 'Analytics & BI', href: '/admin/cctv/analytics', icon: TrendingUp, badge: 'BI' },
+        { label: 'Custom Reports', href: '/admin/cctv/reports', icon: FileText },
+        { label: 'Alert Center', href: '/admin/cctv/alerts', icon: AlertTriangle },
+        { label: 'Enterprise Projects', href: '/admin/cctv/projects', icon: Layers, badge: 'Multi-Site' },
+        { label: 'Service Center Hub', href: '/admin/cctv/service-center', icon: Wrench, badge: 'Support' },
+        { label: 'Service Requests', href: '/admin/cctv/service-requests', icon: LifeBuoy },
+        { label: 'Installed Equipment', href: '/admin/cctv/installed-equipment', icon: Video },
+        { label: 'Site Surveys', href: '/admin/cctv/surveys', icon: MapPin },
+        { label: 'Installation Jobs', href: '/admin/cctv/installations', icon: Wrench },
+        { label: 'Service Rates & Types', href: '/admin/cctv/services', icon: DollarSign },
+        { label: 'Product Profiles', href: '/admin/cctv/profiles', icon: Package },
+        { label: 'Rule Engine & Builders', href: '/admin/cctv/rules', icon: Sliders },
+        { label: 'Project Estimates', href: '/admin/cctv/estimates', icon: FileText },
+        { label: 'Commercial Quotes', href: '/admin/cctv/quotes', icon: Tag },
+        { label: 'Engine & Calculations', href: '/admin/cctv/settings', icon: Cpu },
+        { label: 'Live Rule Tester', href: '/admin/cctv/test', icon: Sparkles, badge: 'Live' },
       ],
     },
     {

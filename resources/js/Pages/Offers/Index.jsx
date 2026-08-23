@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 import CartDrawer from '@/Components/CartDrawer';
+import OffersV3 from '../Storefront/Version3/OffersV3';
 import {
   Search, Clock, Calendar, Sparkles, Flame,
   ChevronRight, Tag, ArrowRight, CheckCircle2, AlertCircle
 } from 'lucide-react';
 
 export default function OffersIndex(props) {
+  const { settings = {} } = usePage().props;
+  const version = settings.storefront_version || props?.storefront_version || 'v1';
+
+  if (version === 'v3') {
+    const offersData = Array.isArray(props?.offers?.data) ? props.offers.data : (Array.isArray(props?.offers) ? props.offers : []);
+    return <OffersV3 offers={offersData} dealsOfDay={props.dealsOfDay} flashSale={props.flashSale} featuredProducts={props.featuredProducts} settings={settings} />;
+  }
+
   const offers = props?.offers && typeof props.offers === 'object' ? props.offers : { data: [] };
   const filters = props?.filters && typeof props.filters === 'object' && !Array.isArray(props.filters) ? props.filters : {};
   const totalActiveCount = typeof props?.totalActiveCount === 'number' ? props.totalActiveCount : 0;
