@@ -4,9 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Cctv\CctvCableProfile;
+use App\Models\Cctv\CctvDeviceProfile;
 use App\Models\Cctv\CctvDiagnosticQuestion;
 use App\Models\Cctv\CctvProductProfile;
 use App\Models\Cctv\CctvServiceType;
+use App\Models\Cctv\CctvStorageProfile;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
@@ -61,8 +64,8 @@ class CctvEnterpriseSeeder extends Seeder
             ['slug' => 'cctv-surveillance'],
             [
                 'name' => 'CCTV & Surveillance',
-                'description' => 'Professional IP & Analog surveillance cameras, recorders, storage, and accessories.',
-                'is_active' => true,
+                'is_nav_visible' => true,
+                'sidebar_visible' => true,
                 'sort_order' => 10,
             ]
         );
@@ -84,241 +87,328 @@ class CctvEnterpriseSeeder extends Seeder
                 [
                     'name' => $sc['name'],
                     'parent_id' => $parentCat->id,
-                    'is_active' => true,
+                    'is_nav_visible' => true,
+                    'sidebar_visible' => true,
                 ]
             );
         }
 
-        // 4. Seed Products with attached CctvProductProfile
-        $products = [
-            // Cameras
+        // 4. Products & Technical Profiles
+        // Camera 1
+        $cam1 = Product::updateOrCreate(
+            ['sku' => 'HIK-IP-4MP-BULLET'],
             [
-                'name' => 'Hikvision DS-2CD1043G0-I 4MP IP PoE Bullet Camera',
-                'sku' => 'HIK-IP-4MP-BULLET',
-                'brand' => 'Hikvision',
-                'cat' => 'ip-cameras',
-                'price' => 4800,
-                'sale_price' => 4500,
-                'profile' => [
-                    'device_type' => 'camera',
-                    'system_type' => 'ip_poe',
-                    'resolution' => '4mp_2k',
-                    'supported_codecs' => ['h264', 'h265', 'h265_plus'],
-                    'channels_supported' => null,
-                    'sata_bays' => null,
-                    'max_tb_per_bay' => null,
-                    'power_draw_watts' => 6.5,
-                    'is_outdoor_rated' => true,
-                    'ir_distance_meters' => 30,
-                    'audio_support' => true,
-                    'motorized_varifocal' => false,
-                ],
-            ],
+                'title' => 'Hikvision DS-2CD1043G0-I 4MP IP PoE Bullet Camera',
+                'slug' => 'hikvision-ds-2cd1043g0-i-4mp-ip-poe-bullet-camera',
+                'brand_id' => $brandModels['Hikvision']->id,
+                'category_id' => $subCatModels['ip-cameras']->id,
+                'price' => 4500,
+                'regular_price' => 4800,
+                'stock' => 50,
+                'is_active' => true,
+                'description' => '4MP Outdoor IP Camera with H.265+ compression, PoE support and 30m IR range.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $cam1->id],
             [
-                'name' => 'Dahua DH-IPC-HDW1230T1-S5 2MP IP Eyeball Dome Camera',
-                'sku' => 'DAH-IP-2MP-DOME',
-                'brand' => 'Dahua',
-                'cat' => 'ip-cameras',
-                'price' => 3200,
-                'sale_price' => 2950,
-                'profile' => [
-                    'device_type' => 'camera',
-                    'system_type' => 'ip_poe',
-                    'resolution' => '2mp_1080p',
-                    'supported_codecs' => ['h264', 'h265'],
-                    'channels_supported' => null,
-                    'sata_bays' => null,
-                    'max_tb_per_bay' => null,
-                    'power_draw_watts' => 5.0,
-                    'is_outdoor_rated' => false,
-                    'ir_distance_meters' => 30,
-                    'audio_support' => false,
-                    'motorized_varifocal' => false,
-                ],
-            ],
-            [
-                'name' => 'Hikvision DS-2CD2T87G2-L 8MP 4K ColorVu IP Bullet Camera',
-                'sku' => 'HIK-IP-8MP-COLORVU',
-                'brand' => 'Hikvision',
-                'cat' => 'ip-cameras',
-                'price' => 14500,
-                'sale_price' => 13800,
-                'profile' => [
-                    'device_type' => 'camera',
-                    'system_type' => 'ip_poe',
-                    'resolution' => '8mp_4k',
-                    'supported_codecs' => ['h264', 'h265', 'h265_plus'],
-                    'channels_supported' => null,
-                    'sata_bays' => null,
-                    'max_tb_per_bay' => null,
-                    'power_draw_watts' => 9.5,
-                    'is_outdoor_rated' => true,
-                    'ir_distance_meters' => 60,
-                    'audio_support' => true,
-                    'motorized_varifocal' => true,
-                ],
-            ],
-            // Recorders
-            [
-                'name' => 'Hikvision DS-7608NI-Q1/8P 8-Channel 4K PoE NVR',
-                'sku' => 'HIK-NVR-8CH-POE',
-                'brand' => 'Hikvision',
-                'cat' => 'nvr-recorders',
-                'price' => 11500,
-                'sale_price' => 10900,
-                'profile' => [
-                    'device_type' => 'recorder',
-                    'system_type' => 'ip_poe',
-                    'resolution' => '8mp_4k',
-                    'supported_codecs' => ['h264', 'h265', 'h265_plus'],
-                    'channels_supported' => 8,
-                    'sata_bays' => 1,
-                    'max_tb_per_bay' => 8,
-                    'poe_ports' => 8,
-                    'poe_budget_watts' => 80.0,
-                    'power_draw_watts' => 15.0,
-                ],
-            ],
-            [
-                'name' => 'Dahua DHI-NVR4216-16P-4KS2/L 16-Channel 4K NVR with 16 PoE Ports',
-                'sku' => 'DAH-NVR-16CH-POE',
-                'brand' => 'Dahua',
-                'cat' => 'nvr-recorders',
-                'price' => 24500,
-                'sale_price' => 23000,
-                'profile' => [
-                    'device_type' => 'recorder',
-                    'system_type' => 'ip_poe',
-                    'resolution' => '8mp_4k',
-                    'supported_codecs' => ['h264', 'h265', 'h265_plus'],
-                    'channels_supported' => 16,
-                    'sata_bays' => 2,
-                    'max_tb_per_bay' => 10,
-                    'poe_ports' => 16,
-                    'poe_budget_watts' => 130.0,
-                    'power_draw_watts' => 25.0,
-                ],
-            ],
-            // Storage
-            [
-                'name' => 'Western Digital Purple 2TB Surveillance Hard Disk Drive',
-                'sku' => 'WD-PURPLE-2TB',
-                'brand' => 'Western Digital',
-                'cat' => 'surveillance-storage',
-                'price' => 6800,
-                'sale_price' => 6500,
-                'profile' => [
-                    'device_type' => 'storage',
-                    'storage_capacity_tb' => 2,
-                    'power_draw_watts' => 4.4,
-                ],
-            ],
-            [
-                'name' => 'Western Digital Purple 4TB Surveillance Hard Disk Drive',
-                'sku' => 'WD-PURPLE-4TB',
-                'brand' => 'Western Digital',
-                'cat' => 'surveillance-storage',
-                'price' => 11500,
-                'sale_price' => 10800,
-                'profile' => [
-                    'device_type' => 'storage',
-                    'storage_capacity_tb' => 4,
-                    'power_draw_watts' => 5.1,
-                ],
-            ],
-            [
-                'name' => 'Seagate SkyHawk 8TB 256MB Surveillance Internal HDD',
-                'sku' => 'SEA-SKYHAWK-8TB',
-                'brand' => 'Seagate',
-                'cat' => 'surveillance-storage',
-                'price' => 24500,
-                'sale_price' => 23500,
-                'profile' => [
-                    'device_type' => 'storage',
-                    'storage_capacity_tb' => 8,
-                    'power_draw_watts' => 7.2,
-                ],
-            ],
-            // Cables
-            [
-                'name' => 'D-Link Cat6 UTP Solid Copper Network Cable Box (305 Meters)',
-                'sku' => 'DLINK-CAT6-305M',
-                'brand' => 'D-Link',
-                'cat' => 'cctv-cables',
-                'price' => 9500,
-                'sale_price' => 8900,
-                'profile' => [
-                    'device_type' => 'cable',
-                    'cable_type' => 'cat6_utp',
-                    'roll_length_meters' => 305,
-                ],
-            ],
-        ];
+                'product_type' => 'camera',
+                'system_type' => 'ip',
+                'camera_form_factor' => 'bullet',
+                'resolution_mp' => 4.0,
+                'resolution_label' => '4MP (2K)',
+                'lens_mm' => 2.8,
+                'ir_distance_meters' => 30,
+                'environment' => 'outdoor',
+                'power_source' => 'poe',
+                'power_consumption_watts' => 6.5,
+                'supported_codecs' => ['h264', 'h265', 'h265_plus'],
+                'is_active' => true,
+            ]
+        );
 
-        foreach ($products as $p) {
-            $brandId = $brandModels[$p['brand']]->id ?? null;
-            $catId = $subCatModels[$p['cat']]->id ?? null;
+        // Camera 2
+        $cam2 = Product::updateOrCreate(
+            ['sku' => 'DAH-IP-2MP-DOME'],
+            [
+                'title' => 'Dahua DH-IPC-HDW1230T1-S5 2MP IP Eyeball Dome Camera',
+                'slug' => 'dahua-dh-ipc-hdw1230t1-s5-2mp-ip-eyeball-dome-camera',
+                'brand_id' => $brandModels['Dahua']->id,
+                'category_id' => $subCatModels['ip-cameras']->id,
+                'price' => 2950,
+                'regular_price' => 3200,
+                'stock' => 50,
+                'is_active' => true,
+                'description' => '2MP Eyeball Dome Camera with H.265 compression and 30m IR night vision.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $cam2->id],
+            [
+                'product_type' => 'camera',
+                'system_type' => 'ip',
+                'camera_form_factor' => 'dome',
+                'resolution_mp' => 2.0,
+                'resolution_label' => '2MP (1080p)',
+                'lens_mm' => 2.8,
+                'ir_distance_meters' => 30,
+                'environment' => 'indoor',
+                'power_source' => 'poe',
+                'power_consumption_watts' => 5.0,
+                'supported_codecs' => ['h264', 'h265'],
+                'is_active' => true,
+            ]
+        );
 
-            $prod = Product::updateOrCreate(
-                ['sku' => $p['sku']],
-                [
-                    'name' => $p['name'],
-                    'slug' => Str::slug($p['name']),
-                    'brand_id' => $brandId,
-                    'category_id' => $catId,
-                    'price' => $p['price'],
-                    'sale_price' => $p['sale_price'],
-                    'stock' => 50,
-                    'is_active' => true,
-                    'description' => $p['name'] . ' with official manufacturer warranty and enterprise reliability.',
-                ]
-            );
+        // Camera 3 (4K ColorVu)
+        $cam3 = Product::updateOrCreate(
+            ['sku' => 'HIK-IP-8MP-COLORVU'],
+            [
+                'title' => 'Hikvision DS-2CD2T87G2-L 8MP 4K ColorVu IP Bullet Camera',
+                'slug' => 'hikvision-ds-2cd2t87g2-l-8mp-4k-colorvu-ip-bullet-camera',
+                'brand_id' => $brandModels['Hikvision']->id,
+                'category_id' => $subCatModels['ip-cameras']->id,
+                'price' => 13800,
+                'regular_price' => 14500,
+                'stock' => 30,
+                'is_active' => true,
+                'description' => '8MP 4K ColorVu bullet camera with 24/7 full-color night vision and 60m warm light.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $cam3->id],
+            [
+                'product_type' => 'camera',
+                'system_type' => 'ip',
+                'camera_form_factor' => 'bullet',
+                'resolution_mp' => 8.0,
+                'resolution_label' => '8MP (4K)',
+                'lens_mm' => 4.0,
+                'ir_distance_meters' => 60,
+                'environment' => 'outdoor',
+                'power_source' => 'poe',
+                'power_consumption_watts' => 9.5,
+                'supported_codecs' => ['h264', 'h265', 'h265_plus'],
+                'is_active' => true,
+            ]
+        );
 
-            if (isset($p['profile'])) {
-                CctvProductProfile::updateOrCreate(
-                    ['product_id' => $prod->id],
-                    $p['profile']
-                );
-            }
-        }
+        // NVR 1 (8 Channel)
+        $nvr1 = Product::updateOrCreate(
+            ['sku' => 'HIK-NVR-8CH-POE'],
+            [
+                'title' => 'Hikvision DS-7608NI-Q1/8P 8-Channel 4K PoE NVR',
+                'slug' => 'hikvision-ds-7608ni-q1-8p-8-channel-4k-poe-nvr',
+                'brand_id' => $brandModels['Hikvision']->id,
+                'category_id' => $subCatModels['nvr-recorders']->id,
+                'price' => 10900,
+                'regular_price' => 11500,
+                'stock' => 20,
+                'is_active' => true,
+                'description' => '8-Channel 4K PoE NVR with 1 SATA bay (up to 8TB) and 80W PoE budget.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $nvr1->id],
+            [
+                'product_type' => 'nvr',
+                'system_type' => 'ip',
+                'power_consumption_watts' => 15.0,
+                'supported_codecs' => ['h264', 'h265', 'h265_plus'],
+                'is_active' => true,
+            ]
+        );
+        CctvDeviceProfile::updateOrCreate(
+            ['product_id' => $nvr1->id],
+            [
+                'device_type' => 'nvr',
+                'channel_count' => 8,
+                'ip_channels_max' => 8,
+                'max_camera_resolution_mp' => 8.0,
+                'hdd_bay_count' => 1,
+                'max_hdd_capacity_tb_per_bay' => 8.0,
+                'poe_port_count' => 8,
+                'poe_budget_watts' => 80.0,
+            ]
+        );
 
-        // 5. CCTV Service Types & Dynamic Rates
+        // NVR 2 (16 Channel)
+        $nvr2 = Product::updateOrCreate(
+            ['sku' => 'DAH-NVR-16CH-POE'],
+            [
+                'title' => 'Dahua DHI-NVR4216-16P-4KS2/L 16-Channel 4K NVR with 16 PoE Ports',
+                'slug' => 'dahua-dhi-nvr4216-16p-4ks2-l-16-channel-4k-nvr-with-16-poe-ports',
+                'brand_id' => $brandModels['Dahua']->id,
+                'category_id' => $subCatModels['nvr-recorders']->id,
+                'price' => 23000,
+                'regular_price' => 24500,
+                'stock' => 15,
+                'is_active' => true,
+                'description' => '16-Channel 4K NVR with 2 SATA bays (up to 10TB per bay) and 130W PoE power budget.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $nvr2->id],
+            [
+                'product_type' => 'nvr',
+                'system_type' => 'ip',
+                'power_consumption_watts' => 25.0,
+                'supported_codecs' => ['h264', 'h265', 'h265_plus'],
+                'is_active' => true,
+            ]
+        );
+        CctvDeviceProfile::updateOrCreate(
+            ['product_id' => $nvr2->id],
+            [
+                'device_type' => 'nvr',
+                'channel_count' => 16,
+                'ip_channels_max' => 16,
+                'max_camera_resolution_mp' => 8.0,
+                'hdd_bay_count' => 2,
+                'max_hdd_capacity_tb_per_bay' => 10.0,
+                'poe_port_count' => 16,
+                'poe_budget_watts' => 130.0,
+            ]
+        );
+
+        // Storage 1 (2TB Purple)
+        $hdd1 = Product::updateOrCreate(
+            ['sku' => 'WD-PURPLE-2TB'],
+            [
+                'title' => 'Western Digital Purple 2TB Surveillance Hard Disk Drive',
+                'slug' => 'western-digital-purple-2tb-surveillance-hard-disk-drive',
+                'brand_id' => $brandModels['Western Digital']->id,
+                'category_id' => $subCatModels['surveillance-storage']->id,
+                'price' => 6500,
+                'regular_price' => 6800,
+                'stock' => 40,
+                'is_active' => true,
+                'description' => '2TB AllFrame surveillance storage designed for 24/7 security recording.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $hdd1->id],
+            [
+                'product_type' => 'storage',
+                'system_type' => 'all',
+                'power_consumption_watts' => 4.4,
+                'is_active' => true,
+            ]
+        );
+        CctvStorageProfile::updateOrCreate(
+            ['product_id' => $hdd1->id],
+            [
+                'capacity_tb' => 2.0,
+                'is_surveillance_optimized' => true,
+            ]
+        );
+
+        // Storage 2 (4TB Purple)
+        $hdd2 = Product::updateOrCreate(
+            ['sku' => 'WD-PURPLE-4TB'],
+            [
+                'title' => 'Western Digital Purple 4TB Surveillance Hard Disk Drive',
+                'slug' => 'western-digital-purple-4tb-surveillance-hard-disk-drive',
+                'brand_id' => $brandModels['Western Digital']->id,
+                'category_id' => $subCatModels['surveillance-storage']->id,
+                'price' => 10800,
+                'regular_price' => 11500,
+                'stock' => 30,
+                'is_active' => true,
+                'description' => '4TB 24/7 surveillance hard disk with AllFrame AI technology.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $hdd2->id],
+            [
+                'product_type' => 'storage',
+                'system_type' => 'all',
+                'power_consumption_watts' => 5.1,
+                'is_active' => true,
+            ]
+        );
+        CctvStorageProfile::updateOrCreate(
+            ['product_id' => $hdd2->id],
+            [
+                'capacity_tb' => 4.0,
+                'is_surveillance_optimized' => true,
+            ]
+        );
+
+        // Cable (Cat6 305m)
+        $cable = Product::updateOrCreate(
+            ['sku' => 'DLINK-CAT6-305M'],
+            [
+                'title' => 'D-Link Cat6 UTP Solid Copper Network Cable Box (305 Meters)',
+                'slug' => 'd-link-cat6-utp-solid-copper-network-cable-box-305-meters',
+                'brand_id' => $brandModels['D-Link']->id,
+                'category_id' => $subCatModels['cctv-cables']->id,
+                'price' => 8900,
+                'regular_price' => 9500,
+                'stock' => 25,
+                'is_active' => true,
+                'description' => '305-Meter 23 AWG Solid Copper Cat6 UTP cable for long-distance PoE transmission.',
+            ]
+        );
+        CctvProductProfile::updateOrCreate(
+            ['product_id' => $cable->id],
+            [
+                'product_type' => 'cable',
+                'system_type' => 'all',
+                'is_active' => true,
+            ]
+        );
+        CctvCableProfile::updateOrCreate(
+            ['product_id' => $cable->id],
+            [
+                'cable_type' => 'cat6',
+                'meters_per_unit' => 305.0,
+                'gauge_awg' => 23,
+                'is_outdoor_rated' => true,
+            ]
+        );
+
+        // 5. CCTV Service Types & Rates
         $services = [
             [
                 'name' => 'Standard CCTV Installation & Cabling',
                 'code' => 'srv_standard_install',
-                'category' => 'installation',
-                'billing_unit' => 'per_camera',
-                'base_rate' => 600.00,
+                'pricing_type' => 'per_camera',
+                'base_rate' => 0.00,
+                'unit_rate' => 600.00,
                 'description' => 'Complete camera mounting, cable termination, RJ45 crimping, and angle adjustment.',
                 'is_active' => true,
+                'sort_order' => 1,
             ],
             [
                 'name' => 'NVR/DVR System Setup & Mobile App Configuration',
                 'code' => 'srv_nvr_setup',
-                'category' => 'configuration',
-                'billing_unit' => 'fixed',
+                'pricing_type' => 'fixed',
                 'base_rate' => 1500.00,
+                'unit_rate' => 0.00,
                 'description' => 'Hard drive mounting, network port forwarding, Hik-Connect/DMSS mobile app setup, and motion recording schedule.',
                 'is_active' => true,
+                'sort_order' => 2,
             ],
             [
                 'name' => 'Professional CCTV Site Survey & Engineering Assessment',
                 'code' => 'srv_site_survey',
-                'category' => 'survey',
-                'billing_unit' => 'fixed',
+                'pricing_type' => 'fixed',
                 'base_rate' => 1000.00,
+                'unit_rate' => 0.00,
                 'description' => 'On-site technical evaluation, FOV measurement, conduit routing, and floor plan mapping.',
                 'is_active' => true,
+                'sort_order' => 3,
             ],
             [
                 'name' => 'Emergency Technical Repair & Troubleshooting Visit',
                 'code' => 'srv_troubleshooting',
-                'category' => 'maintenance',
-                'billing_unit' => 'per_visit',
+                'pricing_type' => 'fixed',
                 'base_rate' => 1200.00,
+                'unit_rate' => 0.00,
                 'description' => 'Diagnosis and resolution of video signal loss, offline channels, and hard disk recording failures.',
                 'is_active' => true,
+                'sort_order' => 4,
             ],
         ];
 
@@ -328,21 +418,52 @@ class CctvEnterpriseSeeder extends Seeder
 
         // 6. Diagnostic Questions for Service Center
         $questions = [
-            ['question' => 'Is the recorder (NVR/DVR) power LED turned ON?', 'category' => 'power', 'order' => 1],
-            ['question' => 'Is there any continuous beep sound coming from the recorder (HDD failure alert)?', 'category' => 'storage', 'order' => 2],
-            ['question' => 'Is the issue with all cameras or only one specific camera?', 'category' => 'camera', 'order' => 3],
-            ['question' => 'Is the live view visible on the monitor connected via HDMI/VGA?', 'category' => 'display', 'order' => 4],
-            ['question' => 'Is the mobile viewing application (Hik-Connect / DMSS) showing "Offline"?', 'category' => 'network', 'order' => 5],
+            [
+                'device_type' => 'recorder',
+                'issue_category' => 'power',
+                'question' => 'Is the recorder (NVR/DVR) power LED turned ON?',
+                'options' => ['Yes, normal LED', 'No power / dead', 'Flashing red/amber'],
+                'resolution_hint' => 'Check the 12V/48V power adapter connection and wall socket switch.',
+                'sort_order' => 1,
+            ],
+            [
+                'device_type' => 'recorder',
+                'issue_category' => 'storage',
+                'question' => 'Is there any continuous beep sound coming from the recorder (HDD failure alert)?',
+                'options' => ['Yes, continuous beep', 'No beep sound', 'Random clicks'],
+                'resolution_hint' => 'Check HDD SATA cable or run HDD SMART test in NVR storage menu.',
+                'sort_order' => 2,
+            ],
+            [
+                'device_type' => 'camera',
+                'issue_category' => 'video_loss',
+                'question' => 'Is the issue with all cameras or only one specific camera?',
+                'options' => ['Only 1 camera', 'Multiple cameras', 'All cameras black screen'],
+                'resolution_hint' => 'If single camera, check RJ45 PoE connector and port activity light on switch.',
+                'sort_order' => 3,
+            ],
+            [
+                'device_type' => 'recorder',
+                'issue_category' => 'display',
+                'question' => 'Is the live view visible on the monitor connected via HDMI/VGA?',
+                'options' => ['Yes visible on TV/Monitor', 'No signal on monitor', 'Flickering'],
+                'resolution_hint' => 'Verify HDMI/VGA cable and change monitor display output resolution.',
+                'sort_order' => 4,
+            ],
+            [
+                'device_type' => 'recorder',
+                'issue_category' => 'network',
+                'question' => 'Is the mobile viewing application (Hik-Connect / DMSS) showing "Offline"?',
+                'options' => ['Showing Offline', 'Connecting timeout', 'Online but slow'],
+                'resolution_hint' => 'Check NVR LAN cable connected to Wi-Fi router and verify DHCP gateway IP.',
+                'sort_order' => 5,
+            ],
         ];
 
         foreach ($questions as $q) {
             CctvDiagnosticQuestion::updateOrCreate(
                 ['question' => $q['question']],
-                [
-                    'category' => $q['category'],
-                    'order' => $q['order'],
-                    'is_active' => true,
-                ]
+                array_merge($q, ['is_active' => true])
             );
         }
     }
