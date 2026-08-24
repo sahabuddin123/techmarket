@@ -92,28 +92,28 @@ export default function NavbarV3({ onOpenCart }) {
         <div className="max-w-[1240px] mx-auto flex items-center justify-between gap-4">
           
           {/* Left: Mobile Menu Trigger + Logo */}
-          <div className="flex items-center space-x-2.5 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-700 hover:text-[#0153FD] hover:bg-slate-50 cursor-pointer"
+              className="md:hidden w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-700 hover:text-[#0153FD] hover:bg-slate-50 cursor-pointer shrink-0"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-3.5 h-3.5" /> : <Menu className="w-3.5 h-3.5" />}
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-1.5 shrink-0">
+            <Link href="/" className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
               {settings.site_logo ? (
-                <img src={settings.site_logo} alt={settings.site_name || 'TechMarket BD'} className="h-7 sm:h-10 w-auto object-contain" />
+                <img src={settings.site_logo} alt={settings.site_name || 'TechMarket BD'} className="h-6 sm:h-10 w-auto object-contain" />
               ) : (
-                <div className="flex items-center space-x-1.5 font-black text-lg sm:text-2xl tracking-tight">
-                  <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-lg bg-[#0153FD] text-white flex items-center justify-center font-black text-[11px] sm:text-xs shadow-sm tracking-tighter">
+                <div className="flex items-center space-x-1 font-black text-base sm:text-2xl tracking-tight">
+                  <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-lg bg-[#0153FD] text-white flex items-center justify-center font-black text-[10px] sm:text-xs shadow-sm tracking-tighter">
                     TM
                   </div>
                   <div className="flex items-baseline">
-                    <span className="text-[#0153FD] font-black">{settings.site_name ? settings.site_name.split(' ')[0] : 'TechMarket'}</span>
-                    <span className="text-[#002268] font-black ml-1">{settings.site_name ? settings.site_name.split(' ').slice(1).join(' ') : 'BD'}</span>
+                    <span className="text-[#0153FD] font-black text-sm sm:text-xl">{settings.site_name ? settings.site_name.split(' ')[0] : 'TechMarket'}</span>
+                    <span className="text-[#002268] font-black ml-0.5 sm:ml-1 text-sm sm:text-xl">{settings.site_name ? settings.site_name.split(' ').slice(1).join(' ') : 'BD'}</span>
                   </div>
                 </div>
               )}
@@ -141,23 +141,23 @@ export default function NavbarV3({ onOpenCart }) {
           </form>
 
           {/* Right Action Icons (CCTV Est, Offers, Account, Cart) */}
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             {/* CCTV Estimator Button */}
             <Link
               href="/cctv-estimator"
-              className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[11px] sm:text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-all border border-slate-800 hover:border-slate-700"
+              className="px-2 sm:px-3.5 py-1 sm:py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[10px] sm:text-xs font-bold flex items-center space-x-1 sm:space-x-1.5 shadow-xs transition-all border border-slate-800 hover:border-slate-700 shrink-0"
               title="CCTV System Builder & Estimator"
             >
-              <Video className="w-3.5 h-3.5 text-sky-400" />
+              <Video className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-400" />
               <span>CCTV Est</span>
             </Link>
 
             {/* Offers Button */}
             <Link
               href="/offers"
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#0153FD] hover:bg-[#0042cf] text-white text-[11px] sm:text-xs font-semibold flex items-center space-x-1 shadow-xs transition-colors"
+              className="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-[#0153FD] hover:bg-[#0042cf] text-white text-[10px] sm:text-xs font-semibold flex items-center space-x-1 shadow-xs transition-colors shrink-0"
             >
-              <Gift className="w-3.5 h-3.5" />
+              <Gift className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               <span>Offers</span>
             </Link>
 
@@ -274,21 +274,23 @@ export default function NavbarV3({ onOpenCart }) {
         </div>
 
         {/* Mobile Search Bar */}
-        <form onSubmit={handleSearch} className="md:hidden mt-3 relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for products"
-            className="w-full bg-[#f8fafc] text-xs text-slate-800 placeholder-slate-400 pl-4 pr-10 py-2 rounded-full border border-slate-200 focus:border-[#0153FD] focus:outline-none"
-          />
-          <button
-            type="submit"
-            aria-label="Search"
-            className="absolute right-1 top-1 bottom-1 px-3 bg-[#0153FD] text-white rounded-full flex items-center justify-center"
-          >
-            <Search className="w-3.5 h-3.5" />
-          </button>
+        <form onSubmit={handleSearch} className="md:hidden mt-2.5 relative block w-full">
+          <div className="relative w-full flex items-center">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for products..."
+              className="w-full bg-[#f8fafc] text-xs text-slate-800 placeholder-slate-400 pl-4 pr-11 py-2 rounded-full border border-slate-200 focus:border-[#0153FD] focus:bg-white focus:outline-none transition-all shadow-2xs"
+            />
+            <button
+              type="submit"
+              aria-label="Search"
+              className="absolute right-1 w-7 h-7 bg-[#0153FD] hover:bg-[#0042cf] text-white rounded-full flex items-center justify-center transition-colors cursor-pointer shadow-xs"
+            >
+              <Search className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </form>
       </div>
 
