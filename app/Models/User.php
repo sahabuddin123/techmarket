@@ -19,12 +19,24 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'customer_code',
         'name',
         'email',
         'password',
         'role',
         'phone',
         'address',
+        'city',
+        'state',
+        'postal_code',
+        'country',
+        'tax_number',
+        'credit_limit',
+        'opening_balance',
+        'opening_balance_type',
+        'notes',
+        'status',
+        'is_walk_in',
         'referral_code',
         'google_id',
         'facebook_id',
@@ -71,6 +83,16 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'customer_id');
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
     public function notificationPreferences()
     {
         return $this->hasMany(NotificationPreference::class);
@@ -79,6 +101,39 @@ class User extends Authenticatable
     public function customNotifications()
     {
         return $this->hasMany(Notification::class, 'user_id');
+    }
+
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class, 'user_id');
+    }
+
+    /**
+     * Compute current outstanding receivable due for this customer.
+     */
+    public function getCurrentDueAttribute(): float
+    {
+        $openingType = $this->getAttribute('opening_balance_type');
+        $openingBalance = (float)($this->getAttribute('opening_balance') ?? 0);
+        $opening = ($openingType === 'receivable') ? $openingBalance : 0.0;
+        
+        $salesDue = 0.0;
+        if ($this->exists) {
+            $salesDue = (float)$this->sales()->where('status', '!=', 'cancelled')->sum('due_amount');
+        }
+        return round($opening + $salesDue, 2);
+    }
+
+    /**
+     * Compute available credit balance for this customer.
+     */
+    public function getAvailableCreditAttribute(): float
+    {
+        $creditLimit = (float)($this->getAttribute('credit_limit') ?? 0);
+        if ($creditLimit <= 0) {
+            return 0.00;
+        }
+        return max(0.00, round($creditLimit - $this->current_due, 2));
     }
 
     /**
@@ -101,6 +156,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'credit_limit' => 'decimal:2',
+            'opening_balance' => 'decimal:2',
+            'is_walk_in' => 'boolean',
         ];
     }
 }

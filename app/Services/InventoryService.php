@@ -21,9 +21,10 @@ class InventoryService
         ?string $referenceType = null,
         ?int $referenceId = null,
         ?int $userId = null,
-        ?string $notes = null
+        ?string $notes = null,
+        ?int $warehouseId = null
     ): Product {
-        return DB::transaction(function () use ($productId, $quantityChange, $type, $referenceType, $referenceId, $userId, $notes) {
+        return DB::transaction(function () use ($productId, $quantityChange, $type, $referenceType, $referenceId, $userId, $notes, $warehouseId) {
             /** @var Product $product */
             $product = Product::where('id', $productId)->lockForUpdate()->firstOrFail();
 
@@ -37,8 +38,12 @@ class InventoryService
             $product->stock = max(0, $newStock);
             $product->save();
 
+            $defaultWh = \App\Services\Inventory\WarehouseInventoryService::getDefaultWarehouse();
+            $effectiveWhId = $warehouseId ?: ($defaultWh ? $defaultWh->id : null);
+
             InventoryMovement::create([
                 'product_id' => $productId,
+                'warehouse_id' => $effectiveWhId,
                 'type' => $type,
                 'quantity' => $quantityChange,
                 'resulting_stock' => $product->stock,

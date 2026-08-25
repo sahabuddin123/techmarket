@@ -248,11 +248,11 @@ export default function CatalogV1(props) {
       <Navbar onOpenCart={() => setIsCartOpen(true)} />
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-      {/* CENTERED MAIN CONTENT CONTAINER (High Density max-w-[1240px]) */}
-      <main className="flex-1 max-w-[1240px] w-full mx-auto px-2.5 sm:px-4 py-2.5 space-y-2">
+      {/* CENTERED MAIN CONTENT CONTAINER (High Density max-w-[1640px]) */}
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-3 sm:px-6 py-4 space-y-4">
         
         {/* 2. BREADCRUMB (Home > Category > Subcategory) */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[12px] text-[#666] overflow-x-auto py-0.5 select-none">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] text-[#666] overflow-x-auto py-1 select-none">
           {breadcrumbs.map((bc, idx) => (
             <React.Fragment key={idx}>
               {idx > 0 && <span className="text-[#999] font-normal shrink-0">&gt;</span>}

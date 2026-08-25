@@ -1,103 +1,187 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { BarChart3, TrendingUp, AlertTriangle, PackageCheck } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminChartCard from '../../../Components/Admin/AdminChartCard';
+import { AreaLineChart, BarChart } from '../../../Components/Admin/AdminCharts';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import { BarChart3, TrendingUp, AlertTriangle, PackageCheck, Download, Layers } from 'lucide-react';
 
-export default function AdminReports({ salesByMonth, topSellingProducts, lowStockProducts }) {
+export default function AdminReports({ 
+  salesByMonth = [], 
+  topSellingProducts = [], 
+  lowStockProducts = [] 
+}) {
+  const salesList = Array.isArray(salesByMonth) ? salesByMonth : [];
+  const topProducts = Array.isArray(topSellingProducts) ? topSellingProducts : [];
+  const lowStock = Array.isArray(lowStockProducts) ? lowStockProducts : [];
+
+  // Monthly Sales Chart Data
+  const monthlyChartData = salesList.map(s => ({
+    label: s.month || 'Month',
+    value: Number(s.revenue || 0),
+  }));
+
+  const topProductsChartData = topProducts.map(p => ({
+    label: p.title ? p.title.substring(0, 14) + '...' : 'Product',
+    value: Number(p.total_sold || 0),
+  }));
+
+  const salesTableColumns = [
+    {
+      header: 'Month Period',
+      accessor: 'month',
+      render: (s) => <span className="font-bold text-slate-900 dark:text-slate-100">{s.month}</span>,
+    },
+    {
+      header: 'Completed Orders',
+      accessor: 'order_count',
+      render: (s) => <span className="font-mono text-slate-700 dark:text-slate-300">{s.order_count} Orders</span>,
+    },
+    {
+      header: 'Realized Gross Revenue',
+      accessor: 'revenue',
+      align: 'right',
+      render: (s) => (
+        <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
+          ৳ {Number(s.revenue || 0).toLocaleString()}
+        </span>
+      ),
+    },
+  ];
+
   return (
-    <AdminLayout title="Sales & Inventory Reports Analytics">
-      <Head title="Sales & Analytics Reports - Admin" />
+    <AdminShell title="Reports">
+      <Head title="Sales & Inventory Reports - TechMarket Admin" />
 
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-            <BarChart3 className="w-6 h-6 text-amber-500" />
-            <span>ENTERPRISE SALES & INVENTORY REPORTS</span>
-          </h1>
-          <p className="text-xs text-slate-400">Database-calculated monthly revenue, top performing hardware items, and inventory risk reports.</p>
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Enterprise Sales & Catalog Reports"
+          subtitle="Database-calculated monthly revenue, top performing hardware volume, and inventory risk analysis."
+          badge="Live Analytics"
+          actions={
+            <div className="flex items-center space-x-2">
+              <Link
+                href="/admin/reports/sales"
+                className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs transition-colors"
+              >
+                Deep Sales Drilldown
+              </Link>
+              <Link
+                href="/admin/reports/inventory"
+                className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs transition-colors"
+              >
+                Inventory Valuation
+              </Link>
+            </div>
+          }
+        />
+
+        {/* Top Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AdminChartCard
+            title="Monthly Gross Sales Revenue"
+            subtitle="Calculated from finalized customer checkouts (BDT ৳)"
+          >
+            <div className="p-4">
+              <AreaLineChart
+                data={monthlyChartData}
+                height={220}
+                color="#6366f1"
+                valuePrefix="৳ "
+              />
+            </div>
+          </AdminChartCard>
+
+          <AdminChartCard
+            title="Top Hardware Volume Sold"
+            subtitle="Top performing products by units shipped"
+          >
+            <div className="p-4">
+              <BarChart
+                data={topProductsChartData}
+                height={220}
+                color="#06b6d4"
+              />
+            </div>
+          </AdminChartCard>
         </div>
 
-        {/* MONTHLY REVENUE REPORT */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
-          <h3 className="font-bold text-sm text-white uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center space-x-2">
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
-            <span>Monthly Revenue Breakdown (BDT ৳)</span>
+        {/* Monthly Revenue Breakdown Table */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading">
+            Monthly Revenue Ledger Breakdown
           </h3>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3">Month</th>
-                  <th className="p-3">Completed Orders</th>
-                  <th className="p-3 text-right">Total Revenue (BDT ৳)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {salesByMonth && salesByMonth.length > 0 ? (
-                  salesByMonth.map((s, idx) => (
-                    <tr key={idx} className="hover:bg-slate-800/40">
-                      <td className="p-3 font-bold text-white">{s.month}</td>
-                      <td className="p-3 text-slate-300">{s.order_count} Orders</td>
-                      <td className="p-3 text-right font-black text-amber-400">৳{Number(s.revenue).toLocaleString()}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={3} className="p-4 text-center text-slate-500">No monthly sales recorded yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          <AdminTable
+            columns={salesTableColumns}
+            data={salesList}
+            emptyTitle="No monthly sales recorded"
+            emptyDescription="Completed store orders will generate monthly sales metrics automatically."
+          />
         </div>
 
-        {/* TOP SELLING PRODUCTS & LOW STOCK */}
+        {/* Lower Row: Top Selling & Low Stock */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
-            <h3 className="font-bold text-sm text-white uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center space-x-2">
-              <PackageCheck className="w-4 h-4 text-amber-400" />
-              <span>Top Selling Hardware Products</span>
+          {/* Top Selling Products */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-2xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading flex items-center space-x-2">
+              <PackageCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Top Selling Hardware Items</span>
             </h3>
 
             <div className="space-y-2 text-xs">
-              {topSellingProducts && topSellingProducts.map((p, i) => (
-                <div key={i} className="p-2.5 bg-slate-950 rounded border border-slate-800 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-white">{p.title}</div>
-                    <div className="text-[10px] text-slate-400">{p.sku}</div>
+              {topProducts.length > 0 ? (
+                topProducts.map((p, i) => (
+                  <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-slate-100">{p.title}</div>
+                      <div className="text-[10.5px] text-slate-400 font-mono">SKU: {p.sku}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-mono font-bold text-emerald-600">{p.total_sold} Sold</div>
+                      <div className="text-[10px] text-slate-400 font-mono">৳ {Number(p.price || 0).toLocaleString()}</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-black text-emerald-400">{p.total_sold} Sold</div>
-                    <div className="text-[10px] text-slate-400">৳{Number(p.price).toLocaleString()}</div>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="text-slate-400 text-xs py-4 text-center">No sales recorded yet.</div>
+              )}
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
-            <h3 className="font-bold text-sm text-white uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center space-x-2">
+          {/* Low Stock Queue */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-2xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading flex items-center space-x-2">
               <AlertTriangle className="w-4 h-4 text-rose-500" />
-              <span>Low Stock Alert Report</span>
+              <span>Low Stock Replenishment Queue</span>
             </h3>
 
             <div className="space-y-2 text-xs">
-              {lowStockProducts && lowStockProducts.map((p, i) => (
-                <div key={i} className="p-2.5 bg-slate-950 rounded border border-slate-800 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-white">{p.title}</div>
-                    <div className="text-[10px] text-slate-400">{p.sku}</div>
+              {lowStock.length > 0 ? (
+                lowStock.map((p, i) => (
+                  <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-slate-100">{p.title}</div>
+                      <div className="text-[10.5px] text-slate-400 font-mono">SKU: {p.sku}</div>
+                    </div>
+                    <div>
+                      <AdminStatusBadge
+                        status="low_stock"
+                        label={`${p.stock} Units Left`}
+                        size="xs"
+                      />
+                    </div>
                   </div>
-                  <div className="font-black text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
-                    {p.stock} Units Left
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="text-slate-400 text-xs py-4 text-center">All catalog items have healthy stock levels.</div>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

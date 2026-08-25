@@ -352,10 +352,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.alias');
     
-    // Store Settings
+    // Store Settings & Dynamic Admin Appearance
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
     Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
     Route::post('/settings/clear-cache', [SettingController::class, 'clearCache'])->name('admin.settings.clearCache');
+    Route::get('/settings/appearance', [SettingController::class, 'appearance'])->name('admin.settings.appearance');
+    Route::post('/settings/appearance', [SettingController::class, 'updateAppearance'])->name('admin.settings.appearance.update');
+    Route::post('/settings/appearance/reset', [SettingController::class, 'resetAppearance'])->name('admin.settings.appearance.reset');
 
     // Central Media Library (Inertia View)
     Route::get('/media', [MediaController::class, 'index'])->name('admin.media');
@@ -402,10 +405,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
+    Route::get('/products/{product}', [AdminController::class, 'showProduct'])->name('admin.products.show');
     Route::get('/products/{product}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
     Route::put('/products/{product}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
     Route::delete('/products/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
     Route::post('/products/bulk-seo', [AdminController::class, 'bulkSeoActions'])->name('admin.products.bulkSeo');
+    Route::post('/products/bulk-prices', [AdminController::class, 'bulkPriceUpdate'])->name('admin.products.bulkPrices');
 
     // Orders Management
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
@@ -424,10 +429,31 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Customers
     Route::get('/customers', [CustomerController::class, 'index'])->name('admin.customers');
+    Route::get('/customers/{customer}', [CustomerController::class, 'show'])->whereNumber('customer')->name('admin.customers.show');
 
     // Inventory Ledger Workspace
     Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('admin.inventory');
     Route::post('/inventory/adjust', [\App\Http\Controllers\Admin\InventoryController::class, 'adjust'])->name('admin.inventory.adjust');
+
+    // Units Management
+    Route::get('/units', [\App\Http\Controllers\Admin\UnitController::class, 'index'])->name('admin.units');
+    Route::post('/units', [\App\Http\Controllers\Admin\UnitController::class, 'store'])->name('admin.units.store');
+    Route::put('/units/{unit}', [\App\Http\Controllers\Admin\UnitController::class, 'update'])->name('admin.units.update');
+    Route::delete('/units/{unit}', [\App\Http\Controllers\Admin\UnitController::class, 'destroy'])->name('admin.units.delete');
+
+    // Enterprise Bulk Data Import & Export Management
+    Route::get('/data-management', [\App\Http\Controllers\Admin\BulkDataController::class, 'index'])->name('admin.data-management');
+    Route::get('/data-management/import', [\App\Http\Controllers\Admin\BulkDataController::class, 'importWizard'])->name('admin.data-management.import');
+    Route::post('/data-management/import/upload', [\App\Http\Controllers\Admin\BulkDataController::class, 'uploadFile'])->name('admin.data-management.import.upload');
+    Route::post('/data-management/import/{id}/preview', [\App\Http\Controllers\Admin\BulkDataController::class, 'previewAndValidate'])->name('admin.data-management.import.preview');
+    Route::post('/data-management/import/{id}/execute', [\App\Http\Controllers\Admin\BulkDataController::class, 'execute'])->name('admin.data-management.import.execute');
+    Route::get('/data-management/import/{id}/status', [\App\Http\Controllers\Admin\BulkDataController::class, 'status'])->name('admin.data-management.import.status');
+    Route::post('/data-management/import/{id}/cancel', [\App\Http\Controllers\Admin\BulkDataController::class, 'cancel'])->name('admin.data-management.import.cancel');
+    Route::get('/data-management/import/{id}/errors', [\App\Http\Controllers\Admin\BulkDataController::class, 'downloadErrors'])->name('admin.data-management.import.errors');
+    Route::get('/data-management/export', [\App\Http\Controllers\Admin\BulkDataController::class, 'exportStudio'])->name('admin.data-management.export');
+    Route::post('/data-management/export', [\App\Http\Controllers\Admin\BulkDataController::class, 'executeExport'])->name('admin.data-management.export.execute');
+    Route::get('/data-management/history', [\App\Http\Controllers\Admin\BulkDataController::class, 'history'])->name('admin.data-management.history');
+    Route::get('/data-management/template/{entity}/{format?}', [\App\Http\Controllers\Admin\BulkDataController::class, 'downloadTemplate'])->name('admin.data-management.template');
 
     // Dynamic Specification Groups & Attributes
     Route::get('/specifications', [\App\Http\Controllers\Admin\SpecificationController::class, 'index'])->name('admin.specifications');
@@ -461,6 +487,66 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Admin Global Search
     Route::get('/search', [\App\Http\Controllers\Admin\SearchController::class, 'search'])->middleware('permission:admin.search')->name('admin.search');
+
+    // =========================================================================
+    // ENTERPRISE ERP: POS, SALES, PURCHASES, INVENTORY & ACCOUNTS
+    // =========================================================================
+
+    // POS / Point of Sale
+    Route::get('/pos', [\App\Http\Controllers\Admin\PosController::class, 'index'])->name('admin.pos');
+    Route::get('/pos/customers/search', [\App\Http\Controllers\Admin\PosController::class, 'searchCustomers'])->name('admin.pos.customers.search');
+    Route::post('/pos/customers', [\App\Http\Controllers\Admin\PosController::class, 'createCustomer'])->name('admin.pos.customers.create');
+    Route::get('/pos/customers/default-walkin', [\App\Http\Controllers\Admin\PosController::class, 'getDefaultWalkIn'])->name('admin.pos.customers.defaultWalkin');
+    Route::get('/pos/customers/{customer}', [\App\Http\Controllers\Admin\PosController::class, 'getCustomer'])->name('admin.pos.customers.show');
+    Route::put('/pos/customers/{customer}', [\App\Http\Controllers\Admin\PosController::class, 'updateCustomer'])->name('admin.pos.customers.update');
+    Route::post('/pos/checkout', [\App\Http\Controllers\Admin\PosController::class, 'checkout'])->name('admin.pos.checkout');
+    Route::post('/pos/hold', [\App\Http\Controllers\Admin\PosController::class, 'hold'])->name('admin.pos.hold');
+    Route::delete('/pos/held/{sale}', [\App\Http\Controllers\Admin\PosController::class, 'deleteHeld'])->name('admin.pos.deleteHeld');
+
+    // Sales Operations
+    Route::get('/sales', [\App\Http\Controllers\Admin\SalesController::class, 'index'])->name('admin.sales');
+    Route::get('/sales/{sale}', [\App\Http\Controllers\Admin\SalesController::class, 'show'])->name('admin.sales.show');
+    Route::post('/sales/{sale}/refund', [\App\Http\Controllers\Admin\SalesController::class, 'refund'])->name('admin.sales.refund');
+
+    // Suppliers Management
+    Route::get('/suppliers/search', [\App\Http\Controllers\Admin\SuppliersController::class, 'search'])->name('admin.suppliers.search');
+    Route::get('/suppliers', [\App\Http\Controllers\Admin\SuppliersController::class, 'index'])->name('admin.suppliers');
+    Route::post('/suppliers', [\App\Http\Controllers\Admin\SuppliersController::class, 'store'])->name('admin.suppliers.store');
+    Route::put('/suppliers/{supplier}', [\App\Http\Controllers\Admin\SuppliersController::class, 'update'])->name('admin.suppliers.update');
+    Route::delete('/suppliers/{supplier}', [\App\Http\Controllers\Admin\SuppliersController::class, 'destroy'])->name('admin.suppliers.delete');
+
+    // Purchases Management
+    Route::get('/purchases', [\App\Http\Controllers\Admin\PurchasesController::class, 'index'])->name('admin.purchases');
+    Route::post('/purchases', [\App\Http\Controllers\Admin\PurchasesController::class, 'store'])->name('admin.purchases.store');
+    Route::post('/purchases/{purchase}/receive', [\App\Http\Controllers\Admin\PurchasesController::class, 'receive'])->name('admin.purchases.receive');
+    Route::post('/purchases/{purchase}/payment', [\App\Http\Controllers\Admin\PurchasesController::class, 'addPayment'])->name('admin.purchases.payment');
+
+    // Inventory & Warehouse Multi-Location Management
+    Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('admin.inventory');
+    Route::get('/inventory/overview', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('admin.inventory.index');
+    Route::post('/inventory/adjust', [\App\Http\Controllers\Admin\InventoryController::class, 'adjust'])->name('admin.inventory.adjust');
+    Route::get('/inventory/transfers', [\App\Http\Controllers\Admin\InventoryController::class, 'transfers'])->name('admin.inventory.transfers');
+    Route::post('/inventory/transfers', [\App\Http\Controllers\Admin\InventoryController::class, 'storeTransfer'])->name('admin.inventory.transfers.store');
+    Route::get('/inventory/counts', [\App\Http\Controllers\Admin\InventoryController::class, 'counts'])->name('admin.inventory.counts');
+    Route::post('/inventory/counts', [\App\Http\Controllers\Admin\InventoryController::class, 'storeCount'])->name('admin.inventory.counts.store');
+    Route::post('/inventory/counts/{stockCount}/approve', [\App\Http\Controllers\Admin\InventoryController::class, 'approveCount'])->name('admin.inventory.counts.approve');
+
+    Route::get('/warehouses', [\App\Http\Controllers\Admin\WarehousesController::class, 'index'])->name('admin.warehouses');
+    Route::post('/warehouses', [\App\Http\Controllers\Admin\WarehousesController::class, 'store'])->name('admin.warehouses.store');
+    Route::put('/warehouses/{warehouse}', [\App\Http\Controllers\Admin\WarehousesController::class, 'update'])->name('admin.warehouses.update');
+
+    // Accounts & Double-Entry Finance
+    Route::get('/accounts', [\App\Http\Controllers\Admin\AccountsController::class, 'index'])->name('admin.accounts');
+    Route::get('/accounts/chart-of-accounts', [\App\Http\Controllers\Admin\AccountsController::class, 'chartOfAccounts'])->name('admin.accounts.chartOfAccounts');
+    Route::post('/accounts/chart-of-accounts', [\App\Http\Controllers\Admin\AccountsController::class, 'storeAccount'])->name('admin.accounts.storeAccount');
+    Route::get('/accounts/transactions', [\App\Http\Controllers\Admin\AccountsController::class, 'transactions'])->name('admin.accounts.transactions');
+    Route::get('/accounts/expenses', [\App\Http\Controllers\Admin\AccountsController::class, 'expenses'])->name('admin.accounts.expenses');
+    Route::post('/accounts/expenses', [\App\Http\Controllers\Admin\AccountsController::class, 'storeExpense'])->name('admin.accounts.storeExpense');
+    Route::get('/accounts/income', [\App\Http\Controllers\Admin\AccountsController::class, 'income'])->name('admin.accounts.income');
+    Route::post('/accounts/income', [\App\Http\Controllers\Admin\AccountsController::class, 'storeIncome'])->name('admin.accounts.storeIncome');
+    Route::get('/accounts/receivables', [\App\Http\Controllers\Admin\AccountsController::class, 'receivables'])->name('admin.accounts.receivables');
+    Route::get('/accounts/payables', [\App\Http\Controllers\Admin\AccountsController::class, 'payables'])->name('admin.accounts.payables');
+    Route::get('/accounts/cash-bank', [\App\Http\Controllers\Admin\AccountsController::class, 'cashBank'])->name('admin.accounts.cashBank');
 
     // Admin Users & RBAC Roles
     Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users');
@@ -711,9 +797,10 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 Route::get('/email/unsubscribe/{token}', [\App\Http\Controllers\EmailUnsubscribeController::class, 'show'])->name('email.unsubscribe.show');
 Route::post('/email/unsubscribe/{token}', [\App\Http\Controllers\EmailUnsubscribeController::class, 'unsubscribe'])->middleware('throttle:30,1')->name('email.unsubscribe.process');
 
-// Public Product Feeds for Meta Catalog & Google Merchant
+// Public Product Feeds for Meta Catalog, Google Merchant & Universal CSV
 Route::get('/feeds/meta-products.xml', [FeedController::class, 'metaCatalogXml'])->name('feeds.meta.xml');
 Route::get('/feeds/meta-products.csv', [FeedController::class, 'metaCatalogCsv'])->name('feeds.meta.csv');
+Route::get('/feeds/products.csv', [FeedController::class, 'productsCsv'])->name('feeds.products.csv');
 Route::get('/feeds/google-products.xml', [FeedController::class, 'googleMerchantXml'])->name('feeds.google.xml');
 Route::get('/feeds/google-merchant.xml', [FeedController::class, 'googleMerchantXml'])->name('feeds.google-merchant.xml');
 

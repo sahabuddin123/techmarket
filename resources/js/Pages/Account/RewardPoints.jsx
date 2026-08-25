@@ -45,7 +45,7 @@ export default function RewardPoints({ user, points = 0, unreadCount = 0 }) {
           {/* Points rules */}
           <div className="border-t border-[#f1f5f9] pt-6 space-y-3">
             <h3 className="text-[14px] font-bold text-[#1e293b]">
-              How to earn and redeem TechLand points:
+              How to earn and redeem TechMarket points:
             </h3>
             <ul className="text-[13px] text-[#64748b] space-y-2 list-disc list-inside">
               <li>Earn 1 reward point for every ৳100 spent on completed hardware purchases.</li>

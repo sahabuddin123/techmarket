@@ -45,7 +45,7 @@ class NagadController extends Controller
                 'trxID' => $initData['trxID'] ?? null,
                 'amount' => $order->total,
                 'mode' => $config['mode'],
-                'merchant' => 'TechLand BD Online Store',
+                'merchant' => 'TechMarket BD Online Store',
                 'merchant_number' => $config['merchant_number'] ?: '01800000000',
                 'configured' => NagadPaymentService::isConfigured(),
             ],

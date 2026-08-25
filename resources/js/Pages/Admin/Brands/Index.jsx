@@ -1,87 +1,184 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { Plus, Edit2, Trash2, Tag } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
+import { Plus, Edit2, Trash2, Tag, ExternalLink } from 'lucide-react';
 
-export default function AdminBrands({ brands }) {
-  const handleDelete = (brandId) => {
-    if (confirm('Are you sure you want to delete this brand?')) {
-      router.delete(`/admin/brands/${brandId}`);
-    }
+export default function AdminBrands({ brands = [] }) {
+  const [search, setSearch] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [density, setDensity] = useState('comfortable');
+
+  const brandList = Array.isArray(brands) ? brands : [];
+
+  const filteredBrands = brandList.filter(b => 
+    !search || b.name?.toLowerCase().includes(search.toLowerCase()) || b.slug?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(`/admin/brands/${deleteTarget.id}`, {
+      onFinish: () => setDeleteTarget(null),
+    });
   };
 
-  return (
-    <AdminLayout title="Manage Brands">
-      <Head title="Authorized Brands - Admin" />
-
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  const columns = [
+    {
+      header: 'Brand Name',
+      accessor: 'name',
+      sortable: true,
+      render: (brand) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-center font-black text-indigo-600 dark:text-indigo-400 text-xs shrink-0 font-heading uppercase shadow-2xs">
+            {brand.name ? brand.name.substring(0, 2) : 'BR'}
+          </div>
           <div>
-            <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-              <Tag className="w-6 h-6 text-amber-500" />
-              <span>AUTHORIZED TECH BRANDS</span>
-            </h1>
-            <p className="text-xs text-slate-400">Manage manufacturers (ASUS, MSI, Gigabyte, Intel, AMD, Corsair, etc.).</p>
+            <div className="font-bold text-slate-900 dark:text-slate-100 font-heading text-xs">
+              {brand.name}
+            </div>
+            <div className="text-[10.5px] text-slate-400 font-mono">
+              slug: {brand.slug}
+            </div>
           </div>
-
-          <Link
-            href="/admin/brands/create"
-            className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-lg flex items-center space-x-1.5 shadow-lg w-fit"
+        </div>
+      ),
+    },
+    {
+      header: 'Total Products in Catalog',
+      accessor: 'products_count',
+      align: 'center',
+      sortable: true,
+      render: (brand) => (
+        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+          {brand.products_count ?? 0} Items
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (brand) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
+          <a
+            href={`/brand/${brand.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+            title="Preview Storefront Brand Page"
           >
-            <Plus className="w-4 h-4" />
-            <span>ADD NEW BRAND</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          <Link
+            href={`/admin/brands/${brand.id}/edit`}
+            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 transition-colors"
+            title="Edit Brand"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
           </Link>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(brand)}
+            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+            title="Delete Brand"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
         </div>
+      ),
+    },
+  ];
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">Brand Logo / Name</th>
-                  <th className="p-3.5">Slug</th>
-                  <th className="p-3.5">Total Products</th>
-                  <th className="p-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {brands && brands.length > 0 ? (
-                  brands.map(b => (
-                    <tr key={b.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-bold text-white flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded bg-slate-950 border border-slate-800 flex items-center justify-center font-bold text-amber-400 text-xs shrink-0">
-                          {b.name.substring(0, 2)}
-                        </div>
-                        <span>{b.name}</span>
-                      </td>
-                      <td className="p-3.5 font-mono text-slate-400">{b.slug}</td>
-                      <td className="p-3.5 font-bold text-emerald-400">{b.products_count} Items</td>
-                      <td className="p-3.5 text-right space-x-2">
-                        <Link
-                          href={`/admin/brands/${b.id}/edit`}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded inline-block"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(b.id)}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded inline-block"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="p-8 text-center text-slate-500">No brands found.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+  return (
+    <AdminShell title="Brands">
+      <Head title="Authorized Tech Brands - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Authorized Tech Brands"
+          subtitle="Manage hardware manufacturers, official authorized partners, and brand showcase logos."
+          badge={`${brandList.length} Brands`}
+          actions={
+            <div className="flex items-center gap-2">
+              <a
+                href="/admin/data-management/template/brands/xlsx"
+                download
+                className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center space-x-1.5 shadow-2xs transition-all"
+                title="Download Brand Import Template (XLSX)"
+              >
+                <span>Import Format</span>
+              </a>
+
+              <Link
+                href="/admin/data-management/export?entity=brands"
+                className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center space-x-1.5 shadow-2xs transition-all"
+                title="Export Brands"
+              >
+                <span>Export</span>
+              </Link>
+
+              <Link
+                href="/admin/data-management/import?entity=brands"
+                className="px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold text-xs flex items-center space-x-1.5 shadow-2xs transition-all"
+                title="Bulk Import Brands"
+              >
+                <span>Bulk Import</span>
+              </Link>
+
+              <Link
+                href="/admin/brands/create"
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all"
+                style={{ backgroundColor: 'var(--admin-primary, #4f46e5)' }}
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add New Brand</span>
+              </Link>
+            </div>
+          }
+        />
+
+        {/* Page Toolbar */}
+        <AdminPageToolbar
+          search={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search brands by name or slug..."
+          onRefresh={() => router.get('/admin/brands')}
+        />
+
+        {/* Brands Table */}
+        <AdminTable
+          columns={columns}
+          data={filteredBrands}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No brands found"
+          emptyDescription="Add authorized brand partners (e.g. ASUS, MSI, Intel, AMD, Corsair) to your catalog."
+          emptyAction={
+            <Link
+              href="/admin/brands/create"
+              className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs inline-flex items-center space-x-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Brand</span>
+            </Link>
+          }
+        />
       </div>
-    </AdminLayout>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Brand"
+        message={`Are you sure you want to delete brand "${deleteTarget?.name}"?`}
+        confirmText="Delete Brand"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

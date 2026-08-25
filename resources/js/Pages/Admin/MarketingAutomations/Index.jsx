@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Head, useForm, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import AdminModal from '../../../Components/Admin/AdminModal';
 import { Zap, Plus, CheckCircle, XCircle } from 'lucide-react';
 
-export default function AdminMarketingAutomations({ automations }) {
+export default function AdminMarketingAutomations({ automations = { data: [] } }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [search, setSearch] = useState('');
+  const [density, setDensity] = useState('comfortable');
 
-  const { data, setData, post, processing, reset } = useForm({
+  const automationList = Array.isArray(automations?.data) ? automations.data : [];
+
+  const { data, setData, post, processing, reset, errors } = useForm({
     name: '',
     trigger_event: 'order_completed',
     channel: 'database',
@@ -28,119 +37,204 @@ export default function AdminMarketingAutomations({ automations }) {
     router.post(`/admin/marketing-automations/${id}/toggle`, {}, { preserveScroll: true });
   };
 
+  const filteredAutomations = automationList.filter(a =>
+    !search || a.name?.toLowerCase().includes(search.toLowerCase()) || a.trigger_event?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const columns = [
+    {
+      header: 'Campaign Name',
+      accessor: 'name',
+      sortable: true,
+      render: (a) => (
+        <div className="flex items-center space-x-2.5">
+          <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+            <Zap className="w-4 h-4" />
+          </div>
+          <span className="font-bold text-slate-900 dark:text-slate-100 text-xs font-heading">
+            {a.name}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: 'Trigger Event',
+      accessor: 'trigger_event',
+      render: (a) => (
+        <span className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold text-xs">
+          {a.trigger_event}
+        </span>
+      ),
+    },
+    {
+      header: 'Delivery Channel',
+      accessor: 'channel',
+      render: (a) => (
+        <span className="font-mono uppercase text-[11px] font-bold text-slate-700 dark:text-slate-300">
+          {a.channel}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'is_active',
+      render: (a) => (
+        <AdminStatusBadge
+          status={a.is_active ? 'active' : 'draft'}
+          label={a.is_active ? 'Active' : 'Disabled'}
+          size="xs"
+        />
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (a) => (
+        <button
+          type="button"
+          onClick={() => handleToggle(a.id)}
+          className={`p-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+            a.is_active 
+              ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 hover:bg-rose-100'
+              : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100'
+          }`}
+          title={a.is_active ? 'Disable Automation' : 'Activate Automation'}
+        >
+          {a.is_active ? <XCircle className="w-3.5 h-3.5" /> : <CheckCircle className="w-3.5 h-3.5" />}
+        </button>
+      ),
+    },
+  ];
+
   return (
-    <AdminLayout title="Marketing Automations Engine">
-      <Head title="Marketing Automations - Admin" />
+    <AdminShell title="Marketing Automations">
+      <Head title="Marketing Automations - TechMarket Admin" />
 
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-              <Zap className="w-6 h-6 text-amber-500" />
-              <span>EVENT-DRIVEN MARKETING AUTOMATIONS</span>
-            </h1>
-            <p className="text-xs text-slate-400">Trigger automated campaigns on customer registration, order completion, or price drops.</p>
-          </div>
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Event-Driven Marketing Automations"
+          subtitle="Trigger automated multichannel notifications upon registration, completed checkouts, and price alerts."
+          badge={`${automations.total || automationList.length} Journeys`}
+          actions={
+            <button
+              type="button"
+              onClick={() => setShowCreateModal(true)}
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create Automation</span>
+            </button>
+          }
+        />
 
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-lg flex items-center space-x-1.5 uppercase shadow-lg w-fit"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Automation</span>
-          </button>
-        </div>
+        {/* Toolbar */}
+        <AdminPageToolbar
+          search={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search automations by name or trigger..."
+          onRefresh={() => router.get('/admin/marketing-automations')}
+        />
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">Campaign Name</th>
-                  <th className="p-3.5">Trigger Event</th>
-                  <th className="p-3.5">Channel</th>
-                  <th className="p-3.5">Status</th>
-                  <th className="p-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {automations.data && automations.data.length > 0 ? (
-                  automations.data.map(a => (
-                    <tr key={a.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-bold text-white">{a.name}</td>
-                      <td className="p-3.5 font-mono text-amber-400">{a.trigger_event}</td>
-                      <td className="p-3.5 text-slate-300 font-semibold uppercase">{a.channel}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          a.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-500'
-                        }`}>
-                          {a.is_active ? 'Active' : 'Disabled'}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-right">
-                        <button onClick={() => handleToggle(a.id)} className="p-1 bg-slate-800 text-slate-300 hover:text-amber-400 rounded">
-                          {a.is_active ? <XCircle className="w-4 h-4 text-rose-400" /> : <CheckCircle className="w-4 h-4 text-emerald-400" />}
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-500">No marketing automation triggers configured yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* CREATE MODAL */}
-        {showCreateModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <form onSubmit={handleCreateSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl text-xs">
-              <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">New Marketing Automation</h3>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Campaign Name *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Welcome Loyalty Gift"
-                  value={data.name}
-                  onChange={(e) => setData('name', e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
-                />
-              </div>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Trigger Event *</label>
-                <select
-                  value={data.trigger_event}
-                  onChange={(e) => setData('trigger_event', e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
-                >
-                  <option value="user_registered">Customer Registration</option>
-                  <option value="order_completed">Order Completed</option>
-                  <option value="cart_abandoned">Cart Abandoned</option>
-                  <option value="product_price_dropped">Product Price Dropped</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Notification Message / Template *</label>
-                <textarea
-                  rows={3}
-                  required
-                  value={data.template}
-                  onChange={(e) => setData('template', e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
-                <button type="button" onClick={() => setShowCreateModal(false)} className="px-4 py-2 bg-slate-800 text-slate-300 rounded font-bold">Cancel</button>
-                <button type="submit" disabled={processing} className="px-4 py-2 bg-amber-500 text-slate-950 rounded font-black uppercase">Create Campaign</button>
-              </div>
-            </form>
-          </div>
-        )}
+        {/* Table */}
+        <AdminTable
+          columns={columns}
+          data={filteredAutomations}
+          pagination={automations}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No marketing automations configured"
+          emptyDescription="Create event triggers to engage customers during critical checkout and onboarding milestones."
+          emptyAction={
+            <button
+              type="button"
+              onClick={() => setShowCreateModal(true)}
+              className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs inline-flex items-center space-x-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Automation</span>
+            </button>
+          }
+        />
       </div>
-    </AdminLayout>
+
+      {/* Create Modal */}
+      <AdminModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="New Marketing Automation"
+        subtitle="Configure event triggers and notification content"
+        icon={Zap}
+        size="md"
+        footer={
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => setShowCreateModal(false)}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleCreateSubmit}
+              disabled={processing}
+              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            >
+              {processing ? 'Creating...' : 'Create Campaign'}
+            </button>
+          </div>
+        }
+      >
+        <form onSubmit={handleCreateSubmit} className="space-y-3.5 text-xs">
+          <div>
+            <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Campaign Name *</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Welcome Loyalty Gift"
+              value={data.name}
+              onChange={(e) => setData('name', e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold focus:outline-hidden"
+            />
+          </div>
+          <div>
+            <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Trigger Event *</label>
+            <select
+              value={data.trigger_event}
+              onChange={(e) => setData('trigger_event', e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold focus:outline-hidden"
+            >
+              <option value="user_registered">Customer Registration</option>
+              <option value="order_completed">Order Completed</option>
+              <option value="cart_abandoned">Cart Abandoned</option>
+              <option value="product_price_dropped">Product Price Dropped</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Channel *</label>
+            <select
+              value={data.channel}
+              onChange={(e) => setData('channel', e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold focus:outline-hidden"
+            >
+              <option value="database">Database In-App Notification</option>
+              <option value="email">Email Message</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Template / Message *</label>
+            <textarea
+              rows={3}
+              required
+              value={data.template}
+              onChange={(e) => setData('template', e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+            />
+          </div>
+        </form>
+      </AdminModal>
+    </AdminShell>
   );
 }

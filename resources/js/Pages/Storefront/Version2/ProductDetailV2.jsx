@@ -3,6 +3,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import NavbarV2 from './Components/NavbarV2';
 import FooterV2 from './Components/FooterV2';
 import CartDrawer from '@/Components/CartDrawer';
+import ProductImageLightbox from '@/Components/Storefront/ProductImageLightbox';
 import ProductCardV2 from './Components/ProductCardV2';
 import { trackViewContent, trackAddToCart } from '@/lib/tracking';
 import { 
@@ -10,7 +11,7 @@ import {
   Check, Star, ChevronLeft, ChevronRight, Share2, 
   HelpCircle, MessageSquare, Plus, Minus, Tag, CheckCircle2, User,
   X, Building2, Calculator, CreditCard, Info, ShieldAlert, FileText,
-  Truck, Award, Clock, Headphones, Zap, Timer, Sparkles
+  Truck, Award, Clock, Headphones, Zap, Timer, Sparkles, ZoomIn
 } from 'lucide-react';
 
 export default function ProductDetailV2(props) {
@@ -40,6 +41,7 @@ export default function ProductDetailV2(props) {
   // Component UI State
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('specification');
@@ -224,7 +226,11 @@ export default function ProductDetailV2(props) {
             {/* Left Gallery (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
               {/* Main Image Container */}
-              <div className="bg-[#f8fafc] border border-slate-200/80 rounded-2xl aspect-square flex items-center justify-center p-6 relative group overflow-hidden shadow-2xs">
+              <div 
+                onClick={() => setIsLightboxOpen(true)}
+                className="bg-[#f8fafc] border border-slate-200/80 rounded-2xl aspect-square flex items-center justify-center p-6 relative group overflow-hidden shadow-2xs cursor-pointer hover:border-blue-500 transition-all"
+                title="Click to view full image and zoom"
+              >
                 {savings > 0 && (
                   <span className="absolute top-3.5 left-3.5 bg-rose-500 text-white font-extrabold text-xs px-2.5 py-1 rounded-lg z-10 shadow-xs flex items-center gap-1">
                     <Tag className="w-3 h-3 fill-current" />
@@ -237,6 +243,12 @@ export default function ProductDetailV2(props) {
                   alt={product.title}
                   className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />
+
+                {/* Hover Zoom & Expand Overlay Pill */}
+                <div className="absolute top-3.5 right-3.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/80 backdrop-blur-xs text-white rounded-xl px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 shadow-md">
+                  <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Click to Zoom</span>
+                </div>
 
                 {/* Official Warranty Badge */}
                 <div className="absolute bottom-3.5 right-3.5 flex items-center gap-1.5 bg-white/95 backdrop-blur-xs border border-blue-200 rounded-xl px-2.5 py-1 text-xs font-black text-blue-700 shadow-xs">
@@ -1182,6 +1194,17 @@ export default function ProductDetailV2(props) {
           <span>Buy Now</span>
         </button>
       </div>
+
+      {/* 9. PRODUCT IMAGE LIGHTBOX / FULLSCREEN ZOOM MODAL */}
+      <ProductImageLightbox
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        images={galleryImages}
+        currentIndex={selectedImageIndex}
+        onSelectIndex={setSelectedImageIndex}
+        productTitle={product.title}
+        price={currentPrice}
+      />
 
       {/* 10. DARK FOOTER (Version 2) */}
       <FooterV2 onOpenCart={() => setIsCartOpen(true)} />

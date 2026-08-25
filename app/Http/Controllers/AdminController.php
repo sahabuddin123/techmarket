@@ -27,15 +27,87 @@ class AdminController extends Controller
         $period = $request->input('period', 'last_30_days');
         $analytics = AnalyticsService::getDashboardMetrics($period);
 
+        // Order Status Distribution for Donut Chart
+        $orderStatusCounts = Order::select('status', DB::raw('COUNT(id) as count'))
+            ->groupBy('status')
+            ->get()
+            ->map(function ($row) {
+                $statusColors = [
+                    'Delivered' => '#10b981',
+                    'Processing' => '#f59e0b',
+                    'Pending' => '#3b82f6',
+                    'Cancelled' => '#ef4444',
+                    'Shipped' => '#6366f1',
+                    'Packed' => '#8b5cf6',
+                    'Confirmed' => '#06b6d4',
+                ];
+
+                return [
+                    'label' => $row->status ?: 'Pending',
+                    'value' => (int) $row->count,
+                    'color' => $statusColors[$row->status] ?? '#94a3b8',
+                ];
+            });
+
+        // Top Selling Hardware Products
+        $topSelling = OrderItem::select(
+            'order_items.product_id',
+            'order_items.product_name',
+            DB::raw('SUM(order_items.quantity) as sold'),
+            DB::raw('SUM(order_items.total) as revenue')
+        )
+        ->join('orders', 'order_items.order_id', '=', 'orders.id')
+        ->where('orders.status', '!=', 'Cancelled')
+        ->groupBy('order_items.product_id', 'order_items.product_name')
+        ->orderByDesc('sold')
+        ->take(4)
+        ->get();
+
+        $productIds = $topSelling->pluck('product_id')->filter()->unique();
+        $catalogProducts = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        $topSellingFormatted = $topSelling->map(function ($item) use ($catalogProducts) {
+            $p = $item->product_id ? $catalogProducts->get($item->product_id) : null;
+            return [
+                'id' => $item->product_id,
+                'title' => $p ? $p->title : $item->product_name,
+                'sku' => $p ? $p->sku : 'N/A',
+                'sold' => (int) $item->sold,
+                'revenue' => (float) $item->revenue,
+                'image' => $p ? $p->image : null,
+            ];
+        });
+
+        // Low Stock Alert Queue
+        $lowStockItems = Product::where('stock', '<=', 10)
+            ->where('stock', '>', 0)
+            ->orderBy('stock', 'asc')
+            ->take(4)
+            ->get(['id', 'title', 'sku', 'stock', 'price', 'image']);
+
+        // CCTV Solutions Overview
+        $cctvOverview = [
+            'total_projects' => class_exists(\App\Models\Cctv\CctvProject::class) ? \App\Models\Cctv\CctvProject::count() : 0,
+            'active_projects' => class_exists(\App\Models\Cctv\CctvProject::class) ? \App\Models\Cctv\CctvProject::whereIn('status', ['in_progress', 'scheduled', 'planning', 'active'])->count() : 0,
+            'completed_projects' => class_exists(\App\Models\Cctv\CctvProject::class) ? \App\Models\Cctv\CctvProject::where('status', 'completed')->count() : 0,
+            'total_cameras_installed' => class_exists(\App\Models\Cctv\CctvInstalledEquipment::class) ? \App\Models\Cctv\CctvInstalledEquipment::where('device_type', 'camera')->count() : 0,
+            'total_sites' => class_exists(\App\Models\Cctv\CctvProjectSite::class) ? \App\Models\Cctv\CctvProjectSite::count() : 0,
+        ];
+
         return Inertia::render('Admin/Dashboard', [
             'metrics' => [
                 'total_sales' => $analytics['kpis']['gross_revenue']['current'],
                 'total_orders' => $analytics['kpis']['total_orders']['current'],
                 'total_products' => $analytics['catalog']['total_products'],
                 'out_of_stock' => $analytics['catalog']['out_of_stock'],
+                'total_customers' => $analytics['catalog']['total_customers'],
             ],
             'analytics' => $analytics,
             'recentOrders' => $analytics['recent_orders'],
+            'orderStatusDistribution' => $orderStatusCounts,
+            'topSellingProducts' => $topSellingFormatted,
+            'lowStockItems' => $lowStockItems,
+            'cctvOverview' => $cctvOverview,
         ]);
     }
 
@@ -196,6 +268,34 @@ class AdminController extends Controller
         AnalyticsCacheService::invalidateInventory();
 
         return redirect()->route('admin.products')->with('success', 'Product created with complete SEO foundation!');
+    }
+
+    public function showProduct(Product $product)
+    {
+        $product->load([
+            'category', 
+            'brand', 
+            'specificationValues.attribute.group', 
+            'reviews.user',
+            'questions.user',
+        ]);
+
+        $inventoryLedger = \App\Models\InventoryTransaction::where('product_id', $product->id)
+            ->latest()
+            ->take(15)
+            ->get();
+
+        $salesSummary = [
+            'total_units_sold' => (int) OrderItem::where('product_id', $product->id)->sum('quantity'),
+            'total_revenue' => (float) OrderItem::where('product_id', $product->id)->sum('total'),
+            'orders_count' => OrderItem::where('product_id', $product->id)->distinct('order_id')->count('order_id'),
+        ];
+
+        return Inertia::render('Admin/Products/Show', [
+            'product' => $product,
+            'inventoryLedger' => $inventoryLedger,
+            'salesSummary' => $salesSummary,
+        ]);
     }
 
     public function editProduct(Product $product)
@@ -382,6 +482,109 @@ class AdminController extends Controller
         AnalyticsCacheService::invalidateProducts();
 
         return back()->with('success', "Bulk SEO operation ({$action}) executed for {$count} products.");
+    }
+
+    public function bulkPriceUpdate(Request $request)
+    {
+        $user = $request->user();
+        if (!$user || (!$user->hasRole('Super Admin') && !$user->hasRole('Admin') && !$user->hasPermission('products.update'))) {
+            return response()->json(['message' => 'Unauthorized to perform bulk price updates.'], 403);
+        }
+
+        $rawUpdates = $request->input('updates', $request->all());
+        if (!is_array($rawUpdates) || empty($rawUpdates)) {
+            return response()->json(['message' => 'No price updates provided.'], 422);
+        }
+
+        $validator = \Illuminate\Support\Facades\Validator::make(['updates' => $rawUpdates], [
+            'updates' => 'required|array|min:1',
+            'updates.*.product_id' => 'required|integer|exists:products,id',
+            'updates.*.regular_price' => 'nullable|numeric|min:0',
+            'updates.*.selling_price' => 'required|numeric|min:0',
+        ], [
+            'updates.*.product_id.exists' => 'The selected product does not exist.',
+            'updates.*.selling_price.required' => 'Selling price is required.',
+            'updates.*.selling_price.min' => 'Selling price cannot be negative.',
+            'updates.*.regular_price.min' => 'Regular price cannot be negative.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated()['updates'];
+
+        // Business Rule validation: selling_price <= regular_price (when regular_price > 0)
+        $productIds = array_column($validated, 'product_id');
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        $errors = [];
+        foreach ($validated as $index => $item) {
+            $product = $products->get($item['product_id']);
+            if (!$product) continue;
+
+            $regularPrice = isset($item['regular_price']) && $item['regular_price'] !== '' && $item['regular_price'] !== null 
+                ? (float)$item['regular_price'] 
+                : (float)($product->regular_price ?? 0);
+            $sellingPrice = (float)$item['selling_price'];
+
+            if ($regularPrice > 0 && $sellingPrice > $regularPrice) {
+                $errors["updates.{$index}.selling_price"] = [
+                    "Selling price (৳{$sellingPrice}) cannot exceed regular price (৳{$regularPrice}) for product: {$product->title}"
+                ];
+            }
+        }
+
+        if (!empty($errors)) {
+            return response()->json([
+                'message' => reset($errors)[0],
+                'errors' => $errors,
+            ], 422);
+        }
+
+        $updatedProducts = [];
+        \Illuminate\Support\Facades\DB::transaction(function () use ($validated, $products, &$updatedProducts) {
+            foreach ($validated as $item) {
+                $product = $products->get($item['product_id']);
+                if (!$product) continue;
+
+                $oldPrices = [
+                    'price' => (float)$product->price,
+                    'regular_price' => (float)($product->regular_price ?? $product->price),
+                ];
+
+                $product->price = (float)$item['selling_price'];
+                if (array_key_exists('regular_price', $item) && $item['regular_price'] !== null && $item['regular_price'] !== '') {
+                    $product->regular_price = (float)$item['regular_price'];
+                }
+                $product->save();
+
+                AuditLogger::log('products.bulk_price_updated', $product, $oldPrices, [
+                    'price' => (float)$product->price,
+                    'regular_price' => (float)$product->regular_price,
+                ]);
+
+                $updatedProducts[] = [
+                    'id' => $product->id,
+                    'price' => (float)$product->price,
+                    'regular_price' => (float)$product->regular_price,
+                    'title' => $product->title,
+                    'sku' => $product->sku,
+                ];
+            }
+        });
+
+        AnalyticsCacheService::invalidateProducts();
+
+        return response()->json([
+            'success' => true,
+            'message' => count($updatedProducts) . ' product ' . (count($updatedProducts) === 1 ? 'price' : 'prices') . ' updated successfully.',
+            'updated_count' => count($updatedProducts),
+            'updated_products' => $updatedProducts,
+        ]);
     }
 
     public function deleteProduct(Product $product)

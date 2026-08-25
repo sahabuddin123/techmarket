@@ -56,7 +56,7 @@ export default function AdminLogin({ status }) {
         </div>
 
         {/* Card Wrapper */}
-        <div className="bg-[#0b1322]/90 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 relative">
+        <div className="bg-[#0b1322]/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 relative">
           {/* Header Icon & Title */}
           <div className="text-center space-y-2 mb-6">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20 mb-2">
@@ -104,7 +104,7 @@ export default function AdminLogin({ status }) {
                   placeholder="admin@techmarketbd.com"
                   required
                   autoFocus
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#070b13] border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all font-sans"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#070b13] border border-slate-200/80 dark:border-slate-800/80 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all font-sans"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function AdminLogin({ status }) {
                   onChange={(e) => setData('password', e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-10 pr-10 py-2.5 bg-[#070b13] border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all font-sans"
+                  className="w-full pl-10 pr-10 py-2.5 bg-[#070b13] border border-slate-200/80 dark:border-slate-800/80 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all font-sans"
                 />
                 <button
                   type="button"
@@ -144,7 +144,7 @@ export default function AdminLogin({ status }) {
                   type="checkbox"
                   checked={data.remember}
                   onChange={(e) => setData('remember', e.target.checked)}
-                  className="rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-amber-400 focus:ring-offset-slate-900"
+                  className="rounded border-slate-200 dark:border-slate-700 bg-slate-900 text-amber-500 focus:ring-amber-400 focus:ring-offset-slate-900"
                 />
                 <span className="text-xs text-slate-400">আমাকে মনে রাখুন</span>
               </label>
@@ -171,7 +171,7 @@ export default function AdminLogin({ status }) {
           </form>
 
           {/* Footer Security Notice */}
-          <div className="mt-6 pt-4 border-t border-slate-800/80 text-center">
+          <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-slate-800/80 text-center">
             <p className="text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
               <span>শুধুমাত্র অনুমোদিত অ্যাডমিনদের জন্য সংরক্ষিত</span>

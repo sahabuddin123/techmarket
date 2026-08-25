@@ -3,7 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { 
   Menu, Search, Plus, ExternalLink, Image as ImageIcon, 
   Bell, Sun, Moon, Laptop, User, Sliders, LogOut, ChevronDown, 
-  Package, ShoppingBag, Ticket, Sparkles
+  Package, ShoppingBag, Ticket, Sparkles, Store
 } from 'lucide-react';
 import NotificationBell from './NotificationBell';
 
@@ -16,6 +16,18 @@ export default function AdminHeader({
 }) {
   const { props } = usePage();
   const auth = props?.auth;
+
+  // RBAC permission check for POS
+  const canAccessPos = Boolean(
+    auth?.user && (
+      auth.user.role === 'admin' ||
+      auth.user.role === 'super_admin' ||
+      auth.user.role === 'manager' ||
+      auth.user.role === 'cashier' ||
+      (Array.isArray(auth?.permissions) && (auth.permissions.includes('pos.manage') || auth.permissions.includes('pos.view'))) ||
+      auth.user.role !== 'customer'
+    )
+  );
 
   // Theme state
   const [theme, setTheme] = useState(() => {
@@ -58,34 +70,57 @@ export default function AdminHeader({
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-4 md:px-6 flex items-center justify-between transition-all">
-      {/* Left: Mobile Toggle & Context Breadcrumbs */}
-      <div className="flex items-center space-x-3">
+    <header className="h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80 px-4 md:px-6 flex items-center justify-between sticky top-0 z-30 transition-all duration-300">
+      {/* Left: Mobile Toggle, Breadcrumbs / Title */}
+      <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
         <button
           type="button"
           onClick={onToggleMobile}
-          className="md:hidden p-2 text-slate-400 hover:text-white rounded-xl bg-slate-900 border border-slate-800"
+          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-colors"
+          aria-label="Toggle navigation menu"
         >
-          <Menu className="w-4 h-4" />
+          <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden sm:flex items-center space-x-2 text-xs">
-          <span className="font-bold text-slate-400 font-mono">TechMarket</span>
-          <span className="text-slate-600">/</span>
-          <span className="font-black text-white font-heading tracking-tight">{title || 'Console'}</span>
+        <div className="min-w-0">
+          {breadcrumbs && breadcrumbs.length > 0 ? (
+            <div className="flex items-center space-x-1.5 text-xs text-slate-400 truncate">
+              {breadcrumbs.map((crumb, idx) => (
+                <React.Fragment key={idx}>
+                  {idx > 0 && <span className="text-slate-600">/</span>}
+                  {crumb.href ? (
+                    <Link
+                      href={crumb.href}
+                      className="hover:text-amber-400 transition-colors truncate font-medium"
+                    >
+                      {crumb.label}
+                    </Link>
+                  ) : (
+                    <span className="text-slate-200 font-semibold truncate">
+                      {crumb.label}
+                    </span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          ) : (
+            <h1 className="text-sm md:text-base font-bold text-white tracking-tight truncate">
+              {title || 'Enterprise Admin'}
+            </h1>
+          )}
         </div>
       </div>
 
-      {/* Center: Command Palette Trigger */}
-      <div className="flex-1 max-w-md mx-4 hidden lg:block">
+      {/* Center / Search Trigger */}
+      <div className="hidden md:flex items-center flex-1 max-w-md mx-6">
         <button
           type="button"
           onClick={onOpenSearch}
-          className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-800/90 hover:border-slate-700 text-slate-400 hover:text-slate-200 text-xs transition-all shadow-xs cursor-pointer group"
+          className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-400 hover:border-slate-700 hover:text-slate-200 transition-all group shadow-inner"
         >
           <div className="flex items-center space-x-2.5">
-            <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 transition-colors" />
-            <span className="text-[11.5px] font-medium">Quick search products, orders, customers, media...</span>
+            <Search className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
+            <span>Search products, orders, customers, SKUs...</span>
           </div>
           <kbd className="px-1.5 py-0.5 rounded bg-slate-950 text-[10px] font-mono text-slate-400 border border-slate-800">
             Ctrl K
@@ -93,9 +128,9 @@ export default function AdminHeader({
         </button>
       </div>
 
-      {/* Right: Quick Actions, Theme, Storefront Link, Profile */}
+      {/* Right: Quick Actions, POS Button, Notification, Theme, Storefront Link, Profile */}
       <div className="flex items-center space-x-2.5">
-        {/* Quick Action Button */}
+        {/* Quick Action (+ Create) Button */}
         <div className="relative" ref={quickActionRef}>
           <button
             type="button"
@@ -103,12 +138,22 @@ export default function AdminHeader({
             className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-3 py-2 rounded-xl flex items-center space-x-1.5 shadow-sm transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Action</span>
+            <span className="hidden sm:inline">Create</span>
             <ChevronDown className={`w-3 h-3 transition-transform ${quickActionOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {quickActionOpen && (
             <div className="absolute right-0 mt-2 w-52 bg-slate-900 border border-slate-800 rounded-2xl p-1.5 shadow-2xl z-50 text-xs space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+              {canAccessPos && (
+                <Link
+                  href="/admin/pos"
+                  onClick={() => setQuickActionOpen(false)}
+                  className="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-indigo-300 hover:bg-indigo-950/60 font-bold transition-colors"
+                >
+                  <Store className="w-4 h-4 text-indigo-400" />
+                  <span>Open POS Terminal</span>
+                </Link>
+              )}
               <Link
                 href="/admin/products/create"
                 onClick={() => setQuickActionOpen(false)}
@@ -152,6 +197,18 @@ export default function AdminHeader({
             </div>
           )}
         </div>
+
+        {/* Dedicated Prominent POS Topbar Button */}
+        {canAccessPos && (
+          <Link
+            href="/admin/pos"
+            className="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-black px-3.5 py-2 rounded-xl flex items-center space-x-1.5 shadow-sm shadow-indigo-600/30 transition-all cursor-pointer ring-1 ring-indigo-400/40 hover:scale-[1.02] active:scale-[0.98]"
+            title="Open Point of Sale"
+          >
+            <Store className="w-4 h-4 text-indigo-100" />
+            <span className="font-extrabold tracking-wide">POS</span>
+          </Link>
+        )}
 
         {/* Media Library Direct Link */}
         <Link

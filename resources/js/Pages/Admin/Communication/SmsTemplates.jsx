@@ -140,7 +140,7 @@ export default function SmsTemplates({ templates = [] }) {
                         className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer ${
                           isSelected
                             ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-xs'
-                            : 'bg-slate-900/80 border-slate-800/80 text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                            : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800/80 text-slate-400 hover:bg-slate-900 hover:text-slate-200'
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -158,14 +158,14 @@ export default function SmsTemplates({ templates = [] }) {
 
           {/* Right Column: Template Editor */}
           <div className="lg:col-span-3 space-y-6">
-            <form onSubmit={handleSave} className="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-6 space-y-6 shadow-xl text-xs">
+            <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-6 shadow-xl text-xs">
               
               {/* Top Template Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800/80">
                 <div>
                   <h2 className="text-base font-black text-white uppercase tracking-tight flex items-center space-x-2">
                     <span>{activeTemplate.name}</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-amber-400 border border-slate-700">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-amber-400 border border-slate-200 dark:border-slate-700">
                       {activeTemplate.event_key}
                     </span>
                   </h2>
@@ -207,7 +207,7 @@ export default function SmsTemplates({ templates = [] }) {
                       key={v}
                       type="button"
                       onClick={() => handleInsertVariable(v)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-amber-500/20 border border-slate-800 hover:border-amber-500/40 text-amber-400 font-mono text-[11px] flex items-center space-x-1 transition-colors cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-amber-500/20 border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-500/40 text-amber-400 font-mono text-[11px] flex items-center space-x-1 transition-colors cursor-pointer"
                     >
                       <span>{`{{${v}}}`}</span>
                       {copiedVar === v ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
@@ -225,11 +225,11 @@ export default function SmsTemplates({ templates = [] }) {
                   value={data.message}
                   onChange={(e) => setData('message', e.target.value)}
                   placeholder="Enter message template text with {{placeholders}}..."
-                  className="w-full bg-slate-950 text-slate-100 p-3.5 rounded-xl border border-slate-800 focus:border-amber-500 font-sans text-xs leading-relaxed"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 font-sans text-xs leading-relaxed"
                 />
 
                 {/* Live Character & Segment Telemetry Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl font-mono text-[11px]">
+                <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-xl font-mono text-[11px]">
                   <div className="flex items-center space-x-4">
                     <div>
                       <span className="text-slate-500">Characters: </span>
@@ -254,7 +254,7 @@ export default function SmsTemplates({ templates = [] }) {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
                 <button
                   type="button"
                   onClick={handleFetchPreview}
@@ -279,7 +279,7 @@ export default function SmsTemplates({ templates = [] }) {
             {/* LIVE RENDERED PREVIEW CARD */}
             {previewData && (
               <div className="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 space-y-3 shadow-xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-2">
                   <span className="font-bold text-xs text-amber-400 flex items-center space-x-1.5">
                     <Sparkles className="w-4 h-4" />
                     <span>Live Rendered SMS Sample</span>
@@ -289,7 +289,7 @@ export default function SmsTemplates({ templates = [] }) {
                   </span>
                 </div>
 
-                <div className="p-4 bg-slate-950 rounded-xl border border-slate-800/80 font-sans text-xs text-slate-100 leading-relaxed shadow-inner">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-800/80 font-sans text-xs text-slate-100 leading-relaxed shadow-inner">
                   {previewData.rendered_text}
                 </div>
               </div>

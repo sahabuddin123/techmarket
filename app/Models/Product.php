@@ -16,6 +16,7 @@ class Product extends Model
         'sku',
         'category_id',
         'brand_id',
+        'unit_id',
         'price',
         'regular_price',
         'cost_price',
@@ -77,6 +78,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
     public function specificationValues()
     {
         return $this->hasMany(ProductSpecificationValue::class);
@@ -95,6 +101,16 @@ class Product extends Model
     public function questions()
     {
         return $this->hasMany(ProductQuestion::class);
+    }
+
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
+
+    public function warehouseStocks()
+    {
+        return $this->hasMany(WarehouseStock::class);
     }
 
     public function cctvProfile()

@@ -125,7 +125,7 @@ export default function RichTextEditor({
       : `https://${linkUrl}`;
     
     if (linkText) {
-      const html = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline font-bold">${linkText}</a>`;
+      const html = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-bold">${linkText}</a>`;
       exec('insertHTML', html);
     } else {
       exec('createLink', url);
@@ -214,15 +214,15 @@ export default function RichTextEditor({
     const targetUrl = imageTab === 'url' ? externalUrl : selectedMedia?.url;
     if (!targetUrl) return;
     
-    let alignClass = 'mx-auto block my-4 max-w-full rounded-2xl border border-slate-700/80 shadow-lg';
+    let alignClass = 'mx-auto block my-4 max-w-full rounded-2xl border border-slate-200 shadow-md';
     let sizeStyle = '';
 
     if (imageAlign === 'left') {
-      alignClass = 'float-left mr-5 mb-4 rounded-xl border border-slate-700/80 shadow-md';
+      alignClass = 'float-left mr-5 mb-4 rounded-xl border border-slate-200 shadow-sm';
     } else if (imageAlign === 'right') {
-      alignClass = 'float-right ml-5 mb-4 rounded-xl border border-slate-700/80 shadow-md';
+      alignClass = 'float-right ml-5 mb-4 rounded-xl border border-slate-200 shadow-sm';
     } else if (imageAlign === 'none') {
-      alignClass = 'inline-block my-2 rounded-xl border border-slate-700/80';
+      alignClass = 'inline-block my-2 rounded-xl border border-slate-200';
     }
 
     if (imageSize === 'medium') {
@@ -239,7 +239,7 @@ export default function RichTextEditor({
       imgHtml = `
         <figure class="my-4 text-center">
           ${imgHtml}
-          <figcaption class="text-xs text-slate-400 italic mt-1">${imageCaption}</figcaption>
+          <figcaption class="text-xs text-slate-500 italic mt-1">${imageCaption}</figcaption>
         </figure>
       `;
     }
@@ -263,7 +263,7 @@ export default function RichTextEditor({
 
     if (ytId) {
       videoHtml = `
-        <div class="my-4 aspect-video w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-slate-700 shadow-xl bg-black">
+        <div class="my-4 aspect-video w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-black">
           <iframe 
             src="https://www.youtube-nocookie.com/embed/${ytId}" 
             class="w-full h-full" 
@@ -272,12 +272,12 @@ export default function RichTextEditor({
             allowfullscreen>
           </iframe>
         </div>
-        ${videoCaption ? `<p class="text-center text-xs text-slate-400 italic mb-3">${videoCaption}</p>` : ''}
+        ${videoCaption ? `<p class="text-center text-xs text-slate-500 italic mb-3">${videoCaption}</p>` : ''}
         <p><br></p>
       `;
     } else if (vimeoId) {
       videoHtml = `
-        <div class="my-4 aspect-video w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-slate-700 shadow-xl bg-black">
+        <div class="my-4 aspect-video w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-black">
           <iframe 
             src="https://player.vimeo.com/video/${vimeoId}" 
             class="w-full h-full" 
@@ -286,18 +286,18 @@ export default function RichTextEditor({
             allowfullscreen>
           </iframe>
         </div>
-        ${videoCaption ? `<p class="text-center text-xs text-slate-400 italic mb-3">${videoCaption}</p>` : ''}
+        ${videoCaption ? `<p class="text-center text-xs text-slate-500 italic mb-3">${videoCaption}</p>` : ''}
         <p><br></p>
       `;
     } else {
       videoHtml = `
-        <div class="my-4 w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-slate-700 shadow-xl bg-black">
+        <div class="my-4 w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-black">
           <video controls class="w-full h-auto rounded-2xl">
             <source src="${videoUrl}" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
-        ${videoCaption ? `<p class="text-center text-xs text-slate-400 italic mb-3">${videoCaption}</p>` : ''}
+        ${videoCaption ? `<p class="text-center text-xs text-slate-500 italic mb-3">${videoCaption}</p>` : ''}
         <p><br></p>
       `;
     }
@@ -310,21 +310,21 @@ export default function RichTextEditor({
 
   const handleInsertTable = () => {
     const tableHtml = `
-      <table class="w-full my-3 border border-slate-700 text-xs">
+      <table class="w-full my-3 border border-slate-200 text-xs">
         <thead>
-          <tr class="bg-slate-800 text-slate-200">
-            <th class="border border-slate-700 p-2 font-bold text-left">Feature / Specification</th>
-            <th class="border border-slate-700 p-2 font-bold text-left">Details</th>
+          <tr class="bg-slate-100 text-slate-800">
+            <th class="border border-slate-200 p-2 font-bold text-left">Feature / Specification</th>
+            <th class="border border-slate-200 p-2 font-bold text-left">Details</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="border border-slate-700 p-2 text-slate-300">Model</td>
-            <td class="border border-slate-700 p-2 text-slate-300">Specification value</td>
+            <td class="border border-slate-200 p-2 text-slate-700 font-medium">Model</td>
+            <td class="border border-slate-200 p-2 text-slate-800">Specification value</td>
           </tr>
           <tr>
-            <td class="border border-slate-700 p-2 text-slate-300">Warranty</td>
-            <td class="border border-slate-700 p-2 text-slate-300">Official Brand Warranty</td>
+            <td class="border border-slate-200 p-2 text-slate-700 font-medium">Warranty</td>
+            <td class="border border-slate-200 p-2 text-slate-800">Official Brand Warranty</td>
           </tr>
         </tbody>
       </table>
@@ -336,12 +336,12 @@ export default function RichTextEditor({
   return (
     <div className={`rounded-2xl border transition-all ${
       isFullscreen 
-        ? 'fixed inset-4 z-50 bg-slate-950/95 backdrop-blur-md border-amber-500/50 shadow-2xl flex flex-col' 
-        : 'bg-slate-950 border-slate-800 shadow-inner'
+        ? 'fixed inset-4 z-50 bg-white/95 backdrop-blur-md border-indigo-500/50 shadow-2xl flex flex-col' 
+        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xs'
     } ${className}`}>
       
       {/* TOOLBAR */}
-      <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-slate-900/90 border-b border-slate-800 rounded-t-2xl select-none">
+      <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-slate-50/90 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 rounded-t-2xl select-none">
         
         {/* Left Toolbar Items */}
         <div className="flex flex-wrap items-center gap-0.5">
@@ -355,9 +355,9 @@ export default function RichTextEditor({
               }
             }}
             defaultValue=""
-            className="bg-slate-950 text-slate-200 text-xs font-bold px-2 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 focus:border-amber-500 focus:outline-none mr-1"
+            className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 focus:border-indigo-500 focus:outline-hidden mr-1"
           >
-            <option value="" disabled>Formatting</option>
+            <option value="" disabled>Paragraph</option>
             <option value="<p>">Paragraph (Normal)</option>
             <option value="<h2>">Heading 2 (Section)</option>
             <option value="<h3>">Heading 3 (Subsection)</option>
@@ -367,11 +367,11 @@ export default function RichTextEditor({
           </select>
 
           {/* Group 1: Basic Inline Styles */}
-          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-800/80">
+          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={() => exec('bold')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Bold (Ctrl+B)"
             >
               <Bold className="w-4 h-4" />
@@ -379,7 +379,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('italic')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Italic (Ctrl+I)"
             >
               <Italic className="w-4 h-4" />
@@ -387,7 +387,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('underline')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Underline (Ctrl+U)"
             >
               <Underline className="w-4 h-4" />
@@ -395,7 +395,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('strikeThrough')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Strikethrough"
             >
               <Strikethrough className="w-4 h-4" />
@@ -403,11 +403,11 @@ export default function RichTextEditor({
           </div>
 
           {/* Group 2: Lists & Structure */}
-          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-800/80">
+          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={() => exec('insertUnorderedList')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Bulleted List"
             >
               <List className="w-4 h-4" />
@@ -415,7 +415,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('insertOrderedList')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Numbered List"
             >
               <ListOrdered className="w-4 h-4" />
@@ -423,7 +423,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('insertHorizontalRule')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Horizontal Divider"
             >
               <Minus className="w-4 h-4" />
@@ -431,7 +431,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={handleInsertTable}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-amber-400 hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Insert Spec Table"
             >
               <Table className="w-4 h-4" />
@@ -439,21 +439,21 @@ export default function RichTextEditor({
           </div>
 
           {/* Group 3: MEDIA (IMAGE & VIDEO) */}
-          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-800/80">
+          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={handleOpenImageModal}
-              className="p-1.5 rounded-lg text-amber-400 hover:text-white hover:bg-amber-500/20 border border-amber-500/30 transition-colors flex items-center space-x-1 font-bold text-[11px]"
-              title="Add Media from Library or Upload (WordPress style)"
+              className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 transition-colors flex items-center space-x-1 font-bold text-[11px]"
+              title="Add Media from Library or Upload"
             >
               <ImageIcon className="w-3.5 h-3.5" />
-              <span>Add Media</span>
+              <span>Media</span>
             </button>
 
             <button
               type="button"
               onClick={() => setVideoModalOpen(true)}
-              className="p-1.5 rounded-lg text-rose-400 hover:text-white hover:bg-rose-500/20 border border-rose-500/30 transition-colors flex items-center space-x-1 font-bold text-[11px]"
+              className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 transition-colors flex items-center space-x-1 font-bold text-[11px]"
               title="Insert Video (YouTube, Vimeo, MP4)"
             >
               <Film className="w-3.5 h-3.5" />
@@ -462,11 +462,11 @@ export default function RichTextEditor({
           </div>
 
           {/* Group 4: Alignment */}
-          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-800/80">
+          <div className="flex items-center space-x-0.5 px-1 border-r border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={() => exec('justifyLeft')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Align Left"
             >
               <AlignLeft className="w-4 h-4" />
@@ -474,7 +474,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('justifyCenter')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Align Center"
             >
               <AlignCenter className="w-4 h-4" />
@@ -482,7 +482,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('justifyRight')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Align Right"
             >
               <AlignRight className="w-4 h-4" />
@@ -494,7 +494,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => setLinkModalOpen(true)}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-amber-400 hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Insert Link"
             >
               <LinkIcon className="w-4 h-4" />
@@ -502,7 +502,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('unlink')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Remove Link"
             >
               <Unlink className="w-4 h-4" />
@@ -510,7 +510,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => exec('removeFormat')}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Clear Formatting"
             >
               <RemoveFormatting className="w-4 h-4" />
@@ -523,7 +523,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => exec('undo')}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Undo"
           >
             <Undo className="w-4 h-4" />
@@ -531,7 +531,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => exec('redo')}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Redo"
           >
             <Redo className="w-4 h-4" />
@@ -543,8 +543,8 @@ export default function RichTextEditor({
             onClick={() => setIsSourceMode(!isSourceMode)}
             className={`px-2 py-1 rounded-lg text-xs font-mono font-bold flex items-center space-x-1 transition-all ${
               isSourceMode 
-                ? 'bg-amber-500 text-slate-950 shadow-xs' 
-                : 'bg-slate-950 text-slate-300 hover:text-white border border-slate-800'
+                ? 'bg-indigo-600 text-white shadow-xs' 
+                : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50'
             }`}
             title="Toggle HTML Source Code View"
           >
@@ -556,23 +556,23 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Editor'}
           >
-            {isFullscreen ? <Minimize2 className="w-4 h-4 text-amber-400" /> : <Maximize2 className="w-4 h-4" />}
+            {isFullscreen ? <Minimize2 className="w-4 h-4 text-indigo-600" /> : <Maximize2 className="w-4 h-4" />}
           </button>
         </div>
       </div>
 
       {/* EDITOR CANVAS */}
-      <div className={`p-4 flex-1 overflow-y-auto ${isFullscreen ? 'h-full' : ''}`}>
+      <div className={`p-4 flex-1 overflow-y-auto bg-white dark:bg-slate-900 ${isFullscreen ? 'h-full' : ''}`}>
         {isSourceMode ? (
           <textarea
             value={sourceCode}
             onChange={handleSourceChange}
             placeholder="Edit raw HTML description..."
             style={{ minHeight }}
-            className="w-full h-full bg-slate-950 text-amber-300 font-mono text-xs p-3 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none leading-relaxed"
+            className="w-full h-full bg-slate-50 dark:bg-slate-950 text-indigo-700 dark:text-indigo-300 font-mono text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:outline-hidden leading-relaxed"
           />
         ) : (
           <div
@@ -582,45 +582,45 @@ export default function RichTextEditor({
             onBlur={handleInput}
             style={{ minHeight }}
             data-placeholder={placeholder}
-            className="prose prose-invert max-w-none text-slate-100 text-xs leading-relaxed outline-none focus:outline-none min-h-[240px] [&:empty:before]:content-[attr(data-placeholder)] [&:empty:before]:text-slate-600 [&:empty:before]:pointer-events-none [&_h2]:text-base [&_h2]:font-black [&_h2]:text-white [&_h2]:my-3 [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-amber-400 [&_h3]:my-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_p]:my-2 [&_blockquote]:border-l-2 [&_blockquote]:border-amber-500 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-400 [&_table]:border-collapse [&_img]:rounded-2xl [&_img]:my-3"
+            className="prose max-w-none text-slate-900 dark:text-slate-100 text-xs leading-relaxed outline-hidden focus:outline-hidden min-h-[240px] [&:empty:before]:content-[attr(data-placeholder)] [&:empty:before]:text-slate-400 [&:empty:before]:pointer-events-none [&_h2]:text-base [&_h2]:font-bold [&_h2]:text-slate-900 dark:[&_h2]:text-white [&_h2]:my-3 [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-indigo-600 dark:[&_h3]:text-indigo-400 [&_h3]:my-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_p]:my-2 [&_blockquote]:border-l-2 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-600 dark:[&_blockquote]:text-slate-400 [&_table]:border-collapse [&_img]:rounded-2xl [&_img]:my-3"
           />
         )}
       </div>
 
       {/* FOOTER STATUS BAR */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-900/60 border-t border-slate-800/80 rounded-b-2xl text-[10px] font-mono text-slate-500">
+      <div className="flex items-center justify-between px-4 py-2 bg-slate-50/80 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 rounded-b-2xl text-[10px] font-mono text-slate-500">
         <div className="flex items-center space-x-3">
-          <span>Words: <strong className="text-slate-300">{wordCount}</strong></span>
-          <span>Characters: <strong className="text-slate-300">{charCount}</strong></span>
+          <span>Words: <strong className="text-slate-800 dark:text-slate-200">{wordCount}</strong></span>
+          <span>Characters: <strong className="text-slate-800 dark:text-slate-200">{charCount}</strong></span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="flex items-center space-x-1 text-slate-400">
-            <Sparkles className="w-3 h-3 text-amber-500" />
-            <span>TechMarket Rich HTML Engine</span>
+          <span className="flex items-center space-x-1 text-slate-500">
+            <Sparkles className="w-3 h-3 text-indigo-600" />
+            <span>WYSIWYG & HTML Supported</span>
           </span>
         </div>
       </div>
 
       {/* 1. WORDPRESS-STYLE MEDIA MODAL */}
       {imageModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-5xl w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 z-50">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-5xl w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden">
             
             {/* Modal Top Bar */}
-            <div className="flex items-center justify-between px-6 py-3.5 bg-slate-950 border-b border-slate-800 shrink-0">
+            <div className="flex items-center justify-between px-6 py-3.5 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 shrink-0">
               <div className="flex items-center space-x-3">
-                <span className="font-black text-white text-sm uppercase tracking-tight flex items-center space-x-2">
-                  <ImageIcon className="w-4 h-4 text-amber-500" />
+                <span className="font-bold text-slate-900 dark:text-slate-100 text-sm font-heading flex items-center space-x-2">
+                  <ImageIcon className="w-4 h-4 text-indigo-600" />
                   <span>Media Library & Attachment Details</span>
                 </span>
 
-                {/* WP-style Tab Selector */}
-                <div className="flex items-center bg-slate-900 p-0.5 rounded-xl border border-slate-800 text-xs">
+                {/* Tab Selector */}
+                <div className="flex items-center bg-white dark:bg-slate-900 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
                   <button
                     type="button"
                     onClick={() => setImageTab('library')}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                      imageTab === 'library' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-400 hover:text-white'
+                      imageTab === 'library' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                     }`}
                   >
                     Media Library
@@ -629,7 +629,7 @@ export default function RichTextEditor({
                     type="button"
                     onClick={() => setImageTab('upload')}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                      imageTab === 'upload' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-400 hover:text-white'
+                      imageTab === 'upload' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                     }`}
                   >
                     Upload Files
@@ -638,7 +638,7 @@ export default function RichTextEditor({
                     type="button"
                     onClick={() => setImageTab('url')}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                      imageTab === 'url' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-400 hover:text-white'
+                      imageTab === 'url' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                     }`}
                   >
                     Insert from URL
@@ -649,24 +649,24 @@ export default function RichTextEditor({
               <button
                 type="button"
                 onClick={() => setImageModalOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* TAB: MEDIA LIBRARY (WordPress 2-Column Split) */}
+            {/* TAB: MEDIA LIBRARY */}
             {imageTab === 'library' && (
               <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
                 
                 {/* Left Side: Filter Bar + Media Grid */}
-                <div className="flex-1 flex flex-col border-r border-slate-800/80 overflow-hidden">
+                <div className="flex-1 flex flex-col border-r border-slate-200 dark:border-slate-800 overflow-hidden">
                   
                   {/* Filters Header */}
-                  <div className="p-3 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                  <div className="p-3 bg-slate-50/50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
                     <div className="flex items-center space-x-2 flex-1 max-w-sm">
                       <div className="relative w-full">
-                        <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
+                        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                         <input
                           type="text"
                           value={mediaSearch}
@@ -675,7 +675,7 @@ export default function RichTextEditor({
                             fetchMediaLibrary(e.target.value, selectedFolder);
                           }}
                           placeholder="Search media by title or filename..."
-                          className="w-full bg-slate-950 text-slate-100 pl-8.5 pr-3 py-1.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs font-mono"
+                          className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-8.5 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs font-medium"
                         />
                       </div>
                     </div>
@@ -687,7 +687,7 @@ export default function RichTextEditor({
                           setSelectedFolder(e.target.value);
                           fetchMediaLibrary(mediaSearch, e.target.value);
                         }}
-                        className="bg-slate-950 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-800 focus:border-amber-500"
+                        className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500"
                       >
                         <option value="all">All Media Folders</option>
                         <option value="products">Products ({mediaList.filter(m => m.folder === 'products').length})</option>
@@ -699,9 +699,9 @@ export default function RichTextEditor({
                   </div>
 
                   {/* Media Grid */}
-                  <div className="flex-1 p-4 overflow-y-auto bg-slate-950/60">
+                  <div className="flex-1 p-4 overflow-y-auto bg-slate-50/30 dark:bg-slate-900/60">
                     {mediaLoading ? (
-                      <div className="h-full flex items-center justify-center text-slate-500 text-xs font-mono">
+                      <div className="h-full flex items-center justify-center text-slate-400 text-xs font-mono">
                         Loading media catalog...
                       </div>
                     ) : mediaList.length > 0 ? (
@@ -713,22 +713,21 @@ export default function RichTextEditor({
                               key={m.id}
                               type="button"
                               onClick={() => handleSelectMediaItem(m)}
-                              className={`aspect-square rounded-2xl bg-slate-950 border p-2 flex flex-col items-center justify-center relative group transition-all cursor-pointer ${
+                              className={`aspect-square rounded-2xl bg-white dark:bg-slate-900 border p-2 flex flex-col items-center justify-center relative group transition-all cursor-pointer ${
                                 isSelected 
-                                  ? 'border-amber-500 ring-4 ring-amber-500/20 shadow-lg shadow-amber-500/10' 
-                                  : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                                  ? 'border-indigo-600 ring-4 ring-indigo-500/20 shadow-md' 
+                                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50'
                               }`}
                             >
                               <img src={m.url} alt={m.title} className="max-h-full max-w-full object-contain" />
                               
-                              {/* Selected Checkmark Badge */}
                               {isSelected && (
-                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow-md">
+                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                                   <Check className="w-3.5 h-3.5 stroke-[3]" />
                                 </div>
                               )}
 
-                              <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1.5 inset-x-1.5 bg-slate-950/95 text-[10px] text-slate-300 font-mono truncate px-1.5 py-0.5 rounded text-center border border-slate-800">
+                              <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1.5 inset-x-1.5 bg-white/95 dark:bg-slate-900/95 text-[10px] text-slate-700 dark:text-slate-300 font-mono truncate px-1.5 py-0.5 rounded text-center border border-slate-200 dark:border-slate-800 shadow-2xs">
                                 {m.title || m.filename}
                               </div>
                             </button>
@@ -736,8 +735,8 @@ export default function RichTextEditor({
                         })}
                       </div>
                     ) : (
-                      <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-2">
-                        <FileImage className="w-10 h-10 text-slate-700" />
+                      <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-2">
+                        <FileImage className="w-10 h-10 text-slate-300" />
                         <span className="text-xs">No media files found matching your search.</span>
                       </div>
                     )}
@@ -745,56 +744,56 @@ export default function RichTextEditor({
                 </div>
 
                 {/* Right Side: WordPress Attachment Details Panel */}
-                <div className="w-full lg:w-80 bg-slate-900/90 p-5 space-y-4 overflow-y-auto text-xs shrink-0 border-t lg:border-t-0 border-slate-800">
-                  <div className="text-xs font-black text-white uppercase tracking-wider pb-2 border-b border-slate-800">
+                <div className="w-full lg:w-80 bg-white dark:bg-slate-900 p-5 space-y-4 overflow-y-auto text-xs shrink-0 border-t lg:border-t-0 border-slate-200 dark:border-slate-800">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider pb-2 border-b border-slate-100 dark:border-slate-800 font-heading">
                     Attachment Details
                   </div>
 
                   {selectedMedia ? (
                     <div className="space-y-4">
                       {/* Image Preview Box */}
-                      <div className="w-full h-36 rounded-2xl bg-slate-950 border border-slate-800 p-2 flex items-center justify-center">
+                      <div className="w-full h-36 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2 flex items-center justify-center">
                         <img src={selectedMedia.url} alt={selectedMedia.title} className="max-h-full max-w-full object-contain" />
                       </div>
 
                       {/* File Metadata */}
-                      <div className="text-[11px] font-mono text-slate-400 space-y-1 pb-3 border-b border-slate-800">
-                        <div className="text-slate-200 font-bold truncate">{selectedMedia.title || selectedMedia.filename}</div>
-                        <div>Folder: <span className="text-amber-400">{selectedMedia.folder || 'products'}</span></div>
+                      <div className="text-[11px] font-mono text-slate-500 space-y-1 pb-3 border-b border-slate-100 dark:border-slate-800">
+                        <div className="text-slate-900 dark:text-slate-100 font-bold truncate">{selectedMedia.title || selectedMedia.filename}</div>
+                        <div>Folder: <span className="text-indigo-600 font-bold">{selectedMedia.folder || 'products'}</span></div>
                         {selectedMedia.formatted_size && <div>Size: {selectedMedia.formatted_size}</div>}
                       </div>
 
                       {/* Alt Text Input */}
                       <div>
-                        <label className="block text-slate-300 font-bold mb-1 text-[11px]">Alt Text (Alternative Text)</label>
+                        <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1 text-[11px]">Alt Text (Alternative Text)</label>
                         <input
                           type="text"
                           value={imageAlt}
                           onChange={(e) => setImageAlt(e.target.value)}
                           placeholder="Describe the image for accessibility & SEO..."
-                          className="w-full bg-slate-950 text-slate-100 p-2 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
                         />
                       </div>
 
                       {/* Caption Input */}
                       <div>
-                        <label className="block text-slate-300 font-bold mb-1 text-[11px]">Caption</label>
+                        <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1 text-[11px]">Caption</label>
                         <textarea
                           rows={2}
                           value={imageCaption}
                           onChange={(e) => setImageCaption(e.target.value)}
                           placeholder="Image caption displayed below photo..."
-                          className="w-full bg-slate-950 text-slate-100 p-2 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
                         />
                       </div>
 
                       {/* Alignment */}
                       <div>
-                        <label className="block text-slate-300 font-bold mb-1 text-[11px]">Alignment</label>
+                        <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1 text-[11px]">Alignment</label>
                         <select
                           value={imageAlign}
                           onChange={(e) => setImageAlign(e.target.value)}
-                          className="w-full bg-slate-950 text-slate-100 p-2 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
                         >
                           <option value="center">Center (Full-Width Block)</option>
                           <option value="left">Left (Wrap text right)</option>
@@ -805,11 +804,11 @@ export default function RichTextEditor({
 
                       {/* Size */}
                       <div>
-                        <label className="block text-slate-300 font-bold mb-1 text-[11px]">Size</label>
+                        <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1 text-[11px]">Size</label>
                         <select
                           value={imageSize}
                           onChange={(e) => setImageSize(e.target.value)}
-                          className="w-full bg-slate-950 text-slate-100 p-2 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
                         >
                           <option value="full">Full Size (Original resolution)</option>
                           <option value="medium">Medium (450px wide)</option>
@@ -818,7 +817,7 @@ export default function RichTextEditor({
                       </div>
                     </div>
                   ) : (
-                    <div className="p-8 text-center text-slate-500 text-xs">
+                    <div className="p-8 text-center text-slate-400 text-xs">
                       Select an image from the library on the left to inspect its details.
                     </div>
                   )}
@@ -828,14 +827,14 @@ export default function RichTextEditor({
 
             {/* TAB: UPLOAD FILES */}
             {imageTab === 'upload' && (
-              <div className="flex-1 p-8 flex flex-col items-center justify-center bg-slate-950">
-                <div className="border-2 border-dashed border-slate-800 hover:border-amber-500/50 rounded-3xl p-12 text-center max-w-lg w-full space-y-4 transition-colors">
-                  <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto">
+              <div className="flex-1 p-8 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-900">
+                <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 rounded-3xl p-12 text-center max-w-lg w-full space-y-4 transition-colors bg-white dark:bg-slate-800 shadow-2xs">
+                  <div className="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
                     <Upload className="w-8 h-8" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">Upload New Media Asset</h3>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">Upload New Media Asset</h3>
+                    <p className="text-xs text-slate-500 mt-1">
                       Upload JPEG, PNG, WebP, or SVG images up to 10MB to save in the library.
                     </p>
                   </div>
@@ -844,7 +843,7 @@ export default function RichTextEditor({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploading}
-                      className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase cursor-pointer transition-all shadow-md shadow-amber-500/10"
+                      className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs uppercase cursor-pointer transition-all shadow-xs"
                     >
                       {uploading ? 'Uploading...' : 'Select File from Computer'}
                     </button>
@@ -863,35 +862,35 @@ export default function RichTextEditor({
             {/* TAB: INSERT FROM URL */}
             {imageTab === 'url' && (
               <div className="flex-1 p-8 max-w-xl mx-auto w-full space-y-4">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wide">Insert External Image URL</h3>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wide font-heading">Insert External Image URL</h3>
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Image Web Address (URL) *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Image Web Address (URL) *</label>
                   <input
                     type="text"
                     value={externalUrl}
                     onChange={(e) => setExternalUrl(e.target.value)}
                     placeholder="https://example.com/assets/banner.jpg"
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 font-mono text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Alt Text</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Alt Text</label>
                   <input
                     type="text"
                     value={imageAlt}
                     onChange={(e) => setImageAlt(e.target.value)}
                     placeholder="Describe image..."
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
                   />
                 </div>
               </div>
             )}
 
             {/* Modal Bottom Action Bar */}
-            <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between shrink-0">
-              <div className="text-xs text-slate-400 font-mono">
+            <div className="px-6 py-3 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <div className="text-xs text-slate-500 font-mono">
                 {selectedMedia ? (
-                  <span>Selected: <strong className="text-white">{selectedMedia.title || selectedMedia.filename}</strong></span>
+                  <span>Selected: <strong className="text-slate-900 dark:text-slate-100">{selectedMedia.title || selectedMedia.filename}</strong></span>
                 ) : (
                   <span>No media selected</span>
                 )}
@@ -901,7 +900,7 @@ export default function RichTextEditor({
                 <button
                   type="button"
                   onClick={() => setImageModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs cursor-pointer"
+                  className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -909,7 +908,7 @@ export default function RichTextEditor({
                   type="button"
                   onClick={handleInsertImage}
                   disabled={imageTab === 'url' ? !externalUrl : !selectedMedia}
-                  className="px-6 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-black text-xs uppercase flex items-center space-x-1.5 cursor-pointer disabled:opacity-40 transition-all shadow-md shadow-amber-500/10"
+                  className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs uppercase flex items-center space-x-1.5 cursor-pointer disabled:opacity-40 transition-all shadow-xs"
                 >
                   <Check className="w-4 h-4 stroke-[3]" />
                   <span>Insert into Description</span>
@@ -923,29 +922,29 @@ export default function RichTextEditor({
 
       {/* 2. INSERT VIDEO MODAL */}
       {videoModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-xs">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span className="font-black text-white text-sm uppercase tracking-tight flex items-center space-x-2">
-                <PlaySquare className="w-4 h-4 text-rose-500" />
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-xs">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <span className="font-bold text-slate-900 dark:text-slate-100 text-sm font-heading flex items-center space-x-2">
+                <PlaySquare className="w-4 h-4 text-rose-600" />
                 <span>Embed Product Video / Unboxing</span>
               </span>
               <button
                 type="button"
                 onClick={() => setVideoModalOpen(false)}
-                className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
+                className="p-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-slate-400 text-xs">
+            <p className="text-slate-500 text-xs leading-relaxed">
               Supports <strong>YouTube</strong>, <strong>Vimeo</strong>, or direct <strong>MP4</strong> video URLs. Generates responsive high-resolution video player.
             </p>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Video URL *</label>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Video URL *</label>
                 <input
                   type="text"
                   autoFocus
@@ -953,37 +952,37 @@ export default function RichTextEditor({
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=XXXXX or https://youtu.be/XXXXX"
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 font-mono text-xs"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Video Caption / Title (Optional)</label>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Video Caption / Title (Optional)</label>
                 <input
                   type="text"
                   value={videoCaption}
                   onChange={(e) => setVideoCaption(e.target.value)}
                   placeholder="e.g. Official TechMarket Unboxing & Performance Review"
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
                 />
               </div>
             </div>
 
             {/* Video URL Preview indicator */}
             {videoUrl && (
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono flex items-center space-x-2 text-emerald-400">
-                <PlaySquare className="w-4 h-4 text-rose-500" />
+              <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] font-mono flex items-center space-x-2 text-emerald-600">
+                <PlaySquare className="w-4 h-4 text-rose-600" />
                 <span>
                   {parseYouTubeId(videoUrl) ? `YouTube Video ID: ${parseYouTubeId(videoUrl)}` : (parseVimeoId(videoUrl) ? `Vimeo ID: ${parseVimeoId(videoUrl)}` : 'Direct Video URL')}
                 </span>
               </div>
             )}
 
-            <div className="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+            <div className="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setVideoModalOpen(false)}
-                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold"
+                className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 rounded-xl font-bold"
               >
                 Cancel
               </button>
@@ -991,7 +990,7 @@ export default function RichTextEditor({
                 type="button"
                 onClick={handleInsertVideo}
                 disabled={!videoUrl}
-                className="px-5 py-2 bg-rose-500 hover:bg-rose-400 text-white rounded-xl font-black disabled:opacity-50 uppercase flex items-center space-x-1.5"
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold disabled:opacity-50 uppercase flex items-center space-x-1.5 shadow-xs"
               >
                 <Film className="w-3.5 h-3.5" />
                 <span>Embed Video</span>
@@ -1003,50 +1002,50 @@ export default function RichTextEditor({
 
       {/* 3. INSERT LINK MODAL */}
       {linkModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl text-xs">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span className="font-bold text-white flex items-center space-x-1.5">
-                <LinkIcon className="w-4 h-4 text-amber-500" />
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl text-xs">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5 font-heading">
+                <LinkIcon className="w-4 h-4 text-indigo-600" />
                 <span>Insert Hyperlink</span>
               </span>
               <button
                 type="button"
                 onClick={() => setLinkModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-400 hover:text-slate-700"
               >
                 ✕
               </button>
             </div>
 
             <div>
-              <label className="block text-slate-300 font-bold mb-1">Target URL *</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Target URL *</label>
               <input
                 type="text"
                 autoFocus
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://techmarket.com.bd/warranty or https://..."
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 font-mono text-xs"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 font-mono text-xs"
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-bold mb-1">Link Display Text (Optional)</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Link Display Text (Optional)</label>
               <input
                 type="text"
                 value={linkText}
                 onChange={(e) => setLinkText(e.target.value)}
                 placeholder="Click here for warranty policy..."
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-indigo-500 text-xs"
               />
             </div>
 
-            <div className="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+            <div className="flex justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setLinkModalOpen(false)}
-                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold"
+                className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold"
               >
                 Cancel
               </button>
@@ -1054,7 +1053,7 @@ export default function RichTextEditor({
                 type="button"
                 onClick={handleInsertLink}
                 disabled={!linkUrl}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-black disabled:opacity-50"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold disabled:opacity-50 shadow-xs"
               >
                 Insert Link
               </button>

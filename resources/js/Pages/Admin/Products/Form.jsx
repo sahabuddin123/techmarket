@@ -1,10 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { Head, useForm, Link } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import PageHeader from '../../../Components/Admin/PageHeader';
-import SectionCard from '../../../Components/Admin/SectionCard';
-import StatusBadge from '../../../Components/Admin/StatusBadge';
-import SEOScorePanel from '../../../Components/Admin/SEOScorePanel';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Head, useForm, Link, router } from '@inertiajs/react';
+import AdminShell from '@/Components/Admin/AdminShell';
+import SEOScorePanel from '@/Components/Admin/SEOScorePanel';
 import MediaPicker from '@/Components/Admin/MediaPicker';
 import RichTextEditor from '@/Components/Admin/RichTextEditor';
 import { 
@@ -12,7 +9,9 @@ import {
   DollarSign, Boxes, Layers, Cpu, Search, CheckCircle2, ShieldCheck,
   Share2, Eye, Sparkles, ExternalLink, AlertTriangle, HelpCircle,
   FileText, Globe, Tag, Check, RefreshCw, ChevronUp, ChevronDown,
-  Edit2, ListPlus, Sliders, Table2, LayoutTemplate, X, Copy, Zap
+  Edit2, ListPlus, Sliders, Table2, LayoutTemplate, X, Copy, Zap,
+  ChevronRight, Calendar, ChevronDown as ChevronDownIcon, FolderTree,
+  TrendingUp, BarChart3, AlertCircle, ShoppingBag, Radio, ArrowUpRight
 } from 'lucide-react';
 
 export default function ProductForm({ 
@@ -56,7 +55,7 @@ export default function ProductForm({
     return [];
   }, [product]);
 
-  const { data, setData, post, put, processing, errors } = useForm({
+  const { data, setData, post, put, processing, errors, isDirty } = useForm({
     title: product?.title || '',
     sku: product?.sku || '',
     category_id: product?.category_id || (categories[0]?.id || ''),
@@ -110,561 +109,697 @@ export default function ProductForm({
   // Common quick bullet presets
   const quickBulletPresets = [
     'Model: ',
-    'Interface: USB',
+    'Interface: USB Type-C',
     'Connectivity: Wired / Wireless',
     'Sensor / DPI: ',
     'Battery Life: ',
     'Weight: ',
-    'Compatibility: Windows / Mac / Android',
-    'Warranty: 1 Year Official'
+    'Compatibility: Windows 11 / Mac',
+    'Warranty: 2 Years Official'
   ];
 
   // Hardware templates for Full Specs
   const hardwareTemplates = {
     peripherals: {
-      name: 'Gaming & Peripherals (Gamepad / Mouse / Keyboard)',
+      name: 'Gaming & Peripherals (Mouse / Keyboard / Headset)',
       groups: [
         {
           group: 'Main Features',
           attributes: [
             { name: 'Model', value: '' },
-            { name: 'Connection Type', value: 'Wired USB / 2.4GHz Wireless' },
-            { name: 'Buttons / Keys', value: 'Standard Layout' },
-            { name: 'Feedback / Vibration', value: 'Dual Vibration Motors' },
+            { name: 'Connection Type', value: 'Wired USB / 2.4GHz Wireless / Bluetooth' },
+            { name: 'Lighting', value: 'RGB Chroma Backlit' },
+            { name: 'Sensor / Switch', value: 'Optical Gaming Sensor' },
           ]
         },
         {
           group: 'Physical Specifications',
           attributes: [
-            { name: 'Cable Length', value: '1.8 Meter' },
+            { name: 'Cable Length', value: '1.8m Braided Fiber' },
             { name: 'Dimensions', value: '' },
             { name: 'Weight', value: '' },
-            { name: 'Color', value: 'Black / Dark Blue' },
+            { name: 'Color', value: 'Black' },
           ]
         },
         {
-          group: 'Compatibility & Warranty',
+          group: 'Warranty Information',
           attributes: [
-            { name: 'System Requirements', value: 'Windows 11, Windows 10, Windows 8, Windows 7' },
-            { name: 'Warranty', value: '1 Year Official Brand Warranty' },
+            { name: 'Warranty Period', value: '2 Years Official Manufacturer Warranty' },
           ]
         }
       ]
     },
-    monitor: {
-      name: 'Monitor & Display',
+    motherboard: {
+      name: 'Motherboard (Intel / AMD Chipset)',
       groups: [
         {
-          group: 'Display Specifications',
+          group: 'Processor Support',
           attributes: [
-            { name: 'Screen Size', value: '24 Inch / 27 Inch' },
-            { name: 'Panel Type', value: 'IPS / VA' },
-            { name: 'Resolution', value: '1920 x 1080 (FHD)' },
-            { name: 'Refresh Rate', value: '100Hz / 180Hz' },
-            { name: 'Response Time', value: '1ms (GTG)' },
-            { name: 'Brightness', value: '250 cd/m²' },
+            { name: 'CPU Socket', value: 'LGA1700 / AM5' },
+            { name: 'Supported Processors', value: '14th/13th/12th Gen Intel Core or AMD Ryzen 7000/8000' },
+            { name: 'Chipset', value: 'Intel Z790 / AMD B650' },
           ]
         },
         {
-          group: 'Connectivity & I/O Ports',
+          group: 'Memory & Expansion',
           attributes: [
-            { name: 'HDMI', value: '1x HDMI 1.4 / 2.0' },
-            { name: 'DisplayPort', value: '1x DP 1.2' },
-            { name: 'Audio Jack', value: '3.5mm Headphone Out' },
+            { name: 'Memory Type', value: 'DDR5 7200+(OC) MHz' },
+            { name: 'Memory Slots', value: '4 x DIMM (Max 192GB)' },
+            { name: 'PCIe Slots', value: '1 x PCIe 5.0 x16, 2 x PCIe 4.0 x16' },
+            { name: 'M.2 Storage', value: '4 x M.2 PCIe 4.0 NVMe' },
           ]
         },
         {
-          group: 'Warranty Details',
+          group: 'Connectivity & Audio',
           attributes: [
-            { name: 'Warranty', value: '3 Years (Panel, Parts & Service)' }
+            { name: 'LAN', value: '2.5G Realtek Ethernet' },
+            { name: 'Wireless', value: 'Wi-Fi 6E + Bluetooth 5.3' },
+            { name: 'Audio', value: 'Realtek 7.1 Surround High Definition' },
           ]
         }
       ]
     },
     gpu: {
-      name: 'Graphics Card (GPU)',
+      name: 'Graphics Card (NVIDIA / AMD Radeon)',
       groups: [
         {
-          group: 'GPU Architecture',
+          group: 'GPU Specifications',
           attributes: [
-            { name: 'Chipset', value: '' },
-            { name: 'Boost Clock', value: '' },
-            { name: 'CUDA Cores / Stream Processors', value: '' },
+            { name: 'Graphics Engine', value: 'NVIDIA GeForce RTX 4070 Ti SUPER' },
+            { name: 'Bus Standard', value: 'PCI Express 4.0 16x' },
+            { name: 'CUDA Cores', value: '8448 Units' },
+            { name: 'Core Clock', value: 'Boost: 2655 MHz' },
           ]
         },
         {
-          group: 'Memory Details',
+          group: 'Memory Specifications',
           attributes: [
-            { name: 'Memory Size', value: '8GB / 12GB / 16GB' },
-            { name: 'Memory Type', value: 'GDDR6 / GDDR6X' },
-            { name: 'Memory Bus', value: '128-bit / 256-bit' },
+            { name: 'Memory Size', value: '16GB GDDR6X' },
+            { name: 'Memory Bus', value: '256-bit' },
+            { name: 'Memory Speed', value: '21 Gbps' },
           ]
         },
         {
-          group: 'Power & Ports',
+          group: 'Power & Output',
           attributes: [
-            { name: 'Recommended PSU', value: '550W / 650W' },
-            { name: 'Power Connectors', value: '1x 8-pin' },
-            { name: 'Display Outputs', value: '3x DP 1.4a, 1x HDMI 2.1' },
-            { name: 'Warranty', value: '3 Years Replacement Warranty' },
+            { name: 'Recommended PSU', value: '750W' },
+            { name: 'Power Connectors', value: '1 x 16-pin (12VHPWR)' },
+            { name: 'Display Outputs', value: '3 x DisplayPort 1.4a, 1 x HDMI 2.1a' },
           ]
         }
       ]
     },
-    general: {
-      name: 'General Hardware / Audio / Accessory',
+    processor: {
+      name: 'Processor / CPU',
       groups: [
         {
-          group: 'General Information',
+          group: 'Core Specifications',
           attributes: [
-            { name: 'Brand', value: '' },
-            { name: 'Model', value: '' },
-            { name: 'Type', value: '' },
+            { name: 'Total Cores', value: '16 (8 Performance + 8 Efficient)' },
+            { name: 'Total Threads', value: '24' },
+            { name: 'Max Turbo Frequency', value: '5.60 GHz' },
+            { name: 'Base Frequency', value: '3.40 GHz' },
+            { name: 'L3 Cache', value: '30MB Intel Smart Cache' },
           ]
         },
         {
-          group: 'Key Technical Features',
+          group: 'Power & Thermal',
           attributes: [
-            { name: 'Interface', value: '' },
-            { name: 'Frequency Response', value: '' },
-            { name: 'Power / Battery', value: '' },
+            { name: 'Base Power', value: '125W' },
+            { name: 'Maximum Turbo Power', value: '253W' },
+            { name: 'Integrated Graphics', value: 'Intel UHD Graphics 770' },
+          ]
+        }
+      ]
+    },
+    monitor: {
+      name: 'Monitor Display',
+      groups: [
+        {
+          group: 'Display Panel',
+          attributes: [
+            { name: 'Screen Size', value: '27 Inch' },
+            { name: 'Resolution', value: 'QHD 2560 x 1440 Pixels' },
+            { name: 'Panel Type', value: 'Fast IPS' },
+            { name: 'Refresh Rate', value: '180Hz' },
+            { name: 'Response Time', value: '0.5ms (GTG)' },
           ]
         },
         {
-          group: 'Warranty Details',
+          group: 'Color & Brightness',
           attributes: [
-            { name: 'Warranty', value: '1 Year Official Warranty' }
+            { name: 'Color Gamut', value: '99% sRGB, 95% DCI-P3' },
+            { name: 'Brightness', value: '350 cd/m² (HDR400)' },
+            { name: 'Contrast Ratio', value: '1000:1' },
+            { name: 'Sync Technology', value: 'AMD FreeSync Premium / G-Sync Compatible' },
           ]
         }
       ]
     }
   };
 
-  // Auto SEO Generator helper
-  const handleAutoGenerateSeo = () => {
-    if (!data.title) {
-      alert('Please enter a product title first.');
-      return;
+  // Profit Margin & Discount Calculations
+  const calculatedSavings = useMemo(() => {
+    const reg = parseFloat(data.regular_price) || 0;
+    const sale = parseFloat(data.price) || 0;
+    if (reg > 0 && sale > 0 && reg > sale) {
+      const amount = reg - sale;
+      const percentage = Math.round((amount / reg) * 100);
+      return { amount, percentage };
+    }
+    return null;
+  }, [data.regular_price, data.price]);
+
+  const grossProfit = useMemo(() => {
+    const sale = parseFloat(data.price) || 0;
+    const cost = parseFloat(data.cost_price) || 0;
+    if (sale > 0 && cost > 0) {
+      const profit = sale - cost;
+      const margin = ((profit / sale) * 100).toFixed(1);
+      return { profit, margin };
+    }
+    return null;
+  }, [data.price, data.cost_price]);
+
+  // Selected Category & Brand objects
+  const selectedCategory = useMemo(() => {
+    return categories.find(c => String(c.id) === String(data.category_id));
+  }, [categories, data.category_id]);
+
+  const selectedBrand = useMemo(() => {
+    return brands.find(b => String(b.id) === String(data.brand_id));
+  }, [brands, data.brand_id]);
+
+  // Submit Handler
+  const handleSubmit = (e, forcedActiveState = null) => {
+    if (e) e.preventDefault();
+
+    if (forcedActiveState !== null) {
+      setData('is_active', forcedActiveState);
     }
 
-    const cleanTitle = data.title.trim();
-    const brandObj = brands.find(b => String(b.id) === String(data.brand_id));
-    const brandName = brandObj ? brandObj.name : '';
-
-    const autoTitle = `${cleanTitle} Price in Bangladesh | TechMarket`;
-    const autoSlug = cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const autoKeyword = cleanTitle.split(' ').slice(0, 4).join(' ');
-    const autoDesc = `Buy authentic ${cleanTitle}${brandName ? ` from ${brandName}` : ''} at the best price in Bangladesh from TechMarket. Official warranty, instant EMI, and express nationwide delivery.`;
-
-    setData(prev => ({
-      ...prev,
-      seo_title: prev.seo_title || autoTitle,
-      meta_description: prev.meta_description || autoDesc,
-      focus_keyword: prev.focus_keyword || autoKeyword,
-      seo_slug: prev.seo_slug || autoSlug,
-      og_title: prev.og_title || autoTitle,
-      og_description: prev.og_description || autoDesc,
-      og_image: prev.og_image || prev.image,
-    }));
+    if (isEditing) {
+      put(`/admin/products/${product.id}`, {
+        preserveScroll: true,
+      });
+    } else {
+      post('/admin/products', {
+        preserveScroll: true,
+      });
+    }
   };
 
-  // SEO Score Calculation
-  const seoScoreData = useMemo(() => {
-    let score = 0;
-    const checklist = [];
-
-    const effectiveTitle = data.seo_title || data.title;
-    const effectiveDesc = data.meta_description || data.description;
-    const kw = data.focus_keyword;
-
-    // 1. Title
-    if (effectiveTitle && effectiveTitle.length >= 30 && effectiveTitle.length <= 65) {
-      score += 25;
-      checklist.push({ label: 'SEO Title optimal (30-65 chars)', passed: true });
-    } else {
-      checklist.push({ label: 'SEO Title (target 30-65 chars)', passed: false });
-    }
-
-    // 2. Description
-    if (effectiveDesc && effectiveDesc.length >= 70 && effectiveDesc.length <= 160) {
-      score += 25;
-      checklist.push({ label: 'Meta description optimal (70-160 chars)', passed: true });
-    } else {
-      checklist.push({ label: 'Meta description (target 70-160 chars)', passed: false });
-    }
-
-    // 3. Focus keyword
-    if (kw && effectiveTitle.toLowerCase().includes(kw.toLowerCase())) {
-      score += 20;
-      checklist.push({ label: `Focus keyword "${kw}" in title`, passed: true });
-    } else {
-      checklist.push({ label: 'Focus keyword defined in title', passed: false });
-    }
-
-    // 4. Primary Image
-    if (data.image) {
-      score += 15;
-      checklist.push({ label: 'Showcase image attached', passed: true });
-    } else {
-      checklist.push({ label: 'Showcase image attached', passed: false });
-    }
-
-    // 5. Indexable
-    if (data.is_indexable && data.meta_robots !== 'noindex') {
-      score += 15;
-      checklist.push({ label: 'Search engine indexation enabled', passed: true });
-    } else {
-      checklist.push({ label: 'Search engine indexation enabled', passed: false });
-    }
-
-    return { score, checklist };
-  }, [data.seo_title, data.title, data.meta_description, data.description, data.focus_keyword, data.image, data.is_indexable, data.meta_robots]);
-
-  // Key Specs Highlight Handlers
-  const handleAddKeySpec = (text = newKeySpec) => {
-    const val = text.trim();
-    if (!val) return;
-    if (data.key_specs.includes(val)) return;
-    setData('key_specs', [...data.key_specs, val]);
+  // Key Spec Bullets Helpers
+  const addKeySpec = () => {
+    if (!newKeySpec.trim()) return;
+    setData('key_specs', [...data.key_specs, newKeySpec.trim()]);
     setNewKeySpec('');
   };
 
-  const handleRemoveKeySpec = (index) => {
-    setData('key_specs', data.key_specs.filter((_, i) => i !== index));
-    if (editingSpecIndex === index) {
-      setEditingSpecIndex(null);
-    }
-  };
-
-  const handleMoveKeySpec = (index, direction) => {
-    const newIdx = index + direction;
-    if (newIdx < 0 || newIdx >= data.key_specs.length) return;
-    const updated = [...data.key_specs];
-    const [moved] = updated.splice(index, 1);
-    updated.splice(newIdx, 0, moved);
+  const removeKeySpec = (index) => {
+    const updated = data.key_specs.filter((_, i) => i !== index);
     setData('key_specs', updated);
   };
 
-  const handleStartEditKeySpec = (index) => {
-    setEditingSpecIndex(index);
-    setEditingSpecText(data.key_specs[index]);
-  };
-
-  const handleSaveEditKeySpec = (index) => {
-    if (!editingSpecText.trim()) {
-      handleRemoveKeySpec(index);
-    } else {
-      const updated = [...data.key_specs];
-      updated[index] = editingSpecText.trim();
-      setData('key_specs', updated);
-    }
+  const saveEditKeySpec = (index) => {
+    if (!editingSpecText.trim()) return;
+    const updated = [...data.key_specs];
+    updated[index] = editingSpecText.trim();
+    setData('key_specs', updated);
     setEditingSpecIndex(null);
     setEditingSpecText('');
   };
 
-  const handleBulkParseKeySpecs = () => {
-    if (!bulkSpecsText.trim()) return;
-    const lines = bulkSpecsText
-      .split(/\r?\n|;/)
-      .map(l => l.replace(/^[•\-\*\s]+/, '').trim())
-      .filter(l => l.length > 0);
-
-    const merged = Array.from(new Set([...data.key_specs, ...lines]));
-    setData('key_specs', merged);
-    setBulkSpecsText('');
-    setBulkSpecsOpen(false);
+  const moveKeySpec = (index, direction) => {
+    const target = index + direction;
+    if (target < 0 || target >= data.key_specs.length) return;
+    const updated = [...data.key_specs];
+    const [moved] = updated.splice(index, 1);
+    updated.splice(target, 0, moved);
+    setData('key_specs', updated);
   };
 
-  // Full Technical Specifications Handlers (full_specs)
-  const handleAddSpecGroup = (groupName = 'General Specifications') => {
-    const newGroup = {
-      group: groupName,
-      attributes: [
-        { name: 'Model', value: '' },
-        { name: 'Key Feature', value: '' }
-      ]
-    };
-    setData('full_specs', [...data.full_specs, newGroup]);
-  };
-
-  const handleRemoveSpecGroup = (groupIndex) => {
-    setData('full_specs', data.full_specs.filter((_, idx) => idx !== groupIndex));
-  };
-
-  const handleRenameSpecGroup = (groupIndex, newName) => {
-    const updated = [...data.full_specs];
-    updated[groupIndex] = { ...updated[groupIndex], group: newName };
-    setData('full_specs', updated);
-  };
-
-  const handleAddSpecRow = (groupIndex) => {
-    const updated = [...data.full_specs];
-    const attrs = updated[groupIndex].attributes || [];
-    updated[groupIndex] = {
-      ...updated[groupIndex],
-      attributes: [...attrs, { name: '', value: '' }]
-    };
-    setData('full_specs', updated);
-  };
-
-  const handleUpdateSpecRow = (groupIndex, attrIndex, field, value) => {
-    const updated = [...data.full_specs];
-    const attrs = [...updated[groupIndex].attributes];
-    attrs[attrIndex] = { ...attrs[attrIndex], [field]: value };
-    updated[groupIndex] = { ...updated[groupIndex], attributes: attrs };
-    setData('full_specs', updated);
-  };
-
-  const handleRemoveSpecRow = (groupIndex, attrIndex) => {
-    const updated = [...data.full_specs];
-    const attrs = updated[groupIndex].attributes.filter((_, idx) => idx !== attrIndex);
-    updated[groupIndex] = { ...updated[groupIndex], attributes: attrs };
-    setData('full_specs', updated);
-  };
-
-  const handleApplyHardwareTemplate = (templateKey) => {
-    const template = hardwareTemplates[templateKey];
-    if (!template) return;
-    if (data.full_specs.length > 0 && !confirm('Replace current custom specifications with the ' + template.name + ' template?')) {
+  const applyHardwareTemplate = (templateKey) => {
+    const tmpl = hardwareTemplates[templateKey];
+    if (!tmpl) return;
+    if (data.full_specs.length > 0 && !confirm(`Replace current full specs with "${tmpl.name}" template?`)) {
       return;
     }
-    setData('full_specs', JSON.parse(JSON.stringify(template.groups)));
+    setData('full_specs', JSON.parse(JSON.stringify(tmpl.groups)));
   };
 
-  const handleSpecChange = (attrId, val) => {
-    setData('specification_values', {
-      ...data.specification_values,
-      [attrId]: val,
-    });
+  // Full Specs Helpers
+  const addSpecGroup = () => {
+    setData('full_specs', [
+      ...data.full_specs,
+      { group: 'New Specification Group', attributes: [{ name: '', value: '' }] }
+    ]);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEditing) {
-      put(`/admin/products/${product.id}`);
-    } else {
-      post('/admin/products');
+  const removeSpecGroup = (gIndex) => {
+    setData('full_specs', data.full_specs.filter((_, i) => i !== gIndex));
+  };
+
+  const updateGroupName = (gIndex, newName) => {
+    const updated = [...data.full_specs];
+    updated[gIndex].group = newName;
+    setData('full_specs', updated);
+  };
+
+  const addSpecAttribute = (gIndex) => {
+    const updated = [...data.full_specs];
+    updated[gIndex].attributes.push({ name: '', value: '' });
+    setData('full_specs', updated);
+  };
+
+  const updateSpecAttribute = (gIndex, aIndex, field, val) => {
+    const updated = [...data.full_specs];
+    updated[gIndex].attributes[aIndex][field] = val;
+    setData('full_specs', updated);
+  };
+
+  const removeSpecAttribute = (gIndex, aIndex) => {
+    const updated = [...data.full_specs];
+    updated[gIndex].attributes = updated[gIndex].attributes.filter((_, i) => i !== aIndex);
+    setData('full_specs', updated);
+  };
+
+  const handleBulkSpecsApply = () => {
+    try {
+      const lines = bulkSpecsText.split('\n').filter(l => l.trim().length > 0);
+      let currentGroup = 'Main Specifications';
+      const parsedGroups = [];
+      let currentAttrs = [];
+
+      lines.forEach(line => {
+        if (line.startsWith('#') || line.startsWith('[')) {
+          if (currentAttrs.length > 0) {
+            parsedGroups.push({ group: currentGroup, attributes: currentAttrs });
+            currentAttrs = [];
+          }
+          currentGroup = line.replace(/^[#\[\s]+|[\]\s]+$/g, '').trim();
+        } else if (line.includes(':') || line.includes('\t')) {
+          const parts = line.includes('\t') ? line.split('\t') : line.split(':');
+          const name = (parts[0] || '').trim();
+          const value = parts.slice(1).join(':').trim();
+          if (name) {
+            currentAttrs.push({ name, value });
+          }
+        }
+      });
+
+      if (currentAttrs.length > 0) {
+        parsedGroups.push({ group: currentGroup, attributes: currentAttrs });
+      }
+
+      if (parsedGroups.length > 0) {
+        setData('full_specs', parsedGroups);
+        setBulkSpecsOpen(false);
+        setBulkSpecsText('');
+      } else {
+        alert('Could not parse specifications. Use format: "Attribute Name: Value" per line.');
+      }
+    } catch (e) {
+      alert('Error parsing specifications text: ' + e.message);
     }
   };
 
-  const tabs = [
+  // Section navigation tabs
+  const navTabs = [
     { id: 'basic', label: 'Basic Info', icon: Package },
     { id: 'media', label: 'Media & Gallery', icon: ImageIcon },
+    { id: 'description', label: 'Description & Highlights', icon: FileText },
     { id: 'pricing', label: 'Pricing & Schedule', icon: DollarSign },
     { id: 'inventory', label: 'Inventory & SKU', icon: Boxes },
-    { id: 'specs', label: 'Specifications', icon: Layers },
-    { id: 'seo', label: 'SEO Engine', icon: Search, badge: `${seoScoreData.score}%` },
+    { id: 'specifications', label: 'Technical Specs', icon: Layers },
+    { id: 'seo', label: 'SEO & Search', icon: Globe },
   ];
 
   return (
-    <AdminLayout title={isEditing ? `Edit: ${data.title || 'Product'}` : 'Create New Product'}>
-      <Head title={`${isEditing ? 'Edit Product' : 'Create Product'} - TechMarket BD Admin`} />
+    <AdminShell
+      title={isEditing ? `Edit: ${data.title || 'Product'}` : 'Create Hardware Product'}
+      breadcrumbs={[
+        { label: 'Catalog', href: '/admin/products' },
+        { label: 'Products', href: '/admin/products' },
+        { label: isEditing ? 'Edit Product' : 'Create', href: '#' },
+      ]}
+    >
+      <Head title={isEditing ? `Edit: ${data.title} - Admin` : 'Create Hardware Product - TechMarket Admin'} />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Page Header */}
-        <PageHeader
-          title={isEditing ? `Edit Product: ${data.title}` : 'Create Hardware Product'}
-          subtitle="Configure specifications, inventory allocation, media assets, and search engine metadata."
-          breadcrumbs={[
-            { label: 'Products', href: '/admin/products' },
-            { label: isEditing ? 'Edit' : 'Create' }
-          ]}
-          actions={
-            <div className="flex items-center space-x-2.5">
+      <form onSubmit={handleSubmit} className="w-full max-w-[1440px] mx-auto space-y-6 pb-20">
+        
+        {/* =========================================================================
+            1. SHOPIFY-STYLE HEADER WITH DYNAMIC CTAs
+            ========================================================================= */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
               <Link
                 href="/admin/products"
-                className="px-3.5 py-2 text-xs font-bold text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-xl transition-colors inline-flex items-center space-x-1.5"
+                className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 transition-colors"
+                title="Back to Products"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Cancel</span>
               </Link>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight font-heading">
+                {isEditing ? `Edit Product: ${data.title}` : 'Create Hardware Product'}
+              </h1>
+              {data.is_active ? (
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Active
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                  Draft
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-slate-500 font-normal">
+              Configure product identity, pricing, inventory stock, technical specs, media assets, and SEO indexing.
+            </p>
+          </div>
 
+          {/* Action CTAs */}
+          <div className="flex items-center space-x-2.5 shrink-0">
+            <Link
+              href="/admin/products"
+              className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs transition-all shadow-2xs"
+            >
+              Cancel
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => handleSubmit(null, false)}
+              disabled={processing}
+              className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-all disabled:opacity-50 cursor-pointer"
+            >
+              Save as Draft
+            </button>
+
+            <button
+              type="submit"
+              disabled={processing}
+              className="px-5 py-2.5 rounded-xl text-white text-xs font-bold inline-flex items-center space-x-2 shadow-xs transition-all cursor-pointer disabled:opacity-50"
+              style={{
+                backgroundColor: 'var(--admin-primary, #4f46e5)',
+              }}
+            >
+              {processing ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin mr-1.5" />
+                  <span>Saving Product...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-1.5" />
+                  <span>{isEditing ? 'Save Changes' : 'Publish Product'}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* =========================================================================
+            2. HORIZONTAL SECTION PILL NAVIGATION (SHOPIFY-STYLE)
+            ========================================================================= */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 shadow-2xs overflow-x-auto no-scrollbar flex items-center space-x-1">
+          {navTabs.map((t) => {
+            const Icon = t.icon;
+            const isActive = activeTab === t.id;
+
+            return (
               <button
-                type="submit"
-                disabled={processing}
-                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black inline-flex items-center space-x-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                key={t.id}
+                type="button"
+                onClick={() => setActiveTab(t.id)}
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  isActive
+                    ? 'text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800'
+                }`}
+                style={isActive ? { backgroundColor: 'var(--admin-primary, #4f46e5)' } : {}}
               >
-                <Save className="w-4 h-4" />
-                <span>{processing ? 'Saving...' : isEditing ? 'Update Product' : 'Publish Product'}</span>
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <span>{t.label}</span>
               </button>
-            </div>
-          }
-        />
+            );
+          })}
+        </div>
 
-        {/* WORKSPACE GRID: LEFT MAIN TABS + RIGHT STICKY SIDEBAR */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* =========================================================================
+            3. MAIN TWO-COLUMN WORKSPACE (LEFT: FORM CARDS / RIGHT: STICKY SIDEBAR)
+            ========================================================================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* LEFT 2 COLUMNS: WORKSPACE TABS */}
-          <div className="lg:col-span-2 space-y-5">
-            
-            {/* Tab Navigation Pill Bar */}
-            <div className="flex items-center space-x-1.5 p-1 bg-slate-900/90 border border-slate-800/80 rounded-2xl overflow-x-auto admin-scrollbar shadow-xs">
-              {tabs.map((t) => {
-                const Icon = t.icon;
-                const isActive = activeTab === t.id;
+          {/* -----------------------------------------------------------------------
+              LEFT COLUMN: PRIMARY FORM SECTIONS (8 OF 12 COLS)
+              ----------------------------------------------------------------------- */}
+          <div className="lg:col-span-8 space-y-6">
 
-                return (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setActiveTab(t.id)}
-                    className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
-                    <span>{t.label}</span>
-                    {t.badge && (
-                      <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ${isActive ? 'bg-slate-950 text-amber-400' : 'bg-slate-950 text-slate-400'}`}>
-                        {t.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* TAB 1: BASIC INFORMATION */}
+            {/* SECTION 1: BASIC INFORMATION */}
             {activeTab === 'basic' && (
-              <SectionCard title="Basic Information" subtitle="Primary product identity, model, and overview" icon={Package}>
-                <div className="space-y-4 text-xs">
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">Product Title <span className="text-rose-400">*</span></label>
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <Package className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Basic Information
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Core product identity, model title, categorization, and short summary
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-5 text-xs">
+                  {/* Product Title (Prominent) */}
+                  <div className="space-y-1.5">
+                    <label className="block text-slate-700 dark:text-slate-300 font-semibold text-[13px]">
+                      Product Title / Model Name <span className="text-rose-500">*</span>
+                    </label>
                     <input
                       type="text"
                       value={data.title}
                       onChange={(e) => setData('title', e.target.value)}
                       placeholder="e.g. ASUS ROG Strix GeForce RTX 4090 OC Edition 24GB GDDR6X"
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
+                      className={`w-full h-12 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-4 rounded-xl border ${
+                        errors.title ? 'border-rose-400 focus:border-rose-500 ring-rose-100' : 'border-slate-200 dark:border-slate-700'
+                      } text-sm sm:text-base font-bold tracking-tight shadow-2xs`}
                       required
                     />
-                    {errors.title && <p className="text-rose-400 text-[11px] mt-1">{errors.title}</p>}
+                    {errors.title ? (
+                      <p className="text-[11.5px] text-rose-500 flex items-center space-x-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        <span>{errors.title}</span>
+                      </p>
+                    ) : (
+                      <p className="text-[11.5px] text-slate-500">
+                        Use a clear customer-facing product name including brand, model, and primary specification.
+                      </p>
+                    )}
                   </div>
 
+                  {/* Two-Column Grid: Category & Brand */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="block text-slate-300 font-bold">SKU Code</label>
-                      <input
-                        type="text"
-                        value={data.sku}
-                        onChange={(e) => setData('sku', e.target.value)}
-                        placeholder="e.g. GPU-ASUS-4090-OC"
-                        className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-slate-300 font-bold">Warranty Period</label>
-                      <input
-                        type="text"
-                        value={data.warranty}
-                        onChange={(e) => setData('warranty', e.target.value)}
-                        placeholder="e.g. 3 Years Official Warranty"
-                        className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">PC Builder Component Category</label>
-                    <select
-                      value={data.component_type}
-                      onChange={(e) => setData('component_type', e.target.value)}
-                      className="w-full bg-slate-950 text-slate-200 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
-                    >
-                      <option value="">-- Not a PC Component (General Hardware) --</option>
-                      {Object.entries(componentTypes || {}).map(([k, label]) => (
-                        <option key={k} value={k}>{label}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Short Details / Summary Overview */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-slate-300 font-bold">
-                        Short Details / Summary Overview
+                    {/* Category */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Category <span className="text-rose-500">*</span>
                       </label>
-                      <span className="text-[10px] text-slate-500 font-mono">Storefront Card & Quick View Excerpt</span>
+                      <select
+                        value={data.category_id}
+                        onChange={(e) => setData('category_id', e.target.value)}
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold text-xs cursor-pointer"
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.parent_id ? `— ${cat.name}` : cat.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.category_id && (
+                        <p className="text-[11px] text-rose-500">{errors.category_id}</p>
+                      )}
                     </div>
+
+                    {/* Brand */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Brand / Manufacturer
+                      </label>
+                      <select
+                        value={data.brand_id}
+                        onChange={(e) => setData('brand_id', e.target.value)}
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold text-xs cursor-pointer"
+                      >
+                        <option value="">No Brand (Generic / OEM)</option>
+                        {brands.map((brand) => (
+                          <option key={brand.id} value={brand.id}>
+                            {brand.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.brand_id && (
+                        <p className="text-[11px] text-rose-500">{errors.brand_id}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Two-Column Grid: SKU & Component Type */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* SKU */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        SKU (Stock Keeping Unit) <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          value={data.sku}
+                          onChange={(e) => setData('sku', e.target.value)}
+                          placeholder="e.g. GPU-ASUS-4090-OC"
+                          className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs font-bold"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const brandPrefix = selectedBrand ? selectedBrand.name.substring(0, 3).toUpperCase() : 'GEN';
+                            const randomNum = Math.floor(100000 + Math.random() * 900000);
+                            setData('sku', `${brandPrefix}-${randomNum}`);
+                          }}
+                          className="px-3 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 text-xs font-bold whitespace-nowrap"
+                          title="Generate Random SKU"
+                        >
+                          Generate
+                        </button>
+                      </div>
+                      {errors.sku && <p className="text-[11px] text-rose-500">{errors.sku}</p>}
+                    </div>
+
+                    {/* Component Type (PC Builder Compatibility) */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        PC Builder Component Type
+                      </label>
+                      <select
+                        value={data.component_type}
+                        onChange={(e) => setData('component_type', e.target.value)}
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold text-xs cursor-pointer"
+                      >
+                        <option value="">Not a PC Builder Component (Standard)</option>
+                        {Object.entries(componentTypes).map(([key, label]) => (
+                          <option key={key} value={key}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-[11px] text-slate-500">
+                        Assign to link this hardware item into the interactive PC Builder matrix.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Short Description */}
+                  <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                      Short Description / Storefront Summary
+                    </label>
                     <textarea
                       rows={3}
-                      value={data.short_description || ''}
+                      value={data.short_description}
                       onChange={(e) => setData('short_description', e.target.value)}
-                      placeholder="Brief 1-3 line highlight summary displayed prominently on product pages, catalog cards, and quick preview modals..."
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium leading-relaxed"
-                    />
-                    <p className="text-[11px] text-slate-500">
-                      Concise overview displayed right below the product title & metadata on the storefront.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-slate-300 font-bold">Comprehensive Product Description</label>
-                      <span className="text-[10px] text-slate-500 font-mono">WYSIWYG & HTML Supported</span>
-                    </div>
-                    <RichTextEditor
-                      value={data.description || ''}
-                      onChange={(html) => setData('description', html)}
-                      placeholder="Detailed overview, architecture, thermal design, key features, warranty policy, and accessories..."
-                      minHeight="220px"
+                      placeholder="Brief 2-3 sentence overview shown in product search cards, quick views, and quotation printouts..."
+                      className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs leading-relaxed"
                     />
                   </div>
                 </div>
-              </SectionCard>
+              </div>
             )}
 
-            {/* TAB 2: MEDIA & GALLERY */}
+            {/* SECTION 2: MEDIA & GALLERY */}
             {activeTab === 'media' && (
-              <SectionCard title="Product Media & Gallery" subtitle="Showcase photograph and supplementary gallery images" icon={ImageIcon}>
-                <div className="space-y-5 text-xs">
-                  {/* Primary Showcase Image */}
-                  <div className="space-y-2">
-                    <label className="block text-slate-300 font-bold">Primary Showcase Image</label>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                      {data.image ? (
-                        <div className="w-24 h-24 rounded-2xl bg-slate-950 border border-slate-800 p-2 flex items-center justify-center relative group shrink-0">
-                          <img src={data.image} alt="Preview" className="max-h-full max-w-full object-contain" />
-                          <button
-                            type="button"
-                            onClick={() => setData('image', '')}
-                            className="absolute top-1 right-1 p-1 bg-rose-900/80 text-rose-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-24 h-24 rounded-2xl bg-slate-950 border border-dashed border-slate-800 flex items-center justify-center text-slate-600 shrink-0">
-                          <ImageIcon className="w-8 h-8" />
-                        </div>
-                      )}
-
-                      <div className="flex-1 space-y-2">
-                        <MediaPicker
-                          value={data.image}
-                          onChange={(url) => setData('image', url)}
-                          folder="products"
-                          buttonText="Choose Showcase Image"
-                        />
-                        <p className="text-[11px] text-slate-500">
-                          High resolution transparent PNG or WEBP recommended (minimum 800×800px).
-                        </p>
-                      </div>
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Product Media & Gallery
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Manage primary featured image and multiple high-resolution gallery angles
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Supplementary Gallery */}
-                  <div className="pt-4 border-t border-slate-800/80 space-y-3">
+                <div className="space-y-6 text-xs">
+                  {/* Primary Featured Image */}
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 text-xs flex items-center space-x-1.5">
+                        <Sparkles className="w-4 h-4 text-indigo-600" />
+                        <span>Primary Cover Image</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold">
+                        REQUIRED FOR STOREFRONT
+                      </span>
+                    </div>
+
+                    <MediaPicker
+                      value={data.image}
+                      onChange={(url) => setData('image', url)}
+                      folder="products"
+                      buttonText="Choose Primary Cover Image"
+                    />
+
+                    {data.image && (
+                      <div className="flex items-center space-x-3 pt-2">
+                        <div className="w-20 h-20 rounded-xl border border-slate-200 bg-white p-1 overflow-hidden shrink-0">
+                          <img src={data.image} alt="Cover Preview" className="w-full h-full object-contain" />
+                        </div>
+                        <div className="text-slate-600 dark:text-slate-400 space-y-1">
+                          <div className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[300px]">
+                            {data.image.split('/').pop()}
+                          </div>
+                          <div className="text-[11px] text-slate-500">
+                            Displayed on product cards, category catalog grids, cart, and invoice slips.
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Multi-Image Gallery */}
+                  <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-bold text-slate-300">Supplementary Image Gallery</div>
-                        <div className="text-[11px] text-slate-500">Additional angles, ports, packaging, and showcase shots</div>
+                        <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">
+                          Supplementary Gallery Images ({data.gallery.length})
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          Additional showcase angles, port layout, packaging, and unboxing images.
+                        </div>
                       </div>
 
                       <MediaPicker
+                        value=""
                         onChange={(url) => {
                           if (url && !data.gallery.includes(url)) {
                             setData('gallery', [...data.gallery, url]);
@@ -676,724 +811,969 @@ export default function ProductForm({
                     </div>
 
                     {data.gallery.length > 0 ? (
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2">
-                        {data.gallery.map((url, idx) => (
-                          <div key={idx} className="aspect-square bg-slate-950 border border-slate-800 rounded-xl p-2 relative group flex items-center justify-center">
-                            <img src={url} alt="" className="max-h-full max-w-full object-contain" />
-                            <button
-                              type="button"
-                              onClick={() => setData('gallery', data.gallery.filter((_, i) => i !== idx))}
-                              className="absolute top-1 right-1 p-1 bg-rose-900/80 text-rose-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                        {data.gallery.map((imgUrl, index) => (
+                          <div
+                            key={index}
+                            className="relative group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-2xs space-y-2 overflow-hidden"
+                          >
+                            <div className="w-full h-28 rounded-xl bg-slate-50 dark:bg-slate-900 p-1 flex items-center justify-center overflow-hidden">
+                              <img src={imgUrl} alt="" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="flex items-center justify-between px-1">
+                              <span className="text-[10px] font-mono text-slate-400">Angle #{index + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setData('gallery', data.gallery.filter((_, i) => i !== index));
+                                }}
+                                className="p-1 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors"
+                                title="Remove Image"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="p-6 bg-slate-950/60 rounded-xl border border-dashed border-slate-800 text-center text-slate-500 text-xs">
-                        No supplementary images attached yet.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </SectionCard>
-            )}
-
-            {/* TAB 3: PRICING & SCHEDULE */}
-            {activeTab === 'pricing' && (
-              <SectionCard title="Pricing & Financial Schedules" subtitle="Regular pricing, promotional discounts, and unit cost" icon={DollarSign}>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">Special / Sale Price (BDT) <span className="text-rose-400">*</span></label>
-                    <input
-                      type="number"
-                      value={data.price}
-                      onChange={(e) => setData('price', e.target.value)}
-                      placeholder="e.g. 45000"
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono font-bold"
-                      required
-                    />
-                    <p className="text-[10px] text-slate-500">Live checkout price charged to customer</p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">Regular / MSRP Price (BDT)</label>
-                    <input
-                      type="number"
-                      value={data.regular_price}
-                      onChange={(e) => setData('regular_price', e.target.value)}
-                      placeholder="e.g. 50000"
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono"
-                    />
-                    <p className="text-[10px] text-slate-500">Crossed-out anchor price</p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">Unit Cost Price (BDT)</label>
-                    <input
-                      type="number"
-                      value={data.cost_price}
-                      onChange={(e) => setData('cost_price', e.target.value)}
-                      placeholder="e.g. 38000"
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono"
-                    />
-                    <p className="text-[10px] text-slate-500">Internal procurement cost for margins</p>
-                  </div>
-                </div>
-              </SectionCard>
-            )}
-
-            {/* TAB 4: INVENTORY LEDGER */}
-            {activeTab === 'inventory' && (
-              <SectionCard title="Inventory & Stock Ledger" subtitle="Real-time physical stock counts and replenishment thresholds" icon={Boxes}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">Current In-Stock Quantity</label>
-                    <input
-                      type="number"
-                      value={data.stock}
-                      onChange={(e) => setData('stock', parseInt(e.target.value) || 0)}
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono font-bold"
-                      min="0"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-300 font-bold">Low Stock Warning Alert Threshold</label>
-                    <input
-                      type="number"
-                      value={data.low_stock_threshold}
-                      onChange={(e) => setData('low_stock_threshold', parseInt(e.target.value) || 0)}
-                      className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono font-bold"
-                      min="0"
-                    />
-                  </div>
-                </div>
-              </SectionCard>
-            )}
-
-            {/* TAB 5: SPECIFICATIONS & HIGHLIGHTS STUDIO */}
-            {activeTab === 'specs' && (
-              <div className="space-y-6">
-                
-                {/* 1. KEY BULLET HIGHLIGHTS STUDIO */}
-                <SectionCard 
-                  title="Key Bullet Highlights" 
-                  subtitle="Short feature bullet points displayed prominently on storefront product cards & top overview" 
-                  icon={Layers}
-                  badge={<span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-mono text-[10px] font-bold border border-amber-500/30">{data.key_specs.length} Highlights</span>}
-                >
-                  <div className="space-y-4 text-xs">
-                    
-                    {/* Quick Preset Tags */}
-                    <div className="space-y-1.5">
-                      <div className="flex items-center space-x-1.5 text-slate-400 font-bold text-[11px]">
-                        <Zap className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Quick Insert Preset Chips:</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {quickBulletPresets.map((preset, pIdx) => (
-                          <button
-                            key={pIdx}
-                            type="button"
-                            onClick={() => {
-                              setNewKeySpec(preset);
-                            }}
-                            className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 text-slate-300 hover:text-white font-mono text-[11px] transition-all cursor-pointer"
-                          >
-                            + {preset}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Single Add Input Bar */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <div className="relative flex-1">
-                        <input
-                          type="text"
-                          value={newKeySpec}
-                          onChange={(e) => setNewKeySpec(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddKeySpec())}
-                          placeholder="e.g. Model: F310, Connection: USB Cable (1.8m), Dual Vibration Feedback..."
-                          className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium text-xs"
-                        />
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => handleAddKeySpec()}
-                          disabled={!newKeySpec.trim()}
-                          className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl cursor-pointer disabled:opacity-40 transition-all flex items-center space-x-1.5 shrink-0 uppercase tracking-tight"
-                        >
-                          <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                          <span>Add Spec</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setBulkSpecsOpen(!bulkSpecsOpen)}
-                          className={`px-3 py-2.5 rounded-xl border font-bold text-xs flex items-center space-x-1.5 transition-all cursor-pointer ${
-                            bulkSpecsOpen 
-                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
-                              : 'bg-slate-950 text-slate-300 border-slate-800 hover:text-white hover:border-slate-700'
-                          }`}
-                          title="Bulk paste multiple lines from manufacturer spec sheet"
-                        >
-                          <ListPlus className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Bulk Paste</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Expandable Bulk Paste Drawer */}
-                    {bulkSpecsOpen && (
-                      <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-3 animate-fadeIn">
-                        <div className="flex items-center justify-between">
-                          <div className="font-bold text-slate-200 flex items-center space-x-1.5">
-                            <ListPlus className="w-4 h-4 text-amber-500" />
-                            <span>Bulk Highlights Multi-line Parser</span>
-                          </div>
-                          <span className="text-[10px] text-slate-500 font-mono">1 bullet point per line</span>
+                      <div className="p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-center space-y-2">
+                        <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
+                        <div className="font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                          No supplementary gallery images added yet
                         </div>
-                        <textarea
-                          rows={4}
-                          value={bulkSpecsText}
-                          onChange={(e) => setBulkSpecsText(e.target.value)}
-                          placeholder="Paste bullet points directly from manufacturer spec sheet:&#10;Model: F310 Gamepad&#10;Dual vibration feedback motors&#10;Standard 4-switch D-pad&#10;1.8m durable USB cable&#10;1 Year Brand Warranty"
-                          className="w-full bg-slate-900 text-slate-100 p-3 rounded-xl border border-slate-800 focus:border-amber-500 font-mono text-xs leading-relaxed"
-                        />
-                        <div className="flex justify-end space-x-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setBulkSpecsText('');
-                              setBulkSpecsOpen(false);
-                            }}
-                            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleBulkParseKeySpecs}
-                            disabled={!bulkSpecsText.trim()}
-                            className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl disabled:opacity-40 flex items-center space-x-1 uppercase"
-                          >
-                            <Check className="w-3.5 h-3.5 stroke-[3]" />
-                            <span>Parse & Add All</span>
-                          </button>
+                        <div className="text-[11px] text-slate-400 max-w-sm mx-auto">
+                          Click the "Add Gallery Image" button above to select images from your centralized Media Library.
                         </div>
                       </div>
                     )}
+                  </div>
+                </div>
+              </div>
+            )}
 
-                    {/* Active Highlights List */}
-                    <div className="space-y-2 pt-2">
-                      {data.key_specs.length > 0 ? (
-                        data.key_specs.map((spec, i) => (
-                          <div 
-                            key={i} 
-                            className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all"
+            {/* SECTION 3: DESCRIPTION & HIGHLIGHTS */}
+            {activeTab === 'description' && (
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Description & Key Highlights
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Rich formatted description and quick feature bullet points
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6 text-xs">
+                  {/* Warranty Input */}
+                  <div className="space-y-1.5">
+                    <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                      Warranty Policy Tag
+                    </label>
+                    <input
+                      type="text"
+                      value={data.warranty}
+                      onChange={(e) => setData('warranty', e.target.value)}
+                      placeholder="e.g. 3 Years Official Brand Warranty (1 Year Full + 2 Years Service)"
+                      className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-medium text-xs"
+                    />
+                  </div>
+
+                  {/* Key Features Bullet Studio */}
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-bold text-slate-900 dark:text-slate-100 text-xs flex items-center space-x-1.5">
+                          <ListPlus className="w-4 h-4 text-indigo-600" />
+                          <span>Key Features & Highlights Studio ({data.key_specs.length})</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          Bullet points shown in the top right highlight block beside product photos.
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Preset Buttons */}
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-[10px] font-bold text-slate-400 py-1 mr-1">Quick Presets:</span>
+                      {quickBulletPresets.map((preset, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setNewKeySpec(preset)}
+                          className="px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10.5px] font-medium text-slate-600 hover:text-indigo-600 hover:border-indigo-300 transition-colors"
+                        >
+                          + {preset.split(':')[0]}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Bullet Add Input */}
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        value={newKeySpec}
+                        onChange={(e) => setNewKeySpec(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addKeySpec();
+                          }
+                        }}
+                        placeholder="Type bullet highlight and press Enter (e.g. Sensor: HERO 25K with 25,600 DPI)..."
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium"
+                      />
+                      <button
+                        type="button"
+                        onClick={addKeySpec}
+                        className="px-4 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs whitespace-nowrap shadow-xs"
+                      >
+                        Add Bullet
+                      </button>
+                    </div>
+
+                    {/* Bullets List */}
+                    {data.key_specs.length > 0 && (
+                      <div className="space-y-2 pt-2">
+                        {data.key_specs.map((spec, index) => (
+                          <div
+                            key={index}
+                            className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between space-x-3 shadow-2xs"
                           >
-                            {/* Number & Content */}
                             <div className="flex items-center space-x-2.5 flex-1 min-w-0">
-                              <span className="w-5 h-5 rounded-md bg-slate-900 border border-slate-800 text-slate-500 font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
-                                {i + 1}
+                              <span className="w-5 h-5 rounded-full bg-indigo-50 text-indigo-600 font-bold text-[10px] flex items-center justify-center shrink-0">
+                                {index + 1}
                               </span>
-
-                              {editingSpecIndex === i ? (
-                                <div className="flex items-center space-x-2 flex-1">
-                                  <input
-                                    type="text"
-                                    autoFocus
-                                    value={editingSpecText}
-                                    onChange={(e) => setEditingSpecText(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSaveEditKeySpec(i)}
-                                    className="flex-1 bg-slate-900 text-slate-100 px-2 py-1 rounded-lg border border-amber-500 focus:outline-none text-xs font-mono"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => handleSaveEditKeySpec(i)}
-                                    className="p-1 rounded bg-amber-500 text-slate-950 font-bold"
-                                    title="Save Edit"
-                                  >
-                                    <Check className="w-3.5 h-3.5" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setEditingSpecIndex(null)}
-                                    className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
-                                    title="Cancel Edit"
-                                  >
-                                    <X className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
+                              {editingSpecIndex === index ? (
+                                <input
+                                  type="text"
+                                  value={editingSpecText}
+                                  onChange={(e) => setEditingSpecText(e.target.value)}
+                                  className="w-full h-8 px-2 rounded-lg border border-indigo-400 text-xs font-medium"
+                                  autoFocus
+                                />
                               ) : (
-                                <span className="font-mono text-slate-200 text-xs truncate">
+                                <span className="font-semibold text-slate-800 dark:text-slate-200 text-xs truncate">
                                   {spec}
                                 </span>
                               )}
                             </div>
 
-                            {/* Action Buttons: Reorder, Edit, Delete */}
-                            {editingSpecIndex !== i && (
-                              <div className="flex items-center space-x-1 shrink-0">
+                            <div className="flex items-center space-x-1 shrink-0">
+                              {editingSpecIndex === index ? (
                                 <button
                                   type="button"
-                                  onClick={() => handleMoveKeySpec(i, -1)}
-                                  disabled={i === 0}
-                                  className="p-1 text-slate-500 hover:text-slate-200 disabled:opacity-20 hover:bg-slate-900 rounded"
-                                  title="Move Up"
+                                  onClick={() => saveEditKeySpec(index)}
+                                  className="p-1 rounded-lg bg-emerald-50 text-emerald-600 font-bold text-xs px-2"
                                 >
-                                  <ChevronUp className="w-3.5 h-3.5" />
+                                  Done
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleMoveKeySpec(i, 1)}
-                                  disabled={i === data.key_specs.length - 1}
-                                  className="p-1 text-slate-500 hover:text-slate-200 disabled:opacity-20 hover:bg-slate-900 rounded"
-                                  title="Move Down"
-                                >
-                                  <ChevronDown className="w-3.5 h-3.5" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleStartEditKeySpec(i)}
-                                  className="p-1 text-slate-500 hover:text-amber-400 hover:bg-slate-900 rounded transition-colors"
-                                  title="Edit Highlight"
-                                >
-                                  <Edit2 className="w-3.5 h-3.5" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveKeySpec(i)}
-                                  className="p-1 text-slate-500 hover:text-rose-400 hover:bg-slate-900 rounded transition-colors"
-                                  title="Remove Highlight"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            )}
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveKeySpec(index, -1)}
+                                    disabled={index === 0}
+                                    className="p-1 rounded hover:bg-slate-100 disabled:opacity-30 text-slate-400"
+                                  >
+                                    <ChevronUp className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveKeySpec(index, 1)}
+                                    disabled={index === data.key_specs.length - 1}
+                                    className="p-1 rounded hover:bg-slate-100 disabled:opacity-30 text-slate-400"
+                                  >
+                                    <ChevronDown className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setEditingSpecIndex(index);
+                                      setEditingSpecText(spec);
+                                    }}
+                                    className="p-1 rounded hover:bg-slate-100 text-slate-500"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeKeySpec(index)}
+                                    className="p-1 rounded hover:bg-rose-50 text-rose-500"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </>
+                              )}
+                            </div>
                           </div>
-                        ))
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* WYSIWYG Editor */}
+                  <div className="space-y-2 pt-2">
+                    <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                      Full Product Description (WYSIWYG HTML)
+                    </label>
+                    <RichTextEditor
+                      value={data.description}
+                      onChange={(html) => setData('description', html)}
+                      placeholder="Write detailed product overview, performance charts, architecture explanations, and technical features..."
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 4: PRICING & DISCOUNTS */}
+            {activeTab === 'pricing' && (
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <DollarSign className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Pricing, Discounts & Profit Margin
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Set customer selling price, regular MSRP, and cost price to evaluate profit margins
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6 text-xs">
+                  {/* Pricing Inputs Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* Sale / Selling Price */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Selling Price (BDT ৳) <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-3 text-slate-400 font-bold">৳</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={data.price}
+                          onChange={(e) => setData('price', e.target.value)}
+                          placeholder="0.00"
+                          className="w-full h-11 pl-8 pr-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl border border-slate-200 dark:border-slate-700 font-mono font-bold text-sm"
+                          required
+                        />
+                      </div>
+                      {errors.price && <p className="text-[11px] text-rose-500">{errors.price}</p>}
+                    </div>
+
+                    {/* Regular / Strike-Through Price */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Regular Price / MSRP (BDT ৳)
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-3 text-slate-400 font-bold">৳</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={data.regular_price}
+                          onChange={(e) => setData('regular_price', e.target.value)}
+                          placeholder="0.00"
+                          className="w-full h-11 pl-8 pr-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Cost Price */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Cost Price (Wholesale)
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-3 text-slate-400 font-bold">৳</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={data.cost_price}
+                          onChange={(e) => setData('cost_price', e.target.value)}
+                          placeholder="0.00"
+                          className="w-full h-11 pl-8 pr-3.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pricing Insights & Margin Banner */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    {/* Discount Box */}
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-1.5">
+                      <div className="text-[11px] font-semibold text-slate-500">Customer Discount Summary</div>
+                      {calculatedSavings ? (
+                        <div className="flex items-center space-x-2">
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-xs">
+                            -{calculatedSavings.percentage}% OFF
+                          </span>
+                          <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">
+                            Customers save ৳{calculatedSavings.amount.toLocaleString()}
+                          </span>
+                        </div>
                       ) : (
-                        <div className="p-6 rounded-2xl bg-slate-950/60 border border-dashed border-slate-800 text-center space-y-2">
-                          <Layers className="w-8 h-8 text-slate-600 mx-auto" />
-                          <p className="text-slate-400 text-xs font-medium">No highlights added yet.</p>
-                          <p className="text-[11px] text-slate-600">
-                            Add key bullet highlights above or click one of the quick preset chips to enhance storefront product cards.
-                          </p>
+                        <div className="text-xs text-slate-400">
+                          Set a Regular Price higher than Selling Price to show strike-through discount badges.
                         </div>
                       )}
                     </div>
 
-                  </div>
-                </SectionCard>
-
-                {/* 2. CUSTOM TECHNICAL SPECIFICATIONS TABLE STUDIO (full_specs) */}
-                <SectionCard
-                  title="Comprehensive Technical Specifications Table"
-                  subtitle="Build structured multi-section technical specification sheets rendered on the storefront"
-                  icon={Table2}
-                  badge={
-                    <div className="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => setSpecPreviewMode(!specPreviewMode)}
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-all cursor-pointer ${
-                          specPreviewMode 
-                            ? 'bg-amber-500 text-slate-950 shadow-xs' 
-                            : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-                        }`}
-                      >
-                        {specPreviewMode ? 'Edit Mode' : 'Storefront Preview'}
-                      </button>
-                    </div>
-                  }
-                >
-                  <div className="space-y-5 text-xs">
-                    
-                    {/* Top Action Bar: Template Presets + Add Group */}
-                    <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-                      
-                      {/* Template Selector */}
-                      <div className="flex items-center space-x-2">
-                        <span className="text-slate-400 font-bold text-[11px] flex items-center space-x-1">
-                          <LayoutTemplate className="w-3.5 h-3.5 text-amber-500" />
-                          <span>Apply Preset:</span>
-                        </span>
-                        <select
-                          onChange={(e) => {
-                            if (e.target.value) {
-                              handleApplyHardwareTemplate(e.target.value);
-                              e.target.value = '';
-                            }
-                          }}
-                          defaultValue=""
-                          className="bg-slate-900 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none"
-                        >
-                          <option value="" disabled>Choose Hardware Template...</option>
-                          <option value="peripherals">Gaming Peripherals (Gamepad / Mouse / Keyboard)</option>
-                          <option value="monitor">Monitors & Displays</option>
-                          <option value="gpu">Graphics Cards (GPU)</option>
-                          <option value="general">General Audio / Accessories</option>
-                        </select>
-                      </div>
-
-                      {/* Add Custom Group Button */}
-                      <button
-                        type="button"
-                        onClick={() => handleAddSpecGroup('General Specifications')}
-                        className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 hover:text-amber-300 font-bold rounded-xl border border-amber-500/30 flex items-center space-x-1.5 transition-colors cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>+ Add Specification Group</span>
-                      </button>
-                    </div>
-
-                    {/* LIVE STOREFRONT PREVIEW */}
-                    {specPreviewMode ? (
-                      <div className="p-4 bg-white rounded-xl border border-slate-300 text-[#111] space-y-4 shadow-sm">
-                        <div className="text-xs font-bold text-[#002a5c] uppercase tracking-wider pb-2 border-b border-slate-200">
-                          Storefront Specification Table Preview
+                    {/* Gross Profit Margin Box */}
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-1.5">
+                      <div className="text-[11px] font-semibold text-slate-500">Estimated Gross Margin</div>
+                      {grossProfit ? (
+                        <div className="flex items-center space-x-2">
+                          <span className="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-xs">
+                            +{grossProfit.margin}% Margin
+                          </span>
+                          <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">
+                            ৳{grossProfit.profit.toLocaleString()} Profit / unit
+                          </span>
                         </div>
-                        {data.full_specs.length > 0 ? (
-                          data.full_specs.map((group, gIdx) => (
-                            <div key={gIdx} className="rounded border border-slate-200 overflow-hidden text-xs">
-                              <div className="bg-slate-100 px-3 py-2 font-bold text-slate-900 uppercase border-b border-slate-200">
-                                {group.group || 'General Specifications'}
-                              </div>
-                              <table className="w-full text-left">
-                                <tbody className="divide-y divide-slate-100">
-                                  {group.attributes?.map((attr, aIdx) => (
-                                    <tr key={aIdx} className="hover:bg-slate-50">
-                                      <td className="w-1/3 px-3 py-2 font-medium text-slate-600 bg-slate-50 border-r border-slate-100">
-                                        {attr.name || 'Feature'}
-                                      </td>
-                                      <td className="px-3 py-2 text-slate-900">
-                                        {attr.value || '-'}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-6 text-center text-slate-400 text-xs">
-                            No specification groups defined. Add a group or apply a preset above.
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      /* SPECIFICATION GROUPS BUILDER */
-                      <div className="space-y-4">
-                        {data.full_specs.length > 0 ? (
-                          data.full_specs.map((group, gIdx) => (
-                            <div 
-                              key={gIdx} 
-                              className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3"
-                            >
-                              {/* Group Header */}
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
-                                <div className="flex items-center space-x-2 flex-1">
-                                  <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
-                                  <input
-                                    type="text"
-                                    value={group.group}
-                                    onChange={(e) => handleRenameSpecGroup(gIdx, e.target.value)}
-                                    placeholder="Group Name (e.g. Main Features, Connectivity, Physical Dimensions)..."
-                                    className="bg-slate-900 text-white font-bold px-3 py-1.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs flex-1 max-w-md"
-                                  />
-                                </div>
-
-                                <div className="flex items-center space-x-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleAddSpecRow(gIdx)}
-                                    className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-[11px] font-bold border border-slate-800 flex items-center space-x-1"
-                                  >
-                                    <Plus className="w-3 h-3" />
-                                    <span>Add Row</span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleRemoveSpecGroup(gIdx)}
-                                    className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-slate-900 rounded-lg"
-                                    title="Delete Group"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* Attributes Key-Value Rows */}
-                              <div className="space-y-2 pt-1">
-                                {group.attributes?.map((attr, aIdx) => (
-                                  <div key={aIdx} className="flex items-center gap-2">
-                                    <input
-                                      type="text"
-                                      value={attr.name}
-                                      onChange={(e) => handleUpdateSpecRow(gIdx, aIdx, 'name', e.target.value)}
-                                      placeholder="Attribute (e.g. Connection Type, Cable Length, Warranty)..."
-                                      className="w-1/3 bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-800 focus:border-amber-500 text-xs font-medium"
-                                    />
-                                    <input
-                                      type="text"
-                                      value={attr.value}
-                                      onChange={(e) => handleUpdateSpecRow(gIdx, aIdx, 'value', e.target.value)}
-                                      placeholder="Specification Value (e.g. Wired USB 2.0, 1.8 Meter, 1 Year)..."
-                                      className="flex-1 bg-slate-900 text-slate-100 px-3 py-2 rounded-xl border border-slate-800 focus:border-amber-500 text-xs font-mono"
-                                    />
-                                    <button
-                                      type="button"
-                                      onClick={() => handleRemoveSpecRow(gIdx, aIdx)}
-                                      className="p-2 text-slate-600 hover:text-rose-400 hover:bg-slate-900 rounded-xl"
-                                      title="Remove Row"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                ))}
-
-                                {(!group.attributes || group.attributes.length === 0) && (
-                                  <div className="p-3 text-center text-slate-500 text-[11px] font-mono">
-                                    No attribute rows in this group. Click "+ Add Row" above to add attributes.
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-8 rounded-3xl bg-slate-950/60 border-2 border-dashed border-slate-800 text-center space-y-3">
-                            <Table2 className="w-10 h-10 text-slate-600 mx-auto" />
-                            <div>
-                              <h4 className="text-slate-200 font-bold text-sm">No Custom Specification Tables Yet</h4>
-                              <p className="text-slate-400 text-xs mt-1">
-                                Click a hardware template preset above or add a custom specification group to build a structured spec sheet.
-                              </p>
-                            </div>
-                            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                              <button
-                                type="button"
-                                onClick={() => handleApplyHardwareTemplate('peripherals')}
-                                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 text-slate-300 hover:text-white rounded-xl text-xs font-bold"
-                              >
-                                + Gaming Peripherals Template
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleApplyHardwareTemplate('monitor')}
-                                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 text-slate-300 hover:text-white rounded-xl text-xs font-bold"
-                              >
-                                + Monitors Template
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleAddSpecGroup('General Specifications')}
-                                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase"
-                              >
-                                + Create Custom Group
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                  </div>
-                </SectionCard>
-
-                {/* 3. CATEGORY PREDEFINED GLOBAL ATTRIBUTES (EAV if available) */}
-                {specGroups.length > 0 && (
-                  <SectionCard 
-                    title="Category Standard Attribute Values" 
-                    subtitle="Pre-configured global specifications defined for this product category" 
-                    icon={Cpu}
-                  >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      {specGroups.flatMap(g => g.attributes || []).map((attr) => (
-                        <div key={attr.id} className="space-y-1">
-                          <label className="block text-slate-400 font-bold">{attr.name}</label>
-                          <input
-                            type="text"
-                            value={data.specification_values[attr.id] || ''}
-                            onChange={(e) => handleSpecChange(attr.id, e.target.value)}
-                            placeholder={`Enter ${attr.name}...`}
-                            className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
-                          />
+                      ) : (
+                        <div className="text-xs text-slate-400">
+                          Enter Cost Price to calculate real-time profitability analytics.
                         </div>
-                      ))}
+                      )}
                     </div>
-                  </SectionCard>
-                )}
-
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* TAB 6: SEO WORKSPACE */}
-            {activeTab === 'seo' && (
-              <div className="space-y-5">
-                <SEOScorePanel
-                  score={seoScoreData.score}
-                  checklist={seoScoreData.checklist}
-                  title={data.seo_title || data.title}
-                  description={data.meta_description || data.description}
-                  slug={data.seo_slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                  onGenerateAuto={handleAutoGenerateSeo}
-                />
+            {/* SECTION 5: INVENTORY & STOCK */}
+            {activeTab === 'inventory' && (
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <Boxes className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Inventory & Stock Control
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Configure warehouse quantities, minimum reorder thresholds, and stock status
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-                <SectionCard title="Search Engine Metadata" subtitle="Canonical URLs, search crawler instructions, and indexing" icon={Search}>
-                  <div className="space-y-4 text-xs">
-                    <div className="space-y-1">
-                      <label className="block text-slate-300 font-bold">SEO Meta Title (Title Tag)</label>
+                <div className="space-y-6 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Stock Units */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Stock Quantity (Units) <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={data.stock}
+                        onChange={(e) => setData('stock', parseInt(e.target.value) || 0)}
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono font-bold text-sm"
+                        required
+                      />
+                      {errors.stock && <p className="text-[11px] text-rose-500">{errors.stock}</p>}
+                    </div>
+
+                    {/* Low Stock Threshold */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Low Stock Alert Threshold
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={data.low_stock_threshold}
+                        onChange={(e) => setData('low_stock_threshold', parseInt(e.target.value) || 0)}
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
+                      />
+                      <p className="text-[11px] text-slate-500">
+                        Triggers administrative notification when stock dips to or below this amount.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Stock Status Badge Preview */}
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">
+                        Current Storefront Status Indicator
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        How customers see availability on the product detail page
+                      </div>
+                    </div>
+
+                    {data.stock > data.low_stock_threshold ? (
+                      <span className="px-3 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        ● In Stock ({data.stock} Units)
+                      </span>
+                    ) : data.stock > 0 ? (
+                      <span className="px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        ▲ Low Stock Alert ({data.stock} Units Remaining)
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 rounded-xl text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                        ✕ Out of Stock
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 6: TECHNICAL SPECIFICATIONS */}
+            {activeTab === 'specifications' && (
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <Layers className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Hardware Specifications Studio
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Build structured technical specs matrices for customer spec comparison
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => setBulkSpecsOpen(!bulkSpecsOpen)}
+                      className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 font-bold text-xs hover:bg-slate-50 flex items-center space-x-1"
+                    >
+                      <Copy className="w-3.5 h-3.5 mr-1" />
+                      <span>Bulk Paste</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={addSpecGroup}
+                      className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1 shadow-xs"
+                    >
+                      <Plus className="w-3.5 h-3.5 mr-1" />
+                      <span>+ Add Group</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-6 text-xs">
+                  {/* 1-Click Hardware Templates Bar */}
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="font-bold text-slate-800 dark:text-slate-200 text-xs flex items-center space-x-1.5">
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span>1-Click Industry Hardware Templates:</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {Object.entries(hardwareTemplates).map(([key, tmpl]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => applyHardwareTemplate(key)}
+                          className="px-2.5 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold text-slate-700 hover:border-indigo-400 hover:text-indigo-600 transition-all"
+                        >
+                          + {tmpl.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bulk Paste Modal / Expandable */}
+                  {bulkSpecsOpen && (
+                    <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-indigo-900 text-xs">Bulk Specifications Parser</span>
+                        <button
+                          type="button"
+                          onClick={() => setBulkSpecsOpen(false)}
+                          className="text-slate-400 hover:text-slate-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <textarea
+                        rows={6}
+                        value={bulkSpecsText}
+                        onChange={(e) => setBulkSpecsText(e.target.value)}
+                        placeholder={"# Group Name\nKey: Value\nKey: Value\n\n# Another Group\nKey: Value"}
+                        className="w-full p-3 rounded-xl bg-white border border-indigo-200 font-mono text-xs"
+                      />
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={handleBulkSpecsApply}
+                          className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs"
+                        >
+                          Parse & Apply Specs
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Full Specs Groups List */}
+                  {data.full_specs.length > 0 ? (
+                    <div className="space-y-4">
+                      {data.full_specs.map((group, gIndex) => (
+                        <div
+                          key={gIndex}
+                          className="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-4 shadow-2xs"
+                        >
+                          {/* Group Header */}
+                          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                            <input
+                              type="text"
+                              value={group.group}
+                              onChange={(e) => updateGroupName(gIndex, e.target.value)}
+                              placeholder="Group Title (e.g. Memory & Expansion)"
+                              className="font-bold text-sm text-slate-900 dark:text-slate-100 bg-transparent border-0 border-b border-dashed border-slate-300 focus:border-indigo-500 focus:ring-0 px-1 py-0.5"
+                            />
+                            <div className="flex items-center space-x-2">
+                              <button
+                                type="button"
+                                onClick={() => addSpecAttribute(gIndex)}
+                                className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-[11px] hover:bg-slate-200"
+                              >
+                                + Add Row
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => removeSpecGroup(gIndex)}
+                                className="p-1 rounded-lg text-rose-500 hover:bg-rose-50"
+                                title="Delete Group"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Attributes Table */}
+                          <div className="space-y-2">
+                            {group.attributes.map((attr, aIndex) => (
+                              <div key={aIndex} className="grid grid-cols-12 gap-2 items-center">
+                                <input
+                                  type="text"
+                                  value={attr.name}
+                                  onChange={(e) => updateSpecAttribute(gIndex, aIndex, 'name', e.target.value)}
+                                  placeholder="Attribute Name (e.g. Memory Speed)"
+                                  className="col-span-5 h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold"
+                                />
+                                <input
+                                  type="text"
+                                  value={attr.value}
+                                  onChange={(e) => updateSpecAttribute(gIndex, aIndex, 'value', e.target.value)}
+                                  placeholder="Value (e.g. 6000MHz CL30)"
+                                  className="col-span-6 h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => removeSpecAttribute(gIndex, aIndex)}
+                                  className="col-span-1 p-1 text-slate-400 hover:text-rose-500 flex justify-center"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-center space-y-2">
+                      <Layers className="w-8 h-8 text-slate-300 mx-auto" />
+                      <div className="font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                        No technical specifications added yet
+                      </div>
+                      <div className="text-[11px] text-slate-400 max-w-sm mx-auto">
+                        Choose a 1-click hardware template above or add custom specification groups.
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Relational Spec Groups (Database Attributes) */}
+                  {specGroups.length > 0 && (
+                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-4">
+                      <div className="font-bold text-slate-900 dark:text-slate-100 text-xs flex items-center space-x-1.5">
+                        <FolderTree className="w-4 h-4 text-indigo-600" />
+                        <span>Central Database Attribute Matrix</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {specGroups.map(grp => (
+                          grp.attributes.map(att => (
+                            <div key={att.id} className="space-y-1">
+                              <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                                {grp.name} → {att.name}
+                              </label>
+                              <input
+                                type="text"
+                                value={data.specification_values[att.id] || ''}
+                                onChange={(e) => {
+                                  setData('specification_values', {
+                                    ...data.specification_values,
+                                    [att.id]: e.target.value,
+                                  });
+                                }}
+                                placeholder={`Enter ${att.name}...`}
+                                className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+                              />
+                            </div>
+                          ))
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 7: SEO & SEARCH INDEXING */}
+            {activeTab === 'seo' && (
+              <div 
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-6"
+                style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 shadow-2xs">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
+                        Search Engine Optimization (SEO) & Social Meta
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Control search engine snippet previews, keywords, open graph cards, and indexing robots
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6 text-xs">
+                  {/* Google Search Live Preview Card */}
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Google Search Snippet Preview
+                    </div>
+                    <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1 font-sans">
+                      <div className="text-[11px] text-emerald-700 flex items-center space-x-1 truncate font-mono">
+                        <span>https://techmarketbd.com/product/{data.seo_slug || 'product-slug'}</span>
+                      </div>
+                      <div className="text-base font-medium text-blue-700 hover:underline cursor-pointer truncate">
+                        {data.seo_title || data.title || 'Product Title — TechMarket BD'}
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                        {data.meta_description || data.short_description || 'Buy authentic computer hardware with official manufacturer warranty at best price in Bangladesh from TechMarket BD.'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SEO Inputs Grid */}
+                  <div className="space-y-4">
+                    {/* SEO Title */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                          SEO Meta Title (Title Tag)
+                        </label>
+                        <span className={`text-[10px] font-mono ${(data.seo_title || '').length > 60 ? 'text-amber-500 font-bold' : 'text-slate-400'}`}>
+                          {(data.seo_title || '').length} / 60 characters recommended
+                        </span>
+                      </div>
                       <input
                         type="text"
                         value={data.seo_title}
                         onChange={(e) => setData('seo_title', e.target.value)}
-                        placeholder="e.g. ASUS ROG Strix RTX 4090 Price in Bangladesh | TechMarket"
-                        className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
+                        placeholder={data.title || 'Product Title | TechMarket BD'}
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold"
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="block text-slate-300 font-bold">Meta Description</label>
-                      <textarea
-                        rows={3}
-                        value={data.meta_description}
-                        onChange={(e) => setData('meta_description', e.target.value)}
-                        placeholder="Comprehensive specs, official warranty, and doorstep fast delivery in Bangladesh from TechMarket..."
-                        className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none text-xs"
+                    {/* SEO Slug */}
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Custom URL Slug (leave empty for auto-generated slug)
+                      </label>
+                      <input
+                        type="text"
+                        value={data.seo_slug}
+                        onChange={(e) => setData('seo_slug', e.target.value)}
+                        placeholder="e.g. asus-rog-strix-rtx-4090-oc-24gb"
+                        className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
                       />
                     </div>
 
+                    {/* Focus Keyword & Robots */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="block text-slate-300 font-bold">Focus Keyword</label>
+                      <div className="space-y-1.5">
+                        <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                          Focus Keyword
+                        </label>
                         <input
                           type="text"
                           value={data.focus_keyword}
                           onChange={(e) => setData('focus_keyword', e.target.value)}
-                          placeholder="e.g. RTX 4090 price in bd"
-                          className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none"
+                          placeholder="e.g. rtx 4090 price in bd"
+                          className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"
                         />
                       </div>
 
-                      <div className="space-y-1">
-                        <label className="block text-slate-300 font-bold">Custom URL Slug</label>
-                        <input
-                          type="text"
-                          value={data.seo_slug}
-                          onChange={(e) => setData('seo_slug', e.target.value)}
-                          placeholder="e.g. asus-rog-strix-rtx-4090"
-                          className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-mono"
-                        />
+                      <div className="space-y-1.5">
+                        <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                          Robots Indexing Directive
+                        </label>
+                        <select
+                          value={data.meta_robots}
+                          onChange={(e) => setData('meta_robots', e.target.value)}
+                          className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold cursor-pointer"
+                        >
+                          <option value="index, follow">index, follow (Standard Indexing)</option>
+                          <option value="noindex, follow">noindex, follow (Hide from Google)</option>
+                          <option value="index, nofollow">index, nofollow (Index without link juice)</option>
+                          <option value="noindex, nofollow">noindex, nofollow (Complete exclusion)</option>
+                        </select>
                       </div>
                     </div>
+
+                    {/* Meta Description */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                          SEO Meta Description
+                        </label>
+                        <span className={`text-[10px] font-mono ${(data.meta_description || '').length > 160 ? 'text-amber-500 font-bold' : 'text-slate-400'}`}>
+                          {(data.meta_description || '').length} / 160 characters recommended
+                        </span>
+                      </div>
+                      <textarea
+                        rows={3}
+                        value={data.meta_description}
+                        onChange={(e) => setData('meta_description', e.target.value)}
+                        placeholder="Comprehensive 150-160 character description including primary specs, price in Bangladesh, warranty, and authentic guarantee..."
+                        className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs leading-relaxed"
+                      />
+                    </div>
                   </div>
-                </SectionCard>
+                </div>
               </div>
             )}
 
           </div>
 
-          {/* RIGHT 1 COLUMN: STICKY PUBLISHING SIDEBAR */}
-          <div className="space-y-5 sticky top-20">
+          {/* -----------------------------------------------------------------------
+              RIGHT COLUMN: STICKY CONTEXTUAL SIDEBAR (4 OF 12 COLS / 340px)
+              ----------------------------------------------------------------------- */}
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-20">
             
-            {/* Publish & Status Card */}
-            <SectionCard title="Publishing & Status" icon={Globe}>
-              <div className="space-y-4 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-300">Catalog Visibility</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={data.is_active}
-                      onChange={(e) => setData('is_active', e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                  </label>
-                </div>
+            {/* CARD 1: PUBLISHING & VISIBILITY */}
+            <div 
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-2xs space-y-4"
+              style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 font-heading flex items-center space-x-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Publishing & Status</span>
+                </h3>
+              </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-300">Featured Showcase</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={data.is_featured}
-                      onChange={(e) => setData('is_featured', e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-300">Deal of the Day</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={data.is_deal_of_day}
-                      onChange={(e) => setData('is_deal_of_day', e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-500"></div>
-                  </label>
-                </div>
-
-                <div className="pt-3 border-t border-slate-800/80">
+              <div className="space-y-3.5 text-xs">
+                {/* Active / Draft Status */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-slate-100">Product Status</div>
+                    <div className="text-[10.5px] text-slate-500">
+                      {data.is_active ? 'Visible on catalog' : 'Hidden from customers'}
+                    </div>
+                  </div>
                   <button
-                    type="submit"
-                    disabled={processing}
-                    className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center space-x-2 transition-all shadow-md cursor-pointer disabled:opacity-50"
+                    type="button"
+                    onClick={() => setData('is_active', !data.is_active)}
+                    className={`px-3 py-1 rounded-xl font-bold text-xs transition-colors cursor-pointer ${
+                      data.is_active
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                    }`}
                   >
-                    <Save className="w-4 h-4" />
-                    <span>{processing ? 'Saving...' : isEditing ? 'Update Product' : 'Publish Product'}</span>
+                    {data.is_active ? 'Active' : 'Draft'}
                   </button>
                 </div>
-              </div>
-            </SectionCard>
 
-            {/* Category & Brand Association */}
-            <SectionCard title="Organization" icon={Tag}>
-              <div className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="block text-slate-300 font-bold">Category Hierarchy <span className="text-rose-400">*</span></label>
-                  <select
-                    value={data.category_id}
-                    onChange={(e) => setData('category_id', e.target.value)}
-                    className="w-full bg-slate-950 text-slate-200 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
-                    required
-                  >
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
+                {/* Featured Toggle */}
+                <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 cursor-pointer">
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 text-xs">Featured Product</div>
+                    <div className="text-[10.5px] text-slate-500">Promote on homepage showcase</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={data.is_featured}
+                    onChange={(e) => setData('is_featured', e.target.checked)}
+                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                  />
+                </label>
+
+                {/* Deal of the Day Toggle */}
+                <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 cursor-pointer">
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 text-xs">Deal of the Day</div>
+                    <div className="text-[10.5px] text-slate-500">Highlight in daily flash deals</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={data.is_deal_of_day}
+                    onChange={(e) => setData('is_deal_of_day', e.target.checked)}
+                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* CARD 2: LIVE PRODUCT SUMMARY */}
+            <div 
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-2xs space-y-4"
+              style={{ borderRadius: 'var(--admin-radius, 12px)' }}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 font-heading">
+                  Product Overview
+                </h3>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 font-bold">
+                  LIVE CARD
+                </span>
+              </div>
+
+              <div className="space-y-3.5 text-xs">
+                {/* Photo & Title Summary */}
+                <div className="flex items-center space-x-3">
+                  <div className="w-14 h-14 rounded-xl border border-slate-200 bg-slate-50 p-1 shrink-0 overflow-hidden flex items-center justify-center">
+                    {data.image ? (
+                      <img src={data.image} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <Package className="w-6 h-6 text-slate-300" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-slate-900 dark:text-slate-100 text-xs truncate">
+                      {data.title || 'Untitled Product'}
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-400 truncate">
+                      SKU: {data.sku || 'N/A'}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block text-slate-300 font-bold">Brand / Manufacturer</label>
-                  <select
-                    value={data.brand_id}
-                    onChange={(e) => setData('brand_id', e.target.value)}
-                    className="w-full bg-slate-950 text-slate-200 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
-                  >
-                    <option value="">-- No Brand / Generic --</option>
-                    {brands.map((b) => (
-                      <option key={b.id} value={b.id}>{b.name}</option>
-                    ))}
-                  </select>
+                {/* Price & Stock Overview */}
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+                    <div className="text-[10px] text-slate-400 font-semibold">Selling Price</div>
+                    <div className="text-sm font-black text-slate-900 dark:text-slate-100 font-mono">
+                      ৳{parseFloat(data.price || 0).toLocaleString()}
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+                    <div className="text-[10px] text-slate-400 font-semibold">Stock Ledger</div>
+                    <div className="text-sm font-black text-slate-900 dark:text-slate-100 font-mono">
+                      {data.stock} units
+                    </div>
+                  </div>
                 </div>
+
+                {/* Category & Brand Pills */}
+                <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500">Category:</span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {selectedCategory ? selectedCategory.name : 'None'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500">Brand:</span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {selectedBrand ? selectedBrand.name : 'Generic'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Storefront Link if Editing */}
+                {isEditing && product?.slug && (
+                  <a
+                    href={`/product/${product.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors"
+                  >
+                    <span>View on Storefront</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )}
               </div>
-            </SectionCard>
+            </div>
+
+            {/* CARD 3: SEO HEALTH & RECOMMENDATIONS */}
+            <SEOScorePanel product={data} />
 
           </div>
 
         </div>
+
+        {/* =========================================================================
+            4. MOBILE STICKY BOTTOM ACTION BAR
+            ========================================================================= */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 z-40 flex items-center justify-between gap-3 shadow-lg">
+          <Link
+            href="/admin/products"
+            className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-xs text-slate-700"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={processing}
+            className="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs disabled:opacity-50"
+          >
+            {processing ? 'Saving...' : (isEditing ? 'Save Product' : 'Publish Product')}
+          </button>
+        </div>
+
       </form>
-    </AdminLayout>
+    </AdminShell>
   );
 }

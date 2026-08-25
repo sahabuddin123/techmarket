@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { CreditCard, CheckCircle, XCircle, Search } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import AdminModal from '../../../Components/Admin/AdminModal';
+import { CreditCard, CheckCircle, XCircle } from 'lucide-react';
 
-export default function AdminPayments({ payments, filters }) {
+export default function AdminPayments({ payments = { data: [] } }) {
   const [rejectId, setRejectId] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [density, setDensity] = useState('comfortable');
+
+  const paymentList = Array.isArray(payments?.data) ? payments.data : [];
 
   const handleApprove = (orderId) => {
     router.post(`/admin/payments/${orderId}/approve`, {}, { preserveScroll: true });
@@ -21,96 +28,156 @@ export default function AdminPayments({ payments, filters }) {
     });
   };
 
-  return (
-    <AdminLayout title="Order Payments & Verification">
-      <Head title="Payments Ledger - Admin" />
-
-      <div className="space-y-6">
+  const columns = [
+    {
+      header: 'Order Reference',
+      accessor: 'order',
+      render: (p) => (
         <div>
-          <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-            <CreditCard className="w-6 h-6 text-amber-500" />
-            <span>ORDER PAYMENTS & MANUAL BANKING VERIFICATION</span>
-          </h1>
-          <p className="text-xs text-slate-400">Verify manual mobile banking transaction IDs (bKash/Nagad/Rocket) and track SSLCommerz gateway logs.</p>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">Order Number</th>
-                  <th className="p-3.5">Method</th>
-                  <th className="p-3.5">Transaction ID</th>
-                  <th className="p-3.5">Amount (BDT)</th>
-                  <th className="p-3.5">Status</th>
-                  <th className="p-3.5 text-right">Verification Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {payments.data && payments.data.length > 0 ? (
-                  payments.data.map(p => (
-                    <tr key={p.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-bold text-white">{p.order?.order_number}</td>
-                      <td className="p-3.5 font-bold text-amber-400">{p.payment_method}</td>
-                      <td className="p-3.5 font-mono text-slate-300">{p.transaction_id}</td>
-                      <td className="p-3.5 font-black text-white">৳{Number(p.amount).toLocaleString()}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          p.status === 'paid' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
-                          p.status === 'failed' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        }`}>
-                          {p.status}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-right space-x-2">
-                        {p.status !== 'paid' && p.order && (
-                          <button onClick={() => handleApprove(p.order.id)} className="p-1 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 rounded" title="Approve Payment">
-                            <CheckCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                        {p.status !== 'failed' && p.order && (
-                          <button onClick={() => setRejectId(p.order.id)} className="p-1 bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white rounded" title="Reject Payment">
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">No payment transaction records found.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <Link
+            href={`/admin/orders/${p.order?.id}`}
+            className="font-mono font-bold text-indigo-600 dark:text-indigo-400 hover:underline text-xs"
+          >
+            #{p.order?.order_number || p.order?.id}
+          </Link>
+          <div className="text-[10px] text-slate-400 font-mono">
+            {p.created_at ? new Date(p.created_at).toLocaleDateString() : 'Recent'}
           </div>
         </div>
+      ),
+    },
+    {
+      header: 'Payment Gateway / Method',
+      accessor: 'payment_method',
+      render: (p) => (
+        <span className="font-bold text-slate-900 dark:text-slate-100 uppercase text-xs font-mono">
+          {p.payment_method}
+        </span>
+      ),
+    },
+    {
+      header: 'Transaction ID (TrxID)',
+      accessor: 'transaction_id',
+      render: (p) => (
+        <span className="font-mono text-slate-700 dark:text-slate-300 font-semibold">
+          {p.transaction_id || '—'}
+        </span>
+      ),
+    },
+    {
+      header: 'Amount',
+      accessor: 'amount',
+      align: 'right',
+      render: (p) => (
+        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+          ৳ {Number(p.amount || 0).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (p) => (
+        <AdminStatusBadge status={p.status || 'pending'} size="xs" />
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (p) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
+          {p.status !== 'paid' && p.order && (
+            <button
+              type="button"
+              onClick={() => handleApprove(p.order.id)}
+              className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 text-emerald-600 dark:text-emerald-400 transition-colors cursor-pointer"
+              title="Approve Manual Payment"
+            >
+              <CheckCircle className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {p.status !== 'failed' && p.order && (
+            <button
+              type="button"
+              onClick={() => setRejectId(p.order.id)}
+              className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+              title="Reject Manual Payment"
+            >
+              <XCircle className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
 
-        {/* REJECT REASON MODAL */}
-        {rejectId && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <form onSubmit={handleRejectSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl text-xs">
-              <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">Reject Manual Payment</h3>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Reason for Rejection *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Invalid bKash TrxID or mismatched amount"
-                  value={rejectReason}
-                  onChange={(e) => setRejectReason(e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-rose-500"
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
-                <button type="button" onClick={() => setRejectId(null)} className="px-4 py-2 bg-slate-800 text-slate-300 rounded font-bold">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-rose-600 text-white rounded font-black uppercase">Confirm Rejection</button>
-              </div>
-            </form>
-          </div>
-        )}
+  return (
+    <AdminShell title="Payments">
+      <Head title="Order Payments & Verification - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Order Payments & Verification"
+          subtitle="Verify manual mobile banking transaction IDs (bKash/Nagad/Rocket) and track payment gateways."
+          badge={`${payments.total || paymentList.length} Transactions`}
+        />
+
+        {/* Payments Table */}
+        <AdminTable
+          columns={columns}
+          data={paymentList}
+          pagination={payments}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No payment transactions found"
+          emptyDescription="Mobile banking and online payments will appear here for verification."
+        />
       </div>
-    </AdminLayout>
+
+      {/* Reject Reason Modal */}
+      {rejectId && (
+        <AdminModal
+          isOpen={Boolean(rejectId)}
+          onClose={() => setRejectId(null)}
+          title="Reject Manual Payment"
+          subtitle={`Order #${rejectId}`}
+          size="sm"
+          footer={
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setRejectId(null)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleRejectSubmit}
+                className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+              >
+                Confirm Rejection
+              </button>
+            </div>
+          }
+        >
+          <div className="space-y-3 text-xs">
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Reason for Rejection *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Invalid bKash TrxID or mismatched amount"
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+              />
+            </div>
+          </div>
+        </AdminModal>
+      )}
+    </AdminShell>
   );
 }

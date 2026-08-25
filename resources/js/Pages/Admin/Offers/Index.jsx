@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
 import { 
-  Plus, Search, Edit2, Trash2, Copy, Eye, 
-  Tag, Calendar, Clock, CheckCircle2, XCircle, 
-  AlertCircle, Sparkles, Filter, ExternalLink 
+  Plus, Edit2, Trash2, Copy, Eye, 
+  Tag, Calendar, ExternalLink 
 } from 'lucide-react';
 
 export default function AdminOffersIndex({ offers = { data: [] }, filters = {} }) {
   const [search, setSearch] = useState(filters.search || '');
   const [status, setStatus] = useState(filters.status || 'all');
-  const [isActive, setIsActive] = useState(filters.is_active || 'all');
-  const [deleteModal, setDeleteModal] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [density, setDensity] = useState('comfortable');
+
+  const offerList = Array.isArray(offers?.data) ? offers.data : [];
 
   const handleFilterChange = (key, value) => {
     const updated = { ...filters, [key]: value, page: 1 };
     if (!value || value === 'all') delete updated[key];
     router.get('/admin/offers', updated, { preserveState: true, preserveScroll: true });
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    handleFilterChange('search', search);
   };
 
   const handleToggle = (offerId) => {
@@ -32,305 +33,214 @@ export default function AdminOffersIndex({ offers = { data: [] }, filters = {} }
     router.post(`/admin/offers/${offerId}/duplicate`, {}, { preserveScroll: true });
   };
 
-  const confirmDelete = () => {
-    if (!deleteModal) return;
-    router.delete(`/admin/offers/${deleteModal.id}`, {
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(`/admin/offers/${deleteTarget.id}`, {
       preserveScroll: true,
-      onSuccess: () => setDeleteModal(null),
+      onFinish: () => setDeleteTarget(null),
     });
   };
 
-  const getStatusBadge = (offer) => {
-    const s = offer.computed_status || offer.status;
-    switch (s) {
-      case 'active':
-        return <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase">Active</span>;
-      case 'scheduled':
-        return <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-black uppercase">Scheduled</span>;
-      case 'expired':
-        return <span className="px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20 text-[10px] font-black uppercase">Expired</span>;
-      case 'draft':
-        return <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase">Draft</span>;
-      default:
-        return <span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-black uppercase">Disabled</span>;
-    }
-  };
+  const columns = [
+    {
+      header: 'Campaign Banner & Title',
+      accessor: 'title',
+      sortable: true,
+      render: (offer) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-14 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden shrink-0 flex items-center justify-center">
+            {offer.banner_image ? (
+              <img src={offer.banner_image} alt={offer.title} className="w-full h-full object-cover" />
+            ) : (
+              <Tag className="w-4 h-4 text-indigo-500" />
+            )}
+          </div>
+          <div className="space-y-0.5 max-w-sm">
+            {offer.badge_text && (
+              <span className="font-mono font-bold text-[10px] uppercase text-indigo-600 dark:text-indigo-400">
+                {offer.badge_text}
+              </span>
+            )}
+            <div className="font-bold text-slate-900 dark:text-slate-100 text-xs font-heading">
+              {offer.title}
+            </div>
+            <p className="text-[11px] text-slate-500 line-clamp-1">{offer.subtitle}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Campaign Type',
+      accessor: 'type',
+      render: (offer) => (
+        <span className="font-mono text-[11px] font-bold uppercase text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-md">
+          {offer.type?.replace('_', ' ') || 'General Promo'}
+        </span>
+      ),
+    },
+    {
+      header: 'Discount Rule',
+      accessor: 'discount_type',
+      render: (offer) => (
+        <div className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">
+          {offer.discount_type === 'percentage' && `${offer.discount_value}% OFF`}
+          {offer.discount_type === 'fixed' && `৳${Number(offer.discount_value || 0).toLocaleString()} OFF`}
+          {offer.discount_type === 'free_shipping' && 'FREE SHIPPING'}
+          {!['percentage', 'fixed', 'free_shipping'].includes(offer.discount_type) && 'Special Bundle'}
+        </div>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (offer) => {
+        const s = offer.computed_status || offer.status;
+        return (
+          <AdminStatusBadge
+            status={s === 'active' ? 'active' : s === 'scheduled' ? 'pending' : 'draft'}
+            label={s ? s.toUpperCase() : 'DRAFT'}
+            size="xs"
+          />
+        );
+      },
+    },
+    {
+      header: 'Schedule Timeline',
+      accessor: 'start_date',
+      render: (offer) => (
+        <div className="text-[11px] font-mono text-slate-400">
+          <div>Start: {offer.start_date ? new Date(offer.start_date).toLocaleDateString() : 'Immediate'}</div>
+          <div>End: {offer.end_date ? new Date(offer.end_date).toLocaleDateString() : 'No expiry'}</div>
+        </div>
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (offer) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
+          <a
+            href={`/offers/${offer.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-400 transition-colors"
+            title="Preview Live Campaign"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </a>
+          <button
+            type="button"
+            onClick={() => handleDuplicate(offer.id)}
+            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 transition-colors cursor-pointer"
+            title="Clone Campaign"
+          >
+            <Copy className="w-3.5 h-3.5" />
+          </button>
+          <Link
+            href={`/admin/offers/${offer.id}/edit`}
+            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 transition-colors"
+            title="Edit Offer"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(offer)}
+            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+            title="Delete Offer"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <AdminLayout title="Offers & Campaign Management">
-      <Head title="Offers & Campaign Management | Admin" />
+    <AdminShell title="Campaign Offers">
+      <Head title="Campaign Offers & Promotions - TechMarket Admin" />
 
       <div className="space-y-5">
-        {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-          <div>
-            <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-              <Tag className="w-5 h-5 text-red-500" />
-              <span>Offers & Campaign Engine</span>
-            </h1>
-            <p className="text-xs text-slate-400 mt-1">
-              Create seasonal sales, hero banner promotions, brand fests, and gift campaigns.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/offers"
-              target="_blank"
-              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors flex items-center gap-1.5 border border-slate-700"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>View Storefront</span>
-            </Link>
-
-            <Link
-              href="/admin/offers/create"
-              className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-colors flex items-center gap-1.5 shadow-lg shadow-red-600/20"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create Campaign</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Filter Bar */}
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
-          <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search campaign title, slug, or headline..."
-              className="w-full bg-slate-950 text-white rounded-lg pl-8 pr-3 py-2 border border-slate-800 focus:outline-none focus:border-red-500"
-            />
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-          </form>
-
-          <div className="flex items-center gap-2">
-            <select
-              value={status}
-              onChange={(e) => {
-                setStatus(e.target.value);
-                handleFilterChange('status', e.target.value);
-              }}
-              className="bg-slate-950 text-slate-300 rounded-lg px-3 py-2 border border-slate-800 focus:outline-none focus:border-red-500 font-bold"
-            >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="draft">Draft</option>
-              <option value="expired">Expired</option>
-              <option value="disabled">Disabled</option>
-            </select>
-
-            <select
-              value={isActive}
-              onChange={(e) => {
-                setIsActive(e.target.value);
-                handleFilterChange('is_active', e.target.value);
-              }}
-              className="bg-slate-950 text-slate-300 rounded-lg px-3 py-2 border border-slate-800 focus:outline-none focus:border-red-500 font-bold"
-            >
-              <option value="all">Visibility: All</option>
-              <option value="1">Active Only</option>
-              <option value="0">Hidden Only</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Data Table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider text-[10px] border-b border-slate-800">
-                <tr>
-                  <th className="p-3.5">Campaign</th>
-                  <th className="p-3.5">Schedule</th>
-                  <th className="p-3.5">Products</th>
-                  <th className="p-3.5">Status</th>
-                  <th className="p-3.5">Order</th>
-                  <th className="p-3.5">Active</th>
-                  <th className="p-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 font-medium">
-                {offers.data && offers.data.length > 0 ? (
-                  offers.data.map((offer) => {
-                    const imgSrc = offer.thumbnail_image || offer.banner_image || 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=100';
-
-                    return (
-                      <tr key={offer.id} className="hover:bg-slate-800/40 transition-colors">
-                        {/* Campaign Info */}
-                        <td className="p-3.5">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={imgSrc}
-                              alt={offer.title}
-                              className="w-14 h-9 object-cover rounded border border-slate-700 bg-slate-950 shrink-0"
-                            />
-                            <div className="min-w-0">
-                              <div className="font-bold text-white text-xs truncate max-w-[200px]">
-                                {offer.title}
-                              </div>
-                              <div className="text-[10px] text-slate-500 font-mono truncate">
-                                /offers/{offer.slug}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Schedule */}
-                        <td className="p-3.5 text-slate-400">
-                          <div className="flex items-center gap-1 text-[11px]">
-                            <Calendar className="w-3 h-3 text-slate-500" />
-                            <span>
-                              {offer.start_at ? new Date(offer.start_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'Anytime'}
-                              {' – '}
-                              {offer.end_at ? new Date(offer.end_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Indefinite'}
-                            </span>
-                          </div>
-                        </td>
-
-                        {/* Products Count */}
-                        <td className="p-3.5">
-                          <span className="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono text-[11px] font-bold">
-                            {offer.products_count || 0} items
-                          </span>
-                        </td>
-
-                        {/* Status */}
-                        <td className="p-3.5">
-                          {getStatusBadge(offer)}
-                        </td>
-
-                        {/* Order */}
-                        <td className="p-3.5 font-mono text-slate-400">
-                          #{offer.display_order}
-                        </td>
-
-                        {/* Active Toggle Switch */}
-                        <td className="p-3.5">
-                          <button
-                            onClick={() => handleToggle(offer.id)}
-                            className={`w-9 h-5 rounded-full transition-colors relative p-0.5 flex items-center ${
-                              offer.is_active ? 'bg-emerald-500' : 'bg-slate-700'
-                            }`}
-                          >
-                            <div
-                              className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${
-                                offer.is_active ? 'translate-x-4' : 'translate-x-0'
-                              }`}
-                            />
-                          </button>
-                        </td>
-
-                        {/* Actions */}
-                        <td className="p-3.5 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Link
-                              href={`/offers/${offer.slug}`}
-                              target="_blank"
-                              title="Preview on Storefront"
-                              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                            </Link>
-
-                            <Link
-                              href={`/admin/offers/${offer.id}/edit`}
-                              title="Edit Campaign"
-                              className="p-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white transition-colors"
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                            </Link>
-
-                            <button
-                              onClick={() => handleDuplicate(offer.id)}
-                              title="Duplicate Campaign"
-                              className="p-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-white transition-colors"
-                            >
-                              <Copy className="w-3.5 h-3.5" />
-                            </button>
-
-                            <button
-                              onClick={() => setDeleteModal(offer)}
-                              title="Delete Campaign"
-                              className="p-1.5 rounded-lg bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-slate-500 text-xs">
-                      No campaigns found. Click "Create Campaign" to launch your first promotional offer.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {offers.links && offers.links.length > 3 && (
-            <div className="p-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-              <div>
-                Showing {offers.from || 0} to {offers.to || 0} of {offers.total} campaigns
-              </div>
-              <div className="flex items-center gap-1">
-                {offers.links.map((link, idx) => (
-                  <button
-                    key={idx}
-                    disabled={!link.url || link.active}
-                    onClick={() => link.url && router.get(link.url, {}, { preserveScroll: true })}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                    className={`px-3 py-1 rounded text-xs font-bold transition-colors ${
-                      link.active
-                        ? 'bg-red-600 text-white'
-                        : link.url
-                        ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                        : 'text-slate-600 cursor-not-allowed'
-                    }`}
-                  />
-                ))}
-              </div>
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Campaign Offers & Bundle Promotions"
+          subtitle="Manage seasonal holiday promotions, brand discount festivals, bundle deal gifts, and countdown timers."
+          badge={`${offers.total || offerList.length} Campaigns`}
+          actions={
+            <div className="flex items-center space-x-2">
+              <a
+                href="/offers"
+                target="_blank"
+                rel="noreferrer"
+                className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center space-x-1.5 transition-colors"
+              >
+                <span>Storefront Hub</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+              </a>
+              <Link
+                href="/admin/offers/create"
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Campaign</span>
+              </Link>
             </div>
-          )}
+          }
+        />
+
+        {/* Filters and Toolbar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
+            {['all', 'active', 'scheduled', 'expired', 'draft'].map((st) => (
+              <button
+                key={st}
+                type="button"
+                onClick={() => handleFilterChange('status', st)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-colors cursor-pointer ${
+                  status === st
+                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
+          <AdminPageToolbar
+            search={search}
+            onSearchChange={(val) => {
+              setSearch(val);
+              handleFilterChange('search', val);
+            }}
+            searchPlaceholder="Search campaigns by title or type..."
+            onRefresh={() => router.get('/admin/offers')}
+          />
         </div>
+
+        {/* Table */}
+        <AdminTable
+          columns={columns}
+          data={offerList}
+          pagination={offers}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No promotional campaigns found"
+          emptyDescription="Create seasonal promo campaigns, holiday discounts, and bundle offers to drive storefront sales."
+        />
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {deleteModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center gap-3 text-red-500">
-              <AlertCircle className="w-6 h-6 shrink-0" />
-              <h3 className="text-base font-black text-white">Delete Campaign?</h3>
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Are you sure you want to delete <span className="font-bold text-white">"{deleteModal.title}"</span>? This will remove the campaign and detach all associated products.
-            </p>
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                onClick={() => setDeleteModal(null)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-colors"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </AdminLayout>
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Campaign Offer"
+        message={`Are you sure you want to permanently delete campaign "${deleteTarget?.title}"?`}
+        confirmText="Delete Campaign"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

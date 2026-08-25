@@ -34,7 +34,7 @@ export default function BannerForm({ banner }) {
 
       <div className="space-y-6 max-w-3xl mx-auto">
         <div className="flex items-center space-x-3">
-          <Link href="/admin/banners" className="p-2 bg-slate-900 border border-slate-800 rounded text-slate-400 hover:text-white">
+          <Link href="/admin/banners" className="p-2 bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded text-slate-400 hover:text-white">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
@@ -45,14 +45,14 @@ export default function BannerForm({ banner }) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
+        <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-slate-300 font-bold mb-1">Banner Placement *</label>
               <select
                 value={data.placement}
                 onChange={(e) => setData('placement', e.target.value)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500 font-bold"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500 font-bold"
               >
                 <option value="hero_slider">Hero Slider Slide (70% Width)</option>
                 <option value="side_banner_top">Side Promo Banner - Top (30% Stacked)</option>
@@ -68,7 +68,7 @@ export default function BannerForm({ banner }) {
                 type="text"
                 value={data.badge}
                 onChange={(e) => setData('badge', e.target.value)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
               />
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function BannerForm({ banner }) {
               value={data.title}
               onChange={(e) => setData('title', e.target.value)}
               placeholder="e.g. ASUS ROG STRIX G16 & RTX 4070 SUPER"
-              className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
             />
             {errors.title && <p className="text-rose-400 text-[11px] mt-1">{errors.title}</p>}
           </div>
@@ -92,7 +92,7 @@ export default function BannerForm({ banner }) {
               rows={2}
               value={data.subtitle}
               onChange={(e) => setData('subtitle', e.target.value)}
-              className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
             />
           </div>
 
@@ -105,7 +105,7 @@ export default function BannerForm({ banner }) {
                 value={data.image}
                 onChange={(e) => setData('image', e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
               />
               {errors.image && <p className="text-rose-400 text-[11px] mt-1">{errors.image}</p>}
             </div>
@@ -117,7 +117,7 @@ export default function BannerForm({ banner }) {
                 value={data.mobile_image}
                 onChange={(e) => setData('mobile_image', e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
               />
             </div>
           </div>
@@ -129,7 +129,7 @@ export default function BannerForm({ banner }) {
                 type="text"
                 value={data.button_text}
                 onChange={(e) => setData('button_text', e.target.value)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
               />
             </div>
 
@@ -139,7 +139,7 @@ export default function BannerForm({ banner }) {
                 type="text"
                 value={data.button_url}
                 onChange={(e) => setData('button_url', e.target.value)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
               />
             </div>
 
@@ -149,7 +149,7 @@ export default function BannerForm({ banner }) {
                 type="number"
                 value={data.sort_order}
                 onChange={(e) => setData('sort_order', parseInt(e.target.value) || 0)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500"
               />
             </div>
           </div>

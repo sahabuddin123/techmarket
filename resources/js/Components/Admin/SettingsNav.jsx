@@ -20,8 +20,8 @@ export default function SettingsNav({ activeSection = 'general' }) {
   ];
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-3 space-y-1 shadow-xs">
-      <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-400 font-mono px-3 py-2 border-b border-slate-800/80 mb-2">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-3 space-y-1 shadow-2xs">
+      <div className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 font-mono px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
         Settings Center
       </div>
 
@@ -35,11 +35,11 @@ export default function SettingsNav({ activeSection = 'general' }) {
             href={sec.href}
             className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
               isActive
-                ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
+            <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
             <span className="truncate">{sec.label}</span>
           </Link>
         );

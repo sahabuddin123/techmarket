@@ -47,7 +47,8 @@ class CheckoutController extends Controller
         }, array_values($cart));
 
         $couponCode = session()->get('cart_coupon');
-        $pricing = PricingService::calculateOrderTotal($cartPayload, $couponCode, 0.00);
+        $defaultShippingCost = 60.00;
+        $pricing = PricingService::calculateOrderTotal($cartPayload, $couponCode, $defaultShippingCost);
 
         // Format items with regular_price & savings
         $formattedCart = array_map(function ($item) {
@@ -102,9 +103,9 @@ class CheckoutController extends Controller
             'summary' => [
                 'subtotal' => $pricing['subtotal'],
                 'discount' => $pricing['discount'],
-                'shipping_cost' => null,
-                'shipping_label' => 'Calculated later',
-                'total' => max(0, $pricing['subtotal'] - $pricing['discount']),
+                'shipping_cost' => $defaultShippingCost,
+                'shipping_label' => 'Inside Dhaka Standard',
+                'total' => $pricing['total'],
                 'coupon_code' => $couponCode,
             ],
         ]);
@@ -155,7 +156,8 @@ class CheckoutController extends Controller
             ? $validated['customer_email']
             : (auth()->check() ? auth()->user()->email : $validated['customer_phone'] . '@customer.techlandbd.com');
 
-        $shippingCost = 0.00; // Shipping calculated later based on weight/dimensions/location
+        $district = strtolower(trim($validated['district'] ?? 'dhaka'));
+        $shippingCost = ($district === 'dhaka') ? 60.00 : 120.00;
 
         // Transform cart array for PricingService
         $cartPayload = array_map(function ($item) {

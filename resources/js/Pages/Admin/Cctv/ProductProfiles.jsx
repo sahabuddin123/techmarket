@@ -87,7 +87,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
 
   return (
     <AdminLayout title="CCTV Product Technical Profiles" breadcrumbs={[{ label: 'CCTV Estimator', href: '/admin/cctv' }, { label: 'Product Profiles' }]}>
-      <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 w-full max-w-none">
         {/* Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -110,7 +110,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
         </div>
 
         {/* Filters */}
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-wrap items-center gap-3">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
             <input
@@ -119,14 +119,14 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All Hardware Types</option>
             <option value="camera">Camera</option>
@@ -146,7 +146,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
           <select
             value={selectedSystemType}
             onChange={(e) => setSelectedSystemType(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All System Types</option>
             <option value="ip">IP System</option>
@@ -175,11 +175,11 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
         </div>
 
         {/* Profiles Table */}
-        <div className="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   <th className="py-3 px-4">Hardware Product</th>
                   <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4">System</th>
@@ -279,8 +279,8 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
         {/* Modal: Attach Profile */}
         {isCreateOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
                     <Video className="w-5 h-5" />
@@ -309,7 +309,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                     value={data.product_id}
                     onChange={(e) => setData('product_id', e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white focus:outline-none focus:border-indigo-500"
                   >
                     <option value="">-- Choose Existing Ecommerce Product --</option>
                     {availableProducts.map((p) => (
@@ -328,7 +328,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                     <select
                       value={data.product_type}
                       onChange={(e) => setData('product_type', e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white focus:outline-none focus:border-indigo-500"
                     >
                       <option value="camera">Security Camera</option>
                       <option value="nvr">Network Video Recorder (NVR)</option>
@@ -351,7 +351,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                     <select
                       value={data.system_type}
                       onChange={(e) => setData('system_type', e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white focus:outline-none focus:border-indigo-500"
                     >
                       <option value="ip">IP Network System</option>
                       <option value="analog">Analog / HD-TVI / AHD System</option>
@@ -364,7 +364,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
 
                 {/* Conditional Specs: Camera */}
                 {data.product_type === 'camera' && (
-                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-3">
                     <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Camera Specifications</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       <div>
@@ -374,7 +374,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           step="0.1"
                           value={data.resolution_mp}
                           onChange={(e) => setData('resolution_mp', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -382,7 +382,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                         <select
                           value={data.camera_form_factor}
                           onChange={(e) => setData('camera_form_factor', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         >
                           <option value="dome">Dome</option>
                           <option value="bullet">Bullet</option>
@@ -397,7 +397,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           step="0.1"
                           value={data.lens_mm}
                           onChange={(e) => setData('lens_mm', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -405,7 +405,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                         <select
                           value={data.environment}
                           onChange={(e) => setData('environment', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         >
                           <option value="both">Indoor & Outdoor</option>
                           <option value="indoor">Indoor Only</option>
@@ -419,7 +419,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           step="0.1"
                           value={data.power_consumption_watts}
                           onChange={(e) => setData('power_consumption_watts', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -427,7 +427,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                         <select
                           value={data.audio_type}
                           onChange={(e) => setData('audio_type', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         >
                           <option value="none">No Audio</option>
                           <option value="built_in_mic">Built-in Mic</option>
@@ -440,7 +440,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
 
                 {/* Conditional Specs: Recorder */}
                 {['dvr', 'nvr', 'xvr'].includes(data.product_type) && (
-                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-3">
                     <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Recorder Specifications</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       <div>
@@ -449,7 +449,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           type="number"
                           value={data.channel_count}
                           onChange={(e) => setData('channel_count', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -459,7 +459,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           step="0.1"
                           value={data.max_camera_resolution_mp}
                           onChange={(e) => setData('max_camera_resolution_mp', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -468,7 +468,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           type="number"
                           value={data.hdd_bay_count}
                           onChange={(e) => setData('hdd_bay_count', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -477,7 +477,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           type="number"
                           value={data.poe_port_count}
                           onChange={(e) => setData('poe_port_count', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                     </div>
@@ -486,7 +486,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
 
                 {/* Conditional Specs: Storage */}
                 {data.product_type === 'storage' && (
-                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-3">
                     <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Storage HDD Specifications</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
@@ -496,7 +496,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           step="0.5"
                           value={data.capacity_tb}
                           onChange={(e) => setData('capacity_tb', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                       <div>
@@ -504,7 +504,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                         <select
                           value={data.rpm}
                           onChange={(e) => setData('rpm', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         >
                           <option value="5400">5400 RPM (Quiet & Cool)</option>
                           <option value="7200">7200 RPM (High Performance)</option>
@@ -516,7 +516,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
 
                 {/* Conditional Specs: Cable */}
                 {data.product_type === 'cable' && (
-                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-3">
                     <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Cable Specifications</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
@@ -524,7 +524,7 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                         <select
                           value={data.cable_type}
                           onChange={(e) => setData('cable_type', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         >
                           <option value="cat6">Cat6 UTP Solid Copper</option>
                           <option value="cat5e">Cat5e UTP</option>
@@ -539,14 +539,14 @@ export default function ProductProfiles({ profiles = {}, availableProducts = [],
                           type="number"
                           value={data.meters_per_unit}
                           onChange={(e) => setData('meters_per_unit', e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                         />
                       </div>
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
                   <button
                     type="button"
                     onClick={() => setIsCreateOpen(false)}

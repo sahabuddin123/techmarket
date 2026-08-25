@@ -68,7 +68,7 @@ export default function AboutUsEditor({ page }) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* SEO & Meta Settings */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-6 space-y-4">
             <h2 className="text-sm font-bold text-white uppercase tracking-tight">SEO & Page Title</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -77,7 +77,7 @@ export default function AboutUsEditor({ page }) {
                   type="text"
                   value={data.title}
                   onChange={(e) => setData('title', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -87,7 +87,7 @@ export default function AboutUsEditor({ page }) {
                   type="text"
                   value={data.meta_title}
                   onChange={(e) => setData('meta_title', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>
@@ -98,13 +98,13 @@ export default function AboutUsEditor({ page }) {
                 rows={2}
                 value={data.meta_description}
                 onChange={(e) => setData('meta_description', e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
               />
             </div>
           </div>
 
           {/* Hero Banner Section */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-6 space-y-4">
             <h2 className="text-sm font-bold text-white uppercase tracking-tight">Hero Section</h2>
             <div className="space-y-3">
               <div className="space-y-1">
@@ -113,7 +113,7 @@ export default function AboutUsEditor({ page }) {
                   type="text"
                   value={data.sections?.hero?.title || ''}
                   onChange={(e) => updateSectionField('hero', 'title', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -123,14 +123,14 @@ export default function AboutUsEditor({ page }) {
                   rows={2}
                   value={data.sections?.hero?.subtitle || ''}
                   onChange={(e) => updateSectionField('hero', 'subtitle', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Mission & Vision Section */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-6 space-y-4">
             <h2 className="text-sm font-bold text-white uppercase tracking-tight">Mission & Vision</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -139,7 +139,7 @@ export default function AboutUsEditor({ page }) {
                   rows={4}
                   value={data.sections?.mission_vision?.mission || ''}
                   onChange={(e) => updateSectionField('mission_vision', 'mission', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -149,7 +149,7 @@ export default function AboutUsEditor({ page }) {
                   rows={4}
                   value={data.sections?.mission_vision?.vision || ''}
                   onChange={(e) => updateSectionField('mission_vision', 'vision', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>

@@ -14,10 +14,13 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Poppins', 'Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['var(--admin-font-family)', 'Inter', 'Poppins', ...defaultTheme.fontFamily.sans],
                 poppins: ['Poppins', 'Inter', ...defaultTheme.fontFamily.sans],
-                heading: ['Poppins', '"Plus Jakarta Sans"', 'Inter', ...defaultTheme.fontFamily.sans],
-                mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
+                heading: ['var(--admin-font-heading)', 'Inter', '"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
+                mono: ['var(--admin-font-mono)', '"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
+                admin: ['var(--admin-font-family)', 'Inter', ...defaultTheme.fontFamily.sans],
+                adminHeading: ['var(--admin-font-heading)', 'Inter', ...defaultTheme.fontFamily.sans],
+                adminMono: ['var(--admin-font-mono)', '"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
             },
             colors: {
                 brand: {
@@ -29,19 +32,26 @@ export default {
                     'buy-hover': '#16a34a',
                 },
                 admin: {
-                    bg: '#090d16',
-                    card: '#0f172a',
-                    cardHover: '#131e35',
-                    border: '#1e293b',
-                    borderLight: '#334155',
-                    accent: '#f59e0b',
-                    accentHover: '#d97706',
-                    primary: '#3b82f6',
-                    success: '#10b981',
-                    warning: '#f59e0b',
-                    danger: '#ef4444',
-                    muted: '#64748b',
+                    bg: 'var(--admin-bg, #f8fafc)',
+                    surface: 'var(--admin-surface, #ffffff)',
+                    card: 'var(--admin-surface, #ffffff)',
+                    sidebar: 'var(--admin-sidebar, #ffffff)',
+                    header: 'var(--admin-header, #ffffff)',
+                    border: 'var(--admin-border, #e2e8f0)',
+                    text: 'var(--admin-text, #0f172a)',
+                    secondary: 'var(--admin-text-secondary, #475569)',
+                    muted: 'var(--admin-text-muted, #64748b)',
+                    primary: 'var(--admin-primary, #4f46e5)',
+                    primaryHover: 'var(--admin-primary-hover, #4338ca)',
+                    accent: 'var(--admin-accent, #8b5cf6)',
+                    success: 'var(--admin-success, #10b981)',
+                    warning: 'var(--admin-warning, #f59e0b)',
+                    danger: 'var(--admin-danger, #ef4444)',
+                    info: 'var(--admin-info, #3b82f6)',
                 }
+            },
+            borderRadius: {
+                'admin': 'var(--admin-radius, 12px)',
             }
         },
     },

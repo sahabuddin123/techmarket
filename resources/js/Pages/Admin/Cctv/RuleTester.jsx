@@ -83,7 +83,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
 
   return (
     <AdminLayout title="Live CCTV Engine Tester" breadcrumbs={[{ label: 'CCTV Estimator', href: '/admin/cctv' }, { label: 'Rule Tester' }]}>
-      <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 w-full max-w-none">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -99,8 +99,8 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Controls Form */}
           <div className="lg:col-span-5 space-y-6">
-            <form onSubmit={handleRunTest} className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
-              <h2 className="text-sm font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+            <form onSubmit={handleRunTest} className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 space-y-4">
+              <h2 className="text-sm font-bold text-white border-b border-slate-200/80 dark:border-slate-800/80 pb-3 flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-indigo-400" />
                 <span>Simulation Parameters</span>
               </h2>
@@ -111,7 +111,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                   <select
                     value={systemType}
                     onChange={(e) => setSystemType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                   >
                     <option value="ip">IP Network System</option>
                     <option value="analog">Analog / HD-TVI System</option>
@@ -128,7 +128,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                       max="64"
                       value={totalCameras}
                       onChange={(e) => setTotalCameras(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                     />
                   </div>
                   <div>
@@ -139,7 +139,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                       max={totalCameras}
                       value={outdoorCameras}
                       onChange={(e) => setOutdoorCameras(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                     />
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                       min="5"
                       value={avgDistance}
                       onChange={(e) => setAvgDistance(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                     />
                   </div>
                   <div>
@@ -162,7 +162,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                       min="1"
                       value={floorsCount}
                       onChange={(e) => setFloorsCount(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                     />
                   </div>
                 </div>
@@ -175,7 +175,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                       min="1"
                       value={retentionDays}
                       onChange={(e) => setRetentionDays(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                     />
                   </div>
                   <div>
@@ -183,7 +183,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                     <select
                       value={preferredCodec}
                       onChange={(e) => setPreferredCodec(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                     >
                       <option value="H.265+">H.265+ (Smart 70% Save)</option>
                       <option value="H.265">H.265 (50% Save)</option>
@@ -197,7 +197,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                   <select
                     value={selectedCameraId}
                     onChange={(e) => setSelectedCameraId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                   >
                     <option value="">-- Let Engine Auto-Recommend --</option>
                     {availableCameras.map((cam) => (
@@ -213,7 +213,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                   <select
                     value={selectedRecorderId}
                     onChange={(e) => setSelectedRecorderId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-white"
                   >
                     <option value="">-- Let Engine Auto-Recommend --</option>
                     {availableRecorders.map((rec) => (
@@ -230,7 +230,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                     id="instCheck"
                     checked={requireInstallation}
                     onChange={(e) => setRequireInstallation(e.target.checked)}
-                    className="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-0"
+                    className="rounded bg-slate-50 dark:bg-slate-800 border-slate-200/80 dark:border-slate-800/80 text-indigo-600 focus:ring-0"
                   />
                   <label htmlFor="instCheck" className="text-slate-300 cursor-pointer">
                     Include Professional Installation Algorithm
@@ -252,7 +252,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
           {/* Real-time Diagnostics Output */}
           <div className="lg:col-span-7 space-y-6">
             {!testResult && !loading && (
-              <div className="p-12 rounded-2xl bg-slate-900/40 border border-dashed border-slate-800 text-center space-y-3">
+              <div className="p-12 rounded-2xl bg-slate-900/40 border border-dashed border-slate-200/80 dark:border-slate-800/80 text-center space-y-3">
                 <Sparkles className="w-8 h-8 text-slate-600 mx-auto" />
                 <h3 className="text-sm font-bold text-slate-400">Ready for Live Simulation</h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
@@ -311,7 +311,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                 {/* Storage & Cabling Metrics Breakdown */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Storage */}
-                  <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs">
+                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 space-y-2 text-xs">
                     <div className="flex items-center gap-2 font-bold text-indigo-400">
                       <HardDrive className="w-4 h-4" />
                       <span>Storage Throughput</span>
@@ -327,7 +327,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                   </div>
 
                   {/* Cabling */}
-                  <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs">
+                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 space-y-2 text-xs">
                     <div className="flex items-center gap-2 font-bold text-amber-400">
                       <Cable className="w-4 h-4" />
                       <span>Cabling & Runs</span>
@@ -344,7 +344,7 @@ export default function RuleTester({ availableCameras = [], availableRecorders =
                 </div>
 
                 {/* Financial Grand Total */}
-                <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between font-mono">
+                <div className="p-5 rounded-2xl bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between font-mono">
                   <div>
                     <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Estimated Grand Total</span>
                     <span className="text-xl font-black text-emerald-400">৳{Number(testResult.grand_total || 0).toLocaleString()}</span>

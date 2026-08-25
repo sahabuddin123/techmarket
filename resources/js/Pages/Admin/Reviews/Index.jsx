@@ -1,95 +1,139 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { Star, CheckCircle, XCircle, Trash2, MessageSquare } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
+import { Star, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 
-export default function AdminReviews({ reviews }) {
+export default function AdminReviews({ reviews = { data: [] } }) {
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [density, setDensity] = useState('comfortable');
+
+  const reviewList = Array.isArray(reviews?.data) ? reviews.data : [];
+
   const handleStatus = (id, newStatus) => {
     router.post(`/admin/reviews/${id}/status`, { status: newStatus }, { preserveScroll: true });
   };
 
-  const handleDelete = (id) => {
-    if (confirm('Delete this review?')) {
-      router.delete(`/admin/reviews/${id}`);
-    }
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(`/admin/reviews/${deleteTarget.id}`, {
+      onFinish: () => setDeleteTarget(null),
+    });
   };
 
-  return (
-    <AdminLayout title="Product Reviews Moderation">
-      <Head title="Product Reviews - Admin" />
-
-      <div className="space-y-6">
+  const columns = [
+    {
+      header: 'Product & Star Rating',
+      accessor: 'product',
+      render: (r) => (
         <div>
-          <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-            <Star className="w-6 h-6 text-amber-500 fill-current" />
-            <span>PRODUCT REVIEWS & CUSTOMER FEEDBACK MODERATION</span>
-          </h1>
-          <p className="text-xs text-slate-400">Approve, reject, and reply to customer product reviews.</p>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">Product & Rating</th>
-                  <th className="p-3.5">Customer Comment</th>
-                  <th className="p-3.5">Status</th>
-                  <th className="p-3.5 text-right">Moderation Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {reviews.data && reviews.data.length > 0 ? (
-                  reviews.data.map(r => (
-                    <tr key={r.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5">
-                        <div className="font-bold text-white leading-tight">{r.product?.title}</div>
-                        <div className="flex text-amber-400 mt-1">
-                          {[...Array(r.rating)].map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-current" />
-                          ))}
-                        </div>
-                      </td>
-                      <td className="p-3.5 max-w-md">
-                        <div className="text-slate-200 font-semibold">{r.title}</div>
-                        <div className="text-slate-400 text-[11px] mt-0.5">{r.comment}</div>
-                        <div className="text-[10px] text-slate-500 mt-1">By: {r.user?.name}</div>
-                      </td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          r.status === 'approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
-                          r.status === 'rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        }`}>
-                          {r.status}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-right space-x-2">
-                        {r.status !== 'approved' && (
-                          <button onClick={() => handleStatus(r.id, 'approved')} className="p-1 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 rounded" title="Approve">
-                            <CheckCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                        {r.status !== 'rejected' && (
-                          <button onClick={() => handleStatus(r.id, 'rejected')} className="p-1 bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white rounded" title="Reject">
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                        <button onClick={() => handleDelete(r.id)} className="p-1 bg-slate-800 text-slate-400 hover:text-rose-400 rounded">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="p-8 text-center text-slate-500">No product reviews submitted yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="font-bold text-slate-900 dark:text-slate-100 font-heading text-xs">
+            {r.product?.title || 'Unknown Product'}
+          </div>
+          <div className="flex items-center text-amber-500 space-x-0.5 mt-1 font-mono text-[11px]">
+            {[...Array(r.rating || 5)].map((_, i) => (
+              <Star key={i} className="w-3 h-3 fill-current" />
+            ))}
+            <span className="ml-1 text-slate-600 dark:text-slate-400 font-bold">{r.rating}.0</span>
           </div>
         </div>
+      ),
+    },
+    {
+      header: 'Customer Feedback',
+      accessor: 'comment',
+      render: (r) => (
+        <div className="max-w-md space-y-0.5">
+          {r.title && <div className="font-bold text-slate-800 dark:text-slate-200">{r.title}</div>}
+          <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">{r.comment}</p>
+          <div className="text-[10px] text-slate-400 font-mono">By: {r.user?.name || 'Guest User'} • {r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Recent'}</div>
+        </div>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (r) => (
+        <AdminStatusBadge status={r.status || 'pending'} size="xs" />
+      ),
+    },
+    {
+      header: 'Moderation Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (r) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
+          {r.status !== 'approved' && (
+            <button
+              type="button"
+              onClick={() => handleStatus(r.id, 'approved')}
+              className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 text-emerald-600 dark:text-emerald-400 transition-colors cursor-pointer"
+              title="Approve Review"
+            >
+              <CheckCircle className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {r.status !== 'rejected' && (
+            <button
+              type="button"
+              onClick={() => handleStatus(r.id, 'rejected')}
+              className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer"
+              title="Reject Review"
+            >
+              <XCircle className="w-3.5 h-3.5" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(r)}
+            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+            title="Delete Review"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <AdminShell title="Reviews">
+      <Head title="Product Reviews Moderation - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Product Reviews Moderation"
+          subtitle="Approve, reject, or delete customer ratings and product testimonials."
+          badge={`${reviews.total || reviewList.length} Reviews`}
+        />
+
+        {/* Reviews Table */}
+        <AdminTable
+          columns={columns}
+          data={reviewList}
+          pagination={reviews}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No product reviews submitted"
+          emptyDescription="Verified customer reviews submitted on product pages will appear here for moderation."
+        />
       </div>
-    </AdminLayout>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Review"
+        message="Are you sure you want to permanently delete this customer review?"
+        confirmText="Delete Review"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

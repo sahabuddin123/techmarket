@@ -96,16 +96,16 @@ export default function Footer({ onOpenCart }) {
       
       {/* 1. TOP NEWSLETTER & VIP TECH DROPS STRIP */}
       <div className="border-b border-slate-800/80 bg-gradient-to-r from-slate-950 via-[#0d1527] to-slate-950">
-        <div className="max-w-[1440px] mx-auto px-4 py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="max-w-[1640px] mx-auto px-4 py-7 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex items-center space-x-3.5 text-center lg:text-left">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
               <h4 className="text-white font-extrabold text-sm sm:text-base tracking-tight">
-                Stay Ahead in Tech — Join TechMarket BD Insider
+                Stay Ahead in Tech — Join {settings.site_name || 'TechMarket BD'} Insider
               </h4>
-              <p className="text-slate-400 text-[11px] sm:text-xs">
+              <p className="text-slate-400 text-xs sm:text-[13px] mt-0.5">
                 Receive weekly hardware flash deal drops, price drop alerts & official launch updates.
               </p>
             </div>
@@ -119,22 +119,22 @@ export default function Footer({ onOpenCart }) {
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder="Enter your email address..."
-                className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500 font-medium"
+                className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 text-xs sm:text-sm rounded-xl px-4 py-3 border border-slate-800 focus:outline-none focus:border-amber-500 font-medium"
               />
             </div>
             <button
               type="submit"
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2.5 rounded-xl font-black text-xs flex items-center space-x-1.5 transition-all shrink-0 cursor-pointer shadow-sm"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3 rounded-xl font-black text-xs sm:text-sm flex items-center space-x-1.5 transition-all shrink-0 cursor-pointer shadow-sm"
             >
               <span>{subscribed ? 'Joined! ✓' : 'Subscribe'}</span>
-              {!subscribed && <Send className="w-3.5 h-3.5" />}
+              {!subscribed && <Send className="w-4 h-4" />}
             </button>
           </form>
         </div>
       </div>
 
       {/* 2. MAIN 4-COLUMN FOOTER CONTAINER */}
-      <div className="max-w-[1440px] mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
+      <div className="max-w-[1640px] mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
         
         {/* Column 1: Brand Story, Hotline & Contacts (Span 4) */}
         <div className="lg:col-span-4 space-y-4">
@@ -359,7 +359,7 @@ export default function Footer({ onOpenCart }) {
 
       {/* 3. BOTTOM COPYRIGHT & SECURE PAYMENTS BAR */}
       <div className="border-t border-slate-800/80 bg-[#050811]">
-        <div className="max-w-[1440px] mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-slate-500 text-[11px]">
+        <div className="max-w-[1640px] mx-auto px-4 py-4.5 flex flex-col md:flex-row items-center justify-between gap-3 text-slate-500 text-xs">
           <div className="flex items-center space-x-2">
             <span>{settings.copyright_text || 'Copyright © 2026 TechMarket BD. All Rights Reserved.'}</span>
             <span className="hidden sm:inline text-slate-700">•</span>

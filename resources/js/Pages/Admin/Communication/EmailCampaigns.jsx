@@ -106,8 +106,8 @@ export default function EmailCampaigns({
         </div>
 
         {/* Campaign List */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-          <div className="p-4 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between">
+        <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl">
+          <div className="p-4 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
             <h2 className="font-black text-white text-sm">All Campaigns ({campaigns.data?.length || 0})</h2>
             <span className="text-[11px] text-slate-400 font-mono">Real-time background delivery</span>
           </div>
@@ -181,24 +181,24 @@ export default function EmailCampaigns({
                     </div>
 
                     {/* Progress Counters */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-slate-800/60 font-mono text-xs">
-                      <div className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-800/80 font-mono text-xs">
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                         <span className="text-[10px] text-slate-400 uppercase block">Audience</span>
                         <span className="font-bold text-white text-sm">{c.total_recipients || 0}</span>
                       </div>
-                      <div className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                         <span className="text-[10px] text-emerald-400 uppercase block">Sent</span>
                         <span className="font-bold text-emerald-300 text-sm">{c.total_sent || 0}</span>
                       </div>
-                      <div className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                         <span className="text-[10px] text-rose-400 uppercase block">Failed</span>
                         <span className="font-bold text-rose-300 text-sm">{c.total_failed || 0}</span>
                       </div>
-                      <div className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                         <span className="text-[10px] text-purple-400 uppercase block">Opened</span>
                         <span className="font-bold text-purple-300 text-sm">{c.total_opened || 0}</span>
                       </div>
-                      <div className="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                         <span className="text-[10px] text-sky-400 uppercase block">Audience Group</span>
                         <span className="font-bold text-slate-300 text-xs truncate block capitalize">
                           {c.audience_type?.replace('_', ' ')}
@@ -214,10 +214,10 @@ export default function EmailCampaigns({
 
         {/* Campaign Creation Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-2xl w-full shadow-2xl space-y-5 animate-in zoom-in-95 duration-150">
+          <div className="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 max-w-2xl w-full shadow-2xl space-y-5 animate-in zoom-in-95 duration-150">
               
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                 <h3 className="text-base font-black text-white flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
                   <span>Create Email Marketing Campaign</span>
@@ -241,7 +241,7 @@ export default function EmailCampaigns({
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder="e.g. Ramadan Tech Mega Sale 2026"
-                    className="w-full bg-slate-950 text-slate-100 px-3 py-2 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
                   />
                   {errors.name && <p className="text-rose-400 text-[10px] mt-1">{errors.name}</p>}
                 </div>
@@ -255,7 +255,7 @@ export default function EmailCampaigns({
                       value={data.subject}
                       onChange={(e) => setData('subject', e.target.value)}
                       placeholder="e.g. 🔥 সেরা টেক পণ্যে ৫০% পর্যন্ত বিশেষ ছাড়!"
-                      className="w-full bg-slate-950 text-slate-100 px-3 py-2 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
+                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
                     />
                   </div>
 
@@ -266,7 +266,7 @@ export default function EmailCampaigns({
                       value={data.preheader}
                       onChange={(e) => setData('preheader', e.target.value)}
                       placeholder="e.g. সীমিত সময়ের অফার। এখনই অর্ডার করুন।"
-                      className="w-full bg-slate-950 text-slate-100 px-3 py-2 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500"
+                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 </div>
@@ -277,7 +277,7 @@ export default function EmailCampaigns({
                   <select
                     value={data.template_id}
                     onChange={(e) => setData('template_id', e.target.value)}
-                    className="w-full bg-slate-950 text-slate-100 px-3 py-2 rounded-xl border border-slate-700 text-xs focus:outline-none cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none cursor-pointer"
                   >
                     {templates.map(t => (
                       <option key={t.id} value={t.id}>[{t.category}] {t.name}</option>
@@ -286,7 +286,7 @@ export default function EmailCampaigns({
                 </div>
 
                 {/* Audience Segmentation */}
-                <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-3">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-slate-300 uppercase font-mono flex items-center gap-1.5">
                       <Filter className="w-3.5 h-3.5 text-amber-400" />
@@ -311,7 +311,7 @@ export default function EmailCampaigns({
                         className={`p-2.5 rounded-xl border text-xs font-bold text-left transition-all cursor-pointer ${
                           data.audience_type === aud.key
                             ? 'bg-amber-500/20 border-amber-500 text-amber-300'
-                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                            : 'bg-slate-900 border-slate-200/80 dark:border-slate-800/80 text-slate-400 hover:text-slate-200'
                         }`}
                       >
                         {aud.label}
@@ -354,7 +354,7 @@ export default function EmailCampaigns({
                 </div>
 
                 {/* Modal Footer */}
-                <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+                <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}

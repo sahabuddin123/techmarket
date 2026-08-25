@@ -14,6 +14,36 @@ use Inertia\Inertia;
 class SettingController extends Controller
 {
     /**
+     * Default Admin Theme & Appearance Configuration
+     */
+    public const DEFAULT_ADMIN_THEME = [
+        'admin_brand_name' => 'TechMarket Admin',
+        'admin_logo' => '',
+        'admin_logo_dark' => '',
+        'admin_favicon' => '',
+        'admin_font_family' => 'Inter',
+        'admin_heading_font' => 'Inter',
+        'admin_primary_color' => '#4f46e5',
+        'admin_secondary_color' => '#6366f1',
+        'admin_accent_color' => '#8b5cf6',
+        'admin_success_color' => '#10b981',
+        'admin_warning_color' => '#f59e0b',
+        'admin_danger_color' => '#ef4444',
+        'admin_info_color' => '#3b82f6',
+        'admin_sidebar_bg' => '#ffffff',
+        'admin_header_bg' => '#ffffff',
+        'admin_page_bg' => '#f8fafc',
+        'admin_card_bg' => '#ffffff',
+        'admin_border_color' => '#e2e8f0',
+        'admin_text_primary' => '#0f172a',
+        'admin_text_secondary' => '#475569',
+        'admin_border_radius' => '12px',
+        'admin_card_style' => 'soft_shadow',
+        'admin_density' => 'comfortable',
+        'admin_sidebar_width' => 'standard',
+    ];
+
+    /**
      * Display the Global System Settings workspace.
      */
     public function index()
@@ -37,6 +67,84 @@ class SettingController extends Controller
             'settings' => $settings,
             'systemInfo' => $systemInfo,
         ]);
+    }
+
+    /**
+     * Display the Admin Appearance & Dynamic Branding workspace.
+     */
+    public function appearance()
+    {
+        $allSettings = Setting::all()->pluck('value', 'key')->all();
+        $themeSettings = array_merge(self::DEFAULT_ADMIN_THEME, array_intersect_key($allSettings, self::DEFAULT_ADMIN_THEME));
+
+        return Inertia::render('Admin/Settings/Appearance', [
+            'themeSettings' => $themeSettings,
+            'defaultTheme' => self::DEFAULT_ADMIN_THEME,
+        ]);
+    }
+
+    /**
+     * Update Admin Appearance & Dynamic Branding.
+     */
+    public function updateAppearance(Request $request)
+    {
+        $validated = $request->validate([
+            'admin_brand_name' => 'nullable|string|max:100',
+            'admin_logo' => 'nullable|string|max:500',
+            'admin_logo_dark' => 'nullable|string|max:500',
+            'admin_favicon' => 'nullable|string|max:500',
+            'admin_font_family' => 'nullable|string|max:100',
+            'admin_heading_font' => 'nullable|string|max:100',
+            'admin_primary_color' => 'nullable|string|max:50',
+            'admin_secondary_color' => 'nullable|string|max:50',
+            'admin_accent_color' => 'nullable|string|max:50',
+            'admin_success_color' => 'nullable|string|max:50',
+            'admin_warning_color' => 'nullable|string|max:50',
+            'admin_danger_color' => 'nullable|string|max:50',
+            'admin_info_color' => 'nullable|string|max:50',
+            'admin_sidebar_bg' => 'nullable|string|max:50',
+            'admin_header_bg' => 'nullable|string|max:50',
+            'admin_page_bg' => 'nullable|string|max:50',
+            'admin_card_bg' => 'nullable|string|max:50',
+            'admin_border_color' => 'nullable|string|max:50',
+            'admin_text_primary' => 'nullable|string|max:50',
+            'admin_text_secondary' => 'nullable|string|max:50',
+            'admin_border_radius' => 'nullable|string|max:50',
+            'admin_card_style' => 'nullable|string|max:50',
+            'admin_density' => 'nullable|string|max:50',
+            'admin_sidebar_width' => 'nullable|string|max:50',
+        ]);
+
+        foreach ($validated as $key => $value) {
+            Setting::set($key, $value ?? '', 'admin_theme');
+        }
+
+        Cache::flush();
+
+        AuditLogger::log('admin_theme.updated', null, null, [
+            'updated_by' => auth()->id(),
+            'keys' => array_keys($validated),
+        ]);
+
+        return back()->with('success', 'Admin Theme & Appearance settings updated and applied globally!');
+    }
+
+    /**
+     * Reset Admin Appearance to project default.
+     */
+    public function resetAppearance()
+    {
+        foreach (self::DEFAULT_ADMIN_THEME as $key => $defaultValue) {
+            Setting::set($key, $defaultValue, 'admin_theme');
+        }
+
+        Cache::flush();
+
+        AuditLogger::log('admin_theme.reset', null, null, [
+            'updated_by' => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Admin appearance reset to default premium enterprise theme.');
     }
 
     /**

@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { Wrench, Search, Filter, Phone, Mail, MapPin, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import AdminModal from '../../../Components/Admin/AdminModal';
+import { Wrench, Phone, Mail, MapPin, Edit, Eye, UserCheck } from 'lucide-react';
 
-export default function ServiceRequestsIndex({ serviceRequests, filters = {} }) {
+export default function ServiceRequestsIndex({ serviceRequests = { data: [] }, filters = {} }) {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
   const [editStatus, setEditStatus] = useState('pending');
   const [editTech, setEditTech] = useState('');
   const [editNotes, setEditNotes] = useState('');
+  const [density, setDensity] = useState('comfortable');
+
+  const requestList = Array.isArray(serviceRequests?.data) ? serviceRequests.data : [];
 
   const handleFilterChange = (status) => {
     setStatusFilter(status);
@@ -17,7 +25,7 @@ export default function ServiceRequestsIndex({ serviceRequests, filters = {} }) 
 
   const openModal = (req) => {
     setSelectedRequest(req);
-    setEditStatus(req.status);
+    setEditStatus(req.status || 'pending');
     setEditTech(req.assigned_technician || '');
     setEditNotes(req.admin_notes || '');
   };
@@ -35,208 +43,233 @@ export default function ServiceRequestsIndex({ serviceRequests, filters = {} }) 
     });
   };
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'pending':
-        return <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold uppercase">Pending</span>;
-      case 'contacted':
-        return <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase">Contacted</span>;
-      case 'scheduled':
-        return <span className="px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-bold uppercase">Scheduled</span>;
-      case 'in_progress':
-        return <span className="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/30 text-purple-400 text-[10px] font-bold uppercase">In Progress</span>;
-      case 'completed':
-        return <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase">Completed</span>;
-      case 'cancelled':
-        return <span className="px-2 py-0.5 rounded bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] font-bold uppercase">Cancelled</span>;
-      default:
-        return <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-[10px] font-bold uppercase">{status}</span>;
-    }
-  };
+  const columns = [
+    {
+      header: 'Tracking Code',
+      accessor: 'tracking_code',
+      render: (req) => (
+        <div>
+          <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-xs">
+            {req.tracking_code}
+          </span>
+          <div className="text-[10.5px] text-slate-400">
+            {req.service_type ? req.service_type.replace('_', ' ') : 'Hardware RMA'}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Customer Information',
+      accessor: 'customer_name',
+      render: (req) => (
+        <div>
+          <div className="font-bold text-slate-900 dark:text-slate-100 text-xs font-heading">
+            {req.customer_name}
+          </div>
+          <div className="flex items-center space-x-2 text-[10.5px] text-slate-400 font-mono">
+            <span>{req.phone}</span>
+            {req.email && <span>• {req.email}</span>}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Hardware Device',
+      accessor: 'device_type',
+      render: (req) => (
+        <div>
+          <div className="font-bold text-slate-800 dark:text-slate-200 text-xs">
+            {req.brand} {req.model_number}
+          </div>
+          <div className="text-[10.5px] text-slate-500 font-mono capitalize">
+            {req.device_type}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Service Branch',
+      accessor: 'branch',
+      render: (req) => (
+        <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
+          {req.branch || 'Main Center (Dhaka)'}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (req) => (
+        <AdminStatusBadge
+          status={req.status}
+          label={req.status ? req.status.replace('_', ' ') : 'Pending'}
+          size="xs"
+        />
+      ),
+    },
+    {
+      header: 'Assigned Tech',
+      accessor: 'assigned_technician',
+      render: (req) => (
+        <span className="text-xs font-medium text-slate-600 dark:text-slate-400 font-mono">
+          {req.assigned_technician || '— Unassigned —'}
+        </span>
+      ),
+    },
+    {
+      header: 'Date',
+      accessor: 'created_at',
+      render: (req) => (
+        <span className="font-mono text-slate-400 text-xs">
+          {req.created_at ? new Date(req.created_at).toLocaleDateString() : 'N/A'}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (req) => (
+        <button
+          type="button"
+          onClick={() => openModal(req)}
+          className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 font-bold text-xs rounded-lg transition-colors cursor-pointer flex items-center space-x-1"
+        >
+          <Edit className="w-3.5 h-3.5" />
+          <span>Manage</span>
+        </button>
+      ),
+    },
+  ];
 
   return (
-    <AdminLayout>
-      <Head title="Service & Repair Requests - TechMarket BD Admin" />
+    <AdminShell title="Service & RMA Requests">
+      <Head title="Hardware Service & Repair Requests - TechMarket Admin" />
 
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-black text-white flex items-center space-x-2">
-              <Wrench className="w-5 h-5 text-blue-500" />
-              <span>Hardware Service & Repair Requests</span>
-            </h1>
-            <p className="text-xs text-slate-400">Track and manage customer laptop repairs, diagnostics, and RMA tickets.</p>
-          </div>
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Hardware Service & RMA Requests"
+          subtitle="Manage customer computer repair tickets, diagnostic bench queues, warranty claims, and technician dispatches."
+          badge={`${serviceRequests.total || requestList.length} Tickets`}
+        />
 
-          {/* Status Filter Tabs */}
-          <div className="flex items-center space-x-1 bg-slate-900 border border-slate-800 p-1 rounded-lg text-xs font-bold">
-            {['all', 'pending', 'contacted', 'scheduled', 'in_progress', 'completed', 'cancelled'].map((st) => (
+        {/* Status Filters */}
+        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl w-fit">
+          {['all', 'pending', 'contacted', 'scheduled', 'in_progress', 'completed', 'cancelled'].map((st) => (
+            <button
+              key={st}
+              type="button"
+              onClick={() => handleFilterChange(st)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-colors cursor-pointer ${
+                statusFilter === st
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              {st.replace('_', ' ')}
+            </button>
+          ))}
+        </div>
+
+        {/* Table */}
+        <AdminTable
+          columns={columns}
+          data={requestList}
+          pagination={serviceRequests}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No service repair requests found"
+          emptyDescription="Customer warranty claims and repair requests submitted through the service portal will appear here."
+        />
+      </div>
+
+      {/* Detail / Update Modal */}
+      {selectedRequest && (
+        <AdminModal
+          isOpen={Boolean(selectedRequest)}
+          onClose={() => setSelectedRequest(null)}
+          title={`Service Ticket: ${selectedRequest.tracking_code}`}
+          subtitle={`${selectedRequest.customer_name} • ${selectedRequest.device_type}`}
+          icon={Wrench}
+          size="lg"
+          footer={
+            <div className="flex items-center space-x-2">
               <button
-                key={st}
-                onClick={() => handleFilterChange(st)}
-                className={`px-3 py-1.5 rounded-md capitalize transition-colors ${
-                  statusFilter === st ? 'bg-blue-600 text-white font-black' : 'text-slate-400 hover:text-white'
-                }`}
+                type="button"
+                onClick={() => setSelectedRequest(null)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
-                {st.replace('_', ' ')}
+                Cancel
               </button>
-            ))}
-          </div>
-        </div>
+              <button
+                type="button"
+                onClick={handleUpdate}
+                className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+              >
+                Save Ticket Updates
+              </button>
+            </div>
+          }
+        >
+          <div className="space-y-4 text-xs">
+            {/* Customer Details */}
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+              <div className="grid grid-cols-2 gap-2 text-slate-700 dark:text-slate-300 font-semibold">
+                <div><span className="text-slate-400 font-mono">Customer:</span> {selectedRequest.customer_name}</div>
+                <div><span className="text-slate-400 font-mono">Phone:</span> {selectedRequest.phone}</div>
+                <div><span className="text-slate-400 font-mono">Device:</span> {selectedRequest.brand} {selectedRequest.model_number}</div>
+                <div><span className="text-slate-400 font-mono">Branch:</span> {selectedRequest.branch}</div>
+              </div>
+              <div className="border-t border-slate-200 dark:border-slate-700/80 pt-2 text-slate-600 dark:text-slate-300">
+                <span className="font-bold text-slate-400 font-mono block mb-0.5">Reported Issue:</span>
+                "{selectedRequest.issue_description}"
+              </div>
+            </div>
 
-        {/* Requests Table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/70 border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400 font-bold">
-              <tr>
-                <th className="p-4">Tracking Code</th>
-                <th className="p-4">Customer</th>
-                <th className="p-4">Device & Brand</th>
-                <th className="p-4">Service Branch</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Technician</th>
-                <th className="p-4">Date</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 font-medium">
-              {!serviceRequests?.data || serviceRequests.data.length === 0 ? (
-                <tr>
-                  <td colSpan="8" className="p-8 text-center text-slate-500">
-                    No service requests found for this status.
-                  </td>
-                </tr>
-              ) : (
-                serviceRequests.data.map((req) => (
-                  <tr key={req.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="p-4 font-mono font-bold text-blue-400">
-                      {req.tracking_code}
-                    </td>
-                    <td className="p-4">
-                      <div className="font-bold text-white text-xs">{req.customer_name}</div>
-                      <div className="text-[11px] text-slate-400 font-mono">{req.customer_phone}</div>
-                    </td>
-                    <td className="p-4 text-slate-300">
-                      <div className="font-bold text-xs">{req.device_type}</div>
-                      <div className="text-[11px] text-slate-500">{req.brand_name || 'N/A'}</div>
-                    </td>
-                    <td className="p-4 text-slate-400 text-[11px]">
-                      {req.service_branch}
-                    </td>
-                    <td className="p-4">
-                      {getStatusBadge(req.status)}
-                    </td>
-                    <td className="p-4 text-slate-300 text-xs">
-                      {req.assigned_technician || <span className="text-slate-600 italic">Unassigned</span>}
-                    </td>
-                    <td className="p-4 text-slate-400 font-mono text-[11px]">
-                      {new Date(req.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="p-4 text-right">
-                      <button
-                        onClick={() => openModal(req)}
-                        className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded text-xs font-bold transition-colors"
-                      >
-                        Manage
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Manage Request Modal */}
-        {selectedRequest && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 className="font-black text-sm text-white">
-                  Manage Service Ticket #{selectedRequest.tracking_code}
-                </h3>
-                <button
-                  onClick={() => setSelectedRequest(null)}
-                  className="text-slate-400 hover:text-white text-xs font-bold"
+            {/* Status Update Form */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Ticket Status</label>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden capitalize"
                 >
-                  ✕ Close
-                </button>
+                  <option value="pending">Pending</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
               </div>
 
-              {/* Customer & Device Summary */}
-              <div className="bg-slate-950 p-4 rounded-xl space-y-2 text-xs border border-slate-800/80">
-                <div className="grid grid-cols-2 gap-2 text-slate-400">
-                  <div><strong>Customer:</strong> {selectedRequest.customer_name}</div>
-                  <div><strong>Phone:</strong> {selectedRequest.customer_phone}</div>
-                  <div><strong>Device:</strong> {selectedRequest.device_type}</div>
-                  <div><strong>Branch:</strong> {selectedRequest.service_branch}</div>
-                </div>
-                <div className="pt-2 border-t border-slate-800 text-slate-300">
-                  <strong>Reported Issue:</strong>
-                  <p className="text-slate-400 mt-0.5">{selectedRequest.issue_description}</p>
-                </div>
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Assigned Technician</label>
+                <input
+                  type="text"
+                  placeholder="Technician name..."
+                  value={editTech}
+                  onChange={(e) => setEditTech(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+                />
               </div>
+            </div>
 
-              <form onSubmit={handleUpdate} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-300">Ticket Status *</label>
-                  <select
-                    value={editStatus}
-                    onChange={(e) => setEditStatus(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-medium focus:outline-none focus:border-blue-500"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="contacted">Contacted Customer</option>
-                    <option value="scheduled">Diagnostic Scheduled</option>
-                    <option value="in_progress">In Progress (Repairing)</option>
-                    <option value="completed">Completed & Ready for Pickup</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-300">Assigned Hardware Engineer</label>
-                  <input
-                    type="text"
-                    value={editTech}
-                    onChange={(e) => setEditTech(e.target.value)}
-                    placeholder="e.g. Engr. Shafiqul Islam"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-300">Internal Lab & Diagnostic Notes</label>
-                  <textarea
-                    rows={3}
-                    value={editNotes}
-                    onChange={(e) => setEditNotes(e.target.value)}
-                    placeholder="e.g. Replaced display cable, thermal pad changed, 24h stress test passed..."
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRequest(null)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-bold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md"
-                  >
-                    Update Service Ticket
-                  </button>
-                </div>
-              </form>
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Internal Diagnostic Notes</label>
+              <textarea
+                rows={3}
+                placeholder="Hardware test findings, parts replaced, RMA details..."
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+              />
             </div>
           </div>
-        )}
-      </div>
-    </AdminLayout>
+        </AdminModal>
+      )}
+    </AdminShell>
   );
 }

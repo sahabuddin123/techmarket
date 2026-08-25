@@ -38,7 +38,7 @@ export default function BlogForm({ post }) {
           <div className="flex items-center space-x-3">
             <Link
               href="/admin/blog"
-              className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors"
+              className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-200/80 dark:border-slate-800/80 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
@@ -53,7 +53,7 @@ export default function BlogForm({ post }) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Main Info */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-6 space-y-4">
             <div className="space-y-1">
               <label className="block text-xs font-bold text-slate-400">Article Headline Title *</label>
               <input
@@ -62,7 +62,7 @@ export default function BlogForm({ post }) {
                 value={data.title}
                 onChange={(e) => setData('title', e.target.value)}
                 placeholder="e.g. Best Budget Graphics Cards for 1080p Gaming in Bangladesh (2026)"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
               />
               {errors.title && <div className="text-[10px] text-red-500">{errors.title}</div>}
             </div>
@@ -73,7 +73,7 @@ export default function BlogForm({ post }) {
                 <select
                   value={data.category}
                   onChange={(e) => setData('category', e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 font-medium"
                 >
                   <option value="Hardware Guides">Hardware Guides</option>
                   <option value="GPU & Graphics">GPU & Graphics</option>
@@ -92,7 +92,7 @@ export default function BlogForm({ post }) {
                   value={data.read_time}
                   onChange={(e) => setData('read_time', e.target.value)}
                   placeholder="e.g. 6 min read"
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function BlogForm({ post }) {
                 value={data.image}
                 onChange={(e) => setData('image', e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
               />
             </div>
 
@@ -117,7 +117,7 @@ export default function BlogForm({ post }) {
                 value={data.excerpt}
                 onChange={(e) => setData('excerpt', e.target.value)}
                 placeholder="Brief 1-2 sentence teaser for article cards..."
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
               />
             </div>
 
@@ -130,19 +130,19 @@ export default function BlogForm({ post }) {
                 value={data.content}
                 onChange={(e) => setData('content', e.target.value)}
                 placeholder="Write full article body text (supports multi-line paragraphs)..."
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 leading-relaxed font-sans"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 leading-relaxed font-sans"
               />
               {errors.content && <div className="text-[10px] text-red-500">{errors.content}</div>}
             </div>
 
             {/* Checkboxes */}
-            <div className="flex items-center space-x-6 pt-2 border-t border-slate-800">
+            <div className="flex items-center space-x-6 pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
               <label className="flex items-center space-x-2 text-xs font-bold text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={data.is_published}
                   onChange={(e) => setData('is_published', e.target.checked)}
-                  className="rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-0"
+                  className="rounded bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-blue-600 focus:ring-0"
                 />
                 <span>Published (Visible on public blog)</span>
               </label>
@@ -152,7 +152,7 @@ export default function BlogForm({ post }) {
                   type="checkbox"
                   checked={data.is_featured}
                   onChange={(e) => setData('is_featured', e.target.checked)}
-                  className="rounded bg-slate-950 border-slate-700 text-amber-500 focus:ring-0"
+                  className="rounded bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-amber-500 focus:ring-0"
                 />
                 <span className="flex items-center space-x-1">
                   <Star className="w-3 h-3 text-amber-400" />
@@ -163,7 +163,7 @@ export default function BlogForm({ post }) {
           </div>
 
           {/* SEO Metadata */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-6 space-y-4">
             <h2 className="text-sm font-bold text-white uppercase tracking-tight">SEO Metadata</h2>
             <div className="space-y-3">
               <div className="space-y-1">
@@ -173,7 +173,7 @@ export default function BlogForm({ post }) {
                   value={data.meta_title}
                   onChange={(e) => setData('meta_title', e.target.value)}
                   placeholder="Custom browser title tag"
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -184,7 +184,7 @@ export default function BlogForm({ post }) {
                   value={data.meta_description}
                   onChange={(e) => setData('meta_description', e.target.value)}
                   placeholder="Search engine summary snippet"
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>

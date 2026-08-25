@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import AdminShell from '@/Components/Admin/AdminShell';
+import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
 import { 
   Bell, CheckCheck, Trash2, Filter, Search, ShieldAlert, ShoppingBag, 
   Truck, Warehouse, Radio, Cpu, AlertTriangle, AlertOctagon, Check, 
@@ -80,110 +81,104 @@ export default function NotificationCenterIndex({
   };
 
   const renderIcon = (cat, priority) => {
-    if (priority === 'CRITICAL') return <AlertOctagon className="w-5 h-5 text-rose-500 animate-pulse" />;
-    if (priority === 'URGENT') return <AlertTriangle className="w-5 h-5 text-amber-500" />;
+    if (priority === 'CRITICAL') return <AlertOctagon className="w-5 h-5 text-rose-600 animate-pulse" />;
+    if (priority === 'URGENT') return <AlertTriangle className="w-5 h-5 text-amber-600" />;
 
     switch (String(cat).toUpperCase()) {
       case 'ORDER':
       case 'PAYMENT':
-        return <ShoppingBag className="w-5 h-5 text-blue-400" />;
+        return <ShoppingBag className="w-5 h-5 text-indigo-600" />;
       case 'COURIER':
-        return <Truck className="w-5 h-5 text-emerald-400" />;
+        return <Truck className="w-5 h-5 text-emerald-600" />;
       case 'FRAUD':
-        return <ShieldAlert className="w-5 h-5 text-rose-400" />;
+        return <ShieldAlert className="w-5 h-5 text-rose-600" />;
       case 'INVENTORY':
-        return <Warehouse className="w-5 h-5 text-amber-400" />;
+        return <Warehouse className="w-5 h-5 text-amber-600" />;
       case 'SMS':
-        return <Radio className="w-5 h-5 text-purple-400" />;
+        return <Radio className="w-5 h-5 text-purple-600" />;
       case 'SYSTEM':
       case 'SECURITY':
-        return <Cpu className="w-5 h-5 text-cyan-400" />;
+        return <Cpu className="w-5 h-5 text-cyan-600" />;
       default:
-        return <Bell className="w-5 h-5 text-slate-400" />;
+        return <Bell className="w-5 h-5 text-slate-500" />;
     }
   };
 
   const renderPriorityBadge = (p) => {
     switch (p) {
       case 'CRITICAL':
-        return <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-black uppercase tracking-wider animate-pulse">CRITICAL</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold uppercase tracking-wider animate-pulse">CRITICAL</span>;
       case 'URGENT':
-        return <span className="px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-300 border border-orange-500/40 text-[10px] font-black uppercase tracking-wider">URGENT</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 border border-orange-200 text-[10px] font-bold uppercase tracking-wider">URGENT</span>;
       case 'HIGH':
-        return <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold uppercase tracking-wider">HIGH</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold uppercase tracking-wider">HIGH</span>;
       case 'LOW':
-        return <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 text-[10px] font-medium uppercase tracking-wider">LOW</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium uppercase tracking-wider">LOW</span>;
       default:
-        return <span className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-semibold uppercase tracking-wider">NORMAL</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-semibold uppercase tracking-wider">NORMAL</span>;
     }
   };
 
   return (
-    <AdminLayout title="Notification Center">
-      <Head title="Notification & Alert Center — TechMarket BD" />
+    <AdminShell title="Notification Center">
+      <Head title="Notification & Alert Center — TechMarket Admin" />
 
-      <div className="space-y-6 font-['Hind_Siliguri',sans-serif]">
-        
+      <div className="space-y-6 w-full max-w-none pb-12">
         {/* Top Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
-              <Bell className="w-6 h-6 text-amber-400" />
-              <span>Notification & Alert Center</span>
-            </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Central operational telemetry, risk signals, order events, and system alerts
-            </p>
-          </div>
+        <AdminPageHeader
+          title="Notification & Alert Center"
+          subtitle="Central operational telemetry, risk signals, order events, and system alerts"
+          badge="Live Feed"
+          actions={
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={handleMarkAllRead}
+                className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <CheckCheck className="w-4 h-4 text-emerald-600" />
+                <span>Mark All Read</span>
+              </button>
 
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={handleMarkAllRead}
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-            >
-              <CheckCheck className="w-4 h-4 text-emerald-400" />
-              <span>Mark All Read</span>
-            </button>
-
-            <Link
-              href="/admin/settings/notifications"
-              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 shadow-md hover:scale-105 cursor-pointer"
-            >
-              <span>Preferences</span>
-            </Link>
-          </div>
-        </div>
+              <Link
+                href="/admin/settings/notifications"
+                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+              >
+                <span>Preferences</span>
+              </Link>
+            </div>
+          }
+        />
 
         {/* 4 KPI Metrics Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-1 shadow-lg">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Unread Alerts</span>
-            <div className="text-2xl sm:text-3xl font-black text-white font-mono">{stats.total_unread}</div>
-            <p className="text-[10px] text-slate-500">Requires attention</p>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 space-y-1 shadow-2xs">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Unread Alerts</span>
+            <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 font-heading font-mono">{stats.total_unread}</div>
+            <p className="text-[11px] text-slate-400">Requires attention</p>
           </div>
 
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-1 shadow-lg">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Today's Traffic</span>
-            <div className="text-2xl sm:text-3xl font-black text-blue-400 font-mono">{stats.today_count}</div>
-            <p className="text-[10px] text-slate-500">Dispatched last 24h</p>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 space-y-1 shadow-2xs">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Today's Traffic</span>
+            <div className="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 font-heading font-mono">{stats.today_count}</div>
+            <p className="text-[11px] text-slate-400">Dispatched last 24h</p>
           </div>
 
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-1 shadow-lg">
-            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider">High Priority</span>
-            <div className="text-2xl sm:text-3xl font-black text-amber-400 font-mono">{stats.high_priority_count}</div>
-            <p className="text-[10px] text-slate-500">Action recommended</p>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 space-y-1 shadow-2xs">
+            <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">High Priority</span>
+            <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 font-heading font-mono">{stats.high_priority_count}</div>
+            <p className="text-[11px] text-slate-400">Action recommended</p>
           </div>
 
-          <div className="bg-slate-900/90 border border-rose-900/50 rounded-2xl p-4 space-y-1 shadow-lg bg-rose-950/10">
-            <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wider">Critical Alerts</span>
-            <div className="text-2xl sm:text-3xl font-black text-rose-500 font-mono animate-pulse">{stats.critical_count}</div>
-            <p className="text-[10px] text-rose-400/80">Immediate intervention</p>
+          <div className="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4.5 space-y-1 shadow-2xs bg-rose-50/20">
+            <span className="text-[11px] font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wider">Critical Alerts</span>
+            <div className="text-2xl sm:text-3xl font-black text-rose-600 font-heading font-mono animate-pulse">{stats.critical_count}</div>
+            <p className="text-[11px] text-rose-600/80 font-medium">Immediate intervention</p>
           </div>
         </div>
 
         {/* Filter Controls Panel */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3.5 shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 space-y-3.5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3">
             
             {/* Category Pills */}
@@ -198,8 +193,8 @@ export default function NotificationCenterIndex({
                   }}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
                     selectedCategory === catKey
-                      ? 'bg-amber-500 text-slate-950 shadow-md scale-105'
-                      : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80'
                   }`}
                 >
                   {catLabel}
@@ -210,18 +205,18 @@ export default function NotificationCenterIndex({
             {/* Search Bar */}
             <form onSubmit={handleSearch} className="flex items-center gap-2 w-full sm:w-auto">
               <div className="relative flex-1 sm:w-64">
-                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search alert title, message..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-900 text-slate-200 pl-8 pr-3 py-1.5 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-hidden font-medium"
                 />
               </div>
               <button
                 type="submit"
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold cursor-pointer"
               >
                 Search
               </button>
@@ -229,19 +224,19 @@ export default function NotificationCenterIndex({
           </div>
 
           {/* Secondary Filters & Bulk Actions */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
             
             {/* Priority & Status dropdowns */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 font-medium">Priority:</span>
+                <span className="text-slate-500 font-medium">Priority:</span>
                 <select
                   value={selectedPriority}
                   onChange={(e) => {
                     setSelectedPriority(e.target.value);
                     applyFilters({ priority: e.target.value });
                   }}
-                  className="bg-slate-900 text-slate-200 px-2.5 py-1 rounded-lg border border-slate-700 text-xs focus:outline-none cursor-pointer"
+                  className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs focus:outline-hidden cursor-pointer"
                 >
                   {priorities.map(p => (
                     <option key={p} value={p}>{p}</option>
@@ -250,14 +245,14 @@ export default function NotificationCenterIndex({
               </div>
 
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 font-medium">Status:</span>
+                <span className="text-slate-500 font-medium">Status:</span>
                 <select
                   value={selectedStatus}
                   onChange={(e) => {
                     setSelectedStatus(e.target.value);
                     applyFilters({ status: e.target.value });
                   }}
-                  className="bg-slate-900 text-slate-200 px-2.5 py-1 rounded-lg border border-slate-700 text-xs focus:outline-none cursor-pointer"
+                  className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs focus:outline-hidden cursor-pointer"
                 >
                   <option value="all">All Alerts</option>
                   <option value="unread">Unread Only</option>
@@ -268,13 +263,13 @@ export default function NotificationCenterIndex({
 
             {/* Bulk Action Buttons */}
             {selectedIds.length > 0 && (
-              <div className="flex items-center gap-2 bg-slate-900 px-3 py-1 rounded-xl border border-slate-800 animate-in fade-in">
-                <span className="text-[11px] font-bold text-amber-400 font-mono">{selectedIds.length} selected</span>
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1 rounded-xl border border-slate-200/80 dark:border-slate-700/80 animate-in fade-in">
+                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 font-mono">{selectedIds.length} selected</span>
                 <button
                   type="button"
                   onClick={() => handleBulkAction('mark_read')}
                   disabled={processing}
-                  className="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-[11px] font-bold cursor-pointer"
+                  className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-bold cursor-pointer"
                 >
                   Mark Read
                 </button>
@@ -282,7 +277,7 @@ export default function NotificationCenterIndex({
                   type="button"
                   onClick={() => handleBulkAction('delete')}
                   disabled={processing}
-                  className="px-2 py-1 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 text-[11px] font-bold cursor-pointer"
+                  className="px-2 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 text-[11px] font-bold cursor-pointer"
                 >
                   Delete
                 </button>
@@ -292,24 +287,24 @@ export default function NotificationCenterIndex({
         </div>
 
         {/* Notifications Table / List */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-2xs">
           {notifications.data.length === 0 ? (
             <div className="p-12 text-center space-y-2">
-              <Bell className="w-10 h-10 text-slate-600 mx-auto" />
-              <h4 className="font-bold text-slate-300 text-sm">No notifications found</h4>
+              <Bell className="w-10 h-10 text-slate-400 mx-auto" />
+              <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm font-heading">No notifications found</h4>
               <p className="text-xs text-slate-500">There are no operational alerts matching your filter criteria.</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-800/80">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
               
               {/* Select All Row */}
-              <div className="p-3 bg-slate-900/60 flex items-center justify-between text-xs text-slate-400 font-bold">
+              <div className="p-3 bg-slate-50/80 dark:bg-slate-800/50 flex items-center justify-between text-xs text-slate-500 font-bold border-b border-slate-100 dark:border-slate-800">
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={selectedIds.length > 0 && selectedIds.length === notifications.data.length}
                     onChange={handleSelectAll}
-                    className="rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0 cursor-pointer"
+                    className="rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer"
                   />
                   <span>Select Page ({notifications.data.length})</span>
                 </label>
@@ -328,12 +323,12 @@ export default function NotificationCenterIndex({
                     key={n.id}
                     className={`p-4 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                       isCritical
-                        ? 'bg-rose-950/20 border-l-4 border-rose-500'
+                        ? 'bg-rose-50/60 dark:bg-rose-950/20 border-l-4 border-rose-500'
                         : isUrgent
-                        ? 'bg-amber-950/20 border-l-4 border-amber-500'
+                        ? 'bg-amber-50/60 dark:bg-amber-950/20 border-l-4 border-amber-500'
                         : isUnread
-                        ? 'bg-slate-900/50 border-l-4 border-blue-500'
-                        : 'hover:bg-slate-900/30 opacity-80'
+                        ? 'bg-indigo-50/30 dark:bg-indigo-950/10 border-l-4 border-indigo-600'
+                        : 'hover:bg-slate-50/70 dark:hover:bg-slate-800/30'
                     }`}
                   >
                     <div className="flex items-start gap-3.5 flex-1 min-w-0">
@@ -341,36 +336,37 @@ export default function NotificationCenterIndex({
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handleToggleSelect(n.id)}
-                        className="mt-1 rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0 cursor-pointer shrink-0"
+                        className="mt-1 rounded border-slate-300 text-indigo-600 focus:ring-0 cursor-pointer shrink-0"
                       />
 
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                        isCritical ? 'bg-rose-500/20 text-rose-400' :
-                        isUrgent ? 'bg-amber-500/20 text-amber-400' :
-                        'bg-slate-800 text-slate-300'
+                        isCritical ? 'bg-rose-100 text-rose-600' :
+                        isUrgent ? 'bg-amber-100 text-amber-600' :
+                        isUnread ? 'bg-indigo-100 text-indigo-600' :
+                        'bg-slate-100 text-slate-500'
                       }`}>
                         {renderIcon(n.category, n.priority)}
                       </div>
 
                       <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-black text-white text-sm">
+                          <span className="font-bold text-slate-900 dark:text-slate-100 text-sm font-heading">
                             {n.title || n.type}
                           </span>
                           {renderPriorityBadge(n.priority)}
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-slate-400 font-mono">
+                          <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400 font-mono">
                             {n.category}
                           </span>
                           {isUnread && (
-                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
                           )}
                         </div>
 
-                        <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
                           {n.message || (n.data && n.data.message) || ''}
                         </p>
 
-                        <div className="flex items-center gap-3 text-[11px] text-slate-500 font-mono pt-0.5">
+                        <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono pt-0.5">
                           <span>{new Date(n.created_at).toLocaleString()}</span>
                           {n.read_at && <span>• Read at {new Date(n.read_at).toLocaleTimeString()}</span>}
                         </div>
@@ -382,7 +378,7 @@ export default function NotificationCenterIndex({
                       {n.action_url && (
                         <Link
                           href={n.action_url}
-                          className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/30 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-600 hover:text-white text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                         >
                           <span>{n.action_label || 'View'}</span>
                           <ExternalLink className="w-3 h-3" />
@@ -393,7 +389,7 @@ export default function NotificationCenterIndex({
                         <button
                           type="button"
                           onClick={() => handleMarkAsRead(n.id)}
-                          className="p-1.5 rounded-xl bg-slate-800 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 text-slate-500 hover:text-emerald-600 transition-colors cursor-pointer"
                           title="Mark as read"
                         >
                           <Check className="w-4 h-4" />
@@ -403,7 +399,7 @@ export default function NotificationCenterIndex({
                       <button
                         type="button"
                         onClick={() => handleDelete(n.id)}
-                        className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
                         title="Delete notification"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -417,15 +413,15 @@ export default function NotificationCenterIndex({
 
           {/* Pagination */}
           {notifications.last_page > 1 && (
-            <div className="p-4 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between text-xs">
-              <span className="text-slate-400">
-                Page {notifications.current_page} of {notifications.last_page}
+            <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+              <span className="text-slate-500">
+                Page <span className="font-bold font-mono text-slate-900 dark:text-slate-100">{notifications.current_page}</span> of <span className="font-bold font-mono text-slate-900 dark:text-slate-100">{notifications.last_page}</span>
               </span>
               <div className="flex items-center gap-2">
                 {notifications.prev_page_url && (
                   <Link
                     href={notifications.prev_page_url}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 font-bold hover:bg-slate-700"
+                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"
                   >
                     Previous
                   </Link>
@@ -433,7 +429,7 @@ export default function NotificationCenterIndex({
                 {notifications.next_page_url && (
                   <Link
                     href={notifications.next_page_url}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 font-bold hover:bg-slate-700"
+                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"
                   >
                     Next
                   </Link>
@@ -444,6 +440,6 @@ export default function NotificationCenterIndex({
         </div>
 
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

@@ -72,7 +72,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
 
       <div className="space-y-6 max-w-4xl mx-auto">
         <div className="flex items-center space-x-3">
-          <Link href="/admin/communication/sms-dashboard" className="p-2 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 hover:text-white">
+          <Link href="/admin/communication/sms-dashboard" className="p-2 bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-xl text-slate-400 hover:text-white">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
@@ -83,7 +83,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-6 space-y-6 shadow-xl text-xs">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-6 shadow-xl text-xs">
           
           {/* RECIPIENT MODE SELECTOR */}
           <div className="space-y-2">
@@ -104,7 +104,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
                     className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-xs'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                        : 'bg-slate-50 dark:bg-slate-800 border-slate-200/80 dark:border-slate-800/80 text-slate-400 hover:bg-slate-900 hover:text-slate-200'
                     }`}
                   >
                     <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-amber-400' : 'text-slate-500'}`} />
@@ -126,7 +126,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
                 value={data.phone}
                 onChange={(e) => setData('phone', e.target.value)}
                 placeholder="e.g. 01711000000 or 8801812345678"
-                className="w-full bg-slate-950 text-slate-100 p-3 rounded-xl border border-slate-800 focus:border-amber-500 font-mono text-xs"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 font-mono text-xs"
               />
               {errors.phone && <p className="text-rose-400 text-[11px] mt-1">{errors.phone}</p>}
             </div>
@@ -141,7 +141,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
                 value={data.multiple_phones}
                 onChange={(e) => setData('multiple_phones', e.target.value)}
                 placeholder="01711000000&#10;01822000000&#10;01933000000"
-                className="w-full bg-slate-950 text-slate-100 p-3 rounded-xl border border-slate-800 focus:border-amber-500 font-mono text-xs"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 font-mono text-xs"
               />
               {errors.multiple_phones && <p className="text-rose-400 text-[11px] mt-1">{errors.multiple_phones}</p>}
             </div>
@@ -166,7 +166,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
               <select
                 onChange={handleTemplateSelect}
                 defaultValue=""
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 text-xs"
               >
                 <option value="">-- Choose existing template --</option>
                 {templates.map(t => (
@@ -180,7 +180,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
               <select
                 value={data.gateway_slug}
                 onChange={(e) => setData('gateway_slug', e.target.value)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs font-mono"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 text-xs font-mono"
               >
                 {gateways.map(gw => (
                   <option key={gw.id} value={gw.slug}>{gw.name} {gw.is_default ? '(Default)' : ''}</option>
@@ -198,12 +198,12 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
               value={data.message}
               onChange={(e) => setData('message', e.target.value)}
               placeholder="Type your SMS message here in English or Bangla..."
-              className="w-full bg-slate-950 text-slate-100 p-3.5 rounded-xl border border-slate-800 focus:border-amber-500 text-xs leading-relaxed"
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 text-xs leading-relaxed"
             />
             {errors.message && <p className="text-rose-400 text-[11px] mt-1">{errors.message}</p>}
 
             {/* Segment Calculator */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl font-mono text-[11px]">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-xl font-mono text-[11px]">
               <div className="flex items-center space-x-4">
                 <div>
                   <span className="text-slate-500">Characters: </span>
@@ -241,7 +241,7 @@ export default function SendSms({ gateways = [], templates = [], customerCount =
           </div>
 
           {/* SUBMIT BUTTON */}
-          <div className="pt-4 border-t border-slate-800 flex justify-end">
+          <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 flex justify-end">
             <button
               type="submit"
               disabled={processing || !data.message.trim()}

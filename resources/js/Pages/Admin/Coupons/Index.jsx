@@ -1,92 +1,162 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
 import { Plus, Edit2, Trash2, Ticket } from 'lucide-react';
 
-export default function AdminCoupons({ coupons }) {
-  const handleDelete = (couponId) => {
-    if (confirm('Are you sure you want to delete this coupon code?')) {
-      router.delete(`/admin/coupons/${couponId}`);
-    }
+export default function AdminCoupons({ coupons = [] }) {
+  const [search, setSearch] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [density, setDensity] = useState('comfortable');
+
+  const couponList = Array.isArray(coupons) ? coupons : [];
+
+  const filteredCoupons = couponList.filter(c => 
+    !search || c.code?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(`/admin/coupons/${deleteTarget.id}`, {
+      onFinish: () => setDeleteTarget(null),
+    });
   };
 
-  return (
-    <AdminLayout title="Manage Coupons">
-      <Head title="Promo Coupon Codes - Admin" />
-
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-              <Ticket className="w-6 h-6 text-amber-500" />
-              <span>DISCOUNT COUPONS & PROMO CODES</span>
-            </h1>
-            <p className="text-xs text-slate-400">Create promotional discount codes for customer checkout.</p>
+  const columns = [
+    {
+      header: 'Coupon Code',
+      accessor: 'code',
+      sortable: true,
+      render: (c) => (
+        <div className="flex items-center space-x-2.5">
+          <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+            <Ticket className="w-4 h-4" />
           </div>
-
+          <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-xs">
+            {c.code}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: 'Discount Amount',
+      accessor: 'value',
+      render: (c) => (
+        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+          {c.type === 'percent' ? `${c.value}% OFF` : `৳ ${Number(c.value).toLocaleString()} OFF`}
+        </span>
+      ),
+    },
+    {
+      header: 'Minimum Spend',
+      accessor: 'min_spend',
+      align: 'right',
+      render: (c) => (
+        <span className="font-mono text-slate-700 dark:text-slate-300">
+          ৳ {Number(c.min_spend || 0).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'is_active',
+      render: (c) => (
+        <AdminStatusBadge
+          status={c.is_active ? 'active' : 'draft'}
+          label={c.is_active ? 'Active' : 'Disabled'}
+          size="xs"
+        />
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (c) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
           <Link
-            href="/admin/coupons/create"
-            className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-lg flex items-center space-x-1.5 shadow-lg w-fit"
+            href={`/admin/coupons/${c.id}/edit`}
+            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 transition-colors"
+            title="Edit Coupon"
           >
-            <Plus className="w-4 h-4" />
-            <span>CREATE NEW COUPON</span>
+            <Edit2 className="w-3.5 h-3.5" />
           </Link>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(c)}
+            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+            title="Delete Coupon"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
         </div>
+      ),
+    },
+  ];
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">Coupon Code</th>
-                  <th className="p-3.5">Discount Value</th>
-                  <th className="p-3.5">Min Spend</th>
-                  <th className="p-3.5">Status</th>
-                  <th className="p-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {coupons && coupons.length > 0 ? (
-                  coupons.map(c => (
-                    <tr key={c.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-bold text-amber-400 font-mono text-sm">{c.code}</td>
-                      <td className="p-3.5 font-black text-white">
-                        {c.type === 'percent' ? `${c.value}% OFF` : `৳${Number(c.value).toLocaleString()} OFF`}
-                      </td>
-                      <td className="p-3.5 text-slate-300">৳{Number(c.min_spend).toLocaleString()}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          c.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-500'
-                        }`}>
-                          {c.is_active ? 'Active' : 'Expired / Disabled'}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-right space-x-2">
-                        <Link
-                          href={`/admin/coupons/${c.id}/edit`}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded inline-block"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(c.id)}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded inline-block"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-500">No discount coupons created yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+  return (
+    <AdminShell title="Coupons">
+      <Head title="Discount Coupons - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Discount Coupons & Promo Codes"
+          subtitle="Configure percentage and fixed value promo codes with minimum basket thresholds."
+          badge={`${couponList.length} Coupons`}
+          actions={
+            <Link
+              href="/admin/coupons/create"
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create New Coupon</span>
+            </Link>
+          }
+        />
+
+        {/* Page Toolbar */}
+        <AdminPageToolbar
+          search={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search coupon code..."
+          onRefresh={() => router.get('/admin/coupons')}
+        />
+
+        {/* Coupons Table */}
+        <AdminTable
+          columns={columns}
+          data={filteredCoupons}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No coupons found"
+          emptyDescription="Create discount coupons for promotional campaigns and customer loyalty."
+          emptyAction={
+            <Link
+              href="/admin/coupons/create"
+              className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs inline-flex items-center space-x-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Coupon</span>
+            </Link>
+          }
+        />
       </div>
-    </AdminLayout>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Coupon"
+        message={`Are you sure you want to delete promo code "${deleteTarget?.code}"?`}
+        confirmText="Delete Coupon"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

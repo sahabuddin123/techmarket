@@ -289,7 +289,7 @@ export default function EmailTemplates({
           <div className="space-y-4">
             
             {/* Filter Bar */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-slate-950 p-3.5 rounded-2xl border border-slate-800 shadow-lg">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-slate-50 dark:bg-slate-800 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-lg">
               <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
                 <button
                   type="button"
@@ -323,7 +323,7 @@ export default function EmailTemplates({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search templates, subjects..."
-                className="w-full md:w-64 bg-slate-900 text-slate-200 px-3 py-1.5 rounded-xl border border-slate-800 text-xs focus:outline-none focus:border-amber-500"
+                className="w-full md:w-64 bg-slate-900 text-slate-200 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-xs focus:outline-none focus:border-amber-500"
               />
             </div>
 
@@ -332,11 +332,11 @@ export default function EmailTemplates({
               {filteredTemplates.map((t) => (
                 <div
                   key={t.id}
-                  className="bg-slate-950 border border-slate-800/90 hover:border-slate-700 rounded-2xl p-4.5 shadow-xl transition-all flex flex-col justify-between space-y-4 group"
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 hover:border-slate-200 dark:border-slate-700 rounded-2xl p-4.5 shadow-xl transition-all flex flex-col justify-between space-y-4 group"
                 >
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-amber-400 font-mono text-[10px] font-bold">
+                      <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-amber-400 font-mono text-[10px] font-bold">
                         {t.category}
                       </span>
                       <span className={`px-2 py-0.5 rounded text-[9.5px] font-mono font-bold uppercase ${
@@ -353,13 +353,13 @@ export default function EmailTemplates({
                       <div className="font-mono text-[11px] text-slate-500 truncate mt-0.5">slug: {t.slug}</div>
                     </div>
 
-                    <p className="text-xs text-slate-300 line-clamp-2 bg-slate-900/50 p-2 rounded-xl border border-slate-800/50 font-medium">
+                    <p className="text-xs text-slate-300 line-clamp-2 bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 font-medium">
                       Subject: <strong className="text-slate-200">{t.subject}</strong>
                     </p>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-800/80">
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-200/80 dark:border-slate-800/80">
                     <button
                       type="button"
                       onClick={() => handleOpenTestModal(t)}
@@ -407,7 +407,7 @@ export default function EmailTemplates({
           <form onSubmit={handleSaveTemplate} className="space-y-4">
             
             {/* Top Builder Meta Settings Bar */}
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xl space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-[11px] font-bold text-slate-400 mb-1">Template Name *</label>
@@ -417,7 +417,7 @@ export default function EmailTemplates({
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder="e.g. Order Confirmation"
-                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
+                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
                   />
                 </div>
 
@@ -429,7 +429,7 @@ export default function EmailTemplates({
                     value={data.slug}
                     onChange={(e) => setData('slug', e.target.value)}
                     placeholder="e.g. order-confirmed"
-                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-700 font-mono text-xs focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -438,7 +438,7 @@ export default function EmailTemplates({
                   <select
                     value={data.category}
                     onChange={(e) => setData('category', e.target.value)}
-                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-700 text-xs focus:outline-none cursor-pointer"
+                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none cursor-pointer"
                   >
                     {categories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -454,7 +454,7 @@ export default function EmailTemplates({
                     value={data.subject}
                     onChange={(e) => setData('subject', e.target.value)}
                     placeholder="e.g. 📦 আপনার অর্ডার #{{order_number}} নিশ্চিত করা হয়েছে"
-                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
+                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500 font-bold"
                   />
                 </div>
 
@@ -465,13 +465,13 @@ export default function EmailTemplates({
                     value={data.preheader}
                     onChange={(e) => setData('preheader', e.target.value)}
                     placeholder="e.g. আপনার পার্সেল প্যাকেজিং হচ্ছে..."
-                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-900 text-white px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
 
               {/* Dynamic Variable Quick Tags */}
-              <div className="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-1.5">
+              <div className="pt-2 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-1.5">
                 <span className="text-[10px] font-bold text-slate-400 uppercase font-mono mr-1">Insert Variables:</span>
                 {variableChips.map(chip => (
                   <button
@@ -481,7 +481,7 @@ export default function EmailTemplates({
                       navigator.clipboard.writeText(chip);
                     }}
                     title="Click to copy placeholder"
-                    className="px-2 py-0.5 rounded bg-slate-900 hover:bg-amber-500/20 text-[10px] font-mono text-amber-400 border border-slate-800 transition-colors cursor-pointer"
+                    className="px-2 py-0.5 rounded bg-slate-900 hover:bg-amber-500/20 text-[10px] font-mono text-amber-400 border border-slate-200/80 dark:border-slate-800/80 transition-colors cursor-pointer"
                   >
                     {chip}
                   </button>
@@ -493,7 +493,7 @@ export default function EmailTemplates({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
               
               {/* Left Panel: Available Block Library (3 Cols) */}
-              <div className="lg:col-span-3 bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+              <div className="lg:col-span-3 bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xl space-y-3">
                 <h3 className="font-extrabold text-white text-xs uppercase tracking-wider font-mono">
                   Component Blocks
                 </h3>
@@ -505,7 +505,7 @@ export default function EmailTemplates({
                         key={blockDef.type}
                         type="button"
                         onClick={() => handleAddBlock(blockDef)}
-                        className="w-full p-2.5 bg-slate-900 hover:bg-slate-800/80 border border-slate-800 hover:border-amber-500/50 rounded-xl text-left flex items-center justify-between text-xs font-bold text-slate-200 transition-all cursor-pointer group"
+                        className="w-full p-2.5 bg-slate-900 hover:bg-slate-800/80 border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-500/50 rounded-xl text-left flex items-center justify-between text-xs font-bold text-slate-200 transition-all cursor-pointer group"
                       >
                         <div className="flex items-center gap-2.5 truncate">
                           <Icon className="w-4 h-4 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
@@ -519,9 +519,9 @@ export default function EmailTemplates({
               </div>
 
               {/* Middle Panel: Active Blocks & Property Inspector (4 Cols) */}
-              <div className="lg:col-span-4 bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-4 flex flex-col justify-between">
+              <div className="lg:col-span-4 bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xl space-y-4 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+                  <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-2.5 mb-3">
                     <h3 className="font-extrabold text-white text-xs uppercase tracking-wider font-mono">
                       Email Structure ({blocks.length} Blocks)
                     </h3>
@@ -536,7 +536,7 @@ export default function EmailTemplates({
                         className={`p-2.5 rounded-xl border flex items-center justify-between text-xs font-bold transition-all cursor-pointer ${
                           selectedBlockIndex === idx
                             ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-md'
-                            : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                            : 'bg-slate-900 border-slate-200/80 dark:border-slate-800/80 text-slate-300 hover:border-slate-200 dark:border-slate-700'
                         }`}
                       >
                         <span className="capitalize truncate font-mono text-[11px]">
@@ -582,8 +582,8 @@ export default function EmailTemplates({
 
                 {/* Selected Block Property Inspector */}
                 {selectedBlockIndex !== null && blocks[selectedBlockIndex] && (
-                  <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800 space-y-2.5 text-xs">
-                    <h4 className="font-black text-amber-400 uppercase text-[10px] font-mono border-b border-slate-800 pb-1">
+                  <div className="p-3 bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 space-y-2.5 text-xs">
+                    <h4 className="font-black text-amber-400 uppercase text-[10px] font-mono border-b border-slate-200/80 dark:border-slate-800/80 pb-1">
                       Block Settings: {blocks[selectedBlockIndex].type}
                     </h4>
 
@@ -595,7 +595,7 @@ export default function EmailTemplates({
                           rows={3}
                           value={blocks[selectedBlockIndex].props.content}
                           onChange={(e) => handleBlockPropChange('content', e.target.value)}
-                          className="w-full bg-slate-950 text-white p-2 rounded-xl border border-slate-700 text-xs focus:outline-none"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-white p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none"
                         />
                       </div>
                     )}
@@ -607,7 +607,7 @@ export default function EmailTemplates({
                           type="text"
                           value={blocks[selectedBlockIndex].props.title}
                           onChange={(e) => handleBlockPropChange('title', e.target.value)}
-                          className="w-full bg-slate-950 text-white px-2.5 py-1.5 rounded-xl border border-slate-700 text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-white px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"
                         />
                       </div>
                     )}
@@ -619,7 +619,7 @@ export default function EmailTemplates({
                           type="text"
                           value={blocks[selectedBlockIndex].props.label}
                           onChange={(e) => handleBlockPropChange('label', e.target.value)}
-                          className="w-full bg-slate-950 text-white px-2.5 py-1.5 rounded-xl border border-slate-700 text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-white px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"
                         />
                       </div>
                     )}
@@ -631,7 +631,7 @@ export default function EmailTemplates({
                           type="text"
                           value={blocks[selectedBlockIndex].props.url}
                           onChange={(e) => handleBlockPropChange('url', e.target.value)}
-                          className="w-full bg-slate-950 text-white px-2.5 py-1.5 rounded-xl border border-slate-700 font-mono text-xs"
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-white px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
                         />
                       </div>
                     )}
@@ -644,7 +644,7 @@ export default function EmailTemplates({
                             type="text"
                             value={blocks[selectedBlockIndex].props.color}
                             onChange={(e) => handleBlockPropChange('color', e.target.value)}
-                            className="w-full bg-slate-950 text-white px-2.5 py-1.5 rounded-xl border border-slate-700 font-mono text-xs"
+                            className="w-full bg-slate-50 dark:bg-slate-800 text-white px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
                           />
                         </div>
                         {blocks[selectedBlockIndex].props.size && (
@@ -654,7 +654,7 @@ export default function EmailTemplates({
                               type="text"
                               value={blocks[selectedBlockIndex].props.size}
                               onChange={(e) => handleBlockPropChange('size', e.target.value)}
-                              className="w-full bg-slate-950 text-white px-2.5 py-1.5 rounded-xl border border-slate-700 font-mono text-xs"
+                              className="w-full bg-slate-50 dark:bg-slate-800 text-white px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs"
                             />
                           </div>
                         )}
@@ -665,10 +665,10 @@ export default function EmailTemplates({
               </div>
 
               {/* Right Panel: Live Desktop / Mobile HTML Preview (5 Cols) */}
-              <div className="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3 flex flex-col justify-between">
+              <div className="lg:col-span-5 bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xl space-y-3 flex flex-col justify-between">
                 
                 {/* Device & Mode Selector */}
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-2.5">
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
@@ -717,12 +717,12 @@ export default function EmailTemplates({
                 {builderTab === 'visual' ? (
                   <div className="bg-slate-900 p-4 rounded-2xl flex items-center justify-center min-h-[460px] overflow-x-auto">
                     <div
-                      className={`bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl transition-all ${
+                      className={`bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-xl overflow-hidden shadow-2xl transition-all ${
                         previewDevice === 'mobile' ? 'w-[320px]' : 'w-full max-w-[500px]'
                       }`}
                     >
                       {/* Mock Header */}
-                      <div className="p-3.5 bg-slate-900 border-b border-slate-800 text-center">
+                      <div className="p-3.5 bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/80 text-center">
                         <span className="font-heading font-black text-amber-400 text-sm">TECHMARKET BD</span>
                       </div>
                       
@@ -733,7 +733,7 @@ export default function EmailTemplates({
                       />
 
                       {/* Mock Footer */}
-                      <div className="p-3 bg-slate-950 border-t border-slate-800/80 text-center text-[10px] text-slate-600">
+                      <div className="p-3 bg-slate-50 dark:bg-slate-800 border-t border-slate-200/80 dark:border-slate-800/80 text-center text-[10px] text-slate-600">
                         &copy; 2026 TechMarket BD. All rights reserved.
                       </div>
                     </div>
@@ -747,13 +747,13 @@ export default function EmailTemplates({
                         setData('html_content', e.target.value);
                         setCompiledHtml(e.target.value);
                       }}
-                      className="w-full h-full bg-slate-950 text-amber-300 font-mono text-xs p-4 rounded-xl border border-slate-800 focus:outline-none"
+                      className="w-full h-full bg-slate-50 dark:bg-slate-800 text-amber-300 font-mono text-xs p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 focus:outline-none"
                     />
                   </div>
                 )}
 
                 {/* Save Bar */}
-                <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+                <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-end gap-2">
                   <button
                     type="submit"
                     disabled={processing || isCompiling}
@@ -773,9 +773,9 @@ export default function EmailTemplates({
 
         {/* Test Email Modal */}
         {testModalOpen && selectedTemplate && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                 <h3 className="font-extrabold text-white text-sm flex items-center gap-2">
                   <Send className="w-4 h-4 text-amber-400" />
                   <span>Send Test Email: {selectedTemplate.name}</span>
@@ -798,7 +798,7 @@ export default function EmailTemplates({
                     value={testEmailAddress}
                     onChange={(e) => setTestEmailAddress(e.target.value)}
                     placeholder="e.g. admin@techmarketbd.com"
-                    className="w-full bg-slate-950 text-white px-3 py-2 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-white px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -813,7 +813,7 @@ export default function EmailTemplates({
                 )}
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setTestModalOpen(false)}

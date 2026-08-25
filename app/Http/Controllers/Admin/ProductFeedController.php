@@ -35,6 +35,8 @@ class ProductFeedController extends Controller
             'meta_xml' => url('/feeds/meta-products.xml'),
             'meta_csv' => url('/feeds/meta-products.csv'),
             'google_xml' => url('/feeds/google-products.xml'),
+            'products_csv' => url('/feeds/products.csv'),
+            'csv' => url('/feeds/products.csv'),
         ];
 
         return Inertia::render('Admin/Marketing/ProductFeeds', [

@@ -1,71 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { UserCheck, Shield } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import { UserCheck, Shield, Users } from 'lucide-react';
 
-export default function AdminUsers({ users, roles }) {
+export default function AdminUsers({ users = { data: [] }, roles = [] }) {
+  const [search, setSearch] = useState('');
+  const [density, setDensity] = useState('comfortable');
+
+  const userList = Array.isArray(users?.data) ? users.data : [];
+
+  const filteredUsers = userList.filter(u =>
+    !search || u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
   const handleRoleChange = (userId, roleId) => {
     router.post(`/admin/users/${userId}/role`, { role_id: roleId }, { preserveScroll: true });
   };
 
-  return (
-    <AdminLayout title="Admin Users & Role Assignments">
-      <Head title="Admin Users & RBAC - Admin" />
-
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-            <UserCheck className="w-6 h-6 text-amber-500" />
-            <span>ADMINISTRATIVE USERS & RBAC ROLES WORKSPACE</span>
-          </h1>
-          <p className="text-xs text-slate-400">Assign role-based access control permissions to administrative users.</p>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">User Name</th>
-                  <th className="p-3.5">Email</th>
-                  <th className="p-3.5">Assigned RBAC Role</th>
-                  <th className="p-3.5 text-right">Assign Role Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {users.data && users.data.map(u => (
-                  <tr key={u.id} className="hover:bg-slate-800/40">
-                    <td className="p-3.5 font-bold text-white flex items-center space-x-2">
-                      <div className="w-7 h-7 rounded-full bg-slate-950 border border-slate-800 text-amber-400 font-bold flex items-center justify-center text-xs shrink-0">
-                        {u.name.charAt(0)}
-                      </div>
-                      <span>{u.name}</span>
-                    </td>
-                    <td className="p-3.5 text-slate-300">{u.email}</td>
-                    <td className="p-3.5">
-                      <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold uppercase">
-                        {u.roles && u.roles.length > 0 ? u.roles[0].name : u.role}
-                      </span>
-                    </td>
-                    <td className="p-3.5 text-right">
-                      <select
-                        defaultValue={u.roles && u.roles.length > 0 ? u.roles[0].id : ''}
-                        onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        className="bg-slate-950 text-slate-100 border border-slate-800 rounded px-2.5 py-1 text-xs focus:border-amber-500 font-semibold"
-                      >
-                        <option value="" disabled>Select Role...</option>
-                        {roles.map(r => (
-                          <option key={r.id} value={r.id}>{r.name}</option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+  const columns = [
+    {
+      header: 'Admin User',
+      accessor: 'name',
+      sortable: true,
+      render: (u) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs shrink-0 font-heading">
+            {u.name ? u.name.charAt(0) : 'U'}
+          </div>
+          <div>
+            <div className="font-bold text-slate-900 dark:text-slate-100 text-xs font-heading">{u.name}</div>
+            <div className="text-[10.5px] text-slate-400 font-mono">{u.email}</div>
           </div>
         </div>
+      ),
+    },
+    {
+      header: 'Assigned Role',
+      accessor: 'role',
+      render: (u) => {
+        const roleName = u.roles && u.roles.length > 0 ? u.roles[0].name : (u.role || 'staff');
+        return (
+          <AdminStatusBadge
+            status={roleName === 'admin' || roleName === 'super-admin' ? 'active' : 'staff'}
+            label={roleName}
+            size="xs"
+          />
+        );
+      },
+    },
+    {
+      header: 'Change Role Assignment',
+      accessor: 'actions',
+      align: 'right',
+      render: (u) => (
+        <select
+          defaultValue={u.roles && u.roles.length > 0 ? u.roles[0].id : ''}
+          onChange={(e) => handleRoleChange(u.id, e.target.value)}
+          className="bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-hidden"
+        >
+          <option value="" disabled>Select Role...</option>
+          {roles.map((r) => (
+            <option key={r.id} value={r.id}>{r.name}</option>
+          ))}
+        </select>
+      ),
+    },
+  ];
+
+  return (
+    <AdminShell title="Admin Users">
+      <Head title="Admin Users & Roles - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Administrative Users & RBAC Permissions"
+          subtitle="Manage administrative staff accounts, assign granular role-based privileges, and audit user access."
+          badge={`${users.total || userList.length} Accounts`}
+        />
+
+        {/* Toolbar */}
+        <AdminPageToolbar
+          search={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search staff by name or email..."
+          onRefresh={() => router.get('/admin/users')}
+        />
+
+        {/* Users Table */}
+        <AdminTable
+          columns={columns}
+          data={filteredUsers}
+          pagination={users}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No admin users found"
+          emptyDescription="Administrative staff members with backend dashboard access will appear here."
+        />
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

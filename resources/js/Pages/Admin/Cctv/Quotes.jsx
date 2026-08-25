@@ -32,7 +32,7 @@ export default function Quotes({ quotes = {}, filters = {} }) {
 
   return (
     <AdminLayout title="Commercial CCTV Quotes" breadcrumbs={[{ label: 'CCTV Estimator', href: '/admin/cctv' }, { label: 'Quotes' }]}>
-      <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 w-full max-w-none">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -46,7 +46,7 @@ export default function Quotes({ quotes = {}, filters = {} }) {
         </div>
 
         {/* Filters */}
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-wrap items-center gap-3">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
             <input
@@ -55,14 +55,14 @@ export default function Quotes({ quotes = {}, filters = {} }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All Statuses</option>
             <option value="draft">Draft</option>
@@ -82,11 +82,11 @@ export default function Quotes({ quotes = {}, filters = {} }) {
         </div>
 
         {/* Quotes Table */}
-        <div className="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   <th className="py-3 px-4">Quote Number</th>
                   <th className="py-3 px-4">Customer & Organization</th>
                   <th className="py-3 px-4">Contact</th>
@@ -148,8 +148,8 @@ export default function Quotes({ quotes = {}, filters = {} }) {
         {/* Modal: Quote Detail */}
         {selectedQuote && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-base font-bold text-white font-mono">{selectedQuote.quote_number}</h2>
@@ -169,7 +169,7 @@ export default function Quotes({ quotes = {}, filters = {} }) {
               </div>
 
               {/* Financial Snapshot */}
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 text-xs font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-2 text-xs font-mono">
                 <div className="flex justify-between text-slate-400">
                   <span>Hardware & Accessories Subtotal</span>
                   <span className="text-white">৳{Number(selectedQuote.subtotal || 0).toLocaleString()}</span>
@@ -186,7 +186,7 @@ export default function Quotes({ quotes = {}, filters = {} }) {
                   <span>Tax / Shipping</span>
                   <span className="text-white">৳{Number(selectedQuote.tax_amount || 0 + selectedQuote.shipping_amount || 0).toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-800">
+                <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
                   <span className="text-white">Official Grand Total</span>
                   <span className="text-emerald-400">৳{Number(selectedQuote.grand_total || 0).toLocaleString()}</span>
                 </div>
@@ -194,7 +194,7 @@ export default function Quotes({ quotes = {}, filters = {} }) {
 
               {/* Terms and Conditions */}
               {selectedQuote.terms_and_conditions && (
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-2">
                   <h3 className="text-xs font-bold text-slate-300">Terms & Conditions</h3>
                   <pre className="text-[11px] text-slate-400 whitespace-pre-wrap font-sans">
                     {selectedQuote.terms_and_conditions}

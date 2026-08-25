@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import { Head, useForm, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { Landmark, Plus, Edit, Trash2, Save, CheckCircle2 } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import AdminModal from '../../../Components/Admin/AdminModal';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
+import { Landmark, Plus, Edit, Trash2, CheckCircle2 } from 'lucide-react';
 
 export default function EmiPartnersIndex({ partners = [] }) {
   const [editingPartner, setEditingPartner] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [density, setDensity] = useState('comfortable');
+
+  const partnerList = Array.isArray(partners) ? partners : [];
 
   const { data, setData, post, put, reset, errors, processing } = useForm({
     bank_name: '',
@@ -61,10 +70,11 @@ export default function EmiPartnersIndex({ partners = [] }) {
     }
   };
 
-  const handleDelete = (id, name) => {
-    if (confirm(`Remove EMI partner bank: "${name}"?`)) {
-      router.delete(`/admin/emi-partners/${id}`);
-    }
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(`/admin/emi-partners/${deleteTarget.id}`, {
+      onFinish: () => setDeleteTarget(null),
+    });
   };
 
   const toggleTenure = (tenure) => {
@@ -78,233 +88,246 @@ export default function EmiPartnersIndex({ partners = [] }) {
     setData('available_tenures', current);
   };
 
-  return (
-    <AdminLayout>
-      <Head title="EMI Partner Banks - TechMarket BD Admin" />
-
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-black text-white flex items-center space-x-2">
-              <Landmark className="w-5 h-5 text-blue-500" />
-              <span>EMI Bank Partners & Tenures</span>
-            </h1>
-            <p className="text-xs text-slate-400">Configure bank financing terms, tenures, and zero-cost 0% EMI options.</p>
+  const columns = [
+    {
+      header: 'Banking Partner',
+      accessor: 'bank_name',
+      sortable: true,
+      render: (p) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 p-1 flex items-center justify-center shrink-0">
+            {p.logo ? (
+              <img src={p.logo} alt={p.bank_name} className="max-h-full max-w-full object-contain" />
+            ) : (
+              <Landmark className="w-5 h-5 text-indigo-500" />
+            )}
           </div>
-
-          <button
-            onClick={openCreateModal}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center space-x-1.5 shadow-md"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Bank Partner</span>
-          </button>
-        </div>
-
-        {/* Partners Table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/70 border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400 font-bold">
-              <tr>
-                <th className="p-4">Bank Partner</th>
-                <th className="p-4">Min. Amount</th>
-                <th className="p-4">Available Tenures</th>
-                <th className="p-4">Interest Terms</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 font-medium">
-              {partners.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="p-8 text-center text-slate-500">
-                    No EMI partner banks configured. Click "Add Bank Partner" to create one.
-                  </td>
-                </tr>
-              ) : (
-                partners.map((partner) => (
-                  <tr key={partner.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 shrink-0">
-                          <Landmark className="w-4 h-4" />
-                        </div>
-                        <div className="font-bold text-white text-xs">{partner.bank_name}</div>
-                      </div>
-                    </td>
-                    <td className="p-4 font-mono text-slate-300">
-                      ৳{Number(partner.min_amount).toLocaleString()}
-                    </td>
-                    <td className="p-4">
-                      <div className="flex flex-wrap gap-1">
-                        {Array.isArray(partner.available_tenures) ? (
-                          partner.available_tenures.map((t, idx) => (
-                            <span key={idx} className="px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-[10px]">
-                              {t}M
-                            </span>
-                          ))
-                        ) : (
-                          <span>{partner.available_tenures}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4 text-slate-300 text-xs">
-                      {partner.interest_rate_note}
-                    </td>
-                    <td className="p-4">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        partner.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'
-                      }`}>
-                        {partner.is_active ? 'Active' : 'Disabled'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right space-x-2">
-                      <button
-                        onClick={() => openEditModal(partner)}
-                        className="p-1.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded inline-block transition-colors"
-                        title="Edit Bank"
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(partner.id, partner.bank_name)}
-                        className="p-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded inline-block transition-colors"
-                        title="Delete Bank"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Create / Edit Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 className="font-black text-sm text-white">
-                  {editingPartner ? 'Edit EMI Partner Bank' : 'Add New EMI Partner Bank'}
-                </h3>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-white text-xs font-bold"
-                >
-                  ✕ Close
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-300">Bank Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={data.bank_name}
-                    onChange={(e) => setData('bank_name', e.target.value)}
-                    placeholder="e.g. City Bank (Amex)"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  />
-                  {errors.bank_name && <div className="text-[10px] text-red-500">{errors.bank_name}</div>}
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="block font-bold text-slate-300">Min. Order (BDT) *</label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      value={data.min_amount}
-                      onChange={(e) => setData('min_amount', e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block font-bold text-slate-300">Sort Order</label>
-                    <input
-                      type="number"
-                      value={data.sort_order}
-                      onChange={(e) => setData('sort_order', e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-300">Interest Note / Promotion *</label>
-                  <input
-                    type="text"
-                    required
-                    value={data.interest_rate_note}
-                    onChange={(e) => setData('interest_rate_note', e.target.value)}
-                    placeholder="e.g. 0% Interest up to 12 months"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                {/* Available Tenures Selector */}
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-300">Available Tenures</label>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {['3', '6', '9', '12', '18', '24', '36'].map((t) => {
-                      const isSelected = data.available_tenures.includes(t);
-                      return (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => toggleTenure(t)}
-                          className={`px-3 py-1 rounded text-xs font-bold transition-colors ${
-                            isSelected
-                              ? 'bg-blue-600 text-white font-black'
-                              : 'bg-slate-950 text-slate-400 border border-slate-700'
-                          }`}
-                        >
-                          {t} Months
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2 pt-2">
-                  <label className="flex items-center space-x-2 font-bold text-slate-300 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={data.is_active}
-                      onChange={(e) => setData('is_active', e.target.checked)}
-                      className="rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-0"
-                    />
-                    <span>Active Bank Partner</span>
-                  </label>
-                </div>
-
-                <div className="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-bold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={processing}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md disabled:opacity-50"
-                  >
-                    {editingPartner ? 'Update Partner' : 'Create Partner'}
-                  </button>
-                </div>
-              </form>
+          <div>
+            <div className="font-bold text-slate-900 dark:text-slate-100 text-xs font-heading">
+              {p.bank_name}
+            </div>
+            <div className="text-[10.5px] text-slate-400 font-mono">
+              Min. Order: ৳{Number(p.min_amount || 0).toLocaleString()}
             </div>
           </div>
-        )}
+        </div>
+      ),
+    },
+    {
+      header: 'Supported Tenures',
+      accessor: 'available_tenures',
+      render: (p) => (
+        <div className="flex flex-wrap gap-1">
+          {Array.isArray(p.available_tenures) && p.available_tenures.map(t => (
+            <span key={t} className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-mono text-[10px] font-bold">
+              {t} Months
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      header: 'Financing Rate Terms',
+      accessor: 'interest_rate_note',
+      render: (p) => (
+        <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+          {p.interest_rate_note || '0% Interest EMI'}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'is_active',
+      render: (p) => (
+        <AdminStatusBadge
+          status={p.is_active ? 'active' : 'draft'}
+          label={p.is_active ? 'Active' : 'Disabled'}
+          size="xs"
+        />
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (p) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
+          <button
+            type="button"
+            onClick={() => openEditModal(p)}
+            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 transition-colors cursor-pointer"
+            title="Edit EMI Terms"
+          >
+            <Edit className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(p)}
+            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+            title="Delete Bank"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <AdminShell title="EMI Partners">
+      <Head title="EMI Financing Partners - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Bank EMI Financing Partners"
+          subtitle="Configure partner bank tenures (3, 6, 9, 12, 24, 36 months), minimum basket values, and 0% interest terms."
+          badge={`${partnerList.length} Banks`}
+          actions={
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Partner Bank</span>
+            </button>
+          }
+        />
+
+        {/* Table */}
+        <AdminTable
+          columns={columns}
+          data={partnerList}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No EMI bank partners configured"
+          emptyDescription="Add financial institution partners to enable credit card installment checkout calculations."
+          emptyAction={
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs inline-flex items-center space-x-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Bank</span>
+            </button>
+          }
+        />
       </div>
-    </AdminLayout>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <AdminModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={editingPartner ? 'Edit EMI Partner Bank' : 'Add EMI Partner Bank'}
+          subtitle="Define financing tenures and interest rates"
+          icon={Landmark}
+          size="lg"
+          footer={
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={processing}
+                className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                {processing ? 'Saving...' : editingPartner ? 'Update Partner' : 'Save Partner'}
+              </button>
+            </div>
+          }
+        >
+          <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Bank Name *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. City Bank / BRAC Bank / Eastern Bank"
+                value={data.bank_name}
+                onChange={(e) => setData('bank_name', e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Bank Logo URL</label>
+                <input
+                  type="text"
+                  placeholder="https://.../bank-logo.png"
+                  value={data.logo}
+                  onChange={(e) => setData('logo', e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Min Order Amount (BDT) *</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  value={data.min_amount}
+                  onChange={(e) => setData('min_amount', e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5">Supported Tenures (Months)</label>
+              <div className="flex flex-wrap gap-2">
+                {['3', '6', '9', '12', '18', '24', '36'].map((tenure) => {
+                  const isSelected = data.available_tenures.includes(tenure);
+                  return (
+                    <button
+                      key={tenure}
+                      type="button"
+                      onClick={() => toggleTenure(tenure)}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer ${
+                        isSelected
+                          ? 'bg-indigo-600 text-white'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      {tenure}M
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Interest Note / Promo Copy</label>
+              <input
+                type="text"
+                placeholder="0% Interest for 3 to 12 months"
+                value={data.interest_rate_note}
+                onChange={(e) => setData('interest_rate_note', e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+              />
+            </div>
+          </form>
+        </AdminModal>
+      )}
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Remove Bank"
+        message={`Are you sure you want to remove bank partner "${deleteTarget?.bank_name}"?`}
+        confirmText="Remove Bank"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

@@ -92,7 +92,7 @@ export default function Rules({ rules = {}, filters = {} }) {
 
   return (
     <AdminLayout title="CCTV Rule Engine Matrix" breadcrumbs={[{ label: 'CCTV Estimator', href: '/admin/cctv' }, { label: 'Rules' }]}>
-      <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 w-full max-w-none">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -115,11 +115,11 @@ export default function Rules({ rules = {}, filters = {} }) {
         </div>
 
         {/* Filters */}
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-wrap items-center gap-3">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-3">
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All Rule Types</option>
             <option value="compatibility">Compatibility Rules</option>
@@ -133,7 +133,7 @@ export default function Rules({ rules = {}, filters = {} }) {
           <select
             value={selectedSystem}
             onChange={(e) => setSelectedSystem(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All System Scopes</option>
             <option value="all">Universal / All</option>
@@ -153,11 +153,11 @@ export default function Rules({ rules = {}, filters = {} }) {
         </div>
 
         {/* Rules Table */}
-        <div className="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   <th className="py-3 px-4">Rule Name & Code</th>
                   <th className="py-3 px-4">Rule Type</th>
                   <th className="py-3 px-4">Scope</th>
@@ -202,7 +202,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold cursor-pointer transition-all ${
                             rule.is_active
                               ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                              : 'bg-slate-800 text-slate-500 border border-slate-700'
+                              : 'bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           {rule.is_active ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
@@ -230,8 +230,8 @@ export default function Rules({ rules = {}, filters = {} }) {
         {/* Modal: Rule Builder */}
         {isCreateOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
                     <Sliders className="w-5 h-5" />
@@ -260,7 +260,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                       value={data.name}
                       onChange={(e) => setData('name', e.target.value)}
                       required
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                     />
                   </div>
                   <div>
@@ -271,7 +271,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                       value={data.code}
                       onChange={(e) => setData('code', e.target.value.toUpperCase())}
                       required
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white font-mono"
                     />
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                     <select
                       value={data.rule_type}
                       onChange={(e) => setData('rule_type', e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                     >
                       <option value="compatibility">Compatibility Matrix</option>
                       <option value="recommendation">Product Recommendation</option>
@@ -296,7 +296,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                     <select
                       value={data.system_type_scope}
                       onChange={(e) => setData('system_type_scope', e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                     >
                       <option value="all">Universal / All</option>
                       <option value="ip">IP System</option>
@@ -310,13 +310,13 @@ export default function Rules({ rules = {}, filters = {} }) {
                       type="number"
                       value={data.priority}
                       onChange={(e) => setData('priority', e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white font-mono"
                     />
                   </div>
                 </div>
 
                 {/* Structured Condition Builder Card */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 space-y-4">
                   <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
                     <Zap className="w-3.5 h-3.5" />
                     <span>IF Condition</span>
@@ -328,7 +328,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                       <select
                         value={data.source_entity}
                         onChange={(e) => setData('source_entity', e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                       >
                         <option value="camera">Camera</option>
                         <option value="recorder">Recorder (NVR/DVR)</option>
@@ -344,7 +344,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                         value={data.source_field}
                         onChange={(e) => setData('source_field', e.target.value)}
                         placeholder="e.g. total_cameras"
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white font-mono"
                       />
                     </div>
 
@@ -353,7 +353,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                       <select
                         value={data.operator}
                         onChange={(e) => setData('operator', e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                       >
                         <option value="equals">Equals (==)</option>
                         <option value="greater_than">Greater Than (&gt;)</option>
@@ -370,12 +370,12 @@ export default function Rules({ rules = {}, filters = {} }) {
                         value={data.condition_value}
                         onChange={(e) => setData('condition_value', e.target.value)}
                         placeholder="e.g. 8"
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white font-mono"
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider pt-2 border-t border-slate-800/60">
+                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
                     <ArrowRight className="w-3.5 h-3.5" />
                     <span>THEN Action / Result</span>
                   </div>
@@ -386,7 +386,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                       <select
                         value={data.target_entity}
                         onChange={(e) => setData('target_entity', e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                       >
                         <option value="nvr">NVR / DVR</option>
                         <option value="poe_switch">PoE Switch</option>
@@ -400,7 +400,7 @@ export default function Rules({ rules = {}, filters = {} }) {
                       <select
                         value={data.action_type}
                         onChange={(e) => setData('action_type', e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white"
                       >
                         <option value="recommend_product">Recommend Product</option>
                         <option value="validate_compatibility">Validate Compatibility</option>
@@ -415,13 +415,13 @@ export default function Rules({ rules = {}, filters = {} }) {
                         value={data.action_result}
                         onChange={(e) => setData('action_result', e.target.value)}
                         placeholder="e.g. 16_channel_nvr"
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white font-mono"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
                   <button
                     type="button"
                     onClick={() => setIsCreateOpen(false)}

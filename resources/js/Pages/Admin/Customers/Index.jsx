@@ -1,89 +1,128 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { Search, Users, Mail, Phone, ShoppingBag } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import { Users, Mail, Phone, ShoppingBag, ShieldCheck } from 'lucide-react';
 
-export default function AdminCustomers({ customers, filters }) {
+export default function AdminCustomers({ customers = { data: [], links: [] }, filters = {} }) {
   const [search, setSearch] = useState(filters.search || '');
+  const [density, setDensity] = useState('comfortable');
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    router.get('/admin/customers', { search }, { preserveState: true });
+  const customerList = Array.isArray(customers?.data) ? customers.data : [];
+
+  const handleSearchSubmit = (val) => {
+    setSearch(val);
+    router.get('/admin/customers', { search: val || undefined }, { preserveState: true, replace: true });
   };
 
-  return (
-    <AdminLayout title="Registered Customers">
-      <Head title="Registered Customers - Admin" />
-
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-            <Users className="w-6 h-6 text-amber-500" />
-            <span>REGISTERED CUSTOMERS DIRECTORY</span>
-          </h1>
-          <p className="text-xs text-slate-400">View customer profiles, contact info, and total order counts.</p>
-        </div>
-
-        {/* SEARCH TOOLBAR */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between gap-4">
-          <form onSubmit={handleSearch} className="flex-1 max-w-md relative">
-            <input
-              type="text"
-              placeholder="Search by Customer Name, Email, or Phone..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-950 text-slate-100 text-xs rounded p-2.5 pr-8 border border-slate-800 focus:border-amber-500"
-            />
-            <button type="submit" className="absolute right-2 top-2.5 text-slate-400 hover:text-amber-400">
-              <Search className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead>
-                <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[11px] border-b border-slate-800">
-                  <th className="p-3.5">Customer Name</th>
-                  <th className="p-3.5">Email Address</th>
-                  <th className="p-3.5">Phone Number</th>
-                  <th className="p-3.5">Role</th>
-                  <th className="p-3.5 text-right">Orders Placed</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {customers.data && customers.data.length > 0 ? (
-                  customers.data.map(c => (
-                    <tr key={c.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-bold text-white flex items-center space-x-2">
-                        <div className="w-7 h-7 rounded-full bg-slate-950 border border-slate-800 text-amber-400 font-bold flex items-center justify-center text-xs shrink-0">
-                          {c.name.charAt(0)}
-                        </div>
-                        <span>{c.name}</span>
-                      </td>
-                      <td className="p-3.5 text-slate-300">{c.email}</td>
-                      <td className="p-3.5 text-slate-400">{c.phone || '—'}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          c.role === 'admin' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30' : 'bg-slate-800 text-slate-400'
-                        }`}>
-                          {c.role}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-right font-black text-amber-400">{c.orders_count} Orders</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-500">No customers registered yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+  const tableColumns = [
+    {
+      header: 'Customer Profile',
+      accessor: 'name',
+      sortable: true,
+      render: (customer) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
+            {customer.name ? customer.name.charAt(0).toUpperCase() : 'U'}
+          </div>
+          <div>
+            <div className="font-bold text-slate-900 dark:text-slate-100 font-heading text-xs">
+              {customer.name}
+            </div>
+            <div className="text-[10.5px] text-slate-400 font-mono">
+              ID: #{customer.id} • Joined {customer.created_at ? new Date(customer.created_at).toLocaleDateString() : 'Recent'}
+            </div>
           </div>
         </div>
+      ),
+    },
+    {
+      header: 'Email Address',
+      accessor: 'email',
+      render: (customer) => (
+        <div className="flex items-center space-x-1.5 text-slate-700 dark:text-slate-300">
+          <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span className="truncate">{customer.email}</span>
+        </div>
+      ),
+    },
+    {
+      header: 'Phone Number',
+      accessor: 'phone',
+      render: (customer) => (
+        <div className="flex items-center space-x-1.5 text-slate-600 dark:text-slate-400 font-mono">
+          <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span>{customer.phone || '—'}</span>
+        </div>
+      ),
+    },
+    {
+      header: 'Account Role',
+      accessor: 'role',
+      render: (customer) => (
+        <AdminStatusBadge
+          status={customer.role === 'admin' ? 'admin' : 'customer'}
+          label={customer.role || 'Customer'}
+          size="xs"
+        />
+      ),
+    },
+    {
+      header: 'Total Orders',
+      accessor: 'orders_count',
+      align: 'right',
+      sortable: true,
+      render: (customer) => (
+        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+          {customer.orders_count || 0} Orders
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <AdminShell title="Customers">
+      <Head title="Customers Directory - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Registered Customers Directory"
+          subtitle="View customer profiles, contact info, and lifetime purchasing telemetry."
+          badge={`${customers?.total || customerList.length} Customers`}
+          actions={
+            <Link
+              href="/admin/customers/fraud-checker"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center space-x-1.5 transition-colors"
+            >
+              <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Anti-Fraud Shield</span>
+            </Link>
+          }
+        />
+
+        {/* Page Toolbar */}
+        <AdminPageToolbar
+          search={search}
+          onSearchChange={handleSearchSubmit}
+          searchPlaceholder="Search by Customer Name, Email, or Phone..."
+          onRefresh={() => router.get('/admin/customers')}
+        />
+
+        {/* Customers Table */}
+        <AdminTable
+          columns={tableColumns}
+          data={customerList}
+          pagination={customers}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No customers registered yet"
+          emptyDescription="Customer accounts created during checkout or registration will populate here automatically."
+        />
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

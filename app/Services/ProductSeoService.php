@@ -51,7 +51,7 @@ class ProductSeoService
      */
     public static function autoGenerateSeoMetadata(string $title, ?string $brand = null, ?string $category = null, array $keySpecs = []): array
     {
-        $siteName = Setting::get('site_name', 'TechLand');
+        $siteName = Setting::get('site_name', 'TechMarket BD');
         $cleanTitle = trim($title);
         $brandText = $brand ? " - {$brand}" : '';
 
@@ -202,7 +202,7 @@ class ProductSeoService
      */
     public static function resolveProductSeo(Product $product): array
     {
-        $siteName = Setting::get('site_name', 'TechLand BD');
+        $siteName = Setting::get('site_name', 'TechMarket BD');
         $canonicalUrl = $product->canonical_url ?: url("/product/{$product->slug}");
 
         // SEO Title Hierarchy

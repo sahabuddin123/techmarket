@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import { Head, router, Link } from '@inertiajs/react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
 import { Search, UserCheck, Package, Award, Share2 } from 'lucide-react';
 
 export default function AdminCustomerSupport({ customerData, filters }) {
@@ -12,19 +13,15 @@ export default function AdminCustomerSupport({ customerData, filters }) {
   };
 
   return (
-    <AdminLayout title="Unified Customer Support Workspace">
-      <Head title="Customer Support - Admin" />
+    <AdminShell title="Customer Support">
+      <Head title="Customer Support Intelligence - TechMarket Admin" />
 
-      <div className="space-y-6 text-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-          <div>
-            <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-              <UserCheck className="w-6 h-6 text-amber-500" />
-              <span>CUSTOMER SUPPORT WORKSPACE</span>
-            </h1>
-            <p className="text-slate-400">Lookup customer profile, orders history, loyalty balance, and referral data</p>
-          </div>
-        </div>
+      <div className="space-y-6 text-xs w-full max-w-none pb-12">
+        <AdminPageHeader
+          title="Customer Support Intelligence"
+          subtitle="Lookup customer profile, orders history, loyalty balance, and referral data in real-time."
+          badge="Support Desk"
+        />
 
         {/* SEARCH BAR */}
         <form onSubmit={handleSearch} className="flex gap-2 max-w-xl">
@@ -33,9 +30,9 @@ export default function AdminCustomerSupport({ customerData, filters }) {
             placeholder="Search by customer name, email, phone, or order number..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-slate-900 border border-slate-800 text-white p-3 rounded-xl focus:border-amber-500 font-bold"
+            className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 p-3 rounded-xl focus:outline-hidden font-medium shadow-2xs"
           />
-          <button type="submit" className="px-5 bg-amber-500 text-slate-950 font-black rounded-xl uppercase flex items-center space-x-1.5 hover:bg-amber-400">
+          <button type="submit" className="px-5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl uppercase flex items-center space-x-1.5 shadow-xs cursor-pointer">
             <Search className="w-4 h-4" />
             <span>Search</span>
           </button>
@@ -44,55 +41,55 @@ export default function AdminCustomerSupport({ customerData, filters }) {
         {/* CUSTOMER DETAIL VIEW */}
         {customerData ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-xl">
-              <h3 className="font-black text-sm text-white uppercase border-b border-slate-800 pb-2">Profile Overview</h3>
-              <div className="space-y-1.5 text-slate-300">
-                <div className="text-base font-bold text-white">{customerData.user.name}</div>
-                <div>Email: <span className="text-slate-200">{customerData.user.email}</span></div>
-                <div>Phone: <span className="text-slate-200">{customerData.user.phone || 'N/A'}</span></div>
-                <div className="pt-2 border-t border-slate-800 flex justify-between font-bold">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 space-y-3 shadow-2xs">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 uppercase border-b border-slate-100 dark:border-slate-800 pb-2 font-heading">Profile Overview</h3>
+              <div className="space-y-2 text-slate-600 dark:text-slate-400">
+                <div className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">{customerData.user.name}</div>
+                <div>Email: <span className="text-slate-800 dark:text-slate-200 font-medium">{customerData.user.email}</span></div>
+                <div>Phone: <span className="text-slate-800 dark:text-slate-200 font-medium">{customerData.user.phone || 'N/A'}</span></div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between font-bold">
                   <span>Lifetime Spend:</span>
-                  <span className="text-amber-400">৳{customerData.total_spend.toLocaleString()}</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-mono">৳{customerData.total_spend.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Loyalty Points:</span>
-                  <span className="text-emerald-400">{customerData.loyalty_balance} pts</span>
+                  <span className="text-emerald-600 font-mono">{customerData.loyalty_balance} pts</span>
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Referral Code:</span>
-                  <span className="font-mono text-slate-200">{customerData.referral_code}</span>
+                  <span className="font-mono text-slate-800 dark:text-slate-200">{customerData.referral_code}</span>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-xl">
-              <h3 className="font-black text-sm text-white uppercase border-b border-slate-800 pb-2">Recent Order History</h3>
-              <div className="space-y-3">
+            <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 space-y-3 shadow-2xs">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 uppercase border-b border-slate-100 dark:border-slate-800 pb-2 font-heading">Recent Order History</h3>
+              <div className="space-y-2.5">
                 {customerData.orders && customerData.orders.length > 0 ? (
                   customerData.orders.map(o => (
-                    <div key={o.id} className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <div key={o.id} className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex justify-between items-center">
                       <div>
-                        <a href={`/admin/orders/${o.id}`} className="font-bold text-amber-400 hover:underline">{o.order_number}</a>
-                        <div className="text-slate-400 text-[11px]">{new Date(o.created_at).toLocaleDateString()} — {o.items?.length || 0} items</div>
+                        <Link href={`/admin/orders/${o.id}`} className="font-bold text-indigo-600 hover:underline">{o.order_number}</Link>
+                        <div className="text-slate-500 text-[11px]">{new Date(o.created_at).toLocaleDateString()} — {o.items?.length || 0} items</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-black text-white">৳{Number(o.total).toLocaleString()}</div>
-                        <span className="text-[10px] font-bold uppercase text-slate-400">{o.status}</span>
+                        <div className="font-bold text-slate-900 dark:text-slate-100 font-mono">৳{Number(o.total).toLocaleString()}</div>
+                        <span className="text-[10px] font-bold uppercase text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{o.status}</span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-slate-500 text-center py-4">No order history recorded.</div>
+                  <div className="text-slate-400 text-center py-4">No order history recorded.</div>
                 )}
               </div>
             </div>
           </div>
         ) : (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-500">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-12 text-center text-slate-400 shadow-2xs">
             Enter a customer name, email, phone number, or order number above to load customer details.
           </div>
         )}
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

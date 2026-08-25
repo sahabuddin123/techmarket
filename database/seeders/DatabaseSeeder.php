@@ -1789,6 +1789,8 @@ class DatabaseSeeder extends Seeder
             \Database\Seeders\StorefrontVersionSeeder::class,
             \Database\Seeders\TechMarketGadgetSeeder::class,
             \Database\Seeders\CctvEnterpriseSeeder::class,
+            \Database\Seeders\UnitSeeder::class,
+            \Database\Seeders\BulkDataPermissionSeeder::class,
         ]);
     }
 }

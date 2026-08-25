@@ -29,7 +29,7 @@ export default function CouponForm({ coupon }) {
 
       <div className="space-y-6 max-w-2xl mx-auto">
         <div className="flex items-center space-x-3">
-          <Link href="/admin/coupons" className="p-2 bg-slate-900 border border-slate-800 rounded text-slate-400 hover:text-white">
+          <Link href="/admin/coupons" className="p-2 bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded text-slate-400 hover:text-white">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
@@ -40,7 +40,7 @@ export default function CouponForm({ coupon }) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
+        <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
           <div>
             <label className="block text-slate-300 font-bold mb-1">Coupon Code * (e.g. TECHMARKET1000)</label>
             <input
@@ -49,7 +49,7 @@ export default function CouponForm({ coupon }) {
               value={data.code}
               onChange={(e) => setData('code', e.target.value.toUpperCase())}
               placeholder="e.g. DISCOUNT500"
-              className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500 font-mono"
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500 font-mono"
             />
             {errors.code && <p className="text-rose-400 text-[11px] mt-1">{errors.code}</p>}
           </div>
@@ -60,7 +60,7 @@ export default function CouponForm({ coupon }) {
               <select
                 value={data.type}
                 onChange={(e) => setData('type', e.target.value)}
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500"
               >
                 <option value="fixed">Fixed Amount (BDT ৳)</option>
                 <option value="percent">Percentage (%)</option>
@@ -75,7 +75,7 @@ export default function CouponForm({ coupon }) {
                 value={data.value}
                 onChange={(e) => setData('value', e.target.value)}
                 placeholder="500"
-                className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500"
               />
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function CouponForm({ coupon }) {
               value={data.min_spend}
               onChange={(e) => setData('min_spend', e.target.value)}
               placeholder="5000"
-              className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 p-2.5 rounded border border-slate-200/80 dark:border-slate-800/80 focus:border-amber-500"
             />
           </div>
 

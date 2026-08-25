@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Head, useForm, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { Layers, Plus, Trash2 } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminModal from '../../../Components/Admin/AdminModal';
+import AdminEmptyState from '../../../Components/Admin/AdminEmptyState';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
+import { Layers, Plus, Trash2, Tag } from 'lucide-react';
 
-export default function AdminSpecifications({ groups }) {
+export default function AdminSpecifications({ groups = [] }) {
   const [groupModalOpen, setGroupModalOpen] = useState(false);
   const [attrModalOpen, setAttrModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [deleteTargetGroup, setDeleteTargetGroup] = useState(null);
+  const [deleteTargetAttr, setDeleteTargetAttr] = useState(null);
+
+  const groupList = Array.isArray(groups) ? groups : [];
 
   const groupForm = useForm({
     name: '',
@@ -46,134 +54,236 @@ export default function AdminSpecifications({ groups }) {
     setAttrModalOpen(true);
   };
 
-  const handleDeleteGroup = (id) => {
-    if (confirm('Delete this specification group and all its attributes?')) {
-      router.delete(`/admin/specifications/groups/${id}`);
-    }
+  const handleDeleteGroup = () => {
+    if (!deleteTargetGroup) return;
+    router.delete(`/admin/specifications/groups/${deleteTargetGroup.id}`, {
+      onFinish: () => setDeleteTargetGroup(null),
+    });
   };
 
-  const handleDeleteAttr = (id) => {
-    if (confirm('Delete this attribute?')) {
-      router.delete(`/admin/specifications/attributes/${id}`);
-    }
+  const handleDeleteAttr = () => {
+    if (!deleteTargetAttr) return;
+    router.delete(`/admin/specifications/attributes/${deleteTargetAttr.id}`, {
+      onFinish: () => setDeleteTargetAttr(null),
+    });
   };
 
   return (
-    <AdminLayout title="Dynamic Specifications Management">
-      <Head title="Specification Groups & Attributes - Admin" />
+    <AdminShell title="Specifications">
+      <Head title="Specification Groups & Attributes - TechMarket Admin" />
 
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-              <Layers className="w-6 h-6 text-amber-500" />
-              <span>DYNAMIC HARDWARE SPECIFICATION TEMPLATES</span>
-            </h1>
-            <p className="text-xs text-slate-400">Configure specification groups (Processor, Memory, Display) and reusable attributes.</p>
-          </div>
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Hardware Specification Matrices"
+          subtitle="Configure dynamic specification groups (e.g. Memory, Processor, GPU, Display) and reusable attributes."
+          badge={`${groupList.length} Spec Groups`}
+          actions={
+            <button
+              type="button"
+              onClick={() => setGroupModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create Spec Group</span>
+            </button>
+          }
+        />
 
-          <button
-            onClick={() => setGroupModalOpen(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-lg flex items-center space-x-1.5 shadow-lg w-fit"
-          >
-            <Plus className="w-4 h-4" />
-            <span>CREATE SPEC GROUP</span>
-          </button>
-        </div>
-
-        {/* SPECIFICATION GROUPS & ATTRIBUTES LIST */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {groups && groups.map(g => (
-            <div key={g.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="font-black text-sm text-white uppercase">{g.name}</h3>
-                  <button onClick={() => handleDeleteGroup(g.id)} className="text-rose-400 hover:text-rose-300 p-1">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="space-y-2 pt-3 text-xs">
-                  {g.attributes && g.attributes.map(a => (
-                    <div key={a.id} className="p-2 bg-slate-950 rounded border border-slate-800 flex items-center justify-between">
-                      <span className="text-slate-200 font-semibold">{a.name} {a.unit && `(${a.unit})`}</span>
-                      <button onClick={() => handleDeleteAttr(a.id)} className="text-slate-500 hover:text-rose-400">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                  {(!g.attributes || g.attributes.length === 0) && (
-                    <div className="text-slate-500 text-[11px] italic">No attributes defined yet.</div>
-                  )}
-                </div>
-              </div>
-
-              <button
-                onClick={() => openAttrModal(g)}
-                className="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs py-2 rounded flex items-center justify-center space-x-1 border border-slate-700"
+        {/* Specification Groups Matrix Grid */}
+        {groupList.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {groupList.map((g) => (
+              <div 
+                key={g.id} 
+                className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-2xs space-y-4 flex flex-col justify-between"
               >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add Attribute to {g.name}</span>
+                <div>
+                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                        <Layers className="w-4 h-4" />
+                      </div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 font-heading">{g.name}</h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTargetGroup(g)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                      title="Delete Group"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5 pt-3 text-xs">
+                    {g.attributes && g.attributes.length > 0 ? (
+                      g.attributes.map((a) => (
+                        <div key={a.id} className="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                          <span className="font-medium text-slate-700 dark:text-slate-200">
+                            {a.name} {a.unit && <span className="font-mono text-slate-400">({a.unit})</span>}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteTargetAttr(a)}
+                            className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                            title="Delete Attribute"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-slate-400 text-xs italic py-3 text-center">No attributes defined yet.</div>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => openAttrModal(g)}
+                  className="w-full mt-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Attribute to {g.name}</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <AdminEmptyState
+            title="No Specification Groups Found"
+            description="Create specification groups (e.g. Memory, Processor, Display) to build structured product specs."
+            action={
+              <button
+                type="button"
+                onClick={() => setGroupModalOpen(true)}
+                className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs inline-flex items-center space-x-1.5"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Spec Group</span>
               </button>
-            </div>
-          ))}
-        </div>
-
-        {/* CREATE GROUP MODAL */}
-        {groupModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <form onSubmit={handleGroupSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl text-xs">
-              <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">Create Specification Group</h3>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Group Name * (e.g. Memory)</label>
-                <input
-                  type="text"
-                  required
-                  value={groupForm.data.name}
-                  onChange={(e) => groupForm.setData('name', e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
-                <button type="button" onClick={() => setGroupModalOpen(false)} className="px-4 py-2 bg-slate-800 text-slate-300 rounded font-bold">Cancel</button>
-                <button type="submit" disabled={groupForm.processing} className="px-4 py-2 bg-amber-500 text-slate-950 rounded font-black uppercase">Create Group</button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* CREATE ATTRIBUTE MODAL */}
-        {attrModalOpen && selectedGroup && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <form onSubmit={handleAttrSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl text-xs">
-              <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">Add Attribute to {selectedGroup.name}</h3>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Attribute Name * (e.g. RAM Capacity)</label>
-                <input
-                  type="text"
-                  required
-                  value={attrForm.data.name}
-                  onChange={(e) => attrForm.setData('name', e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
-                />
-              </div>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Unit (e.g. GB, GHz, Hz)</label>
-                <input
-                  type="text"
-                  value={attrForm.data.unit}
-                  onChange={(e) => attrForm.setData('unit', e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500"
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
-                <button type="button" onClick={() => setAttrModalOpen(false)} className="px-4 py-2 bg-slate-800 text-slate-300 rounded font-bold">Cancel</button>
-                <button type="submit" disabled={attrForm.processing} className="px-4 py-2 bg-amber-500 text-slate-950 rounded font-black uppercase">Add Attribute</button>
-              </div>
-            </form>
-          </div>
+            }
+          />
         )}
       </div>
-    </AdminLayout>
+
+      {/* Create Group Modal */}
+      <AdminModal
+        isOpen={groupModalOpen}
+        onClose={() => setGroupModalOpen(false)}
+        title="Create Specification Group"
+        subtitle="e.g. Memory, Processor, Storage, Display"
+        size="sm"
+        footer={
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => setGroupModalOpen(false)}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleGroupSubmit}
+              disabled={groupForm.processing}
+              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            >
+              {groupForm.processing ? 'Creating...' : 'Create Group'}
+            </button>
+          </div>
+        }
+      >
+        <form onSubmit={handleGroupSubmit} className="space-y-3 text-xs">
+          <div>
+            <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Group Name *</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Memory, Processor, Graphics"
+              value={groupForm.data.name}
+              onChange={(e) => groupForm.setData('name', e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold focus:outline-hidden"
+            />
+          </div>
+        </form>
+      </AdminModal>
+
+      {/* Create Attribute Modal */}
+      {selectedGroup && (
+        <AdminModal
+          isOpen={attrModalOpen}
+          onClose={() => setAttrModalOpen(false)}
+          title={`Add Attribute to ${selectedGroup.name}`}
+          size="md"
+          footer={
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setAttrModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleAttrSubmit}
+                disabled={attrForm.processing}
+                className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                {attrForm.processing ? 'Adding...' : 'Add Attribute'}
+              </button>
+            </div>
+          }
+        >
+          <form onSubmit={handleAttrSubmit} className="space-y-3 text-xs">
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Attribute Name *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. RAM Capacity, Base Clock, VRAM"
+                value={attrForm.data.name}
+                onChange={(e) => attrForm.setData('name', e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold focus:outline-hidden"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Unit (Optional)</label>
+              <input
+                type="text"
+                placeholder="e.g. GB, GHz, MHz, Watts"
+                value={attrForm.data.unit}
+                onChange={(e) => attrForm.setData('unit', e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+              />
+            </div>
+          </form>
+        </AdminModal>
+      )}
+
+      {/* Delete Group Confirmation */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTargetGroup)}
+        onClose={() => setDeleteTargetGroup(null)}
+        onConfirm={handleDeleteGroup}
+        title="Delete Specification Group"
+        message={`Are you sure you want to delete "${deleteTargetGroup?.name}" and all its attributes?`}
+        confirmText="Delete Group"
+        isDestructive
+      />
+
+      {/* Delete Attribute Confirmation */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTargetAttr)}
+        onClose={() => setDeleteTargetAttr(null)}
+        onConfirm={handleDeleteAttr}
+        title="Delete Attribute"
+        message={`Are you sure you want to delete attribute "${deleteTargetAttr?.name}"?`}
+        confirmText="Delete Attribute"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

@@ -1,265 +1,226 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import { Head, Link } from '@inertiajs/react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminKpiCard from '../../../Components/Admin/AdminKpiCard';
+import AdminChartCard from '../../../Components/Admin/AdminChartCard';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import AdminEmptyState from '../../../Components/Admin/AdminEmptyState';
 import {
-  ShieldCheck,
-  Video,
-  HardDrive,
-  Cable,
-  Sliders,
-  FileText,
-  Tag,
-  Sparkles,
-  Cpu,
-  Layers,
-  ArrowUpRight,
-  Plus,
-  CheckCircle2,
-  AlertTriangle,
-  Clock,
-  ExternalLink
+  ShieldCheck, Video, Sliders, FileText, Tag, 
+  Sparkles, Cpu, Layers, Plus, ArrowRight
 } from 'lucide-react';
 
-export default function Dashboard({ kpis = {}, recentEstimates = [], recentQuotes = [] }) {
-  const statCards = [
-    {
-      title: 'Total CCTV Profiles',
-      value: kpis.total_profiles ?? 0,
-      sub: `${kpis.camera_profiles ?? 0} Cameras • ${kpis.recorder_profiles ?? 0} Recorders`,
-      icon: Video,
-      color: 'from-blue-500/20 to-indigo-500/20 border-blue-500/30 text-blue-400',
-    },
-    {
-      title: 'Active Hardware Rules',
-      value: (kpis.active_compatibility_rules ?? 0) + (kpis.active_recommendation_rules ?? 0) + (kpis.active_calculation_rules ?? 0),
-      sub: `${kpis.active_compatibility_rules ?? 0} Compatibility • ${kpis.active_recommendation_rules ?? 0} Recommendations`,
-      icon: Sliders,
-      color: 'from-amber-500/20 to-orange-500/20 border-amber-500/30 text-amber-400',
-    },
-    {
-      title: 'Project Estimates',
-      value: kpis.total_estimates ?? 0,
-      sub: `${kpis.saved_estimates ?? 0} Saved • Real DB records`,
-      icon: FileText,
-      color: 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30 text-emerald-400',
-    },
-    {
-      title: 'Formal Quotes',
-      value: kpis.total_quotes ?? 0,
-      sub: `Commercial proposals issued`,
-      icon: Tag,
-      color: 'from-purple-500/20 to-fuchsia-500/20 border-purple-500/30 text-purple-400',
-    },
-  ];
-
+export default function CctvDashboard({ kpis = {}, recentEstimates = [], recentQuotes = [] }) {
   return (
-    <AdminLayout title="CCTV Estimator Configuration Hub" breadcrumbs={[{ label: 'CCTV Estimator' }]}>
-      <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto">
-        {/* Top Header Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 p-6 md:p-8 shadow-2xl">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Enterprise CCTV Calculation & Rule Engine v2.4</span>
-              </div>
-              <h1 className="text-2xl md:text-3xl font-black text-white font-heading tracking-tight">
-                Surveillance Estimator Control Center
-              </h1>
-              <p className="text-slate-400 text-sm max-w-2xl">
-                Configure technical hardware profiles, multi-factor compatibility matrices, dynamic storage bitrates, cabling roll models, and automated accessory recommendations.
-              </p>
-            </div>
+    <AdminShell title="CCTV Solutions Hub" breadcrumbs={[{ label: 'CCTV Solutions' }]}>
+      <Head title="CCTV Surveillance Suite - TechMarket Admin" />
 
-            <div className="flex flex-wrap items-center gap-3">
+      <div className="space-y-6">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="CCTV Solutions & Estimator Suite"
+          subtitle="Configure technical hardware profiles, multi-factor compatibility matrices, dynamic storage bitrates, and automated accessory recommendations."
+          badge="Engine v2.4"
+          actions={
+            <div className="flex items-center space-x-2">
               <Link
                 href="/admin/cctv/test"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-lg shadow-indigo-600/30 cursor-pointer"
+                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs hover:shadow transition-all"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Live Rule Tester</span>
               </Link>
               <Link
                 href="/admin/cctv/profiles"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                <span>Attach Product Profile</span>
+                <span>Attach Profile</span>
               </Link>
             </div>
-          </div>
+          }
+        />
+
+        {/* Top KPI Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <AdminKpiCard
+            title="Total Hardware Profiles"
+            value={kpis.total_profiles ?? 0}
+            description={`${kpis.camera_profiles ?? 0} Cameras • ${kpis.recorder_profiles ?? 0} Recorders`}
+            icon={Video}
+            color="blue"
+            href="/admin/cctv/profiles"
+          />
+
+          <AdminKpiCard
+            title="Active Hardware Rules"
+            value={(kpis.active_compatibility_rules ?? 0) + (kpis.active_recommendation_rules ?? 0) + (kpis.active_calculation_rules ?? 0)}
+            description={`${kpis.active_compatibility_rules ?? 0} Compatibility • ${kpis.active_recommendation_rules ?? 0} Recommendations`}
+            icon={Sliders}
+            color="amber"
+            href="/admin/cctv/rules"
+          />
+
+          <AdminKpiCard
+            title="Project Estimates"
+            value={kpis.total_estimates ?? 0}
+            description={`${kpis.saved_estimates ?? 0} Saved in database`}
+            icon={FileText}
+            color="emerald"
+            href="/admin/cctv/estimates"
+          />
+
+          <AdminKpiCard
+            title="Formal Quotes"
+            value={kpis.total_quotes ?? 0}
+            description="Commercial proposals generated"
+            icon={Tag}
+            color="purple"
+            href="/admin/cctv/quotes"
+          />
         </div>
 
-        {/* Real KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {statCards.map((card, idx) => {
-            const Icon = card.icon;
-            return (
-              <div
-                key={idx}
-                className={`p-6 rounded-2xl bg-gradient-to-br ${card.color} border shadow-lg space-y-3 relative overflow-hidden`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    {card.title}
-                  </span>
-                  <div className="p-2 rounded-xl bg-slate-900/60 border border-white/5">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                </div>
-                <div className="text-3xl font-black text-white font-heading">
-                  {card.value}
-                </div>
-                <div className="text-xs text-slate-400 font-medium truncate">
-                  {card.sub}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Quick Nav Modules Grid */}
+        {/* Quick Nav Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link
             href="/admin/cctv/profiles"
-            className="group p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-xl hover:shadow-indigo-500/10 space-y-3 block"
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-indigo-700 shadow-2xs hover:shadow-sm transition-all space-y-2 block"
           >
             <div className="flex items-center justify-between">
-              <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
                 <Video className="w-5 h-5" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
             </div>
-            <h3 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors font-heading">
               Product Technical Profiles
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-relaxed">
               Attach MP resolution, lens size, night vision, PoE draw, channels, and HDD bay specs to catalog items.
             </p>
           </Link>
 
           <Link
             href="/admin/cctv/rules"
-            className="group p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 transition-all hover:shadow-xl hover:shadow-amber-500/10 space-y-3 block"
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-indigo-700 shadow-2xs hover:shadow-sm transition-all space-y-2 block"
           >
             <div className="flex items-center justify-between">
-              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
                 <Sliders className="w-5 h-5" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
             </div>
-            <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors font-heading">
               Rule Engine & Matrix
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-relaxed">
               Configure IF/THEN compatibility rules, auto-accessory mappings, and product recommendation priorities.
             </p>
           </Link>
 
           <Link
             href="/admin/cctv/settings"
-            className="group p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/50 transition-all hover:shadow-xl hover:shadow-emerald-500/10 space-y-3 block"
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-indigo-700 shadow-2xs hover:shadow-sm transition-all space-y-2 block"
           >
             <div className="flex items-center justify-between">
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
                 <Cpu className="w-5 h-5" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
             </div>
-            <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors font-heading">
               Engine & Calculation Parameters
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-relaxed">
               Manage storage overhead %, cable waste %, default retention days, and installation charge algorithms.
             </p>
           </Link>
         </div>
 
         {/* Real Recent Estimates & Quotes Tables */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Estimates */}
-          <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" />
-                <h2 className="text-base font-bold text-white">Recent Project Estimates</h2>
-              </div>
-              <Link href="/admin/cctv/estimates" className="text-xs text-indigo-400 hover:underline">
+          <AdminChartCard
+            title="Recent Project Estimates"
+            subtitle="Customer surveillance bills of materials"
+            actions={
+              <Link
+                href="/admin/cctv/estimates"
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
                 View All
               </Link>
-            </div>
-
+            }
+          >
             {recentEstimates.length === 0 ? (
-              <div className="py-12 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
-                No estimates recorded yet in the database.
-              </div>
+              <AdminEmptyState
+                title="No estimates recorded yet"
+                description="Estimates calculated in the public or admin estimator will populate here."
+              />
             ) : (
-              <div className="divide-y divide-slate-800/60">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 pt-1">
                 {recentEstimates.map((est) => (
                   <div key={est.id} className="py-3 flex items-center justify-between gap-4">
-                    <div className="space-y-1 truncate">
-                      <div className="text-xs font-bold text-white font-mono flex items-center gap-2">
+                    <div className="space-y-0.5 truncate">
+                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100 font-mono flex items-center space-x-2">
                         <span>{est.estimate_number}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 uppercase">
-                          {est.system_type}
-                        </span>
+                        <AdminStatusBadge status={est.system_type} size="xs" showDot={false} />
                       </div>
-                      <div className="text-[11px] text-slate-400 truncate">
+                      <div className="text-[11px] text-slate-500 truncate">
                         {est.project_name || 'Surveillance Project'} • {est.user?.name || 'Guest User'}
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-bold text-emerald-400 font-mono">
-                        ৳{Number(est.grand_total || 0).toLocaleString()}
+                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100 font-mono">
+                        ৳ {Number(est.grand_total || 0).toLocaleString()}
                       </div>
-                      <span className="text-[10px] text-slate-500 capitalize">
-                        {est.status}
-                      </span>
+                      <AdminStatusBadge status={est.status || 'saved'} size="xs" />
                     </div>
                   </div>
                 ))}
               </div>
             )}
-          </div>
+          </AdminChartCard>
 
           {/* Recent Quotes */}
-          <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-purple-400" />
-                <h2 className="text-base font-bold text-white">Recent Commercial Quotes</h2>
-              </div>
-              <Link href="/admin/cctv/quotes" className="text-xs text-purple-400 hover:underline">
+          <AdminChartCard
+            title="Recent Commercial Quotes"
+            subtitle="Formal quotes issued to clients"
+            actions={
+              <Link
+                href="/admin/cctv/quotes"
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
                 View All
               </Link>
-            </div>
-
+            }
+          >
             {recentQuotes.length === 0 ? (
-              <div className="py-12 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
-                No commercial quotes issued yet in the database.
-              </div>
+              <AdminEmptyState
+                title="No quotes issued yet"
+                description="Quotes converted from estimates will appear here."
+              />
             ) : (
-              <div className="divide-y divide-slate-800/60">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 pt-1">
                 {recentQuotes.map((qte) => (
                   <div key={qte.id} className="py-3 flex items-center justify-between gap-4">
-                    <div className="space-y-1 truncate">
-                      <div className="text-xs font-bold text-white font-mono flex items-center gap-2">
+                    <div className="space-y-0.5 truncate">
+                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100 font-mono flex items-center space-x-2">
                         <span>{qte.quote_number}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 uppercase">
-                          {qte.status}
-                        </span>
+                        <AdminStatusBadge status={qte.status} size="xs" />
                       </div>
-                      <div className="text-[11px] text-slate-400 truncate">
+                      <div className="text-[11px] text-slate-500 truncate">
                         {qte.customer_name} • {qte.customer_phone}
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-bold text-emerald-400 font-mono">
-                        ৳{Number(qte.grand_total || 0).toLocaleString()}
+                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100 font-mono">
+                        ৳ {Number(qte.grand_total || 0).toLocaleString()}
                       </div>
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-slate-400 font-mono block">
                         Valid: {qte.valid_until ? new Date(qte.valid_until).toLocaleDateString() : 'N/A'}
                       </span>
                     </div>
@@ -267,9 +228,9 @@ export default function Dashboard({ kpis = {}, recentEstimates = [], recentQuote
                 ))}
               </div>
             )}
-          </div>
+          </AdminChartCard>
         </div>
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

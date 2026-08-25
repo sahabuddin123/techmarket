@@ -93,7 +93,7 @@ export default function PageForm({ page = null }) {
     <AdminLayout>
       <Head title={`${isEdit ? `Edit ${data.title}` : 'Create Page'} - Admin Panel`} />
 
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-5xl mx-auto pb-12">
+      <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-none pb-12">
         <PageHeader
           title={isEdit ? `Edit Policy: ${data.title}` : 'Create New CMS Page'}
           description="Customize policy clauses, terms, guidelines, dark navy badges, and SEO metadata."
@@ -106,7 +106,7 @@ export default function PageForm({ page = null }) {
             <div className="flex items-center space-x-3">
               <Link
                 href="/admin/pages"
-                className="px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+                className="px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Pages</span>
@@ -117,7 +117,7 @@ export default function PageForm({ page = null }) {
                   href={publicUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Live Preview</span>
@@ -137,7 +137,7 @@ export default function PageForm({ page = null }) {
         />
 
         {/* Basic Settings Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+        <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-5">
           <h3 className="text-white font-black text-sm uppercase tracking-wider flex items-center space-x-2">
             <FileText className="w-4 h-4 text-amber-400" />
             <span>Core Page Information</span>
@@ -154,7 +154,7 @@ export default function PageForm({ page = null }) {
                 value={data.title}
                 onChange={(e) => setData('title', e.target.value)}
                 placeholder="e.g. Privacy Policy, Warranty Policy, Terms & Conditions"
-                className="w-full bg-slate-950 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500 font-medium"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-200/80 dark:border-slate-800/80 focus:outline-none focus:border-amber-500 font-medium"
               />
               {errors.title && <p className="text-red-400 text-[11px] mt-1">{errors.title}</p>}
             </div>
@@ -169,18 +169,18 @@ export default function PageForm({ page = null }) {
                 value={data.slug}
                 onChange={(e) => setData('slug', e.target.value)}
                 placeholder="e.g. privacy-policy, warranty-policy"
-                className="w-full bg-slate-950 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500 font-mono text-[11px]"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-200/80 dark:border-slate-800/80 focus:outline-none focus:border-amber-500 font-mono text-[11px]"
               />
               {errors.slug && <p className="text-red-400 text-[11px] mt-1">{errors.slug}</p>}
             </div>
 
             <div className="md:col-span-2 flex flex-col justify-end">
-              <label className="flex items-center space-x-2 bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800 cursor-pointer">
+              <label className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={data.is_published}
                   onChange={(e) => setData('is_published', e.target.checked)}
-                  className="rounded border-slate-700 text-amber-500 focus:ring-amber-500 bg-slate-900"
+                  className="rounded border-slate-200 dark:border-slate-700 text-amber-500 focus:ring-amber-500 bg-slate-900"
                 />
                 <span className="text-xs font-bold text-slate-200">Published</span>
               </label>
@@ -189,7 +189,7 @@ export default function PageForm({ page = null }) {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center space-x-2 border-b border-slate-800 pb-2">
+        <div className="flex items-center space-x-2 border-b border-slate-200/80 dark:border-slate-800/80 pb-2">
           <button
             type="button"
             onClick={() => setActiveTab('sections')}
@@ -241,12 +241,12 @@ export default function PageForm({ page = null }) {
             {data.sections.map((section, sIdx) => (
               <div 
                 key={sIdx}
-                className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 relative group"
+                className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-xl space-y-4 relative group"
               >
                 {/* Section Header */}
-                <div className="flex items-center justify-between gap-4 border-b border-slate-800/80 pb-3">
+                <div className="flex items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                   <div className="flex-1 flex items-center space-x-3">
-                    <span className="w-6 h-6 rounded-full bg-slate-950 border border-slate-800 text-amber-400 text-xs font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-amber-400 text-xs font-bold flex items-center justify-center shrink-0">
                       {sIdx + 1}
                     </span>
                     <input
@@ -254,7 +254,7 @@ export default function PageForm({ page = null }) {
                       value={section.badge || ''}
                       onChange={(e) => updateSectionBadge(sIdx, e.target.value)}
                       placeholder="Badge Heading (e.g. Information Collection, ওয়ারেন্টি সেবা গ্রহণে জানুন)"
-                      className="flex-1 bg-slate-950 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-3.5 py-2 border border-slate-800 focus:outline-none focus:border-amber-500 font-bold"
+                      className="flex-1 bg-slate-50 dark:bg-slate-800 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-3.5 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:outline-none focus:border-amber-500 font-bold"
                     />
                   </div>
 
@@ -262,7 +262,7 @@ export default function PageForm({ page = null }) {
                     type="button"
                     onClick={() => removeSection(sIdx)}
                     disabled={data.sections.length <= 1}
-                    className="p-2 text-slate-500 hover:text-red-400 hover:bg-slate-950 rounded-lg transition-colors disabled:opacity-30 cursor-pointer"
+                    className="p-2 text-slate-500 hover:text-red-400 hover:bg-slate-50 dark:bg-slate-800 rounded-lg transition-colors disabled:opacity-30 cursor-pointer"
                     title="Delete Section"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -285,7 +285,7 @@ export default function PageForm({ page = null }) {
                         value={pText}
                         onChange={(e) => updateParagraph(sIdx, pIdx, e.target.value)}
                         placeholder="Enter paragraph or numbered policy clause..."
-                        className="flex-1 bg-slate-950 text-slate-200 placeholder-slate-500 text-xs rounded-xl p-3 border border-slate-800 focus:outline-none focus:border-amber-500 leading-relaxed"
+                        className="flex-1 bg-slate-50 dark:bg-slate-800 text-slate-200 placeholder-slate-500 text-xs rounded-xl p-3 border border-slate-200/80 dark:border-slate-800/80 focus:outline-none focus:border-amber-500 leading-relaxed"
                       />
                       <button
                         type="button"
@@ -315,7 +315,7 @@ export default function PageForm({ page = null }) {
 
         {/* Tab 2: SEO Settings */}
         {activeTab === 'seo' && (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-5">
             <h4 className="text-white font-extrabold text-sm">Search Engine Optimization (SEO)</h4>
 
             <div className="space-y-4">
@@ -328,7 +328,7 @@ export default function PageForm({ page = null }) {
                   value={data.meta_title}
                   onChange={(e) => setData('meta_title', e.target.value)}
                   placeholder="e.g. Warranty Policy - TechMarket BD"
-                  className="w-full bg-slate-950 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-800 focus:outline-none focus:border-amber-500 font-medium"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 placeholder-slate-500 text-xs rounded-xl px-4 py-2.5 border border-slate-200/80 dark:border-slate-800/80 focus:outline-none focus:border-amber-500 font-medium"
                 />
               </div>
 
@@ -341,7 +341,7 @@ export default function PageForm({ page = null }) {
                   value={data.meta_description}
                   onChange={(e) => setData('meta_description', e.target.value)}
                   placeholder="Short description for Google Search snippets..."
-                  className="w-full bg-slate-950 text-slate-100 placeholder-slate-500 text-xs rounded-xl p-3.5 border border-slate-800 focus:outline-none focus:border-amber-500 leading-relaxed font-medium"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-100 placeholder-slate-500 text-xs rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800/80 focus:outline-none focus:border-amber-500 leading-relaxed font-medium"
                 />
               </div>
             </div>

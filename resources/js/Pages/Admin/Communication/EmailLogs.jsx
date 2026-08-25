@@ -68,7 +68,7 @@ export default function EmailLogs({
           <a
             href={`/admin/communication/email-logs/export?status=${statusFilter}&gateway_id=${gatewayFilter}&event_key=${eventFilter}`}
             target="_blank"
-            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 self-start sm:self-auto"
+            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 self-start sm:self-auto"
           >
             <Download className="w-4 h-4 text-amber-400" />
             <span>Export CSV</span>
@@ -76,7 +76,7 @@ export default function EmailLogs({
         </div>
 
         {/* Filter Bar */}
-        <form onSubmit={handleSearch} className="bg-slate-950 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
+        <form onSubmit={handleSearch} className="bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xl space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
             
             {/* Search */}
@@ -87,7 +87,7 @@ export default function EmailLogs({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search email, subject, provider ID..."
-                className="w-full bg-slate-900 text-slate-200 pl-9 pr-3 py-2 rounded-xl border border-slate-800 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                className="w-full bg-slate-900 text-slate-200 pl-9 pr-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-xs focus:outline-none focus:border-amber-500 font-medium"
               />
             </div>
 
@@ -96,7 +96,7 @@ export default function EmailLogs({
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-800 text-xs focus:outline-none cursor-pointer font-medium"
+                className="w-full bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-xs focus:outline-none cursor-pointer font-medium"
               >
                 <option value="">All Statuses</option>
                 <option value="sent">Sent / Delivered</option>
@@ -112,7 +112,7 @@ export default function EmailLogs({
               <select
                 value={gatewayFilter}
                 onChange={(e) => setGatewayFilter(e.target.value)}
-                className="w-full bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-800 text-xs focus:outline-none cursor-pointer font-medium"
+                className="w-full bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-xs focus:outline-none cursor-pointer font-medium"
               >
                 <option value="">All Gateways</option>
                 {Object.entries(gateways).map(([id, name]) => (
@@ -126,7 +126,7 @@ export default function EmailLogs({
               <select
                 value={eventFilter}
                 onChange={(e) => setEventFilter(e.target.value)}
-                className="w-full bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-800 text-xs focus:outline-none cursor-pointer font-medium"
+                className="w-full bg-slate-900 text-slate-200 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-xs focus:outline-none cursor-pointer font-medium"
               >
                 <option value="">All Events</option>
                 {Object.entries(eventKeys).map(([slug, name]) => (
@@ -137,7 +137,7 @@ export default function EmailLogs({
 
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
             <button
               type="button"
               onClick={handleResetFilters}
@@ -155,10 +155,10 @@ export default function EmailLogs({
         </form>
 
         {/* Logs Table */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900/60 text-slate-400 font-mono text-[10.5px] uppercase border-b border-slate-800">
+              <thead className="bg-white dark:bg-slate-900 text-slate-400 font-mono text-[10.5px] uppercase border-b border-slate-200/80 dark:border-slate-800/80">
                 <tr>
                   <th className="p-3.5">Recipient</th>
                   <th className="p-3.5">Subject</th>
@@ -190,7 +190,7 @@ export default function EmailLogs({
                         </td>
                         <td className="p-3.5 text-slate-200 font-medium max-w-xs truncate">{log.subject}</td>
                         <td className="p-3.5">
-                          <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 font-mono text-[10px]">
+                          <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 text-slate-300 font-mono text-[10px]">
                             {log.event_key || 'Direct'}
                           </span>
                         </td>
@@ -241,9 +241,9 @@ export default function EmailLogs({
 
         {/* Detail Inspector Modal */}
         {isDetailModalOpen && selectedLog && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-150 text-xs">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-150 text-xs">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                 <h3 className="font-extrabold text-white text-sm flex items-center gap-2">
                   <Activity className="w-4 h-4 text-amber-400" />
                   <span>Email Log Details #{selectedLog.id}</span>
@@ -258,7 +258,7 @@ export default function EmailLogs({
               </div>
 
               <div className="space-y-2.5">
-                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-[11px]">
+                <div className="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80 font-mono text-[11px]">
                   <div>
                     <span className="text-slate-500 uppercase block text-[9.5px]">Recipient</span>
                     <strong className="text-white">{selectedLog.recipient_email}</strong>
@@ -279,7 +279,7 @@ export default function EmailLogs({
 
                 <div>
                   <span className="text-slate-400 font-bold block mb-1">Subject</span>
-                  <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-white font-medium">
+                  <div className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-white font-medium">
                     {selectedLog.subject}
                   </div>
                 </div>
@@ -296,14 +296,14 @@ export default function EmailLogs({
                 {selectedLog.response_data && (
                   <div>
                     <span className="text-slate-400 font-bold block mb-1">Provider Raw Response</span>
-                    <pre className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-400 font-mono text-[10.5px] max-h-36 overflow-y-auto custom-scrollbar">
+                    <pre className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-800/80 text-slate-400 font-mono text-[10.5px] max-h-36 overflow-y-auto custom-scrollbar">
                       {JSON.stringify(selectedLog.response_data, null, 2)}
                     </pre>
                   </div>
                 )}
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end">
+              <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-end">
                 <button
                   type="button"
                   onClick={() => setIsDetailModalOpen(false)}

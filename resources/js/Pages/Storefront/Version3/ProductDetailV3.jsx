@@ -6,9 +6,10 @@ import CartDrawer from '@/Components/CartDrawer';
 import ProductCardV3 from './Components/ProductCardV3';
 import SectionBoxV3 from './Components/SectionBoxV3';
 import MobileBottomNavV3 from './Components/MobileBottomNavV3';
+import ProductImageLightbox from '@/Components/Storefront/ProductImageLightbox';
 import { 
   ChevronRight, ChevronLeft, ChevronUp, ChevronDown, Minus, Plus, ShoppingBag, 
-  Check, Heart, ArrowRightLeft, ShieldCheck, Truck, RefreshCw, Star, Play
+  Check, Heart, ArrowRightLeft, ShieldCheck, Truck, RefreshCw, Star, Play, ZoomIn
 } from 'lucide-react';
 import { trackAddToCart } from '@/lib/tracking';
 
@@ -26,6 +27,7 @@ export default function ProductDetailV3({
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || 'Default');
   const [activeTab, setActiveTab] = useState('specification');
   const [added, setAdded] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   if (!product) return null;
 
@@ -228,7 +230,11 @@ export default function ProductDetailV3({
             )}
 
             {/* Large Main Showcase Image */}
-            <div className="relative flex-1 w-full bg-white border border-[#8BB1FF]/70 rounded-[22px] p-6 shadow-[0_0_15px_rgba(202,224,255,0.6)] aspect-square flex items-center justify-center overflow-hidden group">
+            <div 
+              onClick={() => setIsLightboxOpen(true)}
+              className="relative flex-1 w-full bg-white border border-[#8BB1FF]/70 rounded-[22px] p-6 shadow-[0_0_15px_rgba(202,224,255,0.6)] aspect-square flex items-center justify-center overflow-hidden group cursor-pointer hover:border-[#0153FD] transition-all"
+              title="Click to view full image and zoom"
+            >
               {discountPercent > 0 && (
                 <div className="absolute top-4 right-4 z-10 bg-black text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
                   -{discountPercent}%
@@ -241,8 +247,17 @@ export default function ProductDetailV3({
                 className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
               />
 
+              {/* Hover Zoom & Expand Overlay Pill */}
+              <div className="absolute top-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/80 backdrop-blur-xs text-white rounded-full px-3 py-1 text-xs font-bold flex items-center gap-1.5 shadow-md">
+                <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+                <span>Click to Zoom</span>
+              </div>
+
               {/* Video Play Pill Button */}
-              <div className="absolute bottom-4 left-4 z-10 w-9 h-9 rounded-full bg-white/90 border border-slate-200 text-slate-800 flex items-center justify-center shadow-md hover:bg-[#0153FD] hover:text-white transition-colors cursor-pointer">
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                className="absolute bottom-4 left-4 z-10 w-9 h-9 rounded-full bg-white/90 border border-slate-200 text-slate-800 flex items-center justify-center shadow-md hover:bg-[#0153FD] hover:text-white transition-colors cursor-pointer"
+              >
                 <Play className="w-4 h-4 fill-current ml-0.5" />
               </div>
             </div>
@@ -490,10 +505,21 @@ export default function ProductDetailV3({
 
       </main>
 
-      {/* 4. Footer */}
+      {/* 4. Product Image Lightbox Modal */}
+      <ProductImageLightbox
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        images={uniqueGallery}
+        currentIndex={Math.max(0, uniqueGallery.indexOf(selectedImage || product.image))}
+        onSelectIndex={(idx) => setSelectedImage(uniqueGallery[idx] || product.image)}
+        productTitle={product.title}
+        price={currentPrice}
+      />
+
+      {/* 5. Footer */}
       <FooterV3 onOpenCart={() => setCartOpen(true)} />
 
-      {/* 5. Mobile Bottom Nav */}
+      {/* 6. Mobile Bottom Nav */}
       <MobileBottomNavV3 onOpenCart={() => setCartOpen(true)} />
     </div>
   );

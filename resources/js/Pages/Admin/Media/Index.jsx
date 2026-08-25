@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Head, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
 import { 
   Image as ImageIcon, Upload, Grid, List, Search, Filter, 
   Trash2, Copy, Check, ExternalLink, Info, AlertTriangle, 
   Folder, X, Sparkles, RefreshCw, Layers, CheckCircle2,
-  FileText, ShieldCheck, ArrowUpDown
+  FileText, ShieldCheck, ArrowUpDown, Database
 } from 'lucide-react';
 
 export default function MediaLibrary(props) {
@@ -151,50 +152,47 @@ export default function MediaLibrary(props) {
   const mediaList = Array.isArray(media?.data) ? media.data : [];
 
   return (
-    <AdminLayout title="Central Media Library">
-      <Head title="Central Media Library - TechMarket Admin" />
+    <AdminShell title="Central Media Library">
+      <Head title="Media Library - TechMarket Admin" />
 
-      <div className="space-y-5 text-xs">
+      <div className="space-y-6">
         
-        {/* HEADER BAR */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-          <div>
-            <h1 className="text-xl font-black text-white uppercase tracking-tight flex items-center space-x-2">
-              <ImageIcon className="w-5 h-5 text-amber-400" />
-              <span>CENTRAL ASSET & MEDIA LIBRARY</span>
-            </h1>
-            <p className="text-slate-400 text-[11px]">
-              Upload, organize, search, and reuse high-resolution assets across products, banners, and storefront.
-            </p>
-          </div>
+        {/* Standard Page Header */}
+        <AdminPageHeader
+          title="Media Library"
+          subtitle="Upload, organize, search, and reuse product images and other storefront assets."
+          actions={
+            <div className="flex items-center space-x-3">
+              {/* Storage Info Badge */}
+              <div className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-mono text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center space-x-2 shadow-2xs">
+                <Database className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span className="text-slate-500 font-sans font-medium">Storage:</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{total_size}</span>
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+                <span className="text-[var(--admin-primary,#4f46e5)] font-bold">{folders?.all || 0} Assets</span>
+              </div>
 
-          <div className="flex items-center space-x-3">
-            <span className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-slate-300 font-bold text-[11px] flex items-center space-x-2">
-              <span className="text-slate-500">Storage:</span>
-              <span className="text-emerald-400">{total_size}</span>
-              <span className="text-slate-600">•</span>
-              <span className="text-amber-400">{folders?.all || 0} Assets</span>
-            </span>
+              {/* Upload Action Button */}
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 rounded-xl bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs transition-all cursor-pointer"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Upload Assets</span>
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/svg+xml,image/gif"
+                className="hidden"
+                onChange={(e) => handleFileUpload(e.target.files)}
+              />
+            </div>
+          }
+        />
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl flex items-center space-x-1.5 shadow-lg transition-all cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              <span>UPLOAD ASSETS</span>
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              multiple
-              accept="image/jpeg,image/png,image/webp,image/svg+xml,image/gif"
-              className="hidden"
-              onChange={(e) => handleFileUpload(e.target.files)}
-            />
-          </div>
-        </div>
-
-        {/* DRAG & DROP UPLOAD DROPZONE */}
+        {/* Modern Light Dropzone */}
         <div 
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
@@ -203,29 +201,31 @@ export default function MediaLibrary(props) {
             setDragOver(false);
             if (e.dataTransfer.files) handleFileUpload(e.dataTransfer.files);
           }}
-          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
-            dragOver ? 'border-amber-500 bg-amber-500/5' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/80'
+          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all bg-white dark:bg-slate-900 shadow-2xs ${
+            dragOver 
+              ? 'border-[var(--admin-primary,#4f46e5)] bg-[var(--admin-primary-light,rgba(79,70,229,0.04))]' 
+              : 'border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
           }`}
         >
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-amber-400 shadow">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--admin-primary-light,rgba(79,70,229,0.08))] text-[var(--admin-primary,#4f46e5)] flex items-center justify-center shrink-0 shadow-2xs">
               <Upload className={`w-5 h-5 ${isUploading ? 'animate-bounce' : ''}`} />
             </div>
             <div className="text-left">
-              <div className="font-bold text-white text-xs">
+              <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">
                 {isUploading ? 'Processing and uploading assets to storage disk...' : 'Drag & drop image assets here or click to browse'}
               </div>
-              <div className="text-[11px] text-slate-500 mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                 Supports WEBP, PNG, JPG, JPEG, SVG up to 10MB per file with automatic metadata indexing
               </div>
             </div>
 
             <div className="flex items-center space-x-2 mt-2 sm:mt-0 sm:ml-auto">
-              <span className="text-slate-400 font-bold text-[10px] uppercase">Folder:</span>
+              <span className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase">Destination Folder:</span>
               <select
                 value={uploadFolder}
                 onChange={(e) => setUploadFolder(e.target.value)}
-                className="bg-slate-950 text-slate-200 text-xs rounded-xl px-3 py-2 border border-slate-800 font-bold focus:border-amber-500 focus:outline-none"
+                className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700 font-bold focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden"
               >
                 <option value="general">General</option>
                 <option value="products">Products</option>
@@ -239,14 +239,14 @@ export default function MediaLibrary(props) {
           </div>
         </div>
 
-        {/* FOLDERS & TOOLBAR */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        {/* Media Workspace Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           
-          {/* FOLDERS SIDEBAR */}
-          <div className="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 h-fit shadow-sm">
-            <div className="font-bold text-white uppercase tracking-wider text-[11px] px-2 pb-2 border-b border-slate-800 flex items-center justify-between">
+          {/* Logical Folders Sidebar */}
+          <div className="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-xs">
+            <div className="font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] px-2 pb-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between font-heading">
               <span>Logical Folders</span>
-              <Folder className="w-3.5 h-3.5 text-amber-400" />
+              <Folder className="w-3.5 h-3.5 text-[var(--admin-primary,#4f46e5)]" />
             </div>
 
             <div className="space-y-1">
@@ -262,15 +262,17 @@ export default function MediaLibrary(props) {
                       setSelectedFolder(f.key);
                       handleFilter(f.key, selectedType, selectedSort, search);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       isActive 
-                        ? 'bg-amber-500 text-slate-950 shadow-md font-black' 
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                        ? 'bg-[var(--admin-primary-light,rgba(79,70,229,0.08))] text-[var(--admin-primary,#4f46e5)] font-bold shadow-2xs' 
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                     }`}
                   >
                     <span className="capitalize">{f.label}</span>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
-                      isActive ? 'bg-slate-950 text-amber-400' : 'bg-slate-950 text-slate-500'
+                      isActive 
+                        ? 'bg-white dark:bg-slate-800 text-[var(--admin-primary,#4f46e5)] shadow-2xs' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                     }`}>
                       {count}
                     </span>
@@ -280,11 +282,11 @@ export default function MediaLibrary(props) {
             </div>
           </div>
 
-          {/* MAIN MEDIA BROWSER */}
+          {/* Main Media Browser */}
           <div className="lg:col-span-3 space-y-4">
             
-            {/* SEARCH & FILTERS BAR */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+            {/* Search & Filters Toolbar */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
               <div className="relative flex-1 w-full">
                 <input
                   type="text"
@@ -292,12 +294,12 @@ export default function MediaLibrary(props) {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleFilter(selectedFolder, selectedType, selectedSort, search)}
-                  className="w-full bg-slate-950 text-slate-100 text-xs rounded-xl p-2.5 pr-9 border border-slate-800 focus:border-amber-500 focus:outline-none font-medium"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-xl p-2.5 pr-9 border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:ring-2 focus:ring-[var(--admin-primary,#4f46e5)]/15 focus:outline-hidden font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => handleFilter(selectedFolder, selectedType, selectedSort, search)}
-                  className="absolute right-3 top-2.5 text-slate-400 hover:text-amber-400 cursor-pointer"
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-[var(--admin-primary,#4f46e5)] cursor-pointer transition-colors"
                 >
                   <Search className="w-4 h-4" />
                 </button>
@@ -310,7 +312,7 @@ export default function MediaLibrary(props) {
                     setSelectedType(e.target.value);
                     handleFilter(selectedFolder, e.target.value, selectedSort, search);
                   }}
-                  className="bg-slate-950 text-slate-300 text-xs rounded-xl p-2.5 border border-slate-800 focus:border-amber-500 focus:outline-none"
+                  className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs rounded-xl p-2.5 border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden font-medium"
                 >
                   <option value="all">All Types</option>
                   <option value="image">Bitmaps (JPG/PNG/WEBP)</option>
@@ -323,7 +325,7 @@ export default function MediaLibrary(props) {
                     setSelectedSort(e.target.value);
                     handleFilter(selectedFolder, selectedType, e.target.value, search);
                   }}
-                  className="bg-slate-950 text-slate-300 text-xs rounded-xl p-2.5 border border-slate-800 focus:border-amber-500 focus:outline-none"
+                  className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs rounded-xl p-2.5 border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden font-medium"
                 >
                   <option value="latest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -331,11 +333,15 @@ export default function MediaLibrary(props) {
                   <option value="name_asc">Name (A → Z)</option>
                 </select>
 
-                <div className="flex items-center bg-slate-950 rounded-xl border border-slate-800 p-1">
+                <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1">
                   <button
                     type="button"
                     onClick={() => setViewMode('grid')}
-                    className={`p-1.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'}`}
+                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                      viewMode === 'grid' 
+                        ? 'bg-[var(--admin-primary,#4f46e5)] text-white shadow-xs' 
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
                     title="Grid View"
                   >
                     <Grid className="w-4 h-4" />
@@ -343,7 +349,11 @@ export default function MediaLibrary(props) {
                   <button
                     type="button"
                     onClick={() => setViewMode('list')}
-                    className={`p-1.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'}`}
+                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                      viewMode === 'list' 
+                        ? 'bg-[var(--admin-primary,#4f46e5)] text-white shadow-xs' 
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
                     title="List View"
                   >
                     <List className="w-4 h-4" />
@@ -352,7 +362,7 @@ export default function MediaLibrary(props) {
               </div>
             </div>
 
-            {/* MEDIA ITEMS CONTAINER */}
+            {/* Media Items Container */}
             {mediaList.length > 0 ? (
               viewMode === 'grid' ? (
                 /* GRID VIEW */
@@ -364,10 +374,10 @@ export default function MediaLibrary(props) {
                       <div
                         key={item.id}
                         onClick={() => handleOpenDetail(item)}
-                        className="group relative bg-slate-900 border border-slate-800 hover:border-amber-500/80 rounded-2xl overflow-hidden cursor-pointer transition-all shadow-md hover:shadow-xl flex flex-col"
+                        className="group relative bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-[var(--admin-primary,#4f46e5)] rounded-2xl overflow-hidden cursor-pointer transition-all shadow-2xs hover:shadow-md flex flex-col"
                       >
                         {/* Thumbnail Container */}
-                        <div className="aspect-square bg-slate-950 p-2.5 flex items-center justify-center relative overflow-hidden">
+                        <div className="aspect-square bg-slate-50/80 dark:bg-slate-800/60 p-2.5 flex items-center justify-center relative overflow-hidden">
                           <img
                             src={item.url}
                             alt={item.alt_text || item.original_name}
@@ -376,22 +386,22 @@ export default function MediaLibrary(props) {
                           />
                           
                           {/* Folder badge */}
-                          <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-md bg-slate-900/90 border border-slate-800 text-[9px] font-bold text-slate-300 uppercase">
+                          <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase shadow-2xs">
                             {item.folder}
                           </span>
 
                           {/* Usage indicator */}
                           {hasUsages && (
-                            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm" title="In Active Store Use" />
+                            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-xs" title="In Active Store Use" />
                           )}
                         </div>
 
                         {/* Caption & Metadata */}
-                        <div className="p-2.5 border-t border-slate-800/80 space-y-1 flex-1 flex flex-col justify-between">
-                          <div className="font-bold text-slate-200 truncate text-[11px]" title={item.original_name}>
+                        <div className="p-2.5 border-t border-slate-100 dark:border-slate-800 space-y-1 flex-1 flex flex-col justify-between">
+                          <div className="font-bold text-slate-800 dark:text-slate-200 truncate text-[11px]" title={item.original_name}>
                             {item.title || item.original_name}
                           </div>
-                          <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                          <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-mono">
                             <span>{item.formatted_size}</span>
                             {item.width && item.height && <span>{item.width}×{item.height}</span>}
                           </div>
@@ -402,10 +412,10 @@ export default function MediaLibrary(props) {
                 </div>
               ) : (
                 /* LIST VIEW */
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-md">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="bg-slate-950 text-slate-400 font-bold uppercase text-[10px] border-b border-slate-800">
+                      <tr className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] border-b border-slate-200 dark:border-slate-800">
                         <th className="p-3">Asset</th>
                         <th className="p-3">Folder</th>
                         <th className="p-3">Dimensions</th>
@@ -414,38 +424,38 @@ export default function MediaLibrary(props) {
                         <th className="p-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/80 font-medium">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                       {mediaList.map((item) => (
-                        <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">
-                          <td className="p-3 font-bold text-white flex items-center space-x-3">
-                            <img src={item.url} alt="" className="w-9 h-9 object-contain rounded-lg bg-slate-950 border border-slate-800 shrink-0" />
+                        <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-3 font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-3">
+                            <img src={item.url} alt="" className="w-9 h-9 object-contain rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0" />
                             <div className="truncate max-w-xs">
-                              <div className="truncate text-slate-200">{item.original_name}</div>
-                              <div className="text-[10px] text-slate-500 font-mono">{item.mime_type}</div>
+                              <div className="truncate text-slate-800 dark:text-slate-200 font-semibold">{item.original_name}</div>
+                              <div className="text-[10px] text-slate-400 font-mono">{item.mime_type}</div>
                             </div>
                           </td>
-                          <td className="p-3 text-slate-400 capitalize">{item.folder}</td>
-                          <td className="p-3 font-mono text-slate-400">{item.width && item.height ? `${item.width}×${item.height}` : '—'}</td>
-                          <td className="p-3 font-mono text-slate-400">{item.formatted_size}</td>
+                          <td className="p-3 text-slate-600 dark:text-slate-400 capitalize">{item.folder}</td>
+                          <td className="p-3 font-mono text-slate-500 dark:text-slate-400">{item.width && item.height ? `${item.width}×${item.height}` : '—'}</td>
+                          <td className="p-3 font-mono text-slate-500 dark:text-slate-400">{item.formatted_size}</td>
                           <td className="p-3">
                             {item.usages && item.usages.length > 0 ? (
-                              <span className="px-2 py-0.5 rounded-md bg-emerald-950/60 text-emerald-400 border border-emerald-800 text-[10px] font-bold">
+                              <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold">
                                 Active ({item.usages.length})
                               </span>
                             ) : (
-                              <span className="text-slate-600 text-[10px]">Unreferenced</span>
+                              <span className="text-slate-400 text-[10px]">Unreferenced</span>
                             )}
                           </td>
                           <td className="p-3 text-right space-x-1.5 whitespace-nowrap">
                             <button
                               onClick={() => handleOpenDetail(item)}
-                              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg text-[11px] font-bold transition-colors cursor-pointer"
+                              className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-[var(--admin-primary,#4f46e5)] rounded-lg text-[11px] font-bold transition-colors cursor-pointer"
                             >
                               Edit / Info
                             </button>
                             <button
                               onClick={() => handleDelete(item)}
-                              className="p-1 bg-slate-800 hover:bg-rose-900/60 text-rose-400 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-500 rounded-lg transition-colors cursor-pointer"
                               title="Delete"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -458,16 +468,29 @@ export default function MediaLibrary(props) {
                 </div>
               )
             ) : (
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-500 space-y-3">
-                <ImageIcon className="w-10 h-10 mx-auto text-slate-600" />
-                <div className="font-bold text-slate-400 text-sm">No media assets found in this folder</div>
-                <div className="text-xs">Upload photos, banners, and product imagery or adjust your search filter</div>
+              /* MODERN EMPTY STATE */
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-12 text-center text-slate-500 space-y-3.5 shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center">
+                  <ImageIcon className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <div className="font-bold text-slate-800 dark:text-slate-200 text-sm font-heading">No media assets found in this folder</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">Upload product images, promotional banners, or adjust your current search and filter settings.</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-4 py-2 rounded-xl bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold text-xs inline-flex items-center space-x-1.5 shadow-xs transition cursor-pointer"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>Upload Assets</span>
+                </button>
               </div>
             )}
 
-            {/* PAGINATION */}
+            {/* Pagination */}
             {media?.links && media.links.length > 3 && (
-              <div className="flex items-center justify-center space-x-1 pt-4">
+              <div className="flex items-center justify-center space-x-1.5 pt-4">
                 {media.links.map((link, idx) => (
                   <button
                     key={idx}
@@ -475,10 +498,10 @@ export default function MediaLibrary(props) {
                     onClick={() => link.url && router.get(link.url, {}, { preserveState: true })}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                       link.active 
-                        ? 'bg-amber-500 text-slate-950 font-black' 
+                        ? 'bg-[var(--admin-primary,#4f46e5)] text-white shadow-xs' 
                         : link.url 
-                        ? 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' 
-                        : 'bg-slate-950 text-slate-700 opacity-50 cursor-not-allowed'
+                        ? 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer' 
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed border border-slate-200 dark:border-slate-700'
                     }`}
                     dangerouslySetInnerHTML={{ __html: link.label }}
                   />
@@ -492,20 +515,22 @@ export default function MediaLibrary(props) {
 
       </div>
 
-      {/* ASSET DETAIL / METADATA MODAL */}
+      {/* Asset Detail / Metadata Modal */}
       {activeMedia && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh] text-xs">
+        <div className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh] text-xs">
             
             {/* Modal Header */}
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
-              <div className="font-bold text-white uppercase tracking-tight flex items-center space-x-2">
-                <ImageIcon className="w-4 h-4 text-amber-400" />
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-800/40">
+              <div className="font-bold text-slate-900 dark:text-slate-100 uppercase tracking-tight flex items-center space-x-2 font-heading">
+                <div className="w-7 h-7 rounded-lg bg-[var(--admin-primary-light,rgba(79,70,229,0.08))] text-[var(--admin-primary,#4f46e5)] flex items-center justify-center">
+                  <ImageIcon className="w-3.5 h-3.5" />
+                </div>
                 <span>Media Asset Details: {activeMedia.original_name}</span>
               </div>
               <button
                 onClick={() => setActiveMedia(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -516,7 +541,7 @@ export default function MediaLibrary(props) {
               
               {/* Preview Column */}
               <div className="space-y-3">
-                <div className="aspect-square bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-center relative overflow-hidden">
+                <div className="aspect-square bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 flex items-center justify-center relative overflow-hidden">
                   <img
                     src={activeMedia.url}
                     alt={activeMedia.alt_text || ''}
@@ -526,27 +551,27 @@ export default function MediaLibrary(props) {
 
                 {/* Direct Link & Copy */}
                 <div className="space-y-1">
-                  <label className="block text-slate-400 font-bold text-[10.5px]">Public Direct Asset URL</label>
+                  <label className="block text-slate-600 dark:text-slate-400 font-bold text-[10.5px]">Public Direct Asset URL</label>
                   <div className="flex items-center space-x-2">
                     <input
                       type="text"
                       readOnly
                       value={activeMedia.url}
-                      className="flex-1 bg-slate-950 text-slate-300 font-mono text-[10px] p-2.5 rounded-xl border border-slate-800"
+                      className="flex-1 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-mono text-[10px] p-2.5 rounded-xl border border-slate-200 dark:border-slate-700"
                     />
                     <button
                       type="button"
                       onClick={() => handleCopyUrl(activeMedia.url)}
-                      className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors cursor-pointer"
+                      className="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-colors cursor-pointer shadow-2xs"
                       title="Copy URL to Clipboard"
                     >
-                      {copiedUrl ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      {copiedUrl ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                     </button>
                     <a
                       href={activeMedia.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors"
+                      className="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-colors shadow-2xs"
                       title="Open in new tab"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -556,19 +581,19 @@ export default function MediaLibrary(props) {
 
                 {/* Reference / Usage Notification */}
                 {activeMedia.usages && activeMedia.usages.length > 0 ? (
-                  <div className="p-3 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-emerald-300 space-y-1">
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl text-emerald-800 dark:text-emerald-300 space-y-1">
                     <div className="font-bold flex items-center space-x-1.5 text-[11px]">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       <span>Active Storefront References Detected</span>
                     </div>
-                    <ul className="list-disc list-inside text-[10.5px] text-emerald-400/90">
+                    <ul className="list-disc list-inside text-[10.5px] text-emerald-700 dark:text-emerald-400/90">
                       {activeMedia.usages.map((u, i) => (
                         <li key={i}>{u}</li>
                       ))}
                     </ul>
                   </div>
                 ) : (
-                  <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-500 text-[10.5px]">
+                  <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 text-[10.5px]">
                     No active store references detected. Safe to remove.
                   </div>
                 )}
@@ -576,42 +601,42 @@ export default function MediaLibrary(props) {
 
               {/* Metadata Edit Form Column */}
               <form onSubmit={handleUpdateMeta} className="space-y-3.5">
-                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1.5 font-mono text-[10.5px] text-slate-400">
-                  <div><span className="text-slate-500">File Name:</span> {activeMedia.filename}</div>
-                  <div><span className="text-slate-500">MIME Type:</span> {activeMedia.mime_type}</div>
-                  <div><span className="text-slate-500">File Size:</span> {activeMedia.formatted_size}</div>
+                <div className="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5 font-mono text-[10.5px] text-slate-600 dark:text-slate-400">
+                  <div><span className="text-slate-400">File Name:</span> {activeMedia.filename}</div>
+                  <div><span className="text-slate-400">MIME Type:</span> {activeMedia.mime_type}</div>
+                  <div><span className="text-slate-400">File Size:</span> {activeMedia.formatted_size}</div>
                   {activeMedia.width && activeMedia.height && (
-                    <div><span className="text-slate-500">Dimensions:</span> {activeMedia.width} × {activeMedia.height} px</div>
+                    <div><span className="text-slate-400">Dimensions:</span> {activeMedia.width} × {activeMedia.height} px</div>
                   )}
-                  <div><span className="text-slate-500">Uploaded:</span> {new Date(activeMedia.created_at).toLocaleDateString()}</div>
+                  <div><span className="text-slate-400">Uploaded:</span> {new Date(activeMedia.created_at).toLocaleDateString()}</div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-slate-300 font-bold">Display Title</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold">Display Title</label>
                   <input
                     type="text"
                     value={metaForm.title}
                     onChange={(e) => setMetaForm({ ...metaForm, title: e.target.value })}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-slate-300 font-bold">Alt Text (Accessibility & SEO)</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold">Alt Text (Accessibility & SEO)</label>
                   <input
                     type="text"
                     value={metaForm.alt_text}
                     onChange={(e) => setMetaForm({ ...metaForm, alt_text: e.target.value })}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-slate-300 font-bold">Logical Folder</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold">Logical Folder</label>
                   <select
                     value={metaForm.folder}
                     onChange={(e) => setMetaForm({ ...metaForm, folder: e.target.value })}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden"
                   >
                     <option value="general">General</option>
                     <option value="products">Products</option>
@@ -624,20 +649,20 @@ export default function MediaLibrary(props) {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-slate-300 font-bold">Caption / Notes</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold">Caption / Notes</label>
                   <textarea
                     rows={2}
                     value={metaForm.caption}
                     onChange={(e) => setMetaForm({ ...metaForm, caption: e.target.value })}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-xl border border-slate-800 focus:border-amber-500 focus:outline-none text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-xs"
                   />
                 </div>
 
-                <div className="pt-2 flex items-center justify-between border-t border-slate-800">
+                <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
                   <button
                     type="button"
                     onClick={() => handleDelete(activeMedia)}
-                    className="px-3.5 py-2 bg-rose-950/60 hover:bg-rose-900 text-rose-400 border border-rose-800 rounded-xl font-bold transition-colors cursor-pointer"
+                    className="px-3.5 py-2 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 rounded-xl font-bold transition-colors cursor-pointer"
                   >
                     Delete Media
                   </button>
@@ -645,7 +670,7 @@ export default function MediaLibrary(props) {
                   <button
                     type="submit"
                     disabled={isUpdatingMeta}
-                    className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl transition-all cursor-pointer shadow"
+                    className="px-5 py-2 bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold rounded-xl transition-all cursor-pointer shadow-xs"
                   >
                     {isUpdatingMeta ? 'Saving...' : 'Update Metadata'}
                   </button>
@@ -658,6 +683,6 @@ export default function MediaLibrary(props) {
         </div>
       )}
 
-    </AdminLayout>
+    </AdminShell>
   );
 }

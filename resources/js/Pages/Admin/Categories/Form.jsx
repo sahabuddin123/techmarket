@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
 import {
   ArrowLeft, Save, Plus, Trash2, GripVertical, FileText,
   Search, HelpCircle, Table as TableIcon, Layers, Settings, Eye
@@ -86,7 +87,6 @@ export default function CategoryForm({ categories = [], category = null, specGro
     const updated = [...data.price_tables];
     const row = { ...updated[idx], [field]: value };
 
-    // Auto fill name/price when product is chosen
     if (field === 'product_id' && value) {
       const selectedProd = products.find(p => String(p.id) === String(value));
       if (selectedProd) {
@@ -127,39 +127,40 @@ export default function CategoryForm({ categories = [], category = null, specGro
   };
 
   return (
-    <AdminLayout title={isEdit ? 'Edit Category' : 'Create Category'}>
+    <AdminShell title={isEdit ? 'Edit Category' : 'Create Category'}>
       <Head title={`${isEdit ? 'Edit' : 'Create'} Category - TechMarket Admin`} />
 
-      <div className="space-y-6 max-w-4xl mx-auto pb-12">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <Link href="/admin/categories" className="p-2 bg-slate-900 border border-slate-800 rounded text-slate-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div>
-              <h1 className="text-xl font-black text-white uppercase tracking-tight">
-                {isEdit ? `EDIT CATEGORY: ${category.name}` : 'CREATE NEW CATEGORY'}
-              </h1>
-              <p className="text-xs text-slate-400">Configure basic details, storefront layout, SEO, dynamic price lists, and FAQs.</p>
+        <AdminPageHeader
+          title={isEdit ? `Edit Category: ${category.name}` : 'Create New Category'}
+          subtitle="Configure basic details, storefront layout, SEO, dynamic price lists, and FAQs."
+          actions={
+            <div className="flex items-center space-x-2">
+              {isEdit && category.slug && (
+                <a
+                  href={`/category/${category.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[var(--admin-primary,#4f46e5)] font-bold text-xs flex items-center space-x-1.5 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Preview Live Page</span>
+                </a>
+              )}
+              <Link
+                href="/admin/categories"
+                className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center space-x-1.5 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Categories</span>
+              </Link>
             </div>
-          </div>
-
-          {isEdit && category.slug && (
-            <a
-              href={`/category/${category.slug}`}
-              target="_blank"
-              rel="noreferrer"
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg text-xs font-bold flex items-center gap-1.5 w-fit"
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>Preview Live Shop Page</span>
-            </a>
-          )}
-        </div>
+          }
+        />
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 border-b border-slate-800 pb-2 overflow-x-auto text-xs">
+        <div className="flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto text-xs">
           {[
             { key: 'basic', label: '1. Basic Info', icon: Settings },
             { key: 'seo', label: '2. Shop & SEO Settings', icon: Search },
@@ -174,10 +175,10 @@ export default function CategoryForm({ categories = [], category = null, specGro
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-[var(--admin-primary,#4f46e5)] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -189,49 +190,48 @@ export default function CategoryForm({ categories = [], category = null, specGro
 
         {/* Main Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          
           {/* TAB 1: BASIC INFO */}
           {activeTab === 'basic' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider pb-2 border-b border-slate-800 flex items-center gap-2">
-                <Settings className="w-4 h-4 text-amber-500" />
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs text-xs">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2 font-heading">
+                <Settings className="w-4 h-4 text-[var(--admin-primary,#4f46e5)]" />
                 <span>Basic Category Configuration</span>
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Category Name *</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Category Name *</label>
                   <input
                     type="text"
                     required
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder="e.g. Air Conditioner"
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:ring-2 focus:ring-[var(--admin-primary,#4f46e5)]/15 focus:outline-hidden text-slate-900 dark:text-slate-100"
                   />
-                  {errors.name && <p className="text-rose-400 text-[11px] mt-1">{errors.name}</p>}
+                  {errors.name && <p className="text-rose-500 text-[11px] mt-1 font-medium">{errors.name}</p>}
                 </div>
 
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">URL Slug (Auto-generated if blank)</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">URL Slug (Auto-generated if blank)</label>
                   <input
                     type="text"
                     value={data.slug}
                     onChange={(e) => setData('slug', e.target.value)}
                     placeholder="e.g. air-conditioner"
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:ring-2 focus:ring-[var(--admin-primary,#4f46e5)]/15 focus:outline-hidden text-slate-900 dark:text-slate-100"
                   />
-                  {errors.slug && <p className="text-rose-400 text-[11px] mt-1">{errors.slug}</p>}
+                  {errors.slug && <p className="text-rose-500 text-[11px] mt-1 font-medium">{errors.slug}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Parent Category</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Parent Category</label>
                   <select
                     value={data.parent_id}
                     onChange={(e) => setData('parent_id', e.target.value)}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                   >
                     <option value="">None / Top Level Category</option>
                     {categories.map(c => (
@@ -240,57 +240,57 @@ export default function CategoryForm({ categories = [], category = null, specGro
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Lucide Icon Name</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Lucide Icon Name</label>
                   <input
                     type="text"
                     value={data.icon}
                     onChange={(e) => setData('icon', e.target.value)}
                     placeholder="Wind, Laptop, Cpu, Monitor, Zap..."
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-1">
                   <MediaPicker
                     label="Category Banner Image"
                     value={data.image}
                     onChange={(url) => setData('image', url)}
-                    placeholder="Select category banner from Media Library or enter image URL..."
+                    placeholder="Select category banner from Media Library..."
                     allowClear={true}
                   />
                 </div>
 
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Sort Order</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Sort Order</label>
                   <input
                     type="number"
                     value={data.sort_order}
                     onChange={(e) => setData('sort_order', parseInt(e.target.value) || 0)}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-6 pt-3 border-t border-slate-800">
-                <label className="flex items-center space-x-2 text-slate-300 cursor-pointer">
+              <div className="flex flex-wrap gap-6 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <label className="flex items-center space-x-2 text-slate-700 dark:text-slate-300 cursor-pointer font-medium">
                   <input
                     type="checkbox"
                     checked={data.is_featured}
                     onChange={(e) => setData('is_featured', e.target.checked)}
-                    className="rounded bg-slate-950 border-slate-800 text-amber-500 focus:ring-0"
+                    className="rounded text-[var(--admin-primary,#4f46e5)] focus:ring-[var(--admin-primary,#4f46e5)]/20"
                   />
                   <span>Featured on Homepage</span>
                 </label>
 
-                <label className="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                <label className="flex items-center space-x-2 text-slate-700 dark:text-slate-300 cursor-pointer font-medium">
                   <input
                     type="checkbox"
                     checked={data.is_nav_visible}
                     onChange={(e) => setData('is_nav_visible', e.target.checked)}
-                    className="rounded bg-slate-950 border-slate-800 text-amber-500 focus:ring-0"
+                    className="rounded text-[var(--admin-primary,#4f46e5)] focus:ring-[var(--admin-primary,#4f46e5)]/20"
                   />
                   <span>Visible in Mega Navigation Menu</span>
                 </label>
@@ -300,76 +300,76 @@ export default function CategoryForm({ categories = [], category = null, specGro
 
           {/* TAB 2: SHOP & SEO SETTINGS */}
           {activeTab === 'seo' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider pb-2 border-b border-slate-800 flex items-center gap-2">
-                <Search className="w-4 h-4 text-amber-500" />
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs text-xs">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2 font-heading">
+                <Search className="w-4 h-4 text-[var(--admin-primary,#4f46e5)]" />
                 <span>Shop Page Layout & Meta SEO</span>
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Public Page Heading (H1)</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Public Page Heading (H1)</label>
                   <input
                     type="text"
                     value={data.page_title}
                     onChange={(e) => setData('page_title', e.target.value)}
                     placeholder="e.g. Air Conditioner Price in Bangladesh 2026"
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Browser Title (SEO Title)</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Browser Title (SEO Title)</label>
                   <input
                     type="text"
                     value={data.seo_title}
                     onChange={(e) => setData('seo_title', e.target.value)}
                     placeholder="e.g. Best Air Conditioner Price in Bangladesh | TechMarket BD"
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Category Subtitle / Description Snippet</label>
+              <div className="space-y-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300">Category Subtitle / Description Snippet</label>
                 <textarea
                   rows={2}
                   value={data.subtitle}
                   onChange={(e) => setData('subtitle', e.target.value)}
                   placeholder="Short introductory summary displayed beneath the category title..."
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Meta Description (Search Engines)</label>
+              <div className="space-y-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300">Meta Description (Search Engines)</label>
                 <textarea
                   rows={2}
                   value={data.meta_description}
                   onChange={(e) => setData('meta_description', e.target.value)}
                   placeholder="Comprehensive description for search results..."
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">SEO Top Intro / Editorial Content (Supports HTML)</label>
+              <div className="space-y-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300">SEO Top Intro / Editorial Content (Supports HTML)</label>
                 <textarea
                   rows={3}
                   value={data.seo_intro}
                   onChange={(e) => setData('seo_intro', e.target.value)}
                   placeholder="<p>An Air Conditioner is an indispensable home appliance for modern living in Bangladesh...</p>"
-                  className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500 font-mono text-[11px]"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100 font-mono text-[11px]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Default Sorting Order</label>
+                <div className="space-y-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">Default Sorting Order</label>
                   <select
                     value={data.default_sort}
                     onChange={(e) => setData('default_sort', e.target.value)}
-                    className="w-full bg-slate-950 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--admin-primary,#4f46e5)] focus:outline-hidden text-slate-900 dark:text-slate-100"
                   >
                     <option value="latest">Latest / Newest First</option>
                     <option value="price_asc">Price: Low to High</option>
@@ -381,12 +381,12 @@ export default function CategoryForm({ categories = [], category = null, specGro
                 </div>
 
                 <div className="flex items-center pt-5">
-                  <label className="flex items-center space-x-2 text-slate-300 cursor-pointer">
+                  <label className="flex items-center space-x-2 text-slate-700 dark:text-slate-300 cursor-pointer font-medium">
                     <input
                       type="checkbox"
                       checked={data.sidebar_visible}
                       onChange={(e) => setData('sidebar_visible', e.target.checked)}
-                      className="rounded bg-slate-950 border-slate-800 text-amber-500 focus:ring-0"
+                      className="rounded text-[var(--admin-primary,#4f46e5)] focus:ring-[var(--admin-primary,#4f46e5)]/20"
                     />
                     <span>Show Left Filter Sidebar</span>
                   </label>
@@ -397,21 +397,21 @@ export default function CategoryForm({ categories = [], category = null, specGro
 
           {/* TAB 3: DYNAMIC CONTENT SECTIONS BUILDER */}
           {activeTab === 'content' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs text-xs">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div>
-                  <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-amber-500" />
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 font-heading">
+                    <FileText className="w-4 h-4 text-[var(--admin-primary,#4f46e5)]" />
                     <span>Dynamic Rich Text & SEO Content Sections</span>
                   </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Build dynamic editorial sections matching the reference screenshot (e.g. "Lowest Price AC", "Popular Brands", "Buying Guide").
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Build dynamic editorial sections (e.g. "Lowest Price AC", "Popular Brands", "Buying Guide").
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={addContentSection}
-                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg flex items-center gap-1 shadow-xs"
+                  className="px-3.5 py-1.5 bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold rounded-xl flex items-center gap-1 shadow-xs cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Section</span>
@@ -419,13 +419,13 @@ export default function CategoryForm({ categories = [], category = null, specGro
               </div>
 
               {data.content_sections.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-slate-800 rounded-xl space-y-2">
-                  <FileText className="w-8 h-8 text-slate-600 mx-auto" />
-                  <p className="text-slate-400 font-bold">No dynamic content sections added yet.</p>
+                <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-700 rounded-2xl space-y-2">
+                  <FileText className="w-8 h-8 text-slate-400 mx-auto" />
+                  <p className="text-slate-500 font-bold">No dynamic content sections added yet.</p>
                   <button
                     type="button"
                     onClick={addContentSection}
-                    className="text-amber-400 font-bold hover:underline"
+                    className="text-[var(--admin-primary,#4f46e5)] font-bold hover:underline cursor-pointer"
                   >
                     + Click here to add the first section
                   </button>
@@ -433,10 +433,10 @@ export default function CategoryForm({ categories = [], category = null, specGro
               ) : (
                 <div className="space-y-4">
                   {data.content_sections.map((sec, idx) => (
-                    <div key={idx} className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+                    <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2 flex-1">
-                          <span className="w-6 h-6 rounded-full bg-slate-800 text-amber-400 font-bold flex items-center justify-center text-[10px]">
+                          <span className="w-6 h-6 rounded-full bg-[var(--admin-primary-light,rgba(79,70,229,0.1))] text-[var(--admin-primary,#4f46e5)] font-bold flex items-center justify-center text-[10px]">
                             {idx + 1}
                           </span>
                           <input
@@ -444,17 +444,17 @@ export default function CategoryForm({ categories = [], category = null, specGro
                             value={sec.heading || ''}
                             onChange={(e) => updateContentSection(idx, 'heading', e.target.value)}
                             placeholder="Section Heading (e.g. Lowest Price Air Conditioner in BD)"
-                            className="flex-1 bg-slate-900 text-slate-100 p-2 rounded border border-slate-800 focus:border-amber-500 font-bold text-xs"
+                            className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 font-bold text-xs"
                           />
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <label className="flex items-center gap-1.5 text-slate-400 text-[11px] cursor-pointer">
+                          <label className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 text-[11px] cursor-pointer">
                             <input
                               type="checkbox"
                               checked={sec.is_active !== false}
                               onChange={(e) => updateContentSection(idx, 'is_active', e.target.checked)}
-                              className="rounded text-amber-500 bg-slate-900 border-slate-800"
+                              className="rounded text-[var(--admin-primary,#4f46e5)] focus:ring-0"
                             />
                             <span>Active</span>
                           </label>
@@ -462,7 +462,7 @@ export default function CategoryForm({ categories = [], category = null, specGro
                           <button
                             type="button"
                             onClick={() => removeContentSection(idx)}
-                            className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded"
+                            className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition"
                             title="Remove Section"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -476,7 +476,7 @@ export default function CategoryForm({ categories = [], category = null, specGro
                           value={sec.content || ''}
                           onChange={(e) => updateContentSection(idx, 'content', e.target.value)}
                           placeholder="Write rich paragraph content, buyer guidance, or HTML markup for this section..."
-                          className="w-full bg-slate-900 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500 text-xs font-sans"
+                          className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs font-sans"
                         />
                       </div>
                     </div>
@@ -488,21 +488,21 @@ export default function CategoryForm({ categories = [], category = null, specGro
 
           {/* TAB 4: DYNAMIC PRICE TABLE BUILDER */}
           {activeTab === 'price_table' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs text-xs">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div>
-                  <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <TableIcon className="w-4 h-4 text-amber-500" />
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 font-heading">
+                    <TableIcon className="w-4 h-4 text-[var(--admin-primary,#4f46e5)]" />
                     <span>Dynamic Category Price List Table</span>
                   </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Manage table rows rendered on the public page matching the reference screenshot. Link to real products or specify custom rows.
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Manage table rows rendered on the public page. Link to real products or specify custom rows.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={addPriceTableRow}
-                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg flex items-center gap-1 shadow-xs"
+                  className="px-3.5 py-1.5 bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold rounded-xl flex items-center gap-1 shadow-xs cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Table Row</span>
@@ -510,13 +510,13 @@ export default function CategoryForm({ categories = [], category = null, specGro
               </div>
 
               {data.price_tables.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-slate-800 rounded-xl space-y-2">
-                  <TableIcon className="w-8 h-8 text-slate-600 mx-auto" />
-                  <p className="text-slate-400 font-bold">No price table rows configured yet.</p>
+                <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-700 rounded-2xl space-y-2">
+                  <TableIcon className="w-8 h-8 text-slate-400 mx-auto" />
+                  <p className="text-slate-500 font-bold">No price table rows configured yet.</p>
                   <button
                     type="button"
                     onClick={addPriceTableRow}
-                    className="text-amber-400 font-bold hover:underline"
+                    className="text-[var(--admin-primary,#4f46e5)] font-bold hover:underline cursor-pointer"
                   >
                     + Click here to add product rows to the price table
                   </button>
@@ -524,24 +524,24 @@ export default function CategoryForm({ categories = [], category = null, specGro
               ) : (
                 <div className="space-y-3">
                   {data.price_tables.map((row, idx) => (
-                    <div key={idx} className="p-3 bg-slate-950 border border-slate-800 rounded-xl grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                    <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
                       <div className="sm:col-span-4">
-                        <label className="block text-slate-400 text-[10px] uppercase font-bold mb-1">Select Product or Enter Name</label>
+                        <label className="block text-slate-500 text-[10px] uppercase font-bold mb-1">Select Product or Enter Name</label>
                         <input
                           type="text"
                           value={row.product_name || ''}
                           onChange={(e) => updatePriceTableRow(idx, 'product_name', e.target.value)}
                           placeholder="e.g. Gree GS-18XPUV32 Inverter AC"
-                          className="w-full bg-slate-900 text-slate-100 p-2 rounded border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs"
                         />
                       </div>
 
                       <div className="sm:col-span-3">
-                        <label className="block text-slate-400 text-[10px] uppercase font-bold mb-1">Linked Product (Optional)</label>
+                        <label className="block text-slate-500 text-[10px] uppercase font-bold mb-1">Linked Product (Optional)</label>
                         <select
                           value={row.product_id || ''}
                           onChange={(e) => updatePriceTableRow(idx, 'product_id', e.target.value)}
-                          className="w-full bg-slate-900 text-slate-100 p-2 rounded border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs"
                         >
                           <option value="">— Custom Row —</option>
                           {products.map(p => (
@@ -551,24 +551,24 @@ export default function CategoryForm({ categories = [], category = null, specGro
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="block text-slate-400 text-[10px] uppercase font-bold mb-1">Price (৳)</label>
+                        <label className="block text-slate-500 text-[10px] uppercase font-bold mb-1">Price (৳)</label>
                         <input
                           type="text"
                           value={row.price || ''}
                           onChange={(e) => updatePriceTableRow(idx, 'price', e.target.value)}
                           placeholder="68500"
-                          className="w-full bg-slate-900 text-slate-100 p-2 rounded border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs"
                         />
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="block text-slate-400 text-[10px] uppercase font-bold mb-1">Key Specs</label>
+                        <label className="block text-slate-500 text-[10px] uppercase font-bold mb-1">Key Specs</label>
                         <input
                           type="text"
                           value={row.specs || ''}
                           onChange={(e) => updatePriceTableRow(idx, 'specs', e.target.value)}
                           placeholder="1.5 Ton, Inverter"
-                          className="w-full bg-slate-900 text-slate-100 p-2 rounded border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs"
                         />
                       </div>
 
@@ -576,7 +576,7 @@ export default function CategoryForm({ categories = [], category = null, specGro
                         <button
                           type="button"
                           onClick={() => removePriceTableRow(idx)}
-                          className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded"
+                          className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition"
                           title="Remove Row"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -591,21 +591,21 @@ export default function CategoryForm({ categories = [], category = null, specGro
 
           {/* TAB 5: DYNAMIC CATEGORY FAQS BUILDER */}
           {activeTab === 'faqs' && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl text-xs">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs text-xs">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div>
-                  <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <HelpCircle className="w-4 h-4 text-amber-500" />
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 font-heading">
+                    <HelpCircle className="w-4 h-4 text-[var(--admin-primary,#4f46e5)]" />
                     <span>Dynamic Category FAQs</span>
                   </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Frequently Asked Questions with answers rendered in an expandable accordion below the category products.
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Frequently Asked Questions with answers rendered in an expandable accordion.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={addFaq}
-                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg flex items-center gap-1 shadow-xs"
+                  className="px-3.5 py-1.5 bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold rounded-xl flex items-center gap-1 shadow-xs cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add FAQ Item</span>
@@ -613,13 +613,13 @@ export default function CategoryForm({ categories = [], category = null, specGro
               </div>
 
               {data.faqs.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-slate-800 rounded-xl space-y-2">
-                  <HelpCircle className="w-8 h-8 text-slate-600 mx-auto" />
-                  <p className="text-slate-400 font-bold">No FAQ items added for this category yet.</p>
+                <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-700 rounded-2xl space-y-2">
+                  <HelpCircle className="w-8 h-8 text-slate-400 mx-auto" />
+                  <p className="text-slate-500 font-bold">No FAQ items added for this category yet.</p>
                   <button
                     type="button"
                     onClick={addFaq}
-                    className="text-amber-400 font-bold hover:underline"
+                    className="text-[var(--admin-primary,#4f46e5)] font-bold hover:underline cursor-pointer"
                   >
                     + Click here to add the first FAQ
                   </button>
@@ -627,10 +627,10 @@ export default function CategoryForm({ categories = [], category = null, specGro
               ) : (
                 <div className="space-y-4">
                   {data.faqs.map((faq, idx) => (
-                    <div key={idx} className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+                    <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2 flex-1">
-                          <span className="w-6 h-6 rounded-full bg-slate-800 text-amber-400 font-bold flex items-center justify-center text-[10px]">
+                          <span className="w-6 h-6 rounded-full bg-[var(--admin-primary-light,rgba(79,70,229,0.1))] text-[var(--admin-primary,#4f46e5)] font-bold flex items-center justify-center text-[10px]">
                             Q{idx + 1}
                           </span>
                           <input
@@ -638,14 +638,14 @@ export default function CategoryForm({ categories = [], category = null, specGro
                             value={faq.question || ''}
                             onChange={(e) => updateFaq(idx, 'question', e.target.value)}
                             placeholder="Question (e.g. Which Air Conditioner brand is best in Bangladesh?)"
-                            className="flex-1 bg-slate-900 text-slate-100 p-2 rounded border border-slate-800 focus:border-amber-500 font-bold text-xs"
+                            className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 font-bold text-xs"
                           />
                         </div>
 
                         <button
                           type="button"
                           onClick={() => removeFaq(idx)}
-                          className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded"
+                          className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition"
                           title="Remove FAQ"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -658,7 +658,7 @@ export default function CategoryForm({ categories = [], category = null, specGro
                           value={faq.answer || ''}
                           onChange={(e) => updateFaq(idx, 'answer', e.target.value)}
                           placeholder="Comprehensive, helpful answer for customers..."
-                          className="w-full bg-slate-900 text-slate-100 p-2.5 rounded border border-slate-800 focus:border-amber-500 text-xs"
+                          className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs"
                         />
                       </div>
                     </div>
@@ -669,10 +669,10 @@ export default function CategoryForm({ categories = [], category = null, specGro
           )}
 
           {/* Form Actions Footer */}
-          <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-between gap-4 shadow-xl">
+          <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl flex items-center justify-between gap-4 shadow-xs">
             <Link
               href="/admin/categories"
-              className="px-4 py-2.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white text-xs font-bold transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer"
             >
               Cancel
             </Link>
@@ -680,14 +680,14 @@ export default function CategoryForm({ categories = [], category = null, specGro
             <button
               type="submit"
               disabled={processing}
-              className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-lg flex items-center space-x-1.5 shadow-lg transition-colors disabled:opacity-50"
+              className="px-6 py-2.5 bg-[var(--admin-primary,#4f46e5)] hover:bg-[var(--admin-primary-hover,#4338ca)] text-white font-bold text-xs rounded-xl flex items-center space-x-2 shadow-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{processing ? 'SAVING CATEGORY...' : (isEdit ? 'UPDATE CATEGORY & CONTENT' : 'CREATE CATEGORY')}</span>
+              <span>{processing ? 'Saving Category...' : (isEdit ? 'Update Category & Content' : 'Create Category')}</span>
             </button>
           </div>
         </form>
       </div>
-    </AdminLayout>
+    </AdminShell>
   );
 }

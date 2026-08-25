@@ -1,154 +1,185 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import AdminLayout from '../AdminLayout';
-import { BookOpen, Plus, Edit, Trash2, Calendar, Star, Eye } from 'lucide-react';
+import AdminShell from '../../../Components/Admin/AdminShell';
+import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
+import AdminPageToolbar from '../../../Components/Admin/AdminPageToolbar';
+import AdminTable from '../../../Components/Admin/AdminTable';
+import AdminStatusBadge from '../../../Components/Admin/AdminStatusBadge';
+import ConfirmDialog from '../../../Components/Admin/ConfirmDialog';
+import { BookOpen, Plus, Edit, Trash2, Eye, Star } from 'lucide-react';
 
-export default function BlogIndex({ posts }) {
-  const handleDelete = (id, title) => {
-    if (confirm(`Are you sure you want to delete blog article: "${title}"?`)) {
-      router.delete(`/admin/blog/${id}`);
-    }
+export default function BlogIndex({ posts = { data: [] } }) {
+  const [search, setSearch] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [density, setDensity] = useState('comfortable');
+
+  const postList = Array.isArray(posts?.data) ? posts.data : [];
+
+  const filteredPosts = postList.filter(p =>
+    !search || p.title?.toLowerCase().includes(search.toLowerCase()) || p.category?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    router.delete(`/admin/blog/${deleteTarget.id}`, {
+      onFinish: () => setDeleteTarget(null),
+    });
   };
 
-  return (
-    <AdminLayout>
-      <Head title="Blog & News Manager - TechMarket BD Admin" />
-
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-black text-white flex items-center space-x-2">
-              <BookOpen className="w-5 h-5 text-blue-500" />
-              <span>Hardware Blog & Tech News Management</span>
-            </h1>
-            <p className="text-xs text-slate-400">Publish GPU benchmarks, PC building tutorials, and buying guides.</p>
+  const columns = [
+    {
+      header: 'Article Title & Excerpt',
+      accessor: 'title',
+      sortable: true,
+      render: (post) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-14 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 overflow-hidden shrink-0 flex items-center justify-center">
+            {post.image ? (
+              <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+            ) : (
+              <BookOpen className="w-4 h-4 text-slate-400" />
+            )}
           </div>
-
-          <Link
-            href="/admin/blog/create"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center space-x-1.5 shadow-md"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Write New Article</span>
-          </Link>
-        </div>
-
-        {/* Articles Table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/70 border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400 font-bold">
-              <tr>
-                <th className="p-4">Article</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">Author</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Date</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 font-medium">
-              {!posts?.data || posts.data.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="p-8 text-center text-slate-500">
-                    No blog articles created yet. Click "Write New Article" to publish your first post.
-                  </td>
-                </tr>
-              ) : (
-                posts.data.map((post) => (
-                  <tr key={post.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center space-x-3">
-                        {post.image ? (
-                          <img src={post.image} alt={post.title} className="w-12 h-9 rounded object-cover border border-slate-700 shrink-0" />
-                        ) : (
-                          <div className="w-12 h-9 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 shrink-0">
-                            <BookOpen className="w-4 h-4" />
-                          </div>
-                        )}
-                        <div className="space-y-0.5 max-w-sm">
-                          <div className="font-bold text-white text-xs line-clamp-1">{post.title}</div>
-                          <div className="text-[11px] text-slate-400 line-clamp-1">{post.excerpt || post.content}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase font-mono">
-                        {post.category}
-                      </span>
-                    </td>
-                    <td className="p-4 text-slate-300">
-                      {post.author?.name || 'TechMarket BD'}
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          post.is_published ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        }`}>
-                          {post.is_published ? 'Published' : 'Draft'}
-                        </span>
-                        {post.is_featured && (
-                          <span className="p-1 rounded bg-amber-500/10 text-amber-400" title="Featured Post">
-                            <Star className="w-3 h-3 fill-current" />
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4 text-slate-400 font-mono text-[11px]">
-                      {new Date(post.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="p-4 text-right space-x-2">
-                      <a
-                        href={`/blog/${post.slug}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded inline-block transition-colors"
-                        title="View Public Post"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </a>
-                      <Link
-                        href={`/admin/blog/${post.id}/edit`}
-                        className="p-1.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded inline-block transition-colors"
-                        title="Edit Article"
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(post.id, post.title)}
-                        className="p-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded inline-block transition-colors"
-                        title="Delete Article"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
+          <div className="space-y-0.5 max-w-md">
+            <div className="flex items-center space-x-1.5">
+              <span className="font-bold text-slate-900 dark:text-slate-100 text-xs font-heading line-clamp-1">
+                {post.title}
+              </span>
+              {post.is_featured && (
+                <span className="p-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-500" title="Featured Article">
+                  <Star className="w-3 h-3 fill-current" />
+                </span>
               )}
-            </tbody>
-          </table>
-
-          {/* Pagination */}
-          {posts?.links && posts.links.length > 3 && (
-            <div className="p-4 border-t border-slate-800 flex justify-center space-x-1">
-              {posts.links.map((link, idx) => (
-                <Link
-                  key={idx}
-                  href={link.url || '#'}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                  className={`px-3 py-1 rounded text-xs font-bold transition-colors ${
-                    link.active
-                      ? 'bg-blue-600 text-white font-black'
-                      : link.url
-                      ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                      : 'bg-slate-900 text-slate-600 cursor-not-allowed'
-                  }`}
-                />
-              ))}
             </div>
-          )}
+            <p className="text-[11px] text-slate-500 line-clamp-1">{post.excerpt || post.content}</p>
+          </div>
         </div>
+      ),
+    },
+    {
+      header: 'Category',
+      accessor: 'category',
+      render: (post) => (
+        <span className="font-mono text-[11px] font-bold uppercase text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-md">
+          {post.category || 'Tech'}
+        </span>
+      ),
+    },
+    {
+      header: 'Author',
+      accessor: 'author',
+      render: (post) => (
+        <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
+          {post.author?.name || 'TechMarket BD'}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      accessor: 'is_published',
+      render: (post) => (
+        <AdminStatusBadge
+          status={post.is_published ? 'published' : 'draft'}
+          label={post.is_published ? 'Published' : 'Draft'}
+          size="xs"
+        />
+      ),
+    },
+    {
+      header: 'Date',
+      accessor: 'created_at',
+      render: (post) => (
+        <span className="font-mono text-slate-400 text-xs">
+          {post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      align: 'right',
+      render: (post) => (
+        <div className="flex items-center justify-end space-x-1.5 whitespace-nowrap">
+          <a
+            href={`/blog/${post.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-400 transition-colors"
+            title="Preview Article"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </a>
+          <Link
+            href={`/admin/blog/${post.id}/edit`}
+            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 transition-colors"
+            title="Edit Article"
+          >
+            <Edit className="w-3.5 h-3.5" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(post)}
+            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+            title="Delete Article"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <AdminShell title="Blog Management">
+      <Head title="Hardware Blog & Guides - TechMarket Admin" />
+
+      <div className="space-y-5">
+        {/* Page Header */}
+        <AdminPageHeader
+          title="Hardware Blog & Tech Guides"
+          subtitle="Publish PC build tutorials, GPU benchmark reviews, hardware buying guides, and technical news."
+          badge={`${posts.total || postList.length} Posts`}
+          actions={
+            <Link
+              href="/admin/blog/create"
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-xs hover:shadow transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Write New Article</span>
+            </Link>
+          }
+        />
+
+        {/* Toolbar */}
+        <AdminPageToolbar
+          search={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search articles by title or category..."
+          onRefresh={() => router.get('/admin/blog')}
+        />
+
+        {/* Table */}
+        <AdminTable
+          columns={columns}
+          data={filteredPosts}
+          pagination={posts}
+          density={density}
+          onDensityChange={setDensity}
+          emptyTitle="No blog articles published"
+          emptyDescription="Create tech articles and PC hardware guides to enhance storefront SEO authority."
+        />
       </div>
-    </AdminLayout>
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Article"
+        message={`Are you sure you want to permanently delete article "${deleteTarget?.title}"?`}
+        confirmText="Delete Article"
+        isDestructive
+      />
+    </AdminShell>
   );
 }

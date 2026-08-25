@@ -40,7 +40,7 @@ export default function Estimates({ estimates = {}, filters = {} }) {
 
   return (
     <AdminLayout title="CCTV Project Estimates" breadcrumbs={[{ label: 'CCTV Estimator', href: '/admin/cctv' }, { label: 'Estimates' }]}>
-      <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 w-full max-w-none">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -54,7 +54,7 @@ export default function Estimates({ estimates = {}, filters = {} }) {
         </div>
 
         {/* Filters */}
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-wrap items-center gap-3">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
             <input
@@ -63,14 +63,14 @@ export default function Estimates({ estimates = {}, filters = {} }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All Statuses</option>
             <option value="draft">Draft</option>
@@ -82,7 +82,7 @@ export default function Estimates({ estimates = {}, filters = {} }) {
           <select
             value={selectedSystem}
             onChange={(e) => setSelectedSystem(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
           >
             <option value="">All System Types</option>
             <option value="ip">IP</option>
@@ -100,11 +100,11 @@ export default function Estimates({ estimates = {}, filters = {} }) {
         </div>
 
         {/* Estimates Table */}
-        <div className="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   <th className="py-3 px-4">Estimate Number</th>
                   <th className="py-3 px-4">Project & User</th>
                   <th className="py-3 px-4">System</th>
@@ -180,8 +180,8 @@ export default function Estimates({ estimates = {}, filters = {} }) {
         {/* Modal: Estimate Detail BOM */}
         {selectedEstimate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-base font-bold text-white font-mono">{selectedEstimate.estimate_number}</h2>
@@ -203,10 +203,10 @@ export default function Estimates({ estimates = {}, filters = {} }) {
               {/* Bill of Materials Table */}
               <div className="space-y-2">
                 <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Bill of Materials (BOM)</h3>
-                <div className="rounded-2xl border border-slate-800 overflow-hidden bg-slate-950">
+                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden bg-slate-50 dark:bg-slate-800">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 bg-slate-900/60">
+                      <tr className="border-b border-slate-200/80 dark:border-slate-800/80 text-[11px] font-semibold text-slate-400 bg-white dark:bg-slate-900">
                         <th className="py-2.5 px-3">Item Description</th>
                         <th className="py-2.5 px-3">Type</th>
                         <th className="py-2.5 px-3">Qty</th>
@@ -235,7 +235,7 @@ export default function Estimates({ estimates = {}, filters = {} }) {
               </div>
 
               {/* Summary Financials */}
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
                 <div>
                   <span className="text-slate-500 block text-[10px]">Subtotal</span>
                   <span className="font-bold text-white">৳{Number(selectedEstimate.subtotal_amount || 0).toLocaleString()}</span>

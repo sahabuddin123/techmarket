@@ -3,12 +3,14 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 import CartDrawer from '@/Components/CartDrawer';
+import ProductImageLightbox from '@/Components/Storefront/ProductImageLightbox';
 import { trackViewContent, trackAddToCart } from '@/lib/tracking';
 import { 
   ShoppingCart, Heart, ArrowRightLeft, ShieldCheck, 
   Check, Star, ChevronLeft, ChevronRight, Share2, 
   HelpCircle, MessageSquare, Plus, Minus, Tag, CheckCircle2, User,
-  X, Building2, Calculator, CreditCard, Info, ShieldAlert, FileText
+  X, Building2, Calculator, CreditCard, Info, ShieldAlert, FileText,
+  ZoomIn
 } from 'lucide-react';
 
 export default function ProductDetailV1(props) {
@@ -46,6 +48,7 @@ export default function ProductDetailV1(props) {
   const [showEmiModal, setShowEmiModal] = useState(false);
   const [selectedTenure, setSelectedTenure] = useState(12);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   // Review Form State
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -167,8 +170,8 @@ export default function ProductDetailV1(props) {
   return (
     <div className="min-h-screen bg-[#f2f4f8] text-[#333] font-sans flex flex-col selection:bg-[#002a5c] selection:text-white">
       <Head>
-        <title>{seo.title || `${product.title || 'Product'} Price in Bangladesh | TechLand BD`}</title>
-        <meta name="description" content={seo.description || `Buy ${product.title} at best price in Bangladesh.`} />
+        <title>{seo.title || `${product.title || 'Product'} Price in Bangladesh | ${settings?.site_name || 'TechMarket BD'}`}</title>
+        <meta name="description" content={seo.description || `Buy ${product.title} at best price in Bangladesh from ${settings?.site_name || 'TechMarket BD'}.`} />
         {seo.canonical_url && <link rel="canonical" href={seo.canonical_url} />}
         {seo.meta_robots && <meta name="robots" content={seo.meta_robots} />}
 
@@ -195,11 +198,11 @@ export default function ProductDetailV1(props) {
       <Navbar onOpenCart={() => setIsCartOpen(true)} />
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-      {/* MAIN CONTAINER (Centered narrow max-w-[1240px]) */}
-      <main className="flex-1 max-w-[1240px] w-full mx-auto px-2.5 sm:px-4 py-2.5 space-y-2.5">
+      {/* MAIN CONTAINER (Centered max-w-[1640px]) */}
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-3 sm:px-6 py-4 space-y-4">
         
         {/* 2. BREADCRUMB */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[12px] text-[#666] overflow-x-auto py-0.5 select-none">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] text-[#666] overflow-x-auto py-1 select-none">
           {breadcrumbs.map((bc, idx) => (
             <React.Fragment key={idx}>
               {idx > 0 && <span className="text-[#999] font-normal shrink-0">&gt;</span>}
@@ -320,7 +323,11 @@ export default function ProductDetailV1(props) {
 
                 {/* Left Gallery (5 cols) */}
                 <div className="md:col-span-5 space-y-3">
-                  <div className="bg-white border border-[#e2e8f0] rounded-[3px] aspect-square flex items-center justify-center p-3 relative group overflow-hidden">
+                  <div 
+                    onClick={() => setIsLightboxOpen(true)}
+                    className="bg-white border border-[#e2e8f0] rounded-[3px] aspect-square flex items-center justify-center p-3 relative group overflow-hidden cursor-pointer hover:border-[#002a5c] transition-all"
+                    title="Click to view full image and zoom"
+                  >
                     {savings > 0 && (
                       <span className="absolute top-2.5 left-2.5 bg-[#00897b] text-white font-bold text-[10px] px-2 py-0.5 rounded-[2px] z-10">
                         Save: ৳{savings.toLocaleString()}
@@ -332,6 +339,12 @@ export default function ProductDetailV1(props) {
                       alt={product.title}
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                     />
+
+                    {/* Hover Zoom & Expand Overlay Pill */}
+                    <div className="absolute top-2.5 right-2.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 backdrop-blur-xs text-white rounded-md px-2.5 py-1 text-[10px] font-bold flex items-center gap-1.5 shadow-md">
+                      <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+                      <span>Click to Zoom</span>
+                    </div>
 
                     {/* Official Warranty Badge */}
                     <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-white/95 border border-blue-900/40 rounded-[2px] px-1.5 py-0.5 text-[9px] font-black text-blue-900 shadow-2xs">
@@ -1152,6 +1165,17 @@ export default function ProductDetailV1(props) {
           </div>
         </div>
       )}
+
+      {/* 11. PRODUCT IMAGE LIGHTBOX / FULLSCREEN ZOOM MODAL */}
+      <ProductImageLightbox
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        images={galleryImages}
+        currentIndex={selectedImageIndex}
+        onSelectIndex={setSelectedImageIndex}
+        productTitle={product.title}
+        price={currentPrice}
+      />
 
       {/* 12. DARK FOOTER */}
       <Footer />

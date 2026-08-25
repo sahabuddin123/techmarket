@@ -45,7 +45,7 @@ class BkashController extends Controller
                 'trxID' => $initData['trxID'] ?? null,
                 'amount' => $order->total,
                 'mode' => $config['mode'],
-                'merchant' => 'TechLand BD Online Store',
+                'merchant' => 'TechMarket BD Online Store',
                 'configured' => BkashPaymentService::isConfigured(),
             ],
         ]);

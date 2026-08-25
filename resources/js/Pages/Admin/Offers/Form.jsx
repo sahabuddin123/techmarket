@@ -128,9 +128,9 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
     <AdminLayout title={isEditing ? `Edit Campaign: ${offer.title}` : 'Create New Campaign'}>
       <Head title={isEditing ? `Edit: ${offer.title} | Admin` : 'Create Campaign | Admin'} />
 
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-5xl mx-auto pb-12">
+      <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-none pb-12">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl">
           <div className="flex items-center gap-3">
             <Link
               href="/admin/offers"
@@ -153,7 +153,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
               <Link
                 href={`/offers/${offer.slug}`}
                 target="_blank"
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors flex items-center gap-1.5 border border-slate-700"
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors flex items-center gap-1.5 border border-slate-200 dark:border-slate-700"
               >
                 <Eye className="w-3.5 h-3.5" />
                 <span>Preview</span>
@@ -172,7 +172,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-1 bg-slate-900 border border-slate-800 p-1.5 rounded-xl text-xs font-bold">
+        <div className="flex flex-wrap gap-1 bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-1.5 rounded-xl text-xs font-bold">
           <button
             type="button"
             onClick={() => setActiveTab('basic')}
@@ -242,8 +242,8 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
         {/* TAB 1: BASIC INFORMATION */}
         {activeTab === 'basic' && (
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-5 text-xs">
-            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl space-y-5 text-xs">
+            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
               Basic Campaign Information
             </h3>
 
@@ -257,7 +257,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
                   placeholder="e.g. laptop spider-man"
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                   required
                 />
                 {errors.title && <p className="text-red-400 text-[11px] mt-1">{errors.title}</p>}
@@ -272,7 +272,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.slug}
                   onChange={(e) => setData('slug', e.target.value)}
                   placeholder="laptop-spider-man"
-                  className="w-full bg-slate-950 font-mono text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 font-mono text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                   required
                 />
                 {errors.slug && <p className="text-red-400 text-[11px] mt-1">{errors.slug}</p>}
@@ -286,7 +286,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                 value={data.short_description}
                 onChange={(e) => setData('short_description', e.target.value)}
                 placeholder="Couple Movie Ticket on Us With Every Laptop Purchase!"
-                className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
               />
             </div>
 
@@ -297,17 +297,17 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                 value={data.description}
                 onChange={(e) => setData('description', e.target.value)}
                 placeholder="Techland থেকে আপনার পছন্দের Laptop কিনুন, Best Price & Special Discount-এর সাথে পান Spider-Man: Brand New Day-এর Couple Movie Ticket একদম ফ্রি!"
-                className="w-full bg-slate-950 text-white rounded-lg p-3 border border-slate-800 focus:border-red-500 focus:outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg p-3 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-200/80 dark:border-slate-800/80">
               <div>
                 <label className="block text-slate-300 font-bold mb-1">Status</label>
                 <select
                   value={data.status}
                   onChange={(e) => setData('status', e.target.value)}
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none font-bold"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none font-bold"
                 >
                   <option value="active">Active</option>
                   <option value="scheduled">Scheduled</option>
@@ -323,7 +323,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   type="number"
                   value={data.display_order}
                   onChange={(e) => setData('display_order', parseInt(e.target.value) || 0)}
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none font-mono"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none font-mono"
                 />
               </div>
 
@@ -333,7 +333,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                     type="checkbox"
                     checked={data.is_active}
                     onChange={(e) => setData('is_active', e.target.checked)}
-                    className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-950 border-slate-700"
+                    className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                   />
                   <span className="text-slate-300 font-bold">Publicly Active</span>
                 </label>
@@ -343,7 +343,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                     type="checkbox"
                     checked={data.is_featured}
                     onChange={(e) => setData('is_featured', e.target.checked)}
-                    className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-950 border-slate-700"
+                    className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                   />
                   <span className="text-slate-300 font-bold">Featured Offer</span>
                 </label>
@@ -354,8 +354,8 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
         {/* TAB 2: SCHEDULE & DATES */}
         {activeTab === 'schedule' && (
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-5 text-xs">
-            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl space-y-5 text-xs">
+            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
               Campaign Timing & Validity
             </h3>
 
@@ -366,7 +366,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   type="datetime-local"
                   value={data.start_at}
                   onChange={(e) => setData('start_at', e.target.value)}
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
 
@@ -376,7 +376,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   type="datetime-local"
                   value={data.end_at}
                   onChange={(e) => setData('end_at', e.target.value)}
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
                 {errors.end_at && <p className="text-red-400 text-[11px] mt-1">{errors.end_at}</p>}
               </div>
@@ -391,7 +391,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                 value={data.offer_validity_text}
                 onChange={(e) => setData('offer_validity_text', e.target.value)}
                 placeholder="e.g. 14 AUGUST – 21 AUGUST 2026"
-                className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
               />
               <p className="text-[11px] text-slate-500 mt-1">
                 Leave blank to automatically format start and end dates.
@@ -402,8 +402,8 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
         {/* TAB 3: BANNERS & VISUALS */}
         {activeTab === 'media' && (
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-6 text-xs">
-            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl space-y-6 text-xs">
+            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
               Campaign Media & Banners
             </h3>
 
@@ -417,7 +417,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                     value={data.banner_image}
                     onChange={(e) => setData('banner_image', e.target.value)}
                     placeholder="https://example.com/banner.jpg or /storage/uploads/offers/banner.png"
-                    className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                   />
                   <div className="mt-2">
                     <span className="text-slate-400 text-[11px]">Or upload image file:</span>
@@ -431,7 +431,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                 </div>
 
                 {/* Banner Preview */}
-                <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950 h-32 flex items-center justify-center">
+                <div className="border border-slate-200/80 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800 h-32 flex items-center justify-center">
                   {data.banner_image ? (
                     <img src={data.banner_image} alt="Desktop Banner" className="w-full h-full object-cover" />
                   ) : (
@@ -442,7 +442,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             </div>
 
             {/* Card Thumbnail Image */}
-            <div className="space-y-3 pt-4 border-t border-slate-800">
+            <div className="space-y-3 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
               <label className="block text-slate-300 font-bold">Campaign Card Thumbnail</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -451,7 +451,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                     value={data.thumbnail_image}
                     onChange={(e) => setData('thumbnail_image', e.target.value)}
                     placeholder="https://example.com/thumb.jpg"
-                    className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                   />
                   <div className="mt-2">
                     <span className="text-slate-400 text-[11px]">Or upload file:</span>
@@ -464,7 +464,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   </div>
                 </div>
 
-                <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950 h-28 flex items-center justify-center">
+                <div className="border border-slate-200/80 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800 h-28 flex items-center justify-center">
                   {data.thumbnail_image ? (
                     <img src={data.thumbnail_image} alt="Thumbnail" className="w-full h-full object-cover" />
                   ) : (
@@ -478,8 +478,8 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
         {/* TAB 4: PERKS & STORY */}
         {activeTab === 'content' && (
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-6 text-xs">
-            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl space-y-6 text-xs">
+            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
               Promotional Content, Headline & Highlights
             </h3>
 
@@ -491,7 +491,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.badge_text}
                   onChange={(e) => setData('badge_text', e.target.value)}
                   placeholder="e.g. LIMITED TIME LAPTOP OFFER"
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
 
@@ -502,7 +502,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.headline}
                   onChange={(e) => setData('headline', e.target.value)}
                   placeholder="LAPTOP কিনলেই SPIDER-MAN MOVIE TICKET FREE!"
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -515,7 +515,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.cta_button_text}
                   onChange={(e) => setData('cta_button_text', e.target.value)}
                   placeholder="BUY LAPTOP NOW →"
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
 
@@ -526,33 +526,33 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.terms_and_conditions}
                   onChange={(e) => setData('terms_and_conditions', e.target.value)}
                   placeholder="* শর্ত প্রযোজ্য।"
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
             </div>
 
             {/* 3 Key Perks Editor */}
-            <div className="space-y-3 pt-4 border-t border-slate-800">
+            <div className="space-y-3 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
               <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">
                 3 Key Campaign Perks (Displayed in Highlights Grid)
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {data.perks.map((perk, idx) => (
-                  <div key={idx} className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                  <div key={idx} className="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80 space-y-2">
                     <span className="text-[10px] font-bold text-red-400 uppercase">Perk #{idx + 1}</span>
                     <input
                       type="text"
                       value={perk.title}
                       onChange={(e) => handlePerkChange(idx, 'title', e.target.value)}
                       placeholder="Title"
-                      className="w-full bg-slate-900 text-white rounded px-2.5 py-1.5 border border-slate-800 text-xs font-bold"
+                      className="w-full bg-slate-900 text-white rounded px-2.5 py-1.5 border border-slate-200/80 dark:border-slate-800/80 text-xs font-bold"
                     />
                     <textarea
                       rows={2}
                       value={perk.desc}
                       onChange={(e) => handlePerkChange(idx, 'desc', e.target.value)}
                       placeholder="Description"
-                      className="w-full bg-slate-900 text-white rounded px-2.5 py-1.5 border border-slate-800 text-[11px]"
+                      className="w-full bg-slate-900 text-white rounded px-2.5 py-1.5 border border-slate-200/80 dark:border-slate-800/80 text-[11px]"
                     />
                   </div>
                 ))}
@@ -563,8 +563,8 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
         {/* TAB 5: ATTACHED PRODUCTS */}
         {activeTab === 'products' && (
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-6 text-xs">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl space-y-6 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
               <div>
                 <h3 className="text-sm font-black text-white uppercase tracking-wider">
                   Campaign Eligible Products ({data.product_ids.length} Attached)
@@ -581,7 +581,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
                   placeholder="Search catalog to add..."
-                  className="w-full bg-slate-950 text-white rounded-lg pl-8 pr-3 py-1.5 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg pl-8 pr-3 py-1.5 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
               </div>
@@ -589,7 +589,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
             {/* Live Catalog Search Results Dropdown */}
             {productSearch.trim().length > 0 && (
-              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 max-h-48 overflow-y-auto space-y-1">
+              <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-3 max-h-48 overflow-y-auto space-y-1">
                 <span className="text-[10px] text-slate-500 uppercase font-black tracking-wider block mb-1">
                   Catalog Search Matches
                 </span>
@@ -599,7 +599,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                     className="flex items-center justify-between p-2 rounded-lg bg-slate-900 hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <img src={prod.image || 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=50'} alt="" className="w-8 h-8 object-cover rounded bg-slate-950" />
+                      <img src={prod.image || 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=50'} alt="" className="w-8 h-8 object-cover rounded bg-slate-50 dark:bg-slate-800" />
                       <div>
                         <div className="font-bold text-white text-xs truncate max-w-sm">{prod.title}</div>
                         <div className="text-[10px] text-slate-400 font-mono">৳{Number(prod.price).toLocaleString()} • SKU: {prod.sku || 'N/A'}</div>
@@ -633,7 +633,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   {selectedProducts.map((prod, idx) => (
                     <div
                       key={prod.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80"
                     >
                       <div className="flex items-center gap-3">
                         <span className="font-mono text-slate-500 text-xs w-5">#{idx + 1}</span>
@@ -653,7 +653,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                             value={data.product_badges[prod.id] || ''}
                             onChange={(e) => setProductBadge(prod.id, e.target.value)}
                             placeholder="Custom Badge (e.g. FREE TICKET)"
-                            className="bg-slate-900 text-white rounded px-2.5 py-1 text-[11px] border border-slate-800 focus:border-red-500 focus:outline-none w-44"
+                            className="bg-slate-900 text-white rounded px-2.5 py-1 text-[11px] border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none w-44"
                           />
                         </div>
 
@@ -670,7 +670,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   ))}
                 </div>
               ) : (
-                <div className="p-8 text-center text-slate-500 bg-slate-950 rounded-xl border border-slate-800">
+                <div className="p-8 text-center text-slate-500 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                   No products attached yet. Search above to add qualifying hardware products.
                 </div>
               )}
@@ -680,44 +680,44 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
 
         {/* TAB 6: STOREFRONT & SEO */}
         {activeTab === 'seo' && (
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-5 text-xs">
-            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl space-y-5 text-xs">
+            <h3 className="text-sm font-black text-white uppercase tracking-wider pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
               Storefront Toggles & SEO Metadata
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <label className="flex items-center gap-2 cursor-pointer bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <label className="flex items-center gap-2 cursor-pointer bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                 <input
                   type="checkbox"
                   checked={data.show_countdown}
                   onChange={(e) => setData('show_countdown', e.target.checked)}
-                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700"
+                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-200 dark:border-slate-700"
                 />
                 <span className="text-slate-300 font-bold">Show Live Countdown</span>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <label className="flex items-center gap-2 cursor-pointer bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                 <input
                   type="checkbox"
                   checked={data.show_date_range}
                   onChange={(e) => setData('show_date_range', e.target.checked)}
-                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700"
+                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-200 dark:border-slate-700"
                 />
                 <span className="text-slate-300 font-bold">Show Date Range</span>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <label className="flex items-center gap-2 cursor-pointer bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
                 <input
                   type="checkbox"
                   checked={data.show_product_count}
                   onChange={(e) => setData('show_product_count', e.target.checked)}
-                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700"
+                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-200 dark:border-slate-700"
                 />
                 <span className="text-slate-300 font-bold">Show Product Count</span>
               </label>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-slate-800">
+            <div className="space-y-4 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
               <div>
                 <label className="block text-slate-300 font-bold mb-1">SEO Meta Title</label>
                 <input
@@ -725,7 +725,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.seo_title}
                   onChange={(e) => setData('seo_title', e.target.value)}
                   placeholder="Laptop Spider-Man Offer | TechMarket BD"
-                  className="w-full bg-slate-950 text-white rounded-lg px-3 py-2 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
 
@@ -736,7 +736,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
                   value={data.seo_description}
                   onChange={(e) => setData('seo_description', e.target.value)}
                   placeholder="Get free movie ticket on purchasing selected gaming and ultrabook laptops at TechMarket BD."
-                  className="w-full bg-slate-950 text-white rounded-lg p-3 border border-slate-800 focus:border-red-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 text-white rounded-lg p-3 border border-slate-200/80 dark:border-slate-800/80 focus:border-red-500 focus:outline-none"
                 />
               </div>
             </div>
