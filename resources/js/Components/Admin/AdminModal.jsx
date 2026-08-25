@@ -88,7 +88,7 @@ export default function AdminModal({
           <div className="flex items-center space-x-2.5 min-w-0 pr-2">
             {Icon && (
               <div className="w-7 h-7 rounded-xl bg-[var(--admin-primary-light,rgba(79,70,229,0.08))] text-[var(--admin-primary,#4f46e5)] flex items-center justify-center shrink-0">
-                {typeof Icon === 'function' ? <Icon className="w-3.5 h-3.5" /> : Icon}
+                {React.isValidElement(Icon) ? Icon : React.createElement(Icon, { className: "w-3.5 h-3.5" })}
               </div>
             )}
             <div className="min-w-0">
