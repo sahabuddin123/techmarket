@@ -1992,7 +1992,7 @@ export default function AdminPos({
         {completedSale && (
           <InvoicePrintTemplate
             sale={completedSale}
-            initialFormat="58mm"
+            initialFormat="80mm"
             showFormatSelector={true}
             onClose={() => setIsReceiptModalOpen(false)}
           />
