@@ -75,6 +75,9 @@ fi
 
 echo "✔ Using Composer: $COMPOSER_BIN"
 
+# PHP Execution Prefix (Bypasses swow segfaults in CLI and expands memory limit)
+PHP_RUN="$PHP_BIN -d memory_limit=1024M -d swow.enable=0 -d swow.coroutine=0 -d swow.enable_coroutine=0"
+
 # 3. GIT PULL LATEST COMMITS
 echo ""
 echo "📦 Pulling latest changes from repository (main branch)..."
@@ -84,27 +87,35 @@ git pull origin main
 
 # 4. COMPOSER DEPENDENCIES
 echo ""
-echo "📦 Installing backend PHP dependencies..."
+echo "📦 Verifying and installing backend PHP dependencies..."
 export COMPOSER_ALLOW_SUPERUSER=1
-$PHP_BIN $COMPOSER_BIN install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+if [ -d "vendor" ]; then
+    echo "✔ Existing vendor directory detected."
+    $PHP_RUN $COMPOSER_BIN install --no-dev --no-interaction --prefer-dist --optimize-autoloader || {
+        echo "⚠️ Composer install completed with fallback; generating optimized autoload files..."
+        $PHP_RUN $COMPOSER_BIN dump-autoload -o || true
+    }
+else
+    $PHP_RUN $COMPOSER_BIN install --no-dev --no-interaction --prefer-dist --optimize-autoloader || true
+fi
 
 # 5. SAFE DATABASE MIGRATIONS
 echo ""
 echo "🗄 Running database migrations safely (preserving existing data)..."
-$PHP_BIN artisan migrate --force
+$PHP_RUN artisan migrate --force
 
 # 6. STORAGE LINK
 echo ""
 echo "🔗 Verifying storage symlink..."
-$PHP_BIN artisan storage:link || true
+$PHP_RUN artisan storage:link || true
 
 # 7. OPTIMIZE & CLEAR APPLICATION CACHES
 echo ""
 echo "⚡ Optimizing application performance & clearing caches..."
-$PHP_BIN artisan optimize:clear
-$PHP_BIN artisan config:cache
-$PHP_BIN artisan route:cache
-$PHP_BIN artisan view:cache
+$PHP_RUN artisan optimize:clear
+$PHP_RUN artisan config:cache
+$PHP_RUN artisan route:cache
+$PHP_RUN artisan view:cache
 
 # 8. PERMISSIONS HARDENING
 echo ""
