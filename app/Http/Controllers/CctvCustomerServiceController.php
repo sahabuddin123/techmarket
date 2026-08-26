@@ -26,7 +26,8 @@ class CctvCustomerServiceController extends Controller
             ->latest()
             ->get();
 
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         return Inertia::render('Account/CctvEquipment', [
             'storefront_version' => $versionKey,
@@ -45,7 +46,8 @@ class CctvCustomerServiceController extends Controller
             ->latest()
             ->get();
 
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         return Inertia::render('Account/CctvServiceRequests', [
             'storefront_version' => $versionKey,
@@ -68,7 +70,8 @@ class CctvCustomerServiceController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         return Inertia::render('Account/CctvCreateServiceRequest', [
             'storefront_version' => $versionKey,

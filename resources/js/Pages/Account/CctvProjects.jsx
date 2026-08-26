@@ -17,11 +17,11 @@ import {
 } from 'lucide-react';
 
 export default function CctvProjects({
-  storefront_version = 'v3',
+  storefront_version,
   projects = [],
 }) {
   const { props } = usePage();
-  const activeVersion = getStorefrontVersion(storefront_version || props?.settings?.storefront_version || 'v3');
+  const activeVersion = getStorefrontVersion(storefront_version || props?.storefront_version || props?.settings?.storefront_version || 'v1');
   const NavbarComponent = activeVersion.Navbar;
   const FooterComponent = activeVersion.Footer;
   const MobileBottomNavComponent = activeVersion.MobileBottomNav;

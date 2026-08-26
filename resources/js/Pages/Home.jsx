@@ -6,7 +6,7 @@ import { getStorefrontVersion } from '@/Core/Storefront/versionRegistry';
  * Resolves active home component from the centralized version registry.
  */
 export default function Home(props) {
-  const versionKey = props.storefront_version || props.settings?.storefront_version || 'v3';
+  const versionKey = props.storefront_version || props.settings?.storefront_version || 'v1';
   const activeDef = getStorefrontVersion(versionKey);
   const HomeComponent = activeDef.HomePage;
 

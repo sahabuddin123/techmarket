@@ -39,7 +39,8 @@ class CctvEstimatorController extends Controller
      */
     public function index(Request $request): Response
     {
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         // Pre-fetch available CCTV hardware catalog items from real database
         $cameras = CctvProductProfile::with(['product.brand', 'product.category'])

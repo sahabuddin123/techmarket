@@ -27,7 +27,8 @@ class CctvQuoteViewController extends Controller
             $quote->update(['status' => CctvQuoteStatus::ISSUED]);
         }
 
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         $companyInfo = [
             'name' => Setting::get('site_name', 'TechMarket BD'),

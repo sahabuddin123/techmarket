@@ -45,7 +45,7 @@ import {
 } from 'lucide-react';
 
 export default function CctvEstimator({
-  storefront_version = 'v3',
+  storefront_version,
   catalogCameras = [],
   catalogRecorders = [],
   catalogStorage = [],
@@ -54,7 +54,8 @@ export default function CctvEstimator({
   engineSettings = {},
 }) {
   const { props } = usePage();
-  const activeVersion = getStorefrontVersion(storefront_version || props?.settings?.storefront_version || 'v3');
+  const activeVersionKey = storefront_version || props?.storefront_version || props?.settings?.storefront_version || 'v1';
+  const activeVersion = getStorefrontVersion(activeVersionKey);
   const NavbarComponent = activeVersion.Navbar;
   const FooterComponent = activeVersion.Footer;
   const MobileBottomNavComponent = activeVersion.MobileBottomNav;

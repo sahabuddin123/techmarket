@@ -5,19 +5,22 @@
  * layouts, navigation, and page components.
  */
 
-// Version 1 Components
+// Version 1 Components (Classic TechLand Store)
+import NavbarV1 from '@/Components/Navbar';
+import FooterV1 from '@/Components/Footer';
+import MobileBottomNavV1 from '@/Components/MobileBottomNav';
 import HomeV1 from '@/Pages/Storefront/Version1/HomeV1';
 import CatalogV1 from '@/Pages/Storefront/Version1/CatalogV1';
 import ProductDetailV1 from '@/Pages/Storefront/Version1/ProductDetailV1';
 
-// Version 2 Components
+// Version 2 Components (Modern Superstore)
 import NavbarV2 from '@/Pages/Storefront/Version2/Components/NavbarV2';
 import FooterV2 from '@/Pages/Storefront/Version2/Components/FooterV2';
 import HomeV2 from '@/Pages/Storefront/Version2/HomeV2';
 import CatalogV2 from '@/Pages/Storefront/Version2/CatalogV2';
 import ProductDetailV2 from '@/Pages/Storefront/Version2/ProductDetailV2';
 
-// Version 3 Components
+// Version 3 Components (Gadget Hub)
 import NavbarV3 from '@/Pages/Storefront/Version3/Components/NavbarV3';
 import FooterV3 from '@/Pages/Storefront/Version3/Components/FooterV3';
 import MobileBottomNavV3 from '@/Pages/Storefront/Version3/Components/MobileBottomNavV3';
@@ -32,9 +35,9 @@ export const STOREFRONT_VERSIONS = {
     key: 'v1',
     name: 'TechLand Classic Computer & IT Store',
     description: 'Classic IT and computer hardware storefront with dark blue header, red accents, and multi-column mega menu.',
-    Navbar: null, // Will use default Version 1 Navbar
-    Footer: null, // Will use default Version 1 Footer
-    MobileBottomNav: null,
+    Navbar: NavbarV1,
+    Footer: FooterV1,
+    MobileBottomNav: MobileBottomNavV1,
     HomePage: HomeV1,
     CatalogPage: CatalogV1,
     ProductDetailPage: ProductDetailV1,
@@ -47,7 +50,7 @@ export const STOREFRONT_VERSIONS = {
     description: 'High-tech electronics and computer superstore with deep navy, vivid electric blue, and modern glassmorphism.',
     Navbar: NavbarV2,
     Footer: FooterV2,
-    MobileBottomNav: null,
+    MobileBottomNav: MobileBottomNavV1,
     HomePage: HomeV2,
     CatalogPage: CatalogV2,
     ProductDetailPage: ProductDetailV2,
@@ -73,7 +76,7 @@ export const STOREFRONT_VERSIONS = {
  * Resolve active storefront version definition
  * @param {string} versionKey - 'v1', 'v2', or 'v3'
  */
-export function getStorefrontVersion(versionKey = 'v3') {
-  const normalizedKey = versionKey ? String(versionKey).toLowerCase() : 'v3';
-  return STOREFRONT_VERSIONS[normalizedKey] || STOREFRONT_VERSIONS.v3;
+export function getStorefrontVersion(versionKey = 'v1') {
+  const normalizedKey = versionKey ? String(versionKey).toLowerCase() : 'v1';
+  return STOREFRONT_VERSIONS[normalizedKey] || STOREFRONT_VERSIONS.v1;
 }

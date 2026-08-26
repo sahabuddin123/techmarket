@@ -17,7 +17,8 @@ class CctvSiteSurveyController extends Controller
      */
     public function create(Request $request): Response
     {
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         return Inertia::render('CctvSiteSurveyRequest', [
             'storefront_version' => $versionKey,
@@ -92,7 +93,8 @@ class CctvSiteSurveyController extends Controller
             ->where('survey_number', $surveyNumber)
             ->firstOrFail();
 
-        $versionKey = Setting::get('active_theme', 'v3');
+        $activeVersion = \App\Models\StorefrontVersion::getActiveVersion();
+        $versionKey = $activeVersion ? $activeVersion->key : Setting::get('storefront_version', 'v1');
 
         return Inertia::render('CctvSiteSurveyShow', [
             'storefront_version' => $versionKey,
