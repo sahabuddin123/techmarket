@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
-import { X, Search, Cpu, Wrench, CreditCard, Tag, Sparkles, Building2, BookOpen } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { X, Search, Cpu, Video, Wrench, CreditCard, Tag, Sparkles, Building2, BookOpen } from 'lucide-react';
 import MobileCategoryTree from './MobileCategoryTree';
 
 export default function MobileNavigation({ isOpen, onClose, categories = [], auth = {} }) {
+    const { settings = {} } = usePage().props;
     const [searchQuery, setSearchQuery] = useState('');
 
     if (!isOpen) return null;
@@ -33,19 +34,31 @@ export default function MobileNavigation({ isOpen, onClose, categories = [], aut
             {/* Slide-out Drawer Panel */}
             <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl z-50 flex flex-col transform transition-transform duration-300">
                 {/* Header */}
-                <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded bg-red-600 flex items-center justify-center font-bold text-white text-sm tracking-wider">
-                            TM
-                        </div>
-                        <div className="leading-tight">
-                            <h3 className="font-extrabold text-sm tracking-tight text-white">TECHMARKET BD</h3>
-                            <span className="text-[10px] text-gray-400">Category Navigation</span>
-                        </div>
-                    </div>
+                <div className="p-3.5 bg-[#002a5c] text-white flex items-center justify-between border-b border-blue-950">
+                    <Link href="/" onClick={onClose} className="flex items-center gap-2.5 max-w-[200px]">
+                        {settings.site_logo ? (
+                            <img
+                                src={settings.site_logo}
+                                alt={settings.site_name || 'TechMarket BD'}
+                                className="h-8 max-w-[140px] w-auto object-contain"
+                            />
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded bg-[#ff2e3b] flex items-center justify-center font-black text-white text-xs tracking-wider shrink-0 shadow-xs">
+                                    {(settings.site_name || 'TM').substring(0, 2).toUpperCase()}
+                                </div>
+                                <div className="leading-tight truncate">
+                                    <h3 className="font-black text-xs uppercase tracking-tight text-white truncate">
+                                        {settings.site_name || 'TECHMARKET BD'}
+                                    </h3>
+                                    <span className="text-[10px] text-blue-200/80">Category Navigation</span>
+                                </div>
+                            </div>
+                        )}
+                    </Link>
                     <button 
                         onClick={onClose}
-                        className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-slate-800 transition-colors"
+                        className="p-1 rounded-md text-blue-200 hover:text-white hover:bg-white/10 transition-colors"
                         aria-label="Close navigation menu"
                     >
                         <X className="w-5 h-5" />
@@ -67,30 +80,38 @@ export default function MobileNavigation({ isOpen, onClose, categories = [], aut
                 </div>
 
                 {/* Quick Action Shortcuts */}
-                <div className="grid grid-cols-3 gap-1 p-2 bg-white border-b border-gray-200 text-center text-[11px] font-semibold text-gray-700">
+                <div className="grid grid-cols-4 gap-1 p-2 bg-white border-b border-gray-200 text-center text-[10px] font-semibold text-gray-700">
                     <Link
                         href="/pc-builder"
                         onClick={onClose}
-                        className="flex flex-col items-center py-2 px-1 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className="flex flex-col items-center py-2 px-0.5 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
                     >
                         <Cpu className="w-4 h-4 text-red-600 mb-1" />
-                        <span>PC Builder</span>
+                        <span className="truncate w-full">PC Builder</span>
+                    </Link>
+                    <Link
+                        href="/cctv-estimator"
+                        onClick={onClose}
+                        className="flex flex-col items-center py-2 px-0.5 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
+                    >
+                        <Video className="w-4 h-4 text-red-600 mb-1" />
+                        <span className="truncate w-full">CCTV Est</span>
                     </Link>
                     <Link
                         href="/servicing"
                         onClick={onClose}
-                        className="flex flex-col items-center py-2 px-1 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className="flex flex-col items-center py-2 px-0.5 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
                     >
                         <Wrench className="w-4 h-4 text-red-600 mb-1" />
-                        <span>Servicing</span>
+                        <span className="truncate w-full">Servicing</span>
                     </Link>
                     <Link
                         href="/emi-info"
                         onClick={onClose}
-                        className="flex flex-col items-center py-2 px-1 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className="flex flex-col items-center py-2 px-0.5 rounded hover:bg-red-50 hover:text-red-600 transition-colors"
                     >
                         <CreditCard className="w-4 h-4 text-red-600 mb-1" />
-                        <span>0% EMI</span>
+                        <span className="truncate w-full">0% EMI</span>
                     </Link>
                 </div>
 

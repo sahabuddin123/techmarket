@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { 
-  Home, Tag, Monitor, User, Menu, X, Heart, 
+  Home, Video, Tag, Monitor, User, Menu, X, Heart, 
   GitCompare, ShoppingCart, Star, Flame, Sparkles, 
   MapPin, Wrench, BookOpen 
 } from 'lucide-react';
@@ -22,7 +22,7 @@ export default function MobileBottomNav({ onOpenCart }) {
 
   const navItems = [
     { label: 'Home', href: '/', icon: Home, active: currentUrl === '/' || currentUrl === '' },
-    { label: 'Offers', href: '/offers', icon: Tag, active: currentUrl.startsWith('/offers') },
+    { label: 'CCTV Est', href: '/cctv-estimator', icon: Video, active: currentUrl.startsWith('/cctv-estimator') },
     { label: 'PC Builder', href: '/pc-builder', icon: Monitor, active: currentUrl.startsWith('/pc-builder') },
     { 
       label: 'Account', 
