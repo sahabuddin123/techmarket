@@ -17,8 +17,8 @@ export default function Wishlist() {
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Breadcrumb Header */}
-      <div className="w-full bg-white border-b border-slate-100 py-2.5 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1240px] mx-auto flex items-center justify-between text-xs text-slate-500 font-medium">
+      <div className="w-full bg-white border-b border-slate-100 py-2.5">
+        <div className="max-w-[1640px] mx-auto px-4 flex items-center justify-between text-xs text-slate-500 font-medium">
           <div className="flex items-center space-x-2 truncate">
             <Link href="/" className="hover:text-[#0153FD] transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -27,7 +27,7 @@ export default function Wishlist() {
         </div>
       </div>
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 space-y-6">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-8 space-y-6">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold uppercase tracking-wider">
             <Heart className="w-3.5 h-3.5 fill-current" />

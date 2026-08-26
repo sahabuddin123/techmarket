@@ -136,7 +136,7 @@ export default function OffersIndex(props) {
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
       {/* Main Content Container */}
-      <main className="flex-1 max-w-[1380px] w-full mx-auto px-4 py-5 space-y-5">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-5 space-y-5">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-xs text-gray-500">
           <Link href="/" className="hover:text-red-600 transition-colors">Home</Link>

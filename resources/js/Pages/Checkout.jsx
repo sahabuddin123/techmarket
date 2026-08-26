@@ -95,8 +95,8 @@ export default function Checkout(props) {
       <Navbar onOpenCart={() => setIsCartDrawerOpen(true)} />
       <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
 
-      {/* MAIN CONTAINER (Centered max-w-[1360px]) */}
-      <main className="flex-1 w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 w-full max-w-[1640px] mx-auto px-4 py-6 space-y-6">
         
         {/* 2. MODERN BREADCRUMB & PROGRESS STEPPER */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">

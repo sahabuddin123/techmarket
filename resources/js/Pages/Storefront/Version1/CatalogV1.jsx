@@ -249,7 +249,7 @@ export default function CatalogV1(props) {
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
       {/* CENTERED MAIN CONTENT CONTAINER (High Density max-w-[1640px]) */}
-      <main className="flex-1 max-w-[1640px] w-full mx-auto px-3 sm:px-6 py-4 space-y-4">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-4 space-y-4">
         
         {/* 2. BREADCRUMB (Home > Category > Subcategory) */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] text-[#666] overflow-x-auto py-1 select-none">

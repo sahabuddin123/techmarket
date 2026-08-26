@@ -186,7 +186,7 @@ export default function ProductDetailV1(props) {
       <Navbar onOpenCart={() => setIsCartOpen(true)} />
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-[1520px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 space-y-3 sm:space-y-4">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-4 space-y-4">
         
         {/* 2. BREADCRUMB */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[12px] text-slate-500 overflow-x-auto py-1 select-none">

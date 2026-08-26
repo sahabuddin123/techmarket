@@ -594,7 +594,7 @@ export default function CctvEstimator({
       {NavbarComponent && <NavbarComponent />}
 
       {/* Main Estimator App */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-10 space-y-8">
+      <main className="flex-1 max-w-[1640px] mx-auto w-full px-4 py-6 md:py-8 space-y-8">
         {/* Top Hero Banner with Strategy Presets */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 shadow-2xl space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

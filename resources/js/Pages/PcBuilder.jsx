@@ -100,7 +100,7 @@ export default function PcBuilder({ slots = [], selectedBuild = {}, summary = {}
       </div>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-[1240px] w-full mx-auto px-4 py-6 space-y-4 print:p-0 print:m-0 print:max-w-full">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-6 space-y-4 print:p-0 print:m-0 print:max-w-full">
         
         {/* PRINT-ONLY OFFICIAL HEADER */}
         <div className="hidden print:block border-b-2 border-[#1e293b] pb-4 mb-4">

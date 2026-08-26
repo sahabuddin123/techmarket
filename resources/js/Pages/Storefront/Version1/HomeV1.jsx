@@ -150,7 +150,7 @@ export default function HomeV1({
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Main Storefront Body Container */}
-      <main className="flex-1 max-w-[1640px] w-full mx-auto px-3 sm:px-6 py-5 space-y-7">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-5 space-y-7">
         
         {/* ========================================================================= */}
         {/* 1. HERO SECTION: 68% Hero Carousel Slider + 32% Stacked Promo Banner Images */}

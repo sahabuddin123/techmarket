@@ -111,7 +111,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-[1340px] w-full mx-auto px-3 sm:px-4 py-5 space-y-4">
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-5 space-y-4">
         
         {/* BREADCRUMB */}
         <nav className="flex items-center space-x-2 text-[12px] text-[#64748b]">

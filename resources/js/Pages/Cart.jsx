@@ -109,8 +109,8 @@ export default function Cart(props) {
       <Navbar onOpenCart={() => setIsCartDrawerOpen(true)} />
       <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
 
-      {/* MAIN CONTAINER (Centered approx 1240px wide) */}
-      <main className="flex-1 max-w-[1240px] w-full mx-auto px-2.5 sm:px-4 py-4 space-y-3">
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-4 space-y-4">
         
         {/* Flash Message or Error Alerts */}
         {flash?.message && (
