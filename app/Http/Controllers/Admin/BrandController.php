@@ -40,7 +40,7 @@ class BrandController extends Controller
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = $this->generateUniqueSlug($validated['name']);
         Brand::create($validated);
 
         return redirect()->route('admin.brands')->with('success', 'Brand created successfully!');
@@ -68,7 +68,7 @@ class BrandController extends Controller
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = $this->generateUniqueSlug($validated['name'], $brand->id);
         $brand->update($validated);
 
         return redirect()->route('admin.brands')->with('success', 'Brand updated successfully!');
@@ -78,5 +78,28 @@ class BrandController extends Controller
     {
         $brand->delete();
         return redirect()->route('admin.brands')->with('success', 'Brand deleted.');
+    }
+
+    /**
+     * Generate guaranteed unique slug for Brand model.
+     */
+    protected function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($name);
+        if (empty($baseSlug)) {
+            $baseSlug = 'brand-' . time();
+        }
+
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (Brand::where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 }

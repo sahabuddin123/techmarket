@@ -73,7 +73,7 @@ class CategoryController extends Controller
             'faqs' => 'nullable|array',
         ]);
 
-        $validated['slug'] = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $validated['slug'] = $this->generateUniqueSlug($validated['name'], $validated['slug'] ?? null);
         
         $category = Category::create($validated);
 
@@ -132,7 +132,7 @@ class CategoryController extends Controller
             'faqs' => 'nullable|array',
         ]);
 
-        $validated['slug'] = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $validated['slug'] = $this->generateUniqueSlug($validated['name'], $validated['slug'] ?? null, $category->id);
         
         $category->update($validated);
 
@@ -209,5 +209,28 @@ class CategoryController extends Controller
                 ]);
             }
         }
+    }
+
+    /**
+     * Generate guaranteed unique slug for Category model.
+     */
+    protected function generateUniqueSlug(string $name, ?string $customSlug = null, ?int $ignoreId = null): string
+    {
+        $baseSlug = !empty($customSlug) ? Str::slug($customSlug) : Str::slug($name);
+        if (empty($baseSlug)) {
+            $baseSlug = 'category-' . time();
+        }
+
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (Category::where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 }

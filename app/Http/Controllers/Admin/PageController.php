@@ -62,9 +62,7 @@ class PageController extends Controller
             'is_published' => 'boolean',
         ]);
 
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
-        }
+        $validated['slug'] = $this->generateUniqueSlug($validated['title'], $validated['slug'] ?? null);
         $validated['content'] = $validated['content'] ?? '';
 
         $page = CmsPage::create($validated);
@@ -172,5 +170,28 @@ class PageController extends Controller
         $page->update($validated);
 
         return back()->with('success', 'About Us page content updated successfully!');
+    }
+
+    /**
+     * Generate guaranteed unique slug for CmsPage model.
+     */
+    protected function generateUniqueSlug(string $title, ?string $customSlug = null, ?int $ignoreId = null): string
+    {
+        $baseSlug = !empty($customSlug) ? Str::slug($customSlug) : Str::slug($title);
+        if (empty($baseSlug)) {
+            $baseSlug = 'page-' . time();
+        }
+
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (CmsPage::where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 }
