@@ -12,10 +12,25 @@ class Setting extends Model
 
     protected $fillable = ['key', 'value', 'group'];
 
+    /**
+     * Normalize stored media/asset URLs to root-relative paths (/storage/...)
+     * so they load seamlessly across localhost, 127.0.0.1, custom dev ports, and production domains.
+     */
+    public static function normalizeValue($value)
+    {
+        if (is_string($value)) {
+            if (preg_match('#^https?://[^/]+/storage/(.+)$#i', $value, $matches)) {
+                return '/storage/' . $matches[1];
+            }
+        }
+        return $value;
+    }
+
     public static function get($key, $default = null)
     {
         $setting = static::where('key', $key)->first();
-        return $setting ? $setting->value : $default;
+        $value = $setting ? $setting->value : $default;
+        return static::normalizeValue($value);
     }
 
     public static function getBool($key, $default = true): bool
@@ -36,6 +51,7 @@ class Setting extends Model
     public static function set($key, $value, $group = 'general')
     {
         Cache::forget("setting.{$key}");
+        $value = static::normalizeValue($value);
 
         return static::updateOrCreate(
             ['key' => $key],

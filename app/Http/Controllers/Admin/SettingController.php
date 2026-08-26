@@ -48,7 +48,9 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $settings = Setting::all()->pluck('value', 'key')->all();
+        $settings = Setting::all()->mapWithKeys(function ($s) {
+            return [$s->key => Setting::normalizeValue($s->value)];
+        })->all();
 
         // System information diagnostics
         $systemInfo = [
@@ -74,7 +76,9 @@ class SettingController extends Controller
      */
     public function appearance()
     {
-        $allSettings = Setting::all()->pluck('value', 'key')->all();
+        $allSettings = Setting::all()->mapWithKeys(function ($s) {
+            return [$s->key => Setting::normalizeValue($s->value)];
+        })->all();
         $themeSettings = array_merge(self::DEFAULT_ADMIN_THEME, array_intersect_key($allSettings, self::DEFAULT_ADMIN_THEME));
 
         return Inertia::render('Admin/Settings/Appearance', [

@@ -36,7 +36,9 @@ class HandleInertiaRequests extends Middleware
         $cartCount = array_reduce($cart, fn($carry, $item) => $carry + $item['quantity'], 0);
         $cartTotal = array_reduce($cart, fn($carry, $item) => $carry + $item['total'], 0);
 
-        $settings = Setting::all()->pluck('value', 'key')->all();
+        $settings = Setting::all()->mapWithKeys(function ($s) {
+            return [$s->key => Setting::normalizeValue($s->value)];
+        })->all();
 
         // High performance cached category navigation tree with recursive subcategories
         $navCategories = Cache::remember('navigation.categories', 3600, function () {

@@ -47,6 +47,10 @@ class Media extends Model
             return $this->path;
         }
 
+        if ($this->disk === 'public') {
+            return '/storage/' . ltrim($this->path, '/');
+        }
+
         return Storage::disk($this->disk)->url($this->path);
     }
 

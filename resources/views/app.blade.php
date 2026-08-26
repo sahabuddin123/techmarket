@@ -6,8 +6,15 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title inertia>{{ config('app.name', 'TechMarket BD') }}</title>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-        <link rel="alternate icon" href="/favicon.ico">
+        @php
+            $siteFavicon = \App\Models\Setting::get('site_favicon');
+        @endphp
+        @if ($siteFavicon)
+            <link rel="icon" href="{{ $siteFavicon }}">
+        @else
+            <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+            <link rel="alternate icon" href="/favicon.ico">
+        @endif
 
         <!-- Google Fonts: Inter, Plus Jakarta Sans, Manrope, DM Sans, IBM Plex Sans, Source Sans 3, JetBrains Mono, Poppins, Bengali -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
