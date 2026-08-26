@@ -1,33 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ==============================================================================
-# TechMarket BD - Automated Live Production Deployment Script (aaPanel / Linux)
+# TechMarket BD - Production Automated Deployment Script (aaPanel & Linux VPS)
+# ==============================================================================
+# Usage:
+#   chmod +x deploy.sh
+#   ./deploy.sh
 # ==============================================================================
 
 set -e
 
-echo "================================================================"
-echo "🚀 [1/7] Starting Live Production Deployment for TechMarket BD..."
-echo "================================================================"
+echo ""
+echo "======================================================================"
+echo "🚀 Starting Deployment for TechMarket BD..."
+echo "======================================================================"
 
-# 1. Smart PHP Binary Auto-Detection (aaPanel / LiteSpeed / Native with mbstring validation)
+# 1. AUTO-DETECT AAPANEL / SYSTEM PHP BINARY
 PHP_BIN=""
-CANDIDATES=(
-    "/www/server/php/84/bin/php"
-    "/www/server/php/83/bin/php"
-    "/www/server/php/82/bin/php"
-    "/usr/local/lsws/lsphp84/bin/php"
-    "/usr/local/lsws/lsphp83/bin/php"
-    "/usr/local/lsws/lsphp82/bin/php"
-    "php8.4"
-    "php8.3"
-    "php8.2"
-    "php"
-)
-
-for candidate in "${CANDIDATES[@]}"; do
-    if command -v "$candidate" &> /dev/null; then
-        # Check if this PHP binary has required mbstring (mb_split)
+for candidate in \
+    "/www/server/php/83/bin/php" \
+    "/www/server/php/82/bin/php" \
+    "/www/server/php/81/bin/php" \
+    "/www/server/php/84/bin/php" \
+    "$(which php 2>/dev/null)"
+do
+    if [ -x "$candidate" ]; then
+        # Verify candidate supports mbstring
         if "$candidate" -r 'exit(function_exists("mb_split") ? 0 : 1);' 2>/dev/null; then
             PHP_BIN="$candidate"
             break
@@ -35,71 +33,82 @@ for candidate in "${CANDIDATES[@]}"; do
     fi
 done
 
-# Fallback to standard command if all candidate tests fail
+# Fallback if no candidate with mbstring found
 if [ -z "$PHP_BIN" ]; then
-    for candidate in "${CANDIDATES[@]}"; do
-        if command -v "$candidate" &> /dev/null; then
+    for candidate in \
+        "/www/server/php/83/bin/php" \
+        "/www/server/php/82/bin/php" \
+        "$(which php 2>/dev/null)"
+    do
+        if [ -x "$candidate" ]; then
             PHP_BIN="$candidate"
             break
         fi
     done
 fi
 
-PHP_BIN="${PHP_BIN:-php}"
-echo "ℹ️ Using Validated PHP Binary: $PHP_BIN ($($PHP_BIN -v 2>/dev/null | head -n 1 || echo 'Active PHP'))"
-
-# 2. Auto-detect Composer
-COMPOSER_BIN="composer"
-if [ -f "/usr/local/bin/composer" ]; then
-    COMPOSER_BIN="$PHP_BIN /usr/local/bin/composer"
-elif [ -f "./composer.phar" ]; then
-    COMPOSER_BIN="$PHP_BIN ./composer.phar"
-elif command -v composer &> /dev/null; then
-    COMPOSER_BIN="$PHP_BIN $(which composer)"
-else
-    echo "📥 Downloading composer.phar..."
-    curl -sS https://getcomposer.org/installer | $PHP_BIN
-    COMPOSER_BIN="$PHP_BIN ./composer.phar"
+if [ -z "$PHP_BIN" ]; then
+    echo "❌ Error: PHP binary could not be detected. Please ensure PHP is installed."
+    exit 1
 fi
 
-# 3. Pull Latest Changes from Git
-if [ -d ".git" ]; then
-    echo "📦 [2/7] Pulling latest updates from GitHub..."
-    git fetch --all
-    git reset --hard origin/main || git reset --hard origin/master
+echo "✔ Using PHP Binary: $PHP_BIN ($("$PHP_BIN" -r 'echo PHP_VERSION;'))"
+
+# 2. AUTO-DETECT COMPOSER BINARY
+COMPOSER_BIN=""
+for candidate in \
+    "/www/server/php/83/bin/composer" \
+    "/www/server/php/82/bin/composer" \
+    "/usr/local/bin/composer" \
+    "/usr/bin/composer" \
+    "$(which composer 2>/dev/null)"
+do
+    if [ -x "$candidate" ]; then
+        COMPOSER_BIN="$candidate"
+        break
+    fi
+done
+
+if [ -z "$COMPOSER_BIN" ]; then
+    COMPOSER_BIN="$PHP_BIN /usr/bin/composer"
 fi
 
-# 4. Install/Update Composer Dependencies for Production
-echo "🐘 [3/7] Optimizing Composer Autoloader..."
-$COMPOSER_BIN install --no-dev --no-interaction --prefer-dist --optimize-autoloader || true
+echo "✔ Using Composer: $COMPOSER_BIN"
 
-# 5. Build Frontend Assets (if npm is present and needed)
-echo "⚡ [4/7] Verifying Frontend Assets..."
-if command -v npm &> /dev/null && [ ! -d "public/build" ]; then
-    echo "🔨 Building frontend..."
-    npm run build || true
-fi
+# 3. GIT PULL LATEST COMMITS
+echo ""
+echo "📦 Pulling latest changes from repository (main branch)..."
+git fetch --all
+git reset --hard origin/main
+git pull origin main
 
-# 6. Run Database Migrations & Safe Seeders
-echo "🗄️ [5/7] Running Database Migrations (CCTV, Analytics & Reports)..."
+# 4. COMPOSER DEPENDENCIES
+echo ""
+echo "📦 Installing backend PHP dependencies..."
+export COMPOSER_ALLOW_SUPERUSER=1
+$PHP_BIN $COMPOSER_BIN install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+# 5. SAFE DATABASE MIGRATIONS
+echo ""
+echo "🗄 Running database migrations safely (preserving existing data)..."
 $PHP_BIN artisan migrate --force
 
-echo "🌱 Seeding TechMarket Gadgets & CCTV Products (Safe Upsert)..."
-$PHP_BIN artisan db:seed --class=Database\\Seeders\\StorefrontVersionSeeder --force || true
-$PHP_BIN artisan db:seed --class=Database\\Seeders\\TechMarketGadgetSeeder --force || true
-$PHP_BIN artisan db:seed --class=Database\\Seeders\\CctvEnterpriseSeeder --force || true
-
-# 7. Clear and Rebuild Laravel Caches
-echo "⚡ [6/7] Optimizing Laravel Caches..."
-$PHP_BIN artisan optimize:clear || true
-$PHP_BIN artisan config:cache || true
-$PHP_BIN artisan route:cache || true
-$PHP_BIN artisan view:cache || true
+# 6. STORAGE LINK
+echo ""
+echo "🔗 Verifying storage symlink..."
 $PHP_BIN artisan storage:link || true
-$PHP_BIN artisan queue:restart || true
 
-# 8. Set Strict aaPanel Permissions (www:www)
-echo "🔒 [7/7] Fixing Storage & Bootstrap Permissions for aaPanel (www)..."
+# 7. OPTIMIZE & CLEAR APPLICATION CACHES
+echo ""
+echo "⚡ Optimizing application performance & clearing caches..."
+$PHP_BIN artisan optimize:clear
+$PHP_BIN artisan config:cache
+$PHP_BIN artisan route:cache
+$PHP_BIN artisan view:cache
+
+# 8. PERMISSIONS HARDENING
+echo ""
+echo "🔒 Updating storage and bootstrap cache permissions..."
 chmod -R 775 storage bootstrap/cache || true
 if id "www" &>/dev/null; then
     chown -R www:www storage bootstrap/cache || true
@@ -107,6 +116,9 @@ elif id "www-data" &>/dev/null; then
     chown -R www-data:www-data storage bootstrap/cache || true
 fi
 
-echo "================================================================"
-echo "🎉 SUCCESS: TechMarket BD Live Deployment Completed Successfully!"
-echo "================================================================"
+echo ""
+echo "======================================================================"
+echo "✅ DEPLOYMENT COMPLETED SUCCESSFULLY!"
+echo "✨ TechMarket BD is running with latest features & secure database state."
+echo "======================================================================"
+echo ""
