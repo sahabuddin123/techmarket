@@ -4,7 +4,7 @@ import {
   Search, ShoppingCart, Heart, User, Cpu, Phone, 
   Menu, X, GitCompare, Tag, Sliders, Wrench, CreditCard,
   Sparkles, ChevronRight, ArrowRight, ShieldCheck, Mail,
-  Bell, Award, Package, Monitor, KeyRound, LogOut, ChevronDown, Shield
+  Bell, Award, Package, Monitor, KeyRound, LogOut, ChevronDown, Shield, Video
 } from 'lucide-react';
 import DesktopNavigation from './Navigation/DesktopNavigation';
 import MobileNavigation from './Navigation/MobileNavigation';
@@ -170,16 +170,15 @@ export default function Navbar({ onOpenCart }) {
             </Link>
           ))}
 
-          {/* OFFERS Button */}
-          {showOffers && (
-            <Link
-              href="/offers"
-              className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
-            >
-              <Tag className="w-4 h-4 text-amber-400" />
-              <span>OFFERS</span>
-            </Link>
-          )}
+          {/* CCTV Estimator Button */}
+          <Link
+            href="/cctv-estimator"
+            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
+            title="CCTV System Builder & Quotation Estimator"
+          >
+            <Video className="w-4 h-4 text-sky-400" />
+            <span>CCTV EST</span>
+          </Link>
 
           {/* TOOLS Button */}
           <Link
