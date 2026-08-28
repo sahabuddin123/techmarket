@@ -171,7 +171,7 @@ class MediaController extends Controller
         }
 
         if (empty($uploadedFiles)) {
-            if ($request->wantsJson()) {
+            if (!$request->header('X-Inertia') && $request->wantsJson()) {
                 return response()->json(['error' => 'No files were provided for upload.'], 422);
             }
             return back()->withErrors(['file' => 'No files were provided for upload.']);
@@ -239,7 +239,7 @@ class MediaController extends Controller
             $createdRecords[] = $media;
         }
 
-        if ($request->wantsJson() || $request->ajax()) {
+        if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
             return response()->json([
                 'success' => true,
                 'message' => count($createdRecords) . ' media item(s) uploaded successfully.',
@@ -267,7 +267,7 @@ class MediaController extends Controller
 
         AuditLogger::log('media.updated', $media, $oldValues, $media->fresh()->toArray());
 
-        if ($request->wantsJson()) {
+        if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
             return response()->json([
                 'success' => true,
                 'message' => 'Media metadata updated successfully.',
@@ -288,7 +288,7 @@ class MediaController extends Controller
 
         if (!empty($usages) && !$force) {
             $msg = 'Cannot delete media: It is currently active in the store (' . implode('; ', $usages) . '). Pass force=true to override.';
-            if ($request->wantsJson()) {
+            if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
                 return response()->json([
                     'error' => $msg,
                     'usages' => $usages,
@@ -306,7 +306,7 @@ class MediaController extends Controller
         AuditLogger::log('media.deleted', $media, $media->toArray(), null);
         $media->delete();
 
-        if ($request->wantsJson()) {
+        if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
             return response()->json([
                 'success' => true,
                 'message' => 'Media removed successfully from library.',

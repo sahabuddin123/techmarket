@@ -213,4 +213,23 @@ class AdminMediaLibraryTest extends TestCase
         // Verify the response is not raw JSON string payload
         $this->assertFalse(str_starts_with($response->getContent(), '{"media":'));
     }
+
+    public function test_inertia_file_upload_returns_redirect_not_plain_json(): void
+    {
+        $this->actingAs($this->admin);
+
+        $file = UploadedFile::fake()->image('inertia-banner.png', 1200, 800);
+
+        $response = $this->withHeaders([
+            'X-Inertia' => 'true',
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post('/admin/media/upload', [
+            'file' => $file,
+            'folder' => 'banners',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertFalse(str_starts_with($response->getContent(), '{"success":true'));
+    }
 }

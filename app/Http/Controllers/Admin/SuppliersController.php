@@ -147,7 +147,7 @@ class SuppliersController extends Controller
 
         AuditLogger::log('suppliers.created', $supplier, null, ['company' => $supplier->company_name]);
 
-        if ($request->wantsJson() || $request->ajax() || $request->is('admin/suppliers*') && $request->isJson()) {
+        if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax() || ($request->is('admin/suppliers*') && $request->isJson()))) {
             return response()->json([
                 'success' => true,
                 'message' => "Supplier '{$supplier->company_name}' registered successfully.",
@@ -196,7 +196,7 @@ class SuppliersController extends Controller
         $supplier->update($validated);
         AuditLogger::log('suppliers.updated', $supplier, null, ['company' => $supplier->company_name]);
 
-        if ($request->wantsJson() || $request->ajax()) {
+        if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
             return response()->json([
                 'success' => true,
                 'message' => "Supplier updated successfully.",
