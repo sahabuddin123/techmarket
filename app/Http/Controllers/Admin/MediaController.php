@@ -156,8 +156,8 @@ class MediaController extends Controller
     {
         $request->validate([
             'files' => 'nullable|array',
-            'files.*' => 'file|mimes:jpeg,jpg,png,webp,svg,gif|max:10240', // Max 10MB
-            'file' => 'nullable|file|mimes:jpeg,jpg,png,webp,svg,gif|max:10240',
+            'files.*' => 'file|mimes:jpeg,jpg,png,webp,svg,gif,jfif,avif|max:20480', // Max 20MB
+            'file' => 'nullable|file|mimes:jpeg,jpg,png,webp,svg,gif,jfif,avif|max:20480',
             'folder' => 'nullable|string|in:products,categories,brands,banners,blog,cms,general',
             'alt_text' => 'nullable|string|max:255',
             'title' => 'nullable|string|max:255',
@@ -165,16 +165,17 @@ class MediaController extends Controller
 
         $uploadedFiles = [];
         if ($request->hasFile('files')) {
-            $uploadedFiles = $request->file('files');
+            $files = $request->file('files');
+            $uploadedFiles = is_array($files) ? $files : [$files];
         } elseif ($request->hasFile('file')) {
             $uploadedFiles = [$request->file('file')];
         }
 
         if (empty($uploadedFiles)) {
             if (!$request->header('X-Inertia') && $request->wantsJson()) {
-                return response()->json(['error' => 'No files were provided for upload.'], 422);
+                return response()->json(['error' => 'No files were provided for upload or the files exceeded the server limit.'], 422);
             }
-            return back()->withErrors(['file' => 'No files were provided for upload.']);
+            return back()->withErrors(['file' => 'No files were provided for upload or the files exceeded the server limit.']);
         }
 
         $folder = $request->input('folder', 'general');

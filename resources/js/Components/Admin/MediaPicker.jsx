@@ -106,18 +106,33 @@ export default function MediaPicker({
     formData.append('folder', uploadFolder);
 
     try {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const cookieMatch = document.cookie.match(/(^|;\s*)XSRF-TOKEN=([^;]*)/);
+      const csrfToken = metaToken || (cookieMatch ? decodeURIComponent(cookieMatch[2]) : '');
+
+      if (csrfToken) {
+        formData.append('_token', csrfToken);
+      }
+
       const res = await fetch('/admin/media/upload', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'X-CSRF-TOKEN': csrfToken || '',
+          'X-XSRF-TOKEN': csrfToken || '',
+          'X-Requested-With': 'XMLHttpRequest',
         },
         body: formData,
       });
 
-      const json = await res.json();
-      if (json.success) {
+      let json = {};
+      try {
+        json = await res.json();
+      } catch (parseErr) {
+        json = { error: `Server returned an unreadable response (Status ${res.status}).` };
+      }
+
+      if (res.ok && json.success) {
         const uploaded = Array.isArray(json.media) ? json.media : [json.media];
         const newUrls = uploaded.map(m => m.url);
 
@@ -131,11 +146,12 @@ export default function MediaPicker({
         setActiveTab('browse');
         fetchMedia(1, '', uploadFolder);
       } else {
-        alert(json.error || 'Upload failed');
+        const errorMsg = json.error || json.message || (json.errors ? Object.values(json.errors).flat().join('\n') : null) || `Upload failed (Status ${res.status})`;
+        alert(errorMsg);
       }
     } catch (err) {
       console.error(err);
-      alert('Upload request failed.');
+      alert(err.message || 'Upload request failed.');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
