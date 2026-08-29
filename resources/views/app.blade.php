@@ -68,6 +68,14 @@
             $customHeaderScripts = \App\Models\Setting::get('custom_header_scripts');
             $customFooterScripts = \App\Models\Setting::get('custom_footer_scripts');
 
+            // Sanitize verification codes if user pasted full <meta ...> tag
+            if ($googleVerification && preg_match('/content=[\'"]([^\'"]+)[\'"]/i', $googleVerification, $m)) {
+                $googleVerification = $m[1];
+            }
+            if ($bingVerification && preg_match('/content=[\'"]([^\'"]+)[\'"]/i', $bingVerification, $m)) {
+                $bingVerification = $m[1];
+            }
+
             $props = $page['props'] ?? [];
             $seo = $props['seo'] ?? [];
             $product = $props['product'] ?? null;

@@ -683,29 +683,84 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                 </div>
 
                 {/* 4. Google & Bing Webmaster Verification */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Google Search Console Verification Code</label>
-                    <input
-                      type="text"
-                      value={data.google_search_console_code}
-                      onChange={(e) => setData('google_search_console_code', e.target.value)}
-                      placeholder="e.g. google-site-verification token or HTML meta content"
-                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
-                    />
-                    <p className="text-[10.5px] text-slate-500">Injects <code className="text-slate-700 dark:text-slate-300">&lt;meta name="google-site-verification" content="..."&gt;</code> in header.</p>
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block text-slate-800 dark:text-slate-200 font-bold text-xs">Search Engine Ownership & Webmaster Verification</label>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Verify site ownership in Google Search Console and Bing Webmaster Tools to submit sitemaps and index pages faster.</p>
+                    </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Bing Webmaster Verification Code</label>
-                    <input
-                      type="text"
-                      value={data.bing_webmaster_code}
-                      onChange={(e) => setData('bing_webmaster_code', e.target.value)}
-                      placeholder="e.g. msvalidate.01 token"
-                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
-                    />
-                    <p className="text-[10.5px] text-slate-500">Injects <code className="text-slate-700 dark:text-slate-300">&lt;meta name="msvalidate.01" content="..."&gt;</code> in header.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Google Search Console Field */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-slate-700 dark:text-slate-300 font-bold text-xs">Google Search Console Verification Code</label>
+                        <a 
+                          href="https://search.google.com/search-console" 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-[#0084ff] hover:underline flex items-center gap-0.5 text-[11px] font-semibold"
+                        >
+                          <span>Open Console</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <input
+                        type="text"
+                        value={data.google_search_console_code}
+                        onChange={(e) => setData('google_search_console_code', e.target.value)}
+                        placeholder="e.g. ABC123xyz... or full HTML tag"
+                        className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono text-xs"
+                      />
+                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400">
+                        <div className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#0084ff]"></span>
+                          <span>কীভাবে কোড পাবেন (How to get Google code):</span>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-1 leading-relaxed pl-1">
+                          <li><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer" className="text-[#0084ff] underline font-semibold">Google Search Console</a>-এ গিয়ে <strong>Add Property</strong> &rarr; <strong>URL prefix</strong> সিলেক্ট করুন (যেমন: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.2 rounded text-slate-800 dark:text-slate-200 font-mono">https://www.techmarket.com.bd</code>)।</li>
+                          <li><strong>Other verification methods</strong> থেকে <strong>HTML tag</strong> সিলেক্ট করুন।</li>
+                          <li>কোড থেকে <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.2 rounded text-[#0084ff] font-mono font-bold">content="..."</code> এর ভিতরের অংশটি (অথবা সম্পূর্ণ ট্যাগটি) কপি করে উপরের ঘরে পেস্ট করুন।</li>
+                          <li>নিচের <strong>Save Configuration</strong> বাটনে ক্লিক করে সার্চ কনসোলে গিয়ে <strong>Verify</strong> চাপুন।</li>
+                        </ol>
+                      </div>
+                    </div>
+
+                    {/* Bing Webmaster Field */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-slate-700 dark:text-slate-300 font-bold text-xs">Bing Webmaster Verification Code</label>
+                        <a 
+                          href="https://www.bing.com/webmasters" 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-[#0084ff] hover:underline flex items-center gap-0.5 text-[11px] font-semibold"
+                        >
+                          <span>Open Bing</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <input
+                        type="text"
+                        value={data.bing_webmaster_code}
+                        onChange={(e) => setData('bing_webmaster_code', e.target.value)}
+                        placeholder="e.g. 1234567890ABCDEF..."
+                        className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono text-xs"
+                      />
+                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400">
+                        <div className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                          <span>কীভাবে কোড পাবেন (How to get Bing code):</span>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-1 leading-relaxed pl-1">
+                          <li><a href="https://www.bing.com/webmasters" target="_blank" rel="noreferrer" className="text-[#0084ff] underline font-semibold">Bing Webmaster Tools</a>-এ গিয়ে সাইট অ্যাড করুন (অথবা Google Search Console থেকে Import করুন)।</li>
+                          <li><strong>HTML Meta Tag</strong> মেথড সিলেক্ট করুন।</li>
+                          <li>কোডের <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.2 rounded text-[#0084ff] font-mono font-bold">content="..."</code> এর টোকেনটি কপি করে উপরের ঘরে পেস্ট করুন।</li>
+                          <li>নিচের <strong>Save Configuration</strong> বাটনে ক্লিক করে Bing-এ গিয়ে <strong>Verify</strong> চাপুন।</li>
+                        </ol>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
