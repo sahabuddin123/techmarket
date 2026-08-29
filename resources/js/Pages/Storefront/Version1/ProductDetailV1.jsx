@@ -194,6 +194,7 @@ export default function ProductDetailV1(props) {
 
       {/* 1. TOP NAVBAR */}
       <Navbar onOpenCart={() => setIsCartOpen(true)} />
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
       {/* MAIN CONTAINER */}
       <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-4 space-y-4">
