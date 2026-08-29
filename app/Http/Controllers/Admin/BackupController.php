@@ -23,29 +23,43 @@ class BackupController extends Controller
      */
     public function index(Request $request): Response
     {
-        $query = DatabaseBackup::with('creator')->latest();
-
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('filename', 'like', "%{$search}%")
-                  ->orWhere('notes', 'like', "%{$search}%");
-            });
+        // Auto-check table existence
+        if (!\Illuminate\Support\Facades\Schema::hasTable('database_backups')) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            } catch (\Throwable $e) {
+                // Ignore if migration fails
+            }
         }
 
-        if ($request->filled('format')) {
-            $query->where('format', $request->input('format'));
+        if (\Illuminate\Support\Facades\Schema::hasTable('database_backups')) {
+            $query = DatabaseBackup::with('creator')->latest();
+
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('filename', 'like', "%{$search}%")
+                      ->orWhere('notes', 'like', "%{$search}%");
+                });
+            }
+
+            if ($request->filled('format')) {
+                $query->where('format', $request->input('format'));
+            }
+
+            if ($request->filled('type')) {
+                $query->where('type', $request->input('type'));
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->input('status'));
+            }
+
+            $backups = $query->paginate(15)->withQueryString();
+        } else {
+            $backups = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
         }
 
-        if ($request->filled('type')) {
-            $query->where('type', $request->input('type'));
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
-        }
-
-        $backups = $query->paginate(15)->withQueryString();
         $stats = $this->backupService->getBackupStats();
 
         return Inertia::render('Admin/Backups/Index', [

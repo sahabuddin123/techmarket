@@ -459,8 +459,10 @@ class BackupService
      */
     public function getBackupStats(): array
     {
-        $totalBytes = (int)DatabaseBackup::where('status', 'completed')->sum('file_size_bytes');
-        $lastBackup = DatabaseBackup::where('status', 'completed')->latest()->first();
+        $hasBackupTable = Schema::hasTable('database_backups');
+        $totalBytes = $hasBackupTable ? (int)DatabaseBackup::where('status', 'completed')->sum('file_size_bytes') : 0;
+        $lastBackup = $hasBackupTable ? DatabaseBackup::where('status', 'completed')->latest()->first() : null;
+        $totalBackups = $hasBackupTable ? DatabaseBackup::count() : 0;
         $schedule = $this->getScheduleSettings();
 
         // Format total size
@@ -475,16 +477,16 @@ class BackupService
 
         // Calculate next scheduled backup estimate
         $nextRun = null;
-        if ($schedule['enabled']) {
-            $timeParts = explode(':', $schedule['time']);
+        if (!empty($schedule['enabled'])) {
+            $timeParts = explode(':', $schedule['time'] ?? '02:00');
             $hour = (int)($timeParts[0] ?? 2);
             $minute = (int)($timeParts[1] ?? 0);
 
             $target = Carbon::today()->setTime($hour, $minute);
             if ($target->isPast()) {
-                if ($schedule['frequency'] === 'weekly') {
+                if (($schedule['frequency'] ?? 'daily') === 'weekly') {
                     $target = Carbon::now()->next(Carbon::SUNDAY)->setTime($hour, $minute);
-                } elseif ($schedule['frequency'] === 'monthly') {
+                } elseif (($schedule['frequency'] ?? 'daily') === 'monthly') {
                     $target = Carbon::now()->startOfMonth()->addMonth()->setTime($hour, $minute);
                 } else {
                     $target->addDay();
@@ -494,7 +496,7 @@ class BackupService
         }
 
         return [
-            'total_backups' => DatabaseBackup::count(),
+            'total_backups' => $totalBackups,
             'total_size_bytes' => $totalBytes,
             'total_size_formatted' => $formattedTotalSize,
             'last_backup' => $lastBackup,
@@ -502,6 +504,7 @@ class BackupService
             'schedule_settings' => $schedule,
             'database_driver' => DB::getDriverName(),
             'total_tables' => count($this->getAllTables()),
+            'table_migrated' => $hasBackupTable,
         ];
     }
 }

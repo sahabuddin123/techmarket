@@ -146,6 +146,18 @@ export default function AdminBackupsIndex({
           </div>
         </AdminPageHeader>
 
+        {/* Database Migration Alert if Table Missing */}
+        {stats.table_migrated === false && (
+          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 flex items-center justify-between">
+            <div className="flex items-center space-x-3 text-amber-800 dark:text-amber-300 text-xs">
+              <AlertTriangle className="w-5 h-5 shrink-0 text-amber-600 dark:text-amber-400" />
+              <div>
+                <span className="font-bold">Database Migration Pending:</span> The backup metadata table has not been created on the database yet. Please run <code className="font-mono bg-amber-100 dark:bg-amber-900/60 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200">php artisan migrate</code> on your server terminal.
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Telemetry KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <AdminKpiCard
