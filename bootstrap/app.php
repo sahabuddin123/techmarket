@@ -141,5 +141,51 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            $isNotFound = $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+                || $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException
+                || (method_exists($e, 'getStatusCode') && $e->getStatusCode() === 404);
+
+            if ($isNotFound && !$request->expectsJson() && !str_starts_with($request->path(), 'api/')) {
+                // Smart 404 Recovery: Recommended & Featured Products
+                $recommendedProducts = \App\Models\Product::where(function ($q) {
+                    $q->where('is_active', true)->orWhereNull('is_active');
+                })
+                ->where('is_featured', true)
+                ->latest()
+                ->take(8)
+                ->get();
+
+                if ($recommendedProducts->count() < 4) {
+                    $recommendedProducts = \App\Models\Product::where(function ($q) {
+                        $q->where('is_active', true)->orWhereNull('is_active');
+                    })
+                    ->latest()
+                    ->take(8)
+                    ->get();
+                }
+
+                $topCategories = \App\Models\Category::whereNull('parent_id')
+                    ->where('is_nav_visible', true)
+                    ->orderBy('sort_order')
+                    ->take(8)
+                    ->get();
+
+                return \Inertia\Inertia::render('Errors/NotFound', [
+                    'status' => 404,
+                    'requestedPath' => $request->path(),
+                    'recommendedProducts' => $recommendedProducts,
+                    'topCategories' => $topCategories,
+                    'seo' => [
+                        'title' => '404 - Page Not Found | TechMarket BD',
+                        'description' => 'Sorry, the page or hardware you are looking for could not be found. Explore TechMarket BD for latest laptops, gaming computers and accessories.',
+                        'meta_robots' => 'noindex, nofollow',
+                    ],
+                ])->toResponse($request)->setStatusCode(404);
+            }
+
+            if ($e instanceof \Illuminate\Session\TokenMismatchException) {
+                return back()->with('message', 'Page expired, please try again.');
+            }
+        });
     })->create();
