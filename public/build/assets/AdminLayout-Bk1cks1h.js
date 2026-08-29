@@ -1,1 +1,0 @@
-import{j as m}from"./vendor-react-BTxCRGYj.js";import{A as i}from"./AdminShell-BIoMogaK.js";import"./vendor-libs-2abITQM_.js";function e({children:t,title:o,breadcrumbs:r=[]}){return m.jsx(i,{title:o,breadcrumbs:r,children:t})}export{e as default};
