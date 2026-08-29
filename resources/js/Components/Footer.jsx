@@ -138,15 +138,30 @@ export default function Footer({ onOpenCart }) {
         
         {/* Column 1: Brand Story, Hotline & Contacts (Span 4) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="space-y-1.5">
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-black tracking-tight text-white font-heading">
+          <div className="space-y-2">
+            <Link href="/" className="inline-flex items-center space-x-2.5 group">
+              {settings.site_logo ? (
+                <img
+                  src={settings.site_logo_dark || settings.site_logo}
+                  alt={settings.site_name || 'TechMarket BD'}
+                  className="h-8 sm:h-9 w-auto object-contain max-w-[210px] transition-transform group-hover:scale-105"
+                  style={{
+                    filter: 'drop-shadow(0 1px 2px rgba(255, 255, 255, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))',
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling;
+                    if (fallback) fallback.style.display = 'inline';
+                  }}
+                />
+              ) : null}
+              <span className={`text-xl font-black tracking-tight text-white font-heading ${settings.site_logo ? 'hidden' : ''}`}>
                 {settings.site_name || 'TechMarket BD'}
               </span>
               <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">
                 Official Store
               </span>
-            </div>
+            </Link>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
               {settings.site_tagline || 'Leading authentic computer hardware, gaming rigs, workstations, laptops & electronics retailer in Bangladesh.'}
             </p>
