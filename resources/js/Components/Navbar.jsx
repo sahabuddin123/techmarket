@@ -13,7 +13,7 @@ import NavbarV2 from '@/Pages/Storefront/Version2/Components/NavbarV2';
 import NavbarV3 from '@/Pages/Storefront/Version3/Components/NavbarV3';
 
 export default function Navbar({ onOpenCart }) {
-  const { auth, cart = { count: 0, total: 0 }, categories = [], settings = {}, footerNavigations = {}, unreadCount = 0, compareCount = 0, storefront_version } = usePage().props;
+  const { auth, cart = { count: 0, total: 0 }, categories = [], settings = {}, footerNavigations = {}, unreadCount = 0, compareCount = 0, wishlistCount = 0, storefront_version } = usePage().props;
   const version = storefront_version || settings.storefront_version || 'v1';
 
   if (version === 'v3') {
@@ -228,6 +228,11 @@ export default function Navbar({ onOpenCart }) {
               title="Wishlist"
             >
               <Heart className="w-4 h-4" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-scale-in">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
           )}
 

@@ -120,29 +120,8 @@ class ComparisonService
      */
     public static function areCategoriesCompatible(Product $p1, Product $p2): bool
     {
-        if ($p1->category_id === $p2->category_id) {
-            return true;
-        }
-
-        if (!$p1->category || !$p2->category) {
-            return true;
-        }
-
-        // Check if both share the same parent category
-        $p1Parent = $p1->category->parent_id ?: $p1->category->id;
-        $p2Parent = $p2->category->parent_id ?: $p2->category->id;
-
-        if ($p1Parent === $p2Parent) {
-            return true;
-        }
-
-        // Check if one is a child of the other
-        if ($p1->category->parent_id === $p2->category_id || $p2->category->parent_id === $p1->category_id) {
-            return true;
-        }
-
-        // If categories are clearly different top-level branches
-        return false;
+        // Allow flexible cross-category comparison for all electronics and hardware
+        return true;
     }
 
     /**

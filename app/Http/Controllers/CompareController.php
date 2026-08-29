@@ -78,16 +78,34 @@ class CompareController extends Controller
         }
 
         $currentIds = ComparisonService::getSessionIds();
-        $validation = ComparisonService::validateAdd($product, $currentIds);
+        $max = ComparisonService::getMaxItems();
 
-        if (!$validation['allowed']) {
-            return redirect()->back()->with('error', $validation['message']);
+        if (in_array($productId, $currentIds)) {
+            // Toggle: remove if already in compare list
+            $currentIds = array_values(array_diff($currentIds, [$productId]));
+            ComparisonService::setSessionIds($currentIds);
+            $message = "{$product->title} removed from comparison.";
+            $action = 'removed';
+        } else {
+            if (count($currentIds) >= $max) {
+                array_shift($currentIds); // Evict oldest product if limit reached
+            }
+            $currentIds[] = $productId;
+            ComparisonService::setSessionIds($currentIds);
+            $message = "{$product->title} added to comparison list.";
+            $action = 'added';
         }
 
-        $currentIds[] = $product->id;
-        ComparisonService::setSessionIds($currentIds);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'action' => $action,
+                'message' => $message,
+                'compareCount' => count($currentIds),
+            ]);
+        }
 
-        return redirect()->back()->with('success', "{$product->title} added to comparison list.");
+        return redirect()->back()->with('success', $message);
     }
 
     /**
