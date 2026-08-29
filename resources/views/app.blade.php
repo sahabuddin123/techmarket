@@ -23,7 +23,7 @@
         <!-- End Google Tag Manager -->
         @endif
 
-        @if ($ga4Id && !$gtmId)
+        @if ($ga4Id)
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
         <script>
