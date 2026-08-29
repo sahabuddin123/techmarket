@@ -849,22 +849,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/product-alerts/subscribe', [\App\Http\Controllers\ProductAlertController::class, 'subscribe'])->name('productAlerts.subscribe');
 });
 
-// Dynamic XML Sitemap Route
-Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.xml');
-
-// Dynamic Robots.txt Route
-Route::get('/robots.txt', function () {
-    $content = "User-agent: *\n";
-    $content .= "Disallow: /admin/\n";
-    $content .= "Disallow: /checkout\n";
-    $content .= "Disallow: /cart\n";
-    $content .= "Disallow: /dashboard\n";
-    $content .= "Disallow: /api/\n\n";
-    $content .= "Sitemap: " . url('/sitemap.xml') . "\n";
-
-    return response($content, 200)->header('Content-Type', 'text/plain');
-});
-
 // High-Converting Landing Pages (Public Meta/Facebook Ads Optimized)
 Route::get('/l/{slug}', [\App\Http\Controllers\LandingPageController::class, 'show'])->name('landingPage.show');
 Route::post('/l/{slug}/order', [\App\Http\Controllers\LandingPageController::class, 'quickOrder'])->middleware('throttle:30,1')->name('landingPage.order');

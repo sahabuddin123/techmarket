@@ -8,6 +8,22 @@ use Illuminate\Http\Response;
 class SitemapController extends Controller
 {
     /**
+     * Alias for sitemap() to satisfy index() calls.
+     */
+    public function index(): Response
+    {
+        return $this->sitemap();
+    }
+
+    /**
+     * Invokable route support.
+     */
+    public function __invoke(): Response
+    {
+        return $this->sitemap();
+    }
+
+    /**
      * Render the dynamic XML sitemap with Google Image support.
      */
     public function sitemap(): Response
