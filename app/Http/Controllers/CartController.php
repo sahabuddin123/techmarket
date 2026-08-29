@@ -145,6 +145,7 @@ class CartController extends Controller
         }
 
         session()->put('cart', $cart);
+        session()->save();
 
         if ($request->boolean('buy_now') || $request->input('buy_now') === '1' || $request->input('buy_now') === 'true') {
             return redirect()->to('/checkout');

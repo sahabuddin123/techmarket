@@ -120,16 +120,26 @@ export default function ProductDetailV2(props) {
   const handleAddToCart = (directCheckout = false) => {
     if (isOutOfStock) return;
     trackAddToCart(product, quantity);
+
+    if (directCheckout) {
+      router.post('/cart/add', { 
+        product_id: product.id, 
+        quantity, 
+        buy_now: 1 
+      }, {
+        onError: () => {
+          window.location.href = `/checkout?product_id=${product.id}&quantity=${quantity}`;
+        }
+      });
+      return;
+    }
+
     router.post('/cart/add', { product_id: product.id, quantity }, {
       preserveScroll: true,
       onSuccess: () => {
         setAdded(true);
-        if (directCheckout) {
-          router.get('/checkout');
-        } else {
-          setIsCartOpen(true);
-          setTimeout(() => setAdded(false), 2000);
-        }
+        setIsCartOpen(true);
+        setTimeout(() => setAdded(false), 2000);
       }
     });
   };

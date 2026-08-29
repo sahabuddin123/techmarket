@@ -126,6 +126,20 @@ export default function ProductDetailV3({
   const handleAddToCart = (buyNow = false) => {
     trackAddToCart(product, quantity);
 
+    if (buyNow) {
+      router.post('/cart/add', {
+        product_id: product.id,
+        quantity: quantity,
+        color: selectedColor !== 'Default' ? selectedColor : undefined,
+        buy_now: 1,
+      }, {
+        onError: () => {
+          window.location.href = `/checkout?product_id=${product.id}&quantity=${quantity}`;
+        }
+      });
+      return;
+    }
+
     router.post('/cart/add', {
       product_id: product.id,
       quantity: quantity,
@@ -133,13 +147,9 @@ export default function ProductDetailV3({
     }, {
       preserveScroll: true,
       onSuccess: () => {
-        if (buyNow) {
-          router.visit('/checkout');
-        } else {
-          setAdded(true);
-          setCartOpen(true);
-          setTimeout(() => setAdded(false), 2000);
-        }
+        setAdded(true);
+        setCartOpen(true);
+        setTimeout(() => setAdded(false), 2000);
       }
     });
   };

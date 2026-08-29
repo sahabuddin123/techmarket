@@ -30,6 +30,33 @@ class CheckoutController extends Controller
 
     public function index(Request $request)
     {
+        // 0. Fallback support for direct Buy Now (e.g. /checkout?product_id=123&quantity=1)
+        if ($request->filled('product_id')) {
+            $productId = (int)$request->input('product_id');
+            $quantity = max(1, (int)$request->input('quantity', 1));
+            $product = \App\Models\Product::with('brand')->find($productId);
+            if ($product) {
+                $cart = session()->get('cart', []);
+                $regularPrice = (float)($product->regular_price ?: $product->price);
+                $sellingPrice = (float)$product->price;
+                $cart[$productId] = [
+                    'id' => $product->id,
+                    'title' => $product->title,
+                    'slug' => $product->slug,
+                    'price' => $sellingPrice,
+                    'regular_price' => $regularPrice,
+                    'image' => $product->image,
+                    'sku' => $product->sku,
+                    'brand_name' => $product->brand ? $product->brand->name : null,
+                    'quantity' => $quantity,
+                    'total' => $quantity * $sellingPrice,
+                    'warranty' => $product->warranty,
+                ];
+                session()->put('cart', $cart);
+                session()->save();
+            }
+        }
+
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
