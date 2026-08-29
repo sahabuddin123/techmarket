@@ -169,8 +169,8 @@ export default function FooterV3({ onOpenCart }) {
             </div>
 
             <div className="flex items-center space-x-1.5 text-white/70">
-              <span>Design & Developed by</span>
-              <span className="font-bold text-sky-300 tracking-wider">SoftX IT LTD</span>
+              <span>Developed by</span>
+              <a href="https://innographixbd.com" target="_blank" rel="noopener noreferrer" className="font-bold text-sky-300 hover:text-white transition-colors tracking-wider">Innographix</a>
             </div>
           </div>
         </div>

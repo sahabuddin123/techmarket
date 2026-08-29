@@ -243,8 +243,10 @@ export default function FooterV2({ onOpenCart }) {
 
         {/* Sub-Footer Copyright Row */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <div>
-            © {currentYear} {settings.site_name || 'TECH MARKET'}. All Rights Reserved.
+          <div className="flex items-center space-x-2 flex-wrap">
+            <span>© {currentYear} {settings.site_name || 'TECH MARKET'}. All Rights Reserved.</span>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <span>Developed by <a href="https://innographixbd.com" target="_blank" rel="noopener noreferrer" className="text-slate-700 hover:text-blue-600 font-semibold transition-colors">Innographix</a></span>
           </div>
 
           <div className="flex items-center space-x-4">

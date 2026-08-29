@@ -375,10 +375,12 @@ export default function Footer({ onOpenCart }) {
       {/* 3. BOTTOM COPYRIGHT & SECURE PAYMENTS BAR */}
       <div className="border-t border-slate-800/80 bg-[#050811]">
         <div className="max-w-[1640px] mx-auto px-4 py-4.5 flex flex-col md:flex-row items-center justify-between gap-3 text-slate-500 text-xs">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-wrap text-slate-500">
             <span>{settings.copyright_text || 'Copyright © 2026 TechMarket BD. All Rights Reserved.'}</span>
             <span className="hidden sm:inline text-slate-700">•</span>
-            <span className="hidden sm:inline text-slate-600">Built for Next-Gen Performance</span>
+            <span className="text-slate-500">
+              Developed by <a href="https://innographixbd.com" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-amber-400 font-semibold transition-colors">Innographix</a>
+            </span>
           </div>
 
           {/* Secure Payment Badges */}
