@@ -265,6 +265,11 @@ class BackupService
                 $writer("{$createTableSql}\n\n");
             }
 
+            // Skip volatile table data (keep schema only)
+            if (in_array($table, ['sessions', 'cache', 'cache_locks', 'jobs', 'job_batches'])) {
+                continue;
+            }
+
             // Dump Table Data
             $rows = DB::table($table)->get();
             $tableRowCount = $rows->count();
@@ -293,12 +298,8 @@ class BackupService
                                 if (!mb_check_encoding($valStr, 'UTF-8')) {
                                     $valStr = mb_convert_encoding($valStr, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
                                 }
-                                // MySQL standard escape
-                                $escapedVal = str_replace(
-                                    ['\\', "\0", "\n", "\r", "'", '"', "\x1a"],
-                                    ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'],
-                                    $valStr
-                                );
+                                // Standard ANSI SQL escaping: double single quotes (accepted by MySQL, MariaDB, SQLite, PostgreSQL)
+                                $escapedVal = str_replace("'", "''", $valStr);
                                 $values[] = "'{$escapedVal}'";
                             }
                         }
@@ -621,5 +622,377 @@ class BackupService
             'total_tables' => count($this->getAllTables()),
             'table_migrated' => $hasBackupTable,
         ];
+    }
+
+    /**
+     * Restore database from an existing DatabaseBackup record.
+     *
+     * @param DatabaseBackup $backup
+     * @param bool $createSafetyBackup
+     * @return array
+     */
+    public function restoreBackup(DatabaseBackup $backup, bool $createSafetyBackup = true): array
+    {
+        if (!Storage::disk($backup->disk)->exists($backup->path)) {
+            throw new \Exception("Backup file does not exist on disk at: {$backup->path}");
+        }
+
+        $fullPath = Storage::disk($backup->disk)->path($backup->path);
+        return $this->restoreFromFilePath($fullPath, $backup->filename, $createSafetyBackup);
+    }
+
+    /**
+     * Restore database from an uploaded backup file.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param bool $createSafetyBackup
+     * @return array
+     */
+    public function restoreFromUploadedFile(\Illuminate\Http\UploadedFile $file, bool $createSafetyBackup = true): array
+    {
+        $originalName = $file->getClientOriginalName();
+        $tempPath = $file->getRealPath();
+
+        return $this->restoreFromFilePath($tempPath, $originalName, $createSafetyBackup);
+    }
+
+    /**
+     * Core restore execution from file path.
+     *
+     * @param string $filePath
+     * @param string $originalName
+     * @param bool $createSafetyBackup
+     * @return array
+     */
+    public function restoreFromFilePath(string $filePath, string $originalName = '', bool $createSafetyBackup = true): array
+    {
+        $startTime = microtime(true);
+        $safetyBackup = null;
+
+        // 1. Create Pre-Restore Safety Snapshot if enabled
+        if ($createSafetyBackup) {
+            try {
+                $safetyBackups = $this->createBackup(
+                    format: 'both',
+                    compress: true,
+                    type: 'manual',
+                    userId: auth()->id(),
+                    notes: 'Auto Pre-Restore Safety Snapshot before restoring ' . ($originalName ?: basename($filePath))
+                );
+                $safetyBackup = $safetyBackups[0] ?? null;
+            } catch (\Throwable $e) {
+                Log::warning('Pre-restore safety backup creation error: ' . $e->getMessage());
+            }
+        }
+
+        // 2. Identify format and compression
+        $filename = strtolower($originalName ?: basename($filePath));
+        $isGzipped = str_ends_with($filename, '.gz');
+        $uncompressedPath = $filePath;
+
+        // Decompress if needed
+        $tempDecompressed = null;
+        if ($isGzipped) {
+            $tempDecompressed = tempnam(sys_get_temp_dir(), 'tm_restore_');
+            $this->decompressGzip($filePath, $tempDecompressed);
+            $uncompressedPath = $tempDecompressed;
+            $filename = preg_replace('/\.gz$/i', '', $filename);
+        }
+
+        $isSqlite = str_ends_with($filename, '.sqlite') || str_ends_with($filename, '.db');
+        $isSql = str_ends_with($filename, '.sql') || str_ends_with($filename, '.txt');
+
+        if (!$isSqlite && !$isSql) {
+            // Check file header if extension is ambiguous
+            $header = file_get_contents($uncompressedPath, false, null, 0, 16);
+            if (str_starts_with($header, 'SQLite format 3')) {
+                $isSqlite = true;
+            } else {
+                $isSql = true;
+            }
+        }
+
+        // 3. Execute Restore
+        try {
+            if ($isSqlite) {
+                $this->executeSqliteRestore($uncompressedPath);
+            } else {
+                $this->executeSqlDumpRestore($uncompressedPath);
+            }
+        } finally {
+            if ($tempDecompressed && file_exists($tempDecompressed)) {
+                @unlink($tempDecompressed);
+            }
+        }
+
+        // 4. Post-restore cache flush
+        $this->postRestoreFlush();
+
+        $duration = round(microtime(true) - $startTime, 2);
+
+        return [
+            'success' => true,
+            'duration_seconds' => $duration,
+            'safety_backup' => $safetyBackup,
+            'tables_count' => count($this->getAllTables()),
+        ];
+    }
+
+    /**
+     * Decompress a .gz file.
+     */
+    protected function decompressGzip(string $srcPath, string $destPath): void
+    {
+        $gz = gzopen($srcPath, 'rb');
+        if (!$gz) {
+            throw new \Exception("Failed to open compressed file for reading: {$srcPath}");
+        }
+
+        $dest = fopen($destPath, 'wb');
+        if (!$dest) {
+            gzclose($gz);
+            throw new \Exception("Failed to create temporary destination file: {$destPath}");
+        }
+
+        while (!gzeof($gz)) {
+            fwrite($dest, gzread($gz, 1024 * 512));
+        }
+
+        gzclose($gz);
+        fclose($dest);
+    }
+
+    /**
+     * Execute SQLite database restore.
+     */
+    protected function executeSqliteRestore(string $sqliteFilePath): void
+    {
+        $connection = config('database.default');
+        $dbConfig = config("database.connections.{$connection}");
+
+        if ($connection === 'sqlite' && !empty($dbConfig['database'])) {
+            $targetDbPath = $dbConfig['database'];
+
+            // Validate SQLite integrity before replacing
+            $tempPdo = new \PDO("sqlite:{$sqliteFilePath}");
+            $stmt = $tempPdo->query('PRAGMA integrity_check');
+            $res = $stmt ? $stmt->fetchColumn() : false;
+            unset($tempPdo);
+
+            if ($res !== 'ok') {
+                throw new \Exception("The SQLite file failed integrity validation (Result: {$res}). Restore aborted for safety.");
+            }
+
+            // Close existing PDO connection
+            DB::purge('sqlite');
+
+            // Copy file over database.sqlite
+            copy($sqliteFilePath, $targetDbPath);
+
+            // Reconnect
+            DB::reconnect('sqlite');
+        } else {
+            // Non-sqlite database connection (e.g. MySQL) - import tables from SQLite file into active DB
+            $srcPdo = new \PDO("sqlite:{$sqliteFilePath}");
+            $tablesStmt = $srcPdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+            $tables = $tablesStmt->fetchAll(\PDO::FETCH_COLUMN);
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+            foreach ($tables as $table) {
+                $rowsStmt = $srcPdo->query("SELECT * FROM \"{$table}\"");
+                $rows = $rowsStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+                if (!empty($rows)) {
+                    DB::table($table)->truncate();
+                    $chunks = array_chunk($rows, 100);
+                    foreach ($chunks as $chunk) {
+                        DB::table($table)->insert($chunk);
+                    }
+                }
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            unset($srcPdo);
+        }
+    }
+
+    /**
+     * Execute SQL Dump restore.
+     */
+    protected function executeSqlDumpRestore(string $sqlFilePath): void
+    {
+        $driver = DB::getDriverName();
+        $sqlContent = file_get_contents($sqlFilePath);
+
+        if (empty($sqlContent)) {
+            throw new \Exception('The SQL file is empty.');
+        }
+
+        // Ensure valid UTF-8
+        if (!mb_check_encoding($sqlContent, 'UTF-8')) {
+            $sqlContent = mb_convert_encoding($sqlContent, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
+        }
+
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = OFF;');
+            
+            $cleanSql = $this->convertMysqlSqlToSqlite($sqlContent);
+            
+            // Split statements using SQL string literal tokenizer
+            $statements = $this->splitSqlStatements($cleanSql);
+
+            DB::beginTransaction();
+            try {
+                foreach ($statements as $stmt) {
+                    $cleanStmt = trim($stmt);
+                    // Remove leading comment lines
+                    $cleanStmt = preg_replace('/^--.*$/m', '', $cleanStmt);
+                    $cleanStmt = trim($cleanStmt, "; \t\n\r");
+                    if (empty($cleanStmt) || strtoupper($cleanStmt) === 'BEGIN TRANSACTION' || strtoupper($cleanStmt) === 'COMMIT') {
+                        continue;
+                    }
+                    DB::statement($cleanStmt);
+                }
+                DB::commit();
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                throw $e;
+            } finally {
+                DB::statement('PRAGMA foreign_keys = ON;');
+            }
+        } else {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            DB::statement('SET UNIQUE_CHECKS=0;');
+
+            DB::unprepared($sqlContent);
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            DB::statement('SET UNIQUE_CHECKS=1;');
+        }
+    }
+
+    /**
+     * Parse and split SQL file into individual statements while respecting single/double quoted strings and escape sequences.
+     */
+    protected function splitSqlStatements(string $sql): array
+    {
+        $len = strlen($sql);
+        $inString = false;
+        $stmt = '';
+        $statements = [];
+
+        for ($i = 0; $i < $len; $i++) {
+            $char = $sql[$i];
+            $stmt .= $char;
+
+            if ($inString) {
+                if ($char === '\\') {
+                    if ($i + 1 < $len) {
+                        $stmt .= $sql[$i + 1];
+                        $i++;
+                    }
+                } elseif ($char === "'") {
+                    if ($i + 1 < $len && $sql[$i + 1] === "'") {
+                        $stmt .= "'";
+                        $i++;
+                    } else {
+                        $inString = false;
+                    }
+                }
+            } else {
+                if ($char === "'") {
+                    $inString = true;
+                } elseif ($char === ';') {
+                    $statements[] = trim($stmt);
+                    $stmt = '';
+                }
+            }
+        }
+
+        if (!empty(trim($stmt))) {
+            $statements[] = trim($stmt);
+        }
+
+        return $statements;
+    }
+
+    /**
+     * Convert MySQL/MariaDB SQL Dump syntax into SQLite compatible statements.
+     */
+    protected function convertMysqlSqlToSqlite(string $sql): string
+    {
+        // Clean headers, conditional MySQL comments & variables
+        $cleanSql = preg_replace('/START\s+TRANSACTION\s*;/i', 'BEGIN TRANSACTION;', $sql);
+        $cleanSql = preg_replace('/\/\*![0-9]+[^*]*\*\//s', '', $cleanSql);
+        $cleanSql = preg_replace('/SET\s+[^;]+;/i', '', $cleanSql);
+
+        // Convert CREATE TABLE statements (strictly matching indented body)
+        $cleanSql = preg_replace_callback('/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?([A-Za-z0-9_]+)`?\s*\(\n((?:[ \t]+[^\n]+\n)+)\)\s*(?:ENGINE=[A-Za-z0-9_]+)?\s*(?:DEFAULT\s+CHARSET=[A-Za-z0-9_]+)?\s*(?:COLLATE=[A-Za-z0-9_]+)?\s*;/i', function($matches) {
+            $table = $matches[1];
+            $body = $matches[2];
+
+            $lines = explode("\n", $body);
+            $newLines = [];
+            $createIndexStatements = [];
+
+            foreach ($lines as $line) {
+                $trimmed = trim($line, " \t\r\n,");
+                if (empty($trimmed)) continue;
+
+                // Check if inline KEY
+                if (preg_match('/^PRIMARY\s+KEY\s*\((.+?)\)/i', $trimmed, $m)) {
+                    continue;
+                } elseif (preg_match('/^UNIQUE\s+KEY\s+`?([A-Za-z0-9_]+)`?\s*\((.+?)\)/i', $trimmed, $m)) {
+                    $createIndexStatements[] = "CREATE UNIQUE INDEX IF NOT EXISTS `{$m[1]}` ON `{$table}` ({$m[2]});";
+                    continue;
+                } elseif (preg_match('/^KEY\s+`?([A-Za-z0-9_]+)`?\s*\((.+?)\)/i', $trimmed, $m)) {
+                    $createIndexStatements[] = "CREATE INDEX IF NOT EXISTS `{$m[1]}` ON `{$table}` ({$m[2]});";
+                    continue;
+                }
+
+                // Convert column definitions (specific types first)
+                $convLine = $trimmed;
+                if (preg_match('/^`?id`?\s+bigint\([0-9]+\)\s+UNSIGNED\s+NOT\s+NULL\s+AUTO_INCREMENT/i', $convLine)) {
+                    $convLine = "`id` INTEGER PRIMARY KEY AUTOINCREMENT";
+                } else {
+                    $convLine = preg_replace('/tinyint\([0-9]+\)/i', 'INTEGER', $convLine);
+                    $convLine = preg_replace('/bigint\([0-9]+\)\s+UNSIGNED/i', 'INTEGER', $convLine);
+                    $convLine = preg_replace('/bigint\([0-9]+\)/i', 'INTEGER', $convLine);
+                    $convLine = preg_replace('/int\([0-9]+\)/i', 'INTEGER', $convLine);
+                    $convLine = preg_replace('/AUTO_INCREMENT/i', '', $convLine);
+                    $convLine = preg_replace('/UNSIGNED/i', '', $convLine);
+                    $convLine = preg_replace('/longtext/i', 'TEXT', $convLine);
+                    $convLine = preg_replace('/mediumtext/i', 'TEXT', $convLine);
+                    $convLine = preg_replace('/varchar\([0-9]+\)/i', 'TEXT', $convLine);
+                    $convLine = preg_replace('/decimal\([0-9]+,[0-9]+\)/i', 'NUMERIC', $convLine);
+                    $convLine = preg_replace('/timestamp/i', 'DATETIME', $convLine);
+                }
+
+                $newLines[] = "  " . trim($convLine);
+            }
+
+            $createTableSql = "CREATE TABLE IF NOT EXISTS `{$table}` (\n" . implode(",\n", $newLines) . "\n);";
+            if (!empty($createIndexStatements)) {
+                $createTableSql .= "\n" . implode("\n", $createIndexStatements);
+            }
+
+            return $createTableSql;
+        }, $cleanSql);
+
+        return $cleanSql;
+    }
+
+    /**
+     * Flush application caches and views after database restoration.
+     */
+    protected function postRestoreFlush(): void
+    {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+            \Illuminate\Support\Facades\Cache::flush();
+        } catch (\Throwable $e) {
+            Log::warning('Post-restore cache flush notice: ' . $e->getMessage());
+        }
     }
 }

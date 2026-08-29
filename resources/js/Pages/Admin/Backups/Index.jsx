@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Head, useForm, router } from '@inertiajs/react';
 import AdminShell from '../../../Components/Admin/AdminShell';
 import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
@@ -8,7 +8,7 @@ import {
   Database, HardDriveDownload, Download, Trash2, Clock, Calendar, 
   ShieldCheck, RefreshCw, Plus, FileArchive, CheckCircle2, AlertTriangle, 
   Settings, Layers, Terminal, Sparkles, Filter, Search, X, Check, ArrowDownToLine,
-  Zap, Info, FileCode, Archive
+  Zap, Info, FileCode, Archive, RotateCcw, UploadCloud, AlertOctagon, History
 } from 'lucide-react';
 
 export default function AdminBackupsIndex({ 
@@ -18,16 +18,31 @@ export default function AdminBackupsIndex({
 }) {
   const [activeTab, setActiveTab] = useState('archives'); // 'archives' | 'schedule' | 'guide'
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [backupToRestore, setBackupToRestore] = useState(null);
   const [searchQuery, setSearchQuery] = useState(filters.search || '');
   const [selectedFormat, setSelectedFormat] = useState(filters.format || '');
   const [selectedType, setSelectedType] = useState(filters.type || '');
   const [deletingId, setDeletingId] = useState(null);
+  const fileInputRef = useRef(null);
 
   // Manual Backup Creation Form
   const createForm = useForm({
     format: 'both', // 'sqlite' | 'sql' | 'both'
     compress: true,
     notes: '',
+  });
+
+  // Restore Form for existing backup
+  const restoreForm = useForm({
+    create_safety: true,
+  });
+
+  // Upload & Restore Form
+  const uploadForm = useForm({
+    backup_file: null,
+    create_safety: true,
   });
 
   // Schedule Settings Form
@@ -53,17 +68,47 @@ export default function AdminBackupsIndex({
     });
   };
 
+  // Open Restore Confirmation Modal
+  const handleOpenRestoreModal = (backup) => {
+    setBackupToRestore(backup);
+    setIsRestoreModalOpen(true);
+  };
+
+  // Execute Restore on existing backup
+  const handleConfirmRestore = (e) => {
+    e.preventDefault();
+    if (!backupToRestore) return;
+
+    restoreForm.post(route('admin.backups.restore', backupToRestore.id), {
+      onSuccess: () => {
+        setIsRestoreModalOpen(false);
+        setBackupToRestore(null);
+      },
+    });
+  };
+
+  // Execute Upload and Restore
+  const handleUploadRestore = (e) => {
+    e.preventDefault();
+    uploadForm.post(route('admin.backups.uploadRestore'), {
+      onSuccess: () => {
+        setIsUploadModalOpen(false);
+        uploadForm.reset();
+      },
+    });
+  };
+
   // Handle Schedule Settings Submit
   const handleSaveSchedule = (e) => {
     e.preventDefault();
-    scheduleForm.post(route('admin.backups.schedule'), {
+    scheduleForm.post(route('admin.backups.schedule.update'), {
       preserveScroll: true,
     });
   };
 
   // Handle Filter Change
   const handleFilter = (newFilters) => {
-    router.get(route('admin.backups'), {
+    router.get(route('admin.backups.index'), {
       ...filters,
       ...newFilters,
     }, {
@@ -83,7 +128,7 @@ export default function AdminBackupsIndex({
   const handleDeleteBackup = (backup) => {
     if (confirm(`Are you sure you want to delete backup '${backup.filename}' permanently?`)) {
       setDeletingId(backup.id);
-      router.delete(route('admin.backups.delete', backup.id), {
+      router.delete(route('admin.backups.destroy', backup.id), {
         onFinish: () => setDeletingId(null),
       });
     }
@@ -104,14 +149,14 @@ export default function AdminBackupsIndex({
   };
 
   return (
-    <AdminShell title="Database Backups & Schedule">
-      <Head title="Database Backups & Schedule - TechMarket Admin" />
+    <AdminShell title="Database Backups & Restore">
+      <Head title="Database Backups & Restore - TechMarket Admin" />
 
       <div className="space-y-6">
         {/* Page Header */}
         <AdminPageHeader
           title="Database Backups & Disaster Recovery"
-          subtitle="Generate instant SQLite database snapshots (.sqlite) and SQL dumps (.sql) with automated scheduling, compression, and retention policies."
+          subtitle="Generate instant SQLite database snapshots (.sqlite) and MySQL-compliant SQL dumps (.sql) with automated scheduling, compression, 1-click restore, and retention policies."
           badge={`${stats.database_driver ? stats.database_driver.toUpperCase() : 'SQLITE'} DATABASE`}
         >
           <div className="flex flex-wrap items-center gap-2">
@@ -132,7 +177,17 @@ export default function AdminBackupsIndex({
               title="Execute scheduled backup immediately"
             >
               <Zap className="w-3.5 h-3.5 text-amber-500" />
-              <span>Test Scheduled Run</span>
+              <span>Test Scheduled</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsUploadModalOpen(true)}
+              className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow transition-all cursor-pointer"
+              title="Upload an external backup file and restore database"
+            >
+              <UploadCloud className="w-4 h-4" />
+              <span>Upload & Restore</span>
             </button>
 
             <button
@@ -181,89 +236,86 @@ export default function AdminBackupsIndex({
             value={`${stats.total_tables ?? 0} Tables`}
             description={`Driver: ${stats.database_driver ? stats.database_driver.toUpperCase() : 'SQLite'}`}
             icon={Database}
-            color="blue"
+            color="amber"
           />
 
           <AdminKpiCard
-            title="Auto-Scheduler"
-            value={scheduleSettings.enabled ? 'Active (Enabled)' : 'Disabled'}
+            title="Automated Schedule"
+            value={scheduleSettings.enabled ? 'Active / Scheduled' : 'Disabled'}
             description={
-              scheduleSettings.enabled 
-                ? `Runs ${scheduleSettings.frequency} at ${scheduleSettings.time}` 
-                : 'Automated backups paused'
+              scheduleSettings.enabled
+                ? `${scheduleSettings.frequency ? scheduleSettings.frequency.toUpperCase() : 'DAILY'} at ${scheduleSettings.time || '02:00'}`
+                : 'Configure in settings tab'
             }
             icon={Clock}
-            color={scheduleSettings.enabled ? 'emerald' : 'slate'}
+            color={scheduleSettings.enabled ? 'purple' : 'slate'}
           />
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 space-x-2">
+        {/* Workspace Navigation Tabs */}
+        <div className="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={() => setActiveTab('archives')}
-            className={`pb-3 px-4 text-xs font-bold transition-colors border-b-2 cursor-pointer flex items-center space-x-2 ${
+            className={`flex items-center space-x-2 px-4 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
               activeTab === 'archives'
                 ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
             }`}
           >
-            <Archive className="w-4 h-4" />
-            <span>Backup Archives ({backups.total || backups.data?.length || 0})</span>
+            <Layers className="w-4 h-4" />
+            <span>Backup Archives ({stats.total_backups ?? 0})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('schedule')}
-            className={`pb-3 px-4 text-xs font-bold transition-colors border-b-2 cursor-pointer flex items-center space-x-2 ${
+            className={`flex items-center space-x-2 px-4 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
               activeTab === 'schedule'
                 ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
             }`}
           >
             <Settings className="w-4 h-4" />
-            <span>Automated Schedule Settings</span>
-            {scheduleSettings.enabled && (
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            )}
+            <span>Automated Schedule & Retention</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('guide')}
-            className={`pb-3 px-4 text-xs font-bold transition-colors border-b-2 cursor-pointer flex items-center space-x-2 ${
+            className={`flex items-center space-x-2 px-4 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
               activeTab === 'guide'
                 ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
             }`}
           >
             <Terminal className="w-4 h-4" />
-            <span>CLI & Disaster Recovery Guide</span>
+            <span>Disaster Recovery & CLI Guide</span>
           </button>
         </div>
 
         {/* TAB 1: BACKUP ARCHIVES */}
         {activeTab === 'archives' && (
           <div className="space-y-4">
-            {/* Filter & Search Bar */}
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-3 flex-1">
-                {/* Search input */}
-                <div className="relative min-w-[240px] max-w-sm flex-1">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            {/* Filter Bar */}
+            <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+                {/* Search */}
+                <div className="relative flex-1 max-w-sm">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearchKeyDown}
-                    placeholder="Search backup filename, notes... (Press Enter)"
-                    className="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-100"
+                    placeholder="Search backups by name or notes (Enter)..."
+                    className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900 dark:text-slate-100"
                   />
                   {searchQuery && (
                     <button
                       type="button"
                       onClick={() => { setSearchQuery(''); handleFilter({ search: '' }); }}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -273,77 +325,82 @@ export default function AdminBackupsIndex({
                 {/* Format Filter */}
                 <select
                   value={selectedFormat}
-                  onChange={(e) => { setSelectedFormat(e.target.value); handleFilter({ format: e.target.value }); }}
-                  className="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-100 cursor-pointer"
+                  onChange={(e) => {
+                    setSelectedFormat(e.target.value);
+                    handleFilter({ format: e.target.value });
+                  }}
+                  className="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700 dark:text-slate-200"
                 >
-                  <option value="">All Formats (.sqlite & .sql)</option>
+                  <option value="">All Formats (.sqlite, .sql)</option>
                   <option value="sqlite">SQLite Snapshots (.sqlite)</option>
-                  <option value="sql">SQL Dumps (.sql)</option>
+                  <option value="sql">SQL Dumps (.sql / phpMyAdmin)</option>
                 </select>
 
                 {/* Type Filter */}
                 <select
                   value={selectedType}
-                  onChange={(e) => { setSelectedType(e.target.value); handleFilter({ type: e.target.value }); }}
-                  className="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-100 cursor-pointer"
+                  onChange={(e) => {
+                    setSelectedType(e.target.value);
+                    handleFilter({ type: e.target.value });
+                  }}
+                  className="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-700 dark:text-slate-200"
                 >
-                  <option value="">All Types (Manual & Scheduled)</option>
-                  <option value="manual">Manual On-Demand</option>
-                  <option value="scheduled">Scheduled Automated</option>
+                  <option value="">All Trigger Types</option>
+                  <option value="manual">Manual Snapshots</option>
+                  <option value="scheduled">Scheduled Backups</option>
                 </select>
               </div>
 
-              {(filters.search || filters.format || filters.type) && (
+              {/* Reset Filters */}
+              {(searchQuery || selectedFormat || selectedType) && (
                 <button
                   type="button"
                   onClick={() => {
                     setSearchQuery('');
                     setSelectedFormat('');
                     setSelectedType('');
-                    router.get(route('admin.backups'));
+                    handleFilter({ search: '', format: '', type: '' });
                   }}
-                  className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
                 >
-                  Reset Filters
+                  Clear Filters
                 </button>
               )}
             </div>
 
             {/* Backups Table */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      <th className="py-3 px-4">Backup File & Format</th>
+                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
+                      <th className="py-3 px-4">Backup Archive</th>
                       <th className="py-3 px-4">Size & Compression</th>
-                      <th className="py-3 px-4">Type & Trigger</th>
-                      <th className="py-3 px-4">Tables / Records</th>
+                      <th className="py-3 px-4">Trigger & User</th>
+                      <th className="py-3 px-4">Tables / Rows</th>
                       <th className="py-3 px-4">Created Date</th>
                       <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-                    {(!backups.data || backups.data.length === 0) ? (
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                    {backups.data.length === 0 ? (
                       <tr>
-                        <td colSpan="6" className="py-12 text-center text-slate-400 dark:text-slate-500">
-                          <div className="flex flex-col items-center justify-center space-y-2">
-                            <Archive className="w-10 h-10 text-slate-300 dark:text-slate-600 stroke-[1.5]" />
-                            <p className="font-semibold text-sm text-slate-600 dark:text-slate-300">No backup files found</p>
-                            <p className="text-xs">Click "Create Backup Now" above to generate your first database backup snapshot.</p>
-                          </div>
+                        <td colSpan={6} className="py-12 text-center text-slate-400 dark:text-slate-500">
+                          <Archive className="w-10 h-10 mx-auto mb-2 opacity-40 stroke-[1.5]" />
+                          <div className="font-semibold text-slate-600 dark:text-slate-300">No database backup archives found</div>
+                          <p className="text-[11px] mt-1">Click "Create Backup Now" or "Upload & Restore" to get started.</p>
                         </td>
                       </tr>
                     ) : (
                       backups.data.map((backup) => (
-                        <tr key={backup.id} className="hover:bg-slate-50/75 dark:hover:bg-slate-800/40 transition-colors">
-                          {/* Filename & Format */}
-                          <td className="py-3.5 px-4 font-mono font-medium text-slate-900 dark:text-slate-100">
-                            <div className="flex items-center space-x-2.5">
+                        <tr key={backup.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors">
+                          {/* File Name & Format Icon */}
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center space-x-3 font-mono">
                               <div className={`p-2 rounded-xl shrink-0 ${
                                 backup.format === 'sqlite'
-                                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400'
-                                  : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400'
+                                  ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400'
+                                  : 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400'
                               }`}>
                                 {backup.format === 'sqlite' ? (
                                   <Database className="w-4 h-4" />
@@ -414,6 +471,7 @@ export default function AdminBackupsIndex({
                           {/* Actions */}
                           <td className="py-3.5 px-4 text-right">
                             <div className="flex items-center justify-end space-x-1.5">
+                              {/* Download Button */}
                               <a
                                 href={route('admin.backups.download', backup.id)}
                                 className="p-2 text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-900/60 dark:text-indigo-400 rounded-xl transition-colors shadow-2xs"
@@ -422,6 +480,17 @@ export default function AdminBackupsIndex({
                                 <Download className="w-4 h-4" />
                               </a>
 
+                              {/* Restore Button */}
+                              <button
+                                type="button"
+                                onClick={() => handleOpenRestoreModal(backup)}
+                                className="p-2 text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/60 dark:text-emerald-400 rounded-xl transition-colors shadow-2xs cursor-pointer"
+                                title="Restore database from this backup snapshot"
+                              >
+                                <RotateCcw className="w-4 h-4" />
+                              </button>
+
+                              {/* Delete Button */}
                               <button
                                 type="button"
                                 onClick={() => handleDeleteBackup(backup)}
@@ -451,15 +520,15 @@ export default function AdminBackupsIndex({
                       <button
                         key={idx}
                         disabled={!link.url || link.active}
-                        onClick={() => link.url && router.get(link.url)}
-                        dangerouslySetInnerHTML={{ __html: link.label }}
-                        className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
+                        onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })}
+                        className={`px-3 py-1 text-xs rounded-lg transition-colors ${
                           link.active
-                            ? 'bg-indigo-600 text-white'
-                            : link.url
-                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200'
-                            : 'opacity-40 cursor-not-allowed text-slate-400'
+                            ? 'bg-indigo-600 text-white font-bold'
+                            : !link.url
+                            ? 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer'
                         }`}
+                        dangerouslySetInnerHTML={{ __html: link.label }}
                       />
                     ))}
                   </div>
@@ -469,261 +538,228 @@ export default function AdminBackupsIndex({
           </div>
         )}
 
-        {/* TAB 2: AUTOMATED SCHEDULE SETTINGS */}
+        {/* TAB 2: AUTOMATED SCHEDULE & RETENTION */}
         {activeTab === 'schedule' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs p-6 max-w-3xl">
+            <form onSubmit={handleSaveSchedule} className="space-y-6">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-2 font-heading">
-                  <Clock className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                  <span>Automated Database Backup Schedule</span>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  Automated Recurring Backup Scheduler
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Configure recurring background cron backup jobs to automatically secure your store's database snapshots without manual intervention.
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Configure automatic point-in-time database backups without requiring external cron daemons.
                 </p>
               </div>
 
-              <form onSubmit={handleSaveSchedule} className="space-y-5">
-                {/* Enabled Toggle */}
-                <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                  <div className="space-y-0.5">
-                    <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      Enable Automated Recurring Backups
-                    </label>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                      When enabled, Laravel Scheduler will automatically execute backup creation according to the frequency and time specified.
-                    </p>
+              {/* Enable Switch */}
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
+                <div className="space-y-0.5">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Enable Automated Database Backups
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={scheduleForm.data.enabled}
-                      onChange={(e) => scheduleForm.setData('enabled', e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Runs in background via Laravel Task Scheduler (<code className="font-mono bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-[10px]">php artisan schedule:run</code>).
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={scheduleForm.data.enabled}
+                    onChange={(e) => scheduleForm.setData('enabled', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Frequency */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Execution Frequency
                   </label>
+                  <select
+                    value={scheduleForm.data.frequency}
+                    onChange={(e) => scheduleForm.setData('frequency', e.target.value)}
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-200"
+                  >
+                    <option value="daily">Daily (Every Day)</option>
+                    <option value="weekly">Weekly (Every Sunday)</option>
+                    <option value="monthly">Monthly (1st Day of Month)</option>
+                  </select>
+                </div>
+
+                {/* Execution Time */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Execution Time (24h)
+                  </label>
+                  <input
+                    type="time"
+                    value={scheduleForm.data.time}
+                    onChange={(e) => scheduleForm.setData('time', e.target.value)}
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-200 font-mono"
+                  />
                 </div>
 
                 {/* Backup Format */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    Backup Archive Format
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Scheduled Backup Format
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {[
-                      { id: 'both', label: 'Both (.sqlite & .sql)', desc: 'Full redundancy (Recommended)' },
-                      { id: 'sqlite', label: 'SQLite Snapshot (.sqlite)', desc: 'Instant binary database file copy' },
-                      { id: 'sql', label: 'SQL Dump (.sql)', desc: 'Standard SQL DDL + INSERT statements' },
-                    ].map((fmt) => (
-                      <label
-                        key={fmt.id}
-                        onClick={() => scheduleForm.setData('format', fmt.id)}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between ${
-                          scheduleForm.data.format === fmt.id
-                            ? 'bg-indigo-50/60 dark:bg-indigo-950/40 border-indigo-500 dark:border-indigo-600 ring-1 ring-indigo-500'
-                            : 'bg-white dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 hover:border-slate-300'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{fmt.label}</span>
-                          {scheduleForm.data.format === fmt.id && (
-                            <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                          )}
-                        </div>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">{fmt.desc}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Frequency & Time */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      Backup Frequency
-                    </label>
-                    <select
-                      value={scheduleForm.data.frequency}
-                      onChange={(e) => scheduleForm.setData('frequency', e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900 dark:text-slate-100"
-                    >
-                      <option value="daily">Daily (Every night)</option>
-                      <option value="weekly">Weekly (Every Sunday)</option>
-                      <option value="monthly">Monthly (1st of each month)</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      Execution Time (24-Hour Format)
-                    </label>
-                    <input
-                      type="time"
-                      value={scheduleForm.data.time}
-                      onChange={(e) => scheduleForm.setData('time', e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900 dark:text-slate-100"
-                    />
-                    <p className="text-[10px] text-slate-400">Low-traffic off-peak hours (e.g. 02:00 AM) recommended.</p>
-                  </div>
-                </div>
-
-                {/* Retention & Compression */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      Retention Policy (Days to Keep)
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        min="1"
-                        max="365"
-                        value={scheduleForm.data.retention_days}
-                        onChange={(e) => scheduleForm.setData('retention_days', parseInt(e.target.value) || 7)}
-                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-900 dark:text-slate-100"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">days</span>
-                    </div>
-                    <p className="text-[10px] text-slate-400">Older backups will be automatically pruned to save disk space.</p>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      Storage Optimization
-                    </label>
-                    <label className="flex items-center space-x-2.5 p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={scheduleForm.data.compression}
-                        onChange={(e) => scheduleForm.setData('compression', e.target.checked)}
-                        className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
-                      />
-                      <div>
-                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Enable GZIP Compression</span>
-                        <p className="text-[10px] text-slate-400">Saves ~85% disk storage capacity (.gz)</p>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Submit button */}
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={scheduleForm.processing}
-                    className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                  <select
+                    value={scheduleForm.data.format}
+                    onChange={(e) => scheduleForm.setData('format', e.target.value)}
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-200"
                   >
-                    <Check className="w-4 h-4" />
-                    <span>Save Schedule Configuration</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            {/* Schedule Status Sidebar Card */}
-            <div className="space-y-4">
-              <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Scheduler Telemetry</h4>
-                
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                    <span className="text-slate-500">Cron Scheduler</span>
-                    <span className={`font-bold ${scheduleSettings.enabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
-                      {scheduleSettings.enabled ? 'Active' : 'Disabled'}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                    <span className="text-slate-500">Next Estimated Run</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
-                      {stats.next_scheduled_run 
-                        ? new Date(stats.next_scheduled_run).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                        : 'N/A'}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                    <span className="text-slate-500">Retention Cutoff</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">
-                      {scheduleSettings.retention_days || 7} Days
-                    </span>
-                  </div>
+                    <option value="both">Both Formats (.sqlite & .sql)</option>
+                    <option value="sqlite">SQLite Snapshots Only (.sqlite)</option>
+                    <option value="sql">SQL Dumps Only (.sql / phpMyAdmin)</option>
+                  </select>
                 </div>
 
-                <div className="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 text-[11px] text-slate-600 dark:text-slate-300 space-y-1">
-                  <div className="font-bold text-indigo-700 dark:text-indigo-400 flex items-center space-x-1.5">
-                    <Info className="w-3.5 h-3.5" />
-                    <span>Server Cron Requirement</span>
-                  </div>
-                  <p>
-                    Ensure your server's crontab has the standard Laravel scheduler entry configured:
-                  </p>
-                  <code className="block p-1.5 rounded bg-white dark:bg-slate-900 font-mono text-[10px] text-indigo-600 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
-                    * * * * * cd /path-to-app && php artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1
-                  </code>
+                {/* Retention Period */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Retention Policy (Keep For Days)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="365"
+                    value={scheduleForm.data.retention_days}
+                    onChange={(e) => scheduleForm.setData('retention_days', parseInt(e.target.value) || 7)}
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-200 font-mono"
+                  />
+                  <span className="text-[10px] text-slate-400">Backups older than this will be auto-purged to save disk.</span>
                 </div>
               </div>
-            </div>
+
+              {/* Gzip Compression Toggle */}
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={scheduleForm.data.compression}
+                    onChange={(e) => scheduleForm.setData('compression', e.target.checked)}
+                    className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Enable GZIP Compression (.gz) for Scheduled Backups
+                    </span>
+                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400">
+                      Compresses files by ~85% to save disk space and accelerate transfers.
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              {/* Notification Email */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Notification Alert Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={scheduleForm.data.notify_email}
+                  onChange={(e) => scheduleForm.setData('notify_email', e.target.value)}
+                  placeholder="admin@techmarket.com.bd"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 dark:text-slate-200"
+                />
+              </div>
+
+              {/* Save Button */}
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={scheduleForm.processing}
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {scheduleForm.processing ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving Settings...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>Save Schedule Settings</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         )}
 
-        {/* TAB 3: CLI & DISASTER RECOVERY GUIDE */}
+        {/* TAB 3: DISASTER RECOVERY GUIDE */}
         {activeTab === 'guide' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-2 font-heading">
-                <Database className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <span>Working with SQLite Snapshots (.sqlite)</span>
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                SQLite snapshot backups are exact point-in-time binary copies of your database. They can be inspected using any SQLite viewer (e.g. DB Browser for SQLite, DBeaver) or restored directly.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Guide Card 1: Point in Time Recovery */}
+            <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
+                  <RotateCcw className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">1-Click In-App Restore</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Restore directly from Admin Panel</p>
+                </div>
+              </div>
 
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">How to restore an SQLite snapshot:</span>
-                <ol className="list-decimal list-inside text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
-                  <li>Download the <code className="font-mono text-indigo-600 bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">.sqlite</code> (or decompress <code className="font-mono">.sqlite.gz</code>) file.</li>
-                  <li>Put your app into maintenance mode: <code className="font-mono text-slate-800 dark:text-slate-200">php artisan down</code></li>
-                  <li>Replace <code className="font-mono text-slate-800 dark:text-slate-200">database/database.sqlite</code> with the backup file.</li>
-                  <li>Bring app back online: <code className="font-mono text-slate-800 dark:text-slate-200">php artisan up</code></li>
+              <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+                <p>You can restore any backup directly from the archives table:</p>
+                <ol className="list-decimal pl-4 space-y-1 text-[11.5px]">
+                  <li>Click the green <strong className="text-emerald-600">Restore</strong> icon next to any backup file.</li>
+                  <li>Review the confirmation dialog. An automatic safety snapshot will be taken before restoring.</li>
+                  <li>Click <strong>Confirm & Restore</strong>. The application will restore data and flush caches.</li>
                 </ol>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-2 font-heading">
-                <FileCode className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>Working with SQL Dumps (.sql)</span>
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                SQL dump files contain standard SQL DDL schema statements and table data inserts. They can be restored using SQLite CLI or imported into MySQL / PostgreSQL with minimal adjustment.
-              </p>
+            {/* Guide Card 2: Terminal & CLI Restore */}
+            <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+                  <Terminal className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">CLI Terminal Restoration</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Artisan commands for system administrators</p>
+                </div>
+              </div>
 
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">How to restore from SQL dump:</span>
-                <ol className="list-decimal list-inside text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
-                  <li>Decompress if gzipped: <code className="font-mono">gzip -d backup_file.sql.gz</code></li>
-                  <li>Import into SQLite via terminal:</li>
-                  <code className="block p-2 rounded bg-slate-950 text-slate-100 font-mono text-[11px]">
-                    sqlite3 database/database.sqlite &lt; backup_file.sql
-                  </code>
-                  <li>Clear application caches: <code className="font-mono text-slate-800 dark:text-slate-200">php artisan optimize:clear</code></li>
-                </ol>
+              <div className="space-y-3 font-mono text-[11px]">
+                <div className="p-3 bg-slate-950 text-slate-200 rounded-xl">
+                  <div className="text-slate-500 text-[10px]">// Interactive restore menu</div>
+                  <div>php artisan db:restore</div>
+                </div>
+
+                <div className="p-3 bg-slate-950 text-slate-200 rounded-xl">
+                  <div className="text-slate-500 text-[10px]">// Restore by backup ID or path</div>
+                  <div>php artisan db:restore 1</div>
+                  <div>php artisan db:restore storage/app/backups/backup.sql</div>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* MODAL: CREATE MANUAL BACKUP */}
+        {/* MODAL 1: CREATE BACKUP */}
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-2 font-heading">
-                  <Database className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                  <span>Create Database Backup</span>
-                </h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6 space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+                    <Database className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Create Database Backup</h3>
+                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400">Generate on-demand database snapshot</p>
+                  </div>
+                </div>
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
@@ -734,16 +770,16 @@ export default function AdminBackupsIndex({
               </div>
 
               <form onSubmit={handleCreateBackup} className="space-y-4">
-                {/* Format Selection */}
+                {/* Format Radio Cards */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    Select Backup Format
+                    Backup Format
                   </label>
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 gap-2">
                     {[
-                      { id: 'both', label: 'Both (.sqlite & .sql)', desc: 'Generate both binary snapshot and SQL dump file' },
-                      { id: 'sqlite', label: 'SQLite Snapshot (.sqlite)', desc: 'Direct database binary file snapshot' },
-                      { id: 'sql', label: 'SQL Script (.sql)', desc: 'Standard schema DDL and table row inserts' },
+                      { id: 'both', label: 'Both Formats (.sqlite & .sql)', desc: 'Full SQLite file copy & MySQL-compatible SQL dump' },
+                      { id: 'sqlite', label: 'SQLite Snapshot (.sqlite)', desc: 'Binary copy of SQLite database file' },
+                      { id: 'sql', label: 'SQL Dump (.sql / phpMyAdmin)', desc: 'Standard DDL & INSERT scripts for MySQL/MariaDB' },
                     ].map((f) => (
                       <label
                         key={f.id}
@@ -823,6 +859,221 @@ export default function AdminBackupsIndex({
                       <>
                         <Plus className="w-4 h-4" />
                         <span>Generate Backup</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 2: RESTORE CONFIRMATION */}
+        {isRestoreModalOpen && backupToRestore && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6 space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
+                    <RotateCcw className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Restore Database Snapshot</h3>
+                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400">Overwrites current database with backup</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setIsRestoreModalOpen(false); setBackupToRestore(null); }}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleConfirmRestore} className="space-y-4">
+                {/* Warning Banner */}
+                <div className="p-3.5 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/60 flex items-start space-x-3">
+                  <AlertOctagon className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-amber-800 dark:text-amber-200">
+                    <strong className="block font-bold">Important Notice:</strong>
+                    Restoring this snapshot will replace current database tables and data.
+                  </div>
+                </div>
+
+                {/* Target Details */}
+                <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Backup File:</span>
+                    <span className="font-bold text-slate-900 dark:text-slate-100">{backupToRestore.filename}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Size:</span>
+                    <span className="text-slate-700 dark:text-slate-300">{backupToRestore.formatted_size}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Format:</span>
+                    <span className="uppercase text-slate-700 dark:text-slate-300">{backupToRestore.format}</span>
+                  </div>
+                </div>
+
+                {/* Pre-Restore Safety Checkbox */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <label className="flex items-center space-x-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={restoreForm.data.create_safety}
+                      onChange={(e) => restoreForm.setData('create_safety', e.target.checked)}
+                      className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Create Pre-Restore Safety Backup
+                      </span>
+                      <p className="text-[10px] text-slate-400">
+                        Automatically captures a snapshot before restoring so you can revert anytime.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => { setIsRestoreModalOpen(false); setBackupToRestore(null); }}
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={restoreForm.processing}
+                    className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {restoreForm.processing ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Restoring Database...</span>
+                      </>
+                    ) : (
+                      <>
+                        <RotateCcw className="w-4 h-4" />
+                        <span>Confirm & Restore</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 3: UPLOAD & RESTORE */}
+        {isUploadModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6 space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
+                    <UploadCloud className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Upload & Restore Database</h3>
+                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400">Upload external backup file (.sqlite, .sql, .gz)</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setIsUploadModalOpen(false); uploadForm.reset(); }}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleUploadRestore} className="space-y-4">
+                {/* File Dropzone */}
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-6 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 rounded-2xl text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-800/30"
+                >
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={(e) => uploadForm.setData('backup_file', e.target.files[0] || null)}
+                    accept=".sqlite,.sql,.db,.gz"
+                    className="hidden"
+                  />
+                  <UploadCloud className="w-8 h-8 mx-auto mb-2 text-indigo-500 opacity-80" />
+                  {uploadForm.data.backup_file ? (
+                    <div className="space-y-1">
+                      <div className="font-bold text-xs text-slate-900 dark:text-slate-100 font-mono">
+                        {uploadForm.data.backup_file.name}
+                      </div>
+                      <div className="text-[10.5px] text-slate-400">
+                        {(uploadForm.data.backup_file.size / 1024).toFixed(1)} KB
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Click to select or drag & drop backup file
+                      </div>
+                      <div className="text-[10px] text-slate-400">
+                        Supported formats: .sqlite, .sql, .sqlite.gz, .sql.gz (Up to 500MB)
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {uploadForm.errors.backup_file && (
+                  <p className="text-xs text-rose-500">{uploadForm.errors.backup_file}</p>
+                )}
+
+                {/* Pre-Restore Safety Checkbox */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <label className="flex items-center space-x-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={uploadForm.data.create_safety}
+                      onChange={(e) => uploadForm.setData('create_safety', e.target.checked)}
+                      className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Create Pre-Restore Safety Backup
+                      </span>
+                      <p className="text-[10px] text-slate-400">
+                        Automatically captures a snapshot before restoring so you can revert anytime.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => { setIsUploadModalOpen(false); uploadForm.reset(); }}
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={uploadForm.processing || !uploadForm.data.backup_file}
+                    className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {uploadForm.processing ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Uploading & Restoring...</span>
+                      </>
+                    ) : (
+                      <>
+                        <RotateCcw className="w-4 h-4" />
+                        <span>Upload & Restore</span>
                       </>
                     )}
                   </button>

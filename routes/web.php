@@ -800,6 +800,17 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         Route::get('/test', [\App\Http\Controllers\Admin\CctvAdminController::class, 'ruleTester'])->name('admin.cctv.tester');
         Route::post('/test/run', [\App\Http\Controllers\Admin\CctvAdminController::class, 'runRuleTest'])->name('admin.cctv.tester.run');
     });
+
+    // Database Backups & Restore Module
+    Route::get('/backups', [\App\Http\Controllers\Admin\BackupController::class, 'index'])->name('admin.backups.index');
+    Route::post('/backups', [\App\Http\Controllers\Admin\BackupController::class, 'store'])->name('admin.backups.store');
+    Route::get('/backups/{backup}/download', [\App\Http\Controllers\Admin\BackupController::class, 'download'])->name('admin.backups.download');
+    Route::delete('/backups/{backup}', [\App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('admin.backups.destroy');
+    Route::post('/backups/{backup}/restore', [\App\Http\Controllers\Admin\BackupController::class, 'restore'])->name('admin.backups.restore');
+    Route::post('/backups/upload-restore', [\App\Http\Controllers\Admin\BackupController::class, 'uploadRestore'])->name('admin.backups.uploadRestore');
+    Route::post('/backups/schedule', [\App\Http\Controllers\Admin\BackupController::class, 'updateSchedule'])->name('admin.backups.schedule.update');
+    Route::post('/backups/run-scheduled-now', [\App\Http\Controllers\Admin\BackupController::class, 'runScheduledNow'])->name('admin.backups.runScheduledNow');
+    Route::post('/backups/prune', [\App\Http\Controllers\Admin\BackupController::class, 'pruneExpired'])->name('admin.backups.prune');
 });
 
 // Public Unsubscribe Endpoints

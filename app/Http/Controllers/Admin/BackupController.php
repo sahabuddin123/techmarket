@@ -188,4 +188,67 @@ class BackupController extends Controller
 
         return redirect()->back()->with('success', "Pruned {$prunedCount} expired backups based on retention policy.");
     }
+
+    /**
+     * Restore database from an existing backup archive.
+     */
+    public function restore(Request $request, DatabaseBackup $backup): RedirectResponse
+    {
+        $createSafety = $request->boolean('create_safety', true);
+
+        try {
+            $result = $this->backupService->restoreBackup($backup, $createSafety);
+
+            AuditLogger::log('database.backup.restored', $backup, null, [
+                'filename' => $backup->filename,
+                'duration_seconds' => $result['duration_seconds'] ?? null,
+                'safety_backup_id' => $result['safety_backup']?->id ?? null,
+            ]);
+
+            return redirect()->back()->with('success', "Database restored successfully from '{$backup->filename}' in {$result['duration_seconds']}s!");
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', "Database restore failed: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Upload an external backup file and restore database.
+     */
+    public function uploadRestore(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'backup_file' => 'required|file|max:512000', // up to 500MB
+            'create_safety' => 'nullable|boolean',
+        ]);
+
+        $file = $request->file('backup_file');
+        $createSafety = $request->boolean('create_safety', true);
+
+        // Validate file extension
+        $ext = strtolower($file->getClientOriginalExtension());
+        $origName = strtolower($file->getClientOriginalName());
+
+        $isValidExt = in_array($ext, ['sqlite', 'sql', 'db', 'gz']) ||
+                      str_ends_with($origName, '.sqlite.gz') ||
+                      str_ends_with($origName, '.sql.gz');
+
+        if (!$isValidExt) {
+            return redirect()->back()->with('error', 'Invalid file type. Supported formats: .sqlite, .sql, .sqlite.gz, .sql.gz');
+        }
+
+        try {
+            $result = $this->backupService->restoreFromUploadedFile($file, $createSafety);
+
+            AuditLogger::log('database.backup.uploaded_and_restored', null, null, [
+                'filename' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'duration_seconds' => $result['duration_seconds'] ?? null,
+                'safety_backup_id' => $result['safety_backup']?->id ?? null,
+            ]);
+
+            return redirect()->back()->with('success', "Database successfully restored from uploaded file '{$file->getClientOriginalName()}' in {$result['duration_seconds']}s!");
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', "Database restore from uploaded file failed: " . $e->getMessage());
+        }
+    }
 }
