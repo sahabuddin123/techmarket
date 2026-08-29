@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Page;
+use App\Models\CmsPage;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
@@ -52,35 +52,43 @@ class SeoService
             }
 
             // 3. Active Categories
-            $categories = Category::where('is_active', true)->select(['id', 'slug', 'name', 'updated_at'])->get();
+            $categories = Category::select(['id', 'slug', 'name', 'updated_at'])->get();
             foreach ($categories as $cat) {
+                if (empty($cat->slug)) continue;
                 $url = $baseUrl . '/catalog?category=' . urlencode($cat->slug);
                 $lastMod = $cat->updated_at ? $cat->updated_at->toAtomString() : now()->toAtomString();
                 $xml .= self::formatUrlTag($url, 'daily', '0.85', $lastMod);
             }
 
             // 4. Active Brands
-            $brands = Brand::where('is_active', true)->select(['id', 'slug', 'name', 'updated_at'])->get();
+            $brands = Brand::where(function ($q) {
+                $q->where('is_active', true)->orWhereNull('is_active');
+            })->select(['id', 'slug', 'name', 'updated_at'])->get();
+
             foreach ($brands as $brand) {
+                if (empty($brand->slug)) continue;
                 $url = $baseUrl . '/catalog?brand=' . urlencode($brand->slug);
                 $lastMod = $brand->updated_at ? $brand->updated_at->toAtomString() : now()->toAtomString();
                 $xml .= self::formatUrlTag($url, 'weekly', '0.75', $lastMod);
             }
 
             // 5. Active Products (With Image Sitemap extensions)
-            $products = Product::where('status', 'active')
-                ->select(['id', 'slug', 'title', 'featured_image', 'images', 'updated_at'])
-                ->latest('updated_at')
-                ->take(5000)
-                ->get();
+            $products = Product::where(function ($q) {
+                $q->where('is_active', true)->orWhereNull('is_active');
+            })
+            ->select(['id', 'slug', 'title', 'image', 'gallery', 'updated_at'])
+            ->latest('updated_at')
+            ->take(5000)
+            ->get();
 
             foreach ($products as $prod) {
+                if (empty($prod->slug)) continue;
                 $prodUrl = $baseUrl . '/product/' . urlencode($prod->slug);
                 $lastMod = $prod->updated_at ? $prod->updated_at->toAtomString() : now()->toAtomString();
 
                 $images = [];
-                if (!empty($prod->featured_image)) {
-                    $imgUrl = str_starts_with($prod->featured_image, 'http') ? $prod->featured_image : $baseUrl . '/' . ltrim($prod->featured_image, '/');
+                if (!empty($prod->image)) {
+                    $imgUrl = str_starts_with($prod->image, 'http') ? $prod->image : $baseUrl . '/' . ltrim($prod->image, '/');
                     $images[] = [
                         'loc' => $imgUrl,
                         'title' => $prod->title,
@@ -91,11 +99,14 @@ class SeoService
             }
 
             // 6. Custom CMS Pages
-            $pages = Page::where('is_active', true)->select(['id', 'slug', 'title', 'updated_at'])->get();
-            foreach ($pages as $page) {
-                $url = $baseUrl . '/page/' . urlencode($page->slug);
-                $lastMod = $page->updated_at ? $page->updated_at->toAtomString() : now()->toAtomString();
-                $xml .= self::formatUrlTag($url, 'monthly', '0.6', $lastMod);
+            if (class_exists(CmsPage::class)) {
+                $pages = CmsPage::where('is_published', true)->select(['id', 'slug', 'title', 'updated_at'])->get();
+                foreach ($pages as $page) {
+                    if (empty($page->slug)) continue;
+                    $url = $baseUrl . '/page/' . urlencode($page->slug);
+                    $lastMod = $page->updated_at ? $page->updated_at->toAtomString() : now()->toAtomString();
+                    $xml .= self::formatUrlTag($url, 'monthly', '0.6', $lastMod);
+                }
             }
 
             $xml .= '</urlset>';
