@@ -786,8 +786,8 @@ export default function CatalogV1(props) {
                           )}
                         </div>
 
-                        {/* Action Buttons: Add to Cart & Buy Now */}
-                        <div className="pt-1 flex items-center gap-1.5">
+                        {/* Action Buttons: Add to Cart & Buy Now (Stacked) */}
+                        <div className="pt-1 flex flex-col gap-1.5 w-full">
                           {isOutOfStock ? (
                             <button
                               disabled
@@ -800,7 +800,7 @@ export default function CatalogV1(props) {
                               <button
                                 type="button"
                                 onClick={(e) => handleAddToCart(e, product)}
-                                className={`flex-1 py-1.5 px-2 rounded-[3px] text-[11px] font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer ${
+                                className={`w-full py-1.5 px-2 rounded-[3px] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer ${
                                   isAdded
                                     ? 'bg-emerald-600 text-white'
                                     : 'bg-[#0084ff] hover:bg-[#0070d6] text-white'
@@ -808,12 +808,12 @@ export default function CatalogV1(props) {
                               >
                                 {isAdded ? (
                                   <>
-                                    <Check className="w-3 h-3" />
-                                    <span>Added</span>
+                                    <Check className="w-3.5 h-3.5" />
+                                    <span>Added to Cart</span>
                                   </>
                                 ) : (
                                   <>
-                                    <ShoppingCart className="w-3 h-3" />
+                                    <ShoppingCart className="w-3.5 h-3.5" />
                                     <span>Add to Cart</span>
                                   </>
                                 )}
@@ -822,9 +822,9 @@ export default function CatalogV1(props) {
                               <button
                                 type="button"
                                 onClick={(e) => handleBuyNow(e, product)}
-                                className="flex-1 py-1.5 px-2 rounded-[3px] bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer"
+                                className="w-full py-1.5 px-2 rounded-[3px] bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                               >
-                                <Zap className="w-3 h-3 fill-current" />
+                                <Zap className="w-3.5 h-3.5 fill-current" />
                                 <span>Buy Now</span>
                               </button>
                             </>

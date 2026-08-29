@@ -226,11 +226,11 @@ export default function ProductCard({ product, variant = 'standard' }) {
                 Out of Stock
               </button>
             ) : (
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-col gap-1.5 w-full">
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className={`flex-1 py-2 px-2.5 rounded-md text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer ${
+                  className={`w-full py-2 px-2.5 rounded-md text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer ${
                     added
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#0084ff] hover:bg-[#0070d6] text-white'
@@ -239,7 +239,7 @@ export default function ProductCard({ product, variant = 'standard' }) {
                   {added ? (
                     <>
                       <Check className="w-3.5 h-3.5" />
-                      <span>Added</span>
+                      <span>Added to Cart</span>
                     </>
                   ) : (
                     <>
@@ -252,7 +252,7 @@ export default function ProductCard({ product, variant = 'standard' }) {
                 <button
                   type="button"
                   onClick={handleBuyNow}
-                  className="flex-1 py-2 px-2.5 rounded-md bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer"
+                  className="w-full py-2 px-2.5 rounded-md bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                 >
                   <Zap className="w-3.5 h-3.5 fill-current" />
                   <span>Buy Now</span>
