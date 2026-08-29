@@ -221,21 +221,31 @@ class ProductSeoService
             }
         }
 
-        // Open Graph Hierarchy
+        // Open Graph & Social Preview Image Hierarchy
+        $rawImage = $product->og_image ?: ($product->image ?: Setting::get('default_og_image', '/storage/logo.png'));
+        if (empty($rawImage)) {
+            $rawImage = '/storage/logo.png';
+        }
+
+        if (str_starts_with($rawImage, 'http://') || str_starts_with($rawImage, 'https://')) {
+            $ogImage = $rawImage;
+        } elseif (str_starts_with($rawImage, '/storage/')) {
+            $ogImage = url($rawImage);
+        } elseif (str_starts_with($rawImage, 'storage/')) {
+            $ogImage = url('/' . $rawImage);
+        } elseif (str_starts_with($rawImage, 'media/')) {
+            $ogImage = url('/storage/' . $rawImage);
+        } else {
+            $ogImage = url('/' . ltrim($rawImage, '/'));
+        }
+
         $ogTitle = $product->og_title ?: $seoTitle;
         $ogDescription = $product->og_description ?: $metaDescription;
-        $ogImage = $product->og_image ?: ($product->image ?: Setting::get('default_og_image', url('/logo.png')));
-        if (!str_starts_with($ogImage, 'http')) {
-            $ogImage = url($ogImage);
-        }
 
         // Twitter Hierarchy
         $twitterTitle = $product->twitter_title ?: $ogTitle;
         $twitterDescription = $product->twitter_description ?: $ogDescription;
-        $twitterImage = $product->twitter_image ?: $ogImage;
-        if (!str_starts_with($twitterImage, 'http')) {
-            $twitterImage = url($twitterImage);
-        }
+        $twitterImage = $product->twitter_image ? (str_starts_with($product->twitter_image, 'http') ? $product->twitter_image : url('/' . ltrim($product->twitter_image, '/'))) : $ogImage;
 
         // Robots Hierarchy
         $metaRobots = (!$product->is_indexable || $product->meta_robots === 'noindex')
