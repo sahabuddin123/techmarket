@@ -140,12 +140,12 @@ export default function Footer({ onOpenCart }) {
         <div className="lg:col-span-4 space-y-4">
           <div className="space-y-2">
             <Link href="/" className="inline-flex items-center space-x-2.5 group">
-              <div className="bg-white/95 px-3 py-1.5 rounded-xl shadow-xs border border-white/20 inline-flex items-center">
+              <div className="flex items-center">
                 {settings.site_logo ? (
                   <img
                     src={settings.site_logo_dark || settings.site_logo}
                     alt={settings.site_name || 'TechMarket BD'}
-                    className="h-7 sm:h-8 w-auto object-contain max-w-[200px] transition-transform group-hover:scale-105"
+                    className="h-8 sm:h-9 w-auto object-contain max-w-[210px] transition-transform group-hover:scale-105"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                       const fallback = e.currentTarget.nextElementSibling;
@@ -153,7 +153,7 @@ export default function Footer({ onOpenCart }) {
                     }}
                   />
                 ) : null}
-                <span className={`text-xl font-black tracking-tight text-slate-900 font-heading ${settings.site_logo ? 'hidden' : ''}`}>
+                <span className={`text-xl font-black tracking-tight text-white font-heading ${settings.site_logo ? 'hidden' : ''}`}>
                   {settings.site_name || 'TechMarket BD'}
                 </span>
               </div>
