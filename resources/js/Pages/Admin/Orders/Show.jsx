@@ -240,15 +240,95 @@ export default function AdminOrderShow({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
-                    {(order.items || []).map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
-                        <td className="p-3 font-bold text-slate-900 dark:text-slate-100 max-w-xs">{item.product_name}</td>
-                        <td className="p-3 font-mono text-slate-400">{item.sku_snapshot || item.product?.sku || 'N/A'}</td>
-                        <td className="p-3 text-right font-mono text-slate-700 dark:text-slate-200">৳ {Number(item.price).toLocaleString()}</td>
-                        <td className="p-3 text-center font-bold font-mono text-indigo-600 dark:text-indigo-400">{item.quantity}</td>
-                        <td className="p-3 text-right font-black font-mono text-slate-900 dark:text-slate-100">৳ {Number(item.total).toLocaleString()}</td>
-                      </tr>
-                    ))}
+                    {(order.items || []).map((item) => {
+                      const itemImage = item.image_snapshot || item.product?.image;
+                      const brandName = item.product?.brand?.name;
+                      const categoryName = item.product?.category?.name;
+                      const productSlug = item.product?.slug;
+
+                      return (
+                        <tr key={item.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                          <td className="p-3">
+                            <div className="flex items-center gap-3">
+                              {/* Product Thumbnail */}
+                              <div className="w-12 h-12 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800 p-1 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-2xs group relative">
+                                {itemImage ? (
+                                  <img
+                                    src={itemImage}
+                                    alt={item.product_name}
+                                    className="w-full h-full object-contain transition-transform group-hover:scale-105"
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.style.display = 'none';
+                                    }}
+                                  />
+                                ) : (
+                                  <Package className="w-5 h-5 text-slate-400" />
+                                )}
+                              </div>
+
+                              {/* Product Details & Brand */}
+                              <div className="min-w-0 max-w-sm space-y-1">
+                                {brandName && (
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9.5px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-mono border border-slate-200/80 dark:border-slate-700/80">
+                                      {brandName}
+                                    </span>
+                                    {categoryName && (
+                                      <span className="text-[10px] text-slate-400 font-medium">
+                                        • {categoryName}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+
+                                <div>
+                                  {productSlug ? (
+                                    <a
+                                      href={`/products/${productSlug}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-2 inline-flex items-center gap-1 group"
+                                    >
+                                      <span>{item.product_name}</span>
+                                      <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                    </a>
+                                  ) : (
+                                    <span className="font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
+                                      {item.product_name}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {item.product?.warranty && (
+                                  <div className="text-[10.5px] text-slate-400 flex items-center gap-1">
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-medium font-mono text-[10px]">
+                                      🛡️ {item.product.warranty}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-3 font-mono text-slate-500 dark:text-slate-400">
+                            <span className="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-[10.5px] font-bold">
+                              {item.sku_snapshot || item.product?.sku || 'N/A'}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right font-mono text-slate-700 dark:text-slate-200">
+                            ৳ {Number(item.price).toLocaleString()}
+                          </td>
+                          <td className="p-3 text-center font-bold font-mono text-indigo-600 dark:text-indigo-400">
+                            <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs">
+                              {item.quantity}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right font-black font-mono text-slate-900 dark:text-slate-100">
+                            ৳ {Number(item.total).toLocaleString()}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

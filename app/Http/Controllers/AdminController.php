@@ -636,7 +636,8 @@ class AdminController extends Controller
         }
 
         $order->load([
-            'items.product',
+            'items.product.brand',
+            'items.product.category',
             'histories.user',
             'user',
             'shipments.statusHistories.user',
