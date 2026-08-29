@@ -179,6 +179,10 @@ export default function HomeV1({
                         alt={slide.title || `Slide ${idx + 1}`}
                         className="w-full h-full object-cover select-none pointer-events-none"
                         loading={idx === 0 ? 'eager' : 'lazy'}
+                        fetchPriority={idx === 0 ? 'high' : 'auto'}
+                        width="980"
+                        height="400"
+                        decoding={idx === 0 ? 'sync' : 'async'}
                       />
                     </Link>
                   </div>
@@ -235,6 +239,9 @@ export default function HomeV1({
                   src={sideBannerTop?.image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop'}
                   alt={sideBannerTop?.title || 'Corporate Sales'}
                   className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
+                  loading="lazy"
+                  width="420"
+                  height="190"
                 />
               </Link>
 
@@ -247,6 +254,9 @@ export default function HomeV1({
                   src={sideBannerBottom?.image || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop'}
                   alt={sideBannerBottom?.title || 'Book a Service'}
                   className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
+                  loading="lazy"
+                  width="420"
+                  height="190"
                 />
               </Link>
             </div>

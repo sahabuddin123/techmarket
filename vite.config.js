@@ -10,6 +10,25 @@ export default defineConfig({
         }),
         react(),
     ],
+    build: {
+        cssCodeSplit: true,
+        chunkSizeWarningLimit: 1000,
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('react') || id.includes('react-dom') || id.includes('@inertiajs')) {
+                            return 'vendor-react';
+                        }
+                        if (id.includes('lucide-react')) {
+                            return 'vendor-icons';
+                        }
+                        return 'vendor-libs';
+                    }
+                },
+            },
+        },
+    },
     server: {
         host: '127.0.0.1',
         port: 5173,
