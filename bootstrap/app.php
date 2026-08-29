@@ -133,6 +133,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'wishlist/*',
             'compare/*',
             'tracking/*',
+            'reviews*',
+            'questions*',
+            'product-alerts/*',
         ]);
 
         $middleware->alias([

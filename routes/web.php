@@ -289,6 +289,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
 
+// Storefront Product Reviews & Questions
+Route::post('/reviews', [\App\Http\Controllers\Storefront\ProductInteractionController::class, 'storeReview'])->name('storefront.reviews.store');
+Route::post('/questions', [\App\Http\Controllers\Storefront\ProductInteractionController::class, 'storeQuestion'])->name('storefront.questions.store');
+
 // Checkout & Invoice
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
