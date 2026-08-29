@@ -11,6 +11,98 @@ if (!function_exists('mb_split')) {
     }
 }
 
+// Universal polyfills for servers with missing or corrupted ext-fileinfo
+if (!defined('FILEINFO_NONE')) define('FILEINFO_NONE', 0);
+if (!defined('FILEINFO_SYMLINK')) define('FILEINFO_SYMLINK', 2);
+if (!defined('FILEINFO_MIME')) define('FILEINFO_MIME', 1040);
+if (!defined('FILEINFO_MIME_TYPE')) define('FILEINFO_MIME_TYPE', 16);
+if (!defined('FILEINFO_MIME_ENCODING')) define('FILEINFO_MIME_ENCODING', 1024);
+if (!defined('FILEINFO_RAW')) define('FILEINFO_RAW', 256);
+
+if (!class_exists('finfo', false)) {
+    class finfo {
+        protected int $flags;
+        protected ?string $magicFile;
+
+        public function __construct(int $flags = FILEINFO_NONE, ?string $magicFile = null) {
+            $this->flags = $flags;
+            $this->magicFile = $magicFile;
+        }
+
+        public function set_flags(int $flags): bool {
+            $this->flags = $flags;
+            return true;
+        }
+
+        public function file(string $filename, int $flags = FILEINFO_NONE, $context = null): string|false {
+            if (!file_exists($filename)) {
+                return false;
+            }
+            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            $map = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'webp' => 'image/webp',
+                'gif' => 'image/gif',
+                'svg' => 'image/svg+xml',
+                'ico' => 'image/x-icon',
+                'bmp' => 'image/bmp',
+                'avif' => 'image/avif',
+                'pdf' => 'application/pdf',
+                'json' => 'application/json',
+                'zip' => 'application/zip',
+                'sql' => 'application/sql',
+                'sqlite' => 'application/x-sqlite3',
+                'csv' => 'text/csv',
+                'txt' => 'text/plain',
+                'html' => 'text/html',
+                'css' => 'text/css',
+                'js' => 'text/javascript',
+            ];
+            if (isset($map[$ext])) {
+                return $map[$ext];
+            }
+            $img = @getimagesize($filename);
+            if ($img && !empty($img['mime'])) {
+                return $img['mime'];
+            }
+            return 'application/octet-stream';
+        }
+
+        public function buffer(string $string, int $flags = FILEINFO_NONE, $context = null): string|false {
+            return 'application/octet-stream';
+        }
+    }
+}
+
+if (!function_exists('finfo_open')) {
+    function finfo_open(int $flags = FILEINFO_NONE, ?string $magic_database = null) {
+        return new finfo($flags, $magic_database);
+    }
+}
+if (!function_exists('finfo_file')) {
+    function finfo_file($finfo, string $filename, int $flags = FILEINFO_NONE, $context = null) {
+        if ($finfo instanceof finfo) {
+            return $finfo->file($filename, $flags, $context);
+        }
+        return false;
+    }
+}
+if (!function_exists('finfo_buffer')) {
+    function finfo_buffer($finfo, string $string, int $flags = FILEINFO_NONE, $context = null) {
+        if ($finfo instanceof finfo) {
+            return $finfo->buffer($string, $flags, $context);
+        }
+        return false;
+    }
+}
+if (!function_exists('finfo_close')) {
+    function finfo_close($finfo): bool {
+        return true;
+    }
+}
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
