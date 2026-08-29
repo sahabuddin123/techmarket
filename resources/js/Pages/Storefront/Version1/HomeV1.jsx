@@ -98,33 +98,33 @@ export default function HomeV1({
   // Category Icon Mapper
   const getCategoryIcon = (slug) => {
     const s = (slug || '').toLowerCase();
-    if (s.includes('phone') || s.includes('smart')) return <Smartphone className="w-6 h-6 text-slate-700" />;
-    if (s.includes('ai-laptop') || s.includes('laptop')) return <Laptop className="w-6 h-6 text-slate-700" />;
-    if (s.includes('air-con') || s.includes('wind') || s.includes('ac')) return <Wind className="w-6 h-6 text-slate-700" />;
-    if (s.includes('earphone') || s.includes('headphone')) return <Headphones className="w-6 h-6 text-slate-700" />;
-    if (s.includes('all-in-one') || s.includes('desktop') || s.includes('pc')) return <Monitor className="w-6 h-6 text-slate-700" />;
-    if (s.includes('processor') || s.includes('cpu')) return <Cpu className="w-6 h-6 text-slate-700" />;
-    if (s.includes('motherboard')) return <CircuitBoard className="w-6 h-6 text-slate-700" />;
-    if (s.includes('ssd') || s.includes('hard') || s.includes('storage')) return <HardDrive className="w-6 h-6 text-slate-700" />;
-    if (s.includes('graphic') || s.includes('gpu')) return <Zap className="w-6 h-6 text-slate-700" />;
-    if (s.includes('ram') || s.includes('memory')) return <MemoryStick className="w-6 h-6 text-slate-700" />;
-    if (s.includes('television') || s.includes('tv')) return <Tv className="w-6 h-6 text-slate-700" />;
-    if (s.includes('router') || s.includes('networking')) return <Router className="w-6 h-6 text-slate-700" />;
-    if (s.includes('monitor')) return <Monitor className="w-6 h-6 text-slate-700" />;
-    if (s.includes('printer')) return <Printer className="w-6 h-6 text-slate-700" />;
-    if (s.includes('projector') || s.includes('camera')) return <Camera className="w-6 h-6 text-slate-700" />;
-    if (s.includes('gaming')) return <Gamepad2 className="w-6 h-6 text-slate-700" />;
-    return <Package className="w-6 h-6 text-slate-700" />;
+    if (s.includes('phone') || s.includes('smart')) return <Smartphone className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('ai-laptop') || s.includes('laptop')) return <Laptop className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('air-con') || s.includes('wind') || s.includes('ac')) return <Wind className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('earphone') || s.includes('headphone')) return <Headphones className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('all-in-one') || s.includes('desktop') || s.includes('pc')) return <Monitor className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('processor') || s.includes('cpu')) return <Cpu className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('motherboard')) return <CircuitBoard className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('ssd') || s.includes('hard') || s.includes('storage')) return <HardDrive className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('graphic') || s.includes('gpu')) return <Zap className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('ram') || s.includes('memory')) return <MemoryStick className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('television') || s.includes('tv')) return <Tv className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('router') || s.includes('networking')) return <Router className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('monitor')) return <Monitor className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('printer')) return <Printer className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('projector') || s.includes('camera')) return <Camera className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    if (s.includes('gaming')) return <Gamepad2 className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
+    return <Package className="w-6 h-6 text-slate-700 group-hover:text-[#0084ff] transition-colors" />;
   };
 
   // Quick Action Icon Mapper
   const getQuickActionIcon = (iconName) => {
     const name = (iconName || '').toLowerCase();
-    if (name.includes('cpu') || name.includes('builder')) return <Cpu className="w-5 h-5 text-[#0084ff]" />;
-    if (name.includes('wrench') || name.includes('service')) return <Wrench className="w-5 h-5 text-[#0084ff]" />;
-    if (name.includes('compare') || name.includes('arrow')) return <ArrowRightLeft className="w-5 h-5 text-[#0084ff]" />;
-    if (name.includes('deal') || name.includes('tag')) return <Tag className="w-5 h-5 text-[#0084ff]" />;
-    return <Zap className="w-5 h-5 text-[#0084ff]" />;
+    if (name.includes('cpu') || name.includes('builder')) return <Cpu className="w-5 h-5 transition-colors" />;
+    if (name.includes('wrench') || name.includes('service')) return <Wrench className="w-5 h-5 transition-colors" />;
+    if (name.includes('compare') || name.includes('arrow')) return <ArrowRightLeft className="w-5 h-5 transition-colors" />;
+    if (name.includes('deal') || name.includes('tag')) return <Tag className="w-5 h-5 transition-colors" />;
+    return <Zap className="w-5 h-5 transition-colors" />;
   };
 
   // Check if a section is enabled (defaults to true)
@@ -291,41 +291,41 @@ export default function HomeV1({
             ) : (
               <>
                 <Link href="/pc-builder" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
-                    <Cpu className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff] group-hover:bg-[#0084ff] group-hover:text-white transition-colors">
+                    <Cpu className="w-5 h-5 transition-colors" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight">PC Builder</h4>
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight group-hover:text-[#0084ff] transition-colors">PC Builder</h4>
                     <p className="text-xs text-slate-500 truncate font-medium">Build your own custom PC</p>
                   </div>
                 </Link>
 
                 <Link href="/servicing" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
-                    <Wrench className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff] group-hover:bg-[#0084ff] group-hover:text-white transition-colors">
+                    <Wrench className="w-5 h-5 transition-colors" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight">Service Center</h4>
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight group-hover:text-[#0084ff] transition-colors">Service Center</h4>
                     <p className="text-xs text-slate-500 truncate font-medium">Repair and Maintenance</p>
                   </div>
                 </Link>
 
                 <Link href="/compare" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
-                    <ArrowRightLeft className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff] group-hover:bg-[#0084ff] group-hover:text-white transition-colors">
+                    <ArrowRightLeft className="w-5 h-5 transition-colors" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight">Compare Products</h4>
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight group-hover:text-[#0084ff] transition-colors">Compare Products</h4>
                     <p className="text-xs text-slate-500 truncate font-medium">Compare specs and price</p>
                   </div>
                 </Link>
 
                 <Link href="/offers" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
-                    <Tag className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff] group-hover:bg-[#0084ff] group-hover:text-white transition-colors">
+                    <Tag className="w-5 h-5 transition-colors" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight">Deals</h4>
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight group-hover:text-[#0084ff] transition-colors">Deals</h4>
                     <p className="text-xs text-slate-500 truncate font-medium">Exclusive discounts & offers</p>
                   </div>
                 </Link>
