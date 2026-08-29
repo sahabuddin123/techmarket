@@ -96,9 +96,8 @@ Route::get('/offers/{slug}', [\App\Http\Controllers\PublicOfferController::class
 Route::get('/offers/{offerSlug}/{productSlug}', [\App\Http\Controllers\PublicOfferController::class, 'showProduct'])->name('offers.product');
 
 // Storefront Order & Service Tracking
-Route::get('/track-order', function () {
-    return Inertia::render('TrackOrder');
-})->name('track-order');
+Route::get('/track-order', [\App\Http\Controllers\OrderTrackingController::class, 'index'])->name('track-order');
+Route::get('/api/orders/track', [\App\Http\Controllers\OrderTrackingController::class, 'trackApi'])->name('api.orders.track');
 
 Route::get('/track-request', function () {
     return redirect()->to('/servicing#track-request-section');
