@@ -38,6 +38,20 @@ export default function ProductCard({ product, variant = 'standard' }) {
     });
   };
 
+  const handleBuyNow = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isOutOfStock) return;
+
+    trackAddToCart(product, 1);
+    router.post('/cart/add', { product_id: product.id, quantity: 1 }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        router.visit('/checkout');
+      }
+    });
+  };
+
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -194,7 +208,7 @@ export default function ProductCard({ product, variant = 'standard' }) {
             </div>
           )}
 
-          {/* Single Full-Width Action Button (Exact Reference UI) */}
+          {/* Action Buttons Row: Add to Cart & Buy Now */}
           <div className="pt-1">
             {variant === 'flash' ? (
               <Link
@@ -207,17 +221,43 @@ export default function ProductCard({ product, variant = 'standard' }) {
             ) : isOutOfStock ? (
               <button
                 disabled
-                className="w-full py-2.5 px-3 rounded-md bg-red-50 text-red-400 border border-red-200 text-xs sm:text-[13px] font-bold cursor-not-allowed text-center"
+                className="w-full py-2 px-3 rounded-md bg-red-50 text-red-400 border border-red-200 text-xs font-bold cursor-not-allowed text-center"
               >
                 Out of Stock
               </button>
             ) : (
-              <Link
-                href={`/product/${product.slug}`}
-                className="w-full py-2.5 px-3 rounded-md bg-[#1c2434] hover:bg-[#0f172a] text-white text-xs sm:text-[13px] font-bold flex items-center justify-center transition-colors text-center shadow-xs cursor-pointer"
-              >
-                View Details
-              </Link>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className={`flex-1 py-2 px-2.5 rounded-md text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer ${
+                    added
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-[#0084ff] hover:bg-[#0070d6] text-white'
+                  }`}
+                >
+                  {added ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Added</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-3.5 h-3.5" />
+                      <span>Add to Cart</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleBuyNow}
+                  className="flex-1 py-2 px-2.5 rounded-md bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer"
+                >
+                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  <span>Buy Now</span>
+                </button>
+              </div>
             )}
           </div>
         </div>

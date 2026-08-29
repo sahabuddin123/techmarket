@@ -200,6 +200,25 @@ export default function CatalogV1(props) {
     router.post('/wishlist/toggle', { product_id: product.id }, { preserveScroll: true });
   };
 
+  const handleCompare = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.post('/compare/add', { product_id: product.id }, { preserveScroll: true });
+  };
+
+  const handleBuyNow = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product.stock <= 0 && !product.is_deal_of_day) return;
+
+    router.post('/cart/add', { product_id: product.id, quantity: 1 }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        router.visit('/checkout');
+      }
+    });
+  };
+
   // Filtered Brand list based on search
   const filteredBrands = useMemo(() => {
     if (!brandSearch.trim()) return brands;
@@ -684,20 +703,28 @@ export default function CatalogV1(props) {
                           <div className="h-3"></div>
                         )}
 
-                        {/* Top Wishlist & QuickView Actions */}
-                        <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {/* Top Wishlist, Compare & QuickView Actions */}
+                        <div className="flex items-center space-x-1 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                           <button
                             type="button"
                             onClick={(e) => handleWishlist(e, product)}
-                            className="p-0.5 rounded text-[#999] hover:text-[#d32f2f] transition-colors"
+                            className="p-1 rounded hover:bg-slate-100 text-[#999] hover:text-rose-500 transition-colors cursor-pointer"
                             title="Add to Wishlist"
                           >
                             <Heart className="w-3.5 h-3.5" />
                           </button>
                           <button
                             type="button"
+                            onClick={(e) => handleCompare(e, product)}
+                            className="p-1 rounded hover:bg-slate-100 text-[#999] hover:text-[#0084ff] transition-colors cursor-pointer"
+                            title="Add to Compare"
+                          >
+                            <ArrowRightLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
                             onClick={(e) => { e.preventDefault(); setQuickViewProduct(product); }}
-                            className="p-0.5 rounded text-[#999] hover:text-[#0066cc] transition-colors"
+                            className="p-1 rounded hover:bg-slate-100 text-[#999] hover:text-[#0084ff] transition-colors cursor-pointer"
                             title="Quick View"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -759,47 +786,49 @@ export default function CatalogV1(props) {
                           )}
                         </div>
 
-                        {/* Action Buttons: Add to Cart & Compare (Exact Reference Design) */}
+                        {/* Action Buttons: Add to Cart & Buy Now */}
                         <div className="pt-1 flex items-center gap-1.5">
                           {isOutOfStock ? (
                             <button
                               disabled
-                              className="flex-1 py-1 px-2 rounded-[3px] bg-red-50 text-red-400 border border-red-200 text-[11px] font-bold cursor-not-allowed text-center"
+                              className="w-full py-1.5 px-2 rounded-[3px] bg-red-50 text-red-400 border border-red-200 text-[11px] font-bold cursor-not-allowed text-center"
                             >
                               Out of Stock
                             </button>
                           ) : (
-                            <button
-                              type="button"
-                              onClick={(e) => handleAddToCart(e, product)}
-                              className={`flex-1 py-1.5 px-2 rounded-[3px] text-[11px] font-bold flex items-center justify-center gap-1 transition-colors shadow-none cursor-pointer ${
-                                isAdded
-                                  ? 'bg-emerald-600 text-white'
-                                  : 'bg-[#0084ff] hover:bg-[#0084ff] text-white'
-                              }`}
-                            >
-                              {isAdded ? (
-                                <>
-                                  <Check className="w-3 h-3" />
-                                  <span>Added</span>
-                                </>
-                              ) : (
-                                <>
-                                  <ShoppingCart className="w-3 h-3" />
-                                  <span>Add to Cart</span>
-                                </>
-                              )}
-                            </button>
-                          )}
+                            <>
+                              <button
+                                type="button"
+                                onClick={(e) => handleAddToCart(e, product)}
+                                className={`flex-1 py-1.5 px-2 rounded-[3px] text-[11px] font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer ${
+                                  isAdded
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'bg-[#0084ff] hover:bg-[#0070d6] text-white'
+                                }`}
+                              >
+                                {isAdded ? (
+                                  <>
+                                    <Check className="w-3 h-3" />
+                                    <span>Added</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShoppingCart className="w-3 h-3" />
+                                    <span>Add to Cart</span>
+                                  </>
+                                )}
+                              </button>
 
-                          <Link
-                            href={`/compare?ids=${product.id}`}
-                            className="py-1.5 px-2.5 rounded-[3px] border border-[#cbd5e1] hover:bg-[#f8fafc] text-[#444] text-[11px] font-medium flex items-center gap-1 transition-colors"
-                            title="Add to Compare"
-                          >
-                            <ArrowRightLeft className="w-3 h-3 text-[#666]" />
-                            <span>Compare</span>
-                          </Link>
+                              <button
+                                type="button"
+                                onClick={(e) => handleBuyNow(e, product)}
+                                className="flex-1 py-1.5 px-2 rounded-[3px] bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs cursor-pointer"
+                              >
+                                <Zap className="w-3 h-3 fill-current" />
+                                <span>Buy Now</span>
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
