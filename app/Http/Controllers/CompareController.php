@@ -96,7 +96,7 @@ class CompareController extends Controller
             $action = 'added';
         }
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && !$request->header('X-Inertia')) {
             return response()->json([
                 'status' => 'success',
                 'action' => $action,

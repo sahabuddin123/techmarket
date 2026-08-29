@@ -92,7 +92,7 @@ class WishlistController extends Controller
             $request->session()->save();
         }
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && !$request->header('X-Inertia')) {
             return response()->json([
                 'status' => 'success',
                 'action' => $status,

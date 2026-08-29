@@ -49,7 +49,6 @@ export default function ProductCard({ product, variant = 'standard' }) {
 
     router.post('/wishlist/toggle', { product_id: product.id }, {
       preserveScroll: true,
-      preserveState: true,
     });
   };
 
@@ -64,7 +63,6 @@ export default function ProductCard({ product, variant = 'standard' }) {
 
     router.post('/compare/add', { product_id: product.id }, {
       preserveScroll: true,
-      preserveState: true,
     });
   };
 
