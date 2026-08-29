@@ -272,12 +272,66 @@ class ImageOptimizerService
         $disk = $media->disk ?: 'public';
 
         $localPath = Storage::disk($disk)->path($media->path);
+        $isTemporaryDownload = false;
+
+        // 1. Check if file exists at standard storage path
+        if (!file_exists($localPath)) {
+            $altPaths = [
+                public_path($media->path),
+                public_path('storage/' . ltrim($media->path, '/')),
+                storage_path('app/public/' . ltrim($media->path, '/')),
+                base_path($media->path),
+            ];
+
+            foreach ($altPaths as $alt) {
+                if (file_exists($alt)) {
+                    $localPath = $alt;
+                    break;
+                }
+            }
+        }
+
+        // 2. If still not found locally, check if it's a remote URL or Unsplash seeded image
+        if (!file_exists($localPath)) {
+            $remoteUrl = null;
+            if (str_starts_with($media->path, 'http://') || str_starts_with($media->path, 'https://')) {
+                $remoteUrl = $media->path;
+            } elseif (str_starts_with($media->filename, 'photo-') || str_contains($media->path, 'unsplash')) {
+                $photoId = pathinfo($media->filename, PATHINFO_FILENAME);
+                $remoteUrl = "https://images.unsplash.com/{$photoId}?auto=format&fit=crop&w=1920&q=85";
+            }
+
+            if ($remoteUrl) {
+                $ctx = stream_context_create([
+                    'http' => [
+                        'timeout' => 15,
+                        'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) TechMarketOptimizer/1.0',
+                        'follow_location' => 1,
+                    ],
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                    ]
+                ]);
+                $content = @file_get_contents($remoteUrl, false, $ctx);
+                if ($content && strlen($content) > 200) {
+                    $tmpDir = storage_path('app/temp_optimizer');
+                    if (!is_dir($tmpDir)) {
+                        @mkdir($tmpDir, 0755, true);
+                    }
+                    $tmpFile = $tmpDir . '/' . uniqid('remote_') . '.jpg';
+                    file_put_contents($tmpFile, $content);
+                    $localPath = $tmpFile;
+                    $isTemporaryDownload = true;
+                }
+            }
+        }
 
         if (!file_exists($localPath)) {
             return [
                 'success' => false,
                 'media_id' => $media->id,
-                'error' => "File does not exist on disk: {$media->path}",
+                'error' => "File not found locally or remotely: {$media->path}",
             ];
         }
 
@@ -293,18 +347,31 @@ class ImageOptimizerService
 
         $oldPath = $media->path;
         $oldUrl = $media->url;
-        $pathInfo = pathinfo($oldPath);
-        $newRelativePath = ($pathInfo['dirname'] !== '.' ? $pathInfo['dirname'] . '/' : '') . $pathInfo['filename'] . '.webp';
+        $folder = $media->folder ?: 'general';
+
+        if (str_starts_with($oldPath, 'http://') || str_starts_with($oldPath, 'https://') || !str_starts_with($oldPath, 'media/')) {
+            $subPath = "media/{$folder}/" . date('Y/m');
+            $safeName = date('Ymd_His') . '_' . \Illuminate\Support\Str::random(8) . '.webp';
+            $newRelativePath = "{$subPath}/{$safeName}";
+        } else {
+            $pathInfo = pathinfo($oldPath);
+            $newRelativePath = ($pathInfo['dirname'] !== '.' ? $pathInfo['dirname'] . '/' : '') . $pathInfo['filename'] . '.webp';
+        }
         $newLocalPath = Storage::disk($disk)->path($newRelativePath);
 
         $result = self::optimizeAndConvertToWebP($localPath, $newLocalPath, $quality, $maxWidth, $maxHeight);
+
+        // If localPath was a temporary download file, remove it
+        if ($isTemporaryDownload && file_exists($localPath)) {
+            @unlink($localPath);
+        }
 
         if (!$result['success']) {
             return array_merge($result, ['media_id' => $media->id]);
         }
 
-        // If the path changed (e.g. from .jpg/.png to .webp), delete the old file if it's different
-        if ($localPath !== $newLocalPath && file_exists($localPath)) {
+        // If the path changed (e.g. from .jpg/.png to .webp), delete the old file if it's different and not a remote URL
+        if (!$isTemporaryDownload && $localPath !== $newLocalPath && file_exists($localPath)) {
             @unlink($localPath);
         }
 
