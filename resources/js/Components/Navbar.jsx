@@ -65,7 +65,7 @@ export default function Navbar({ onOpenCart }) {
   const announcementEnabled = settings.header_announcement_enabled === '1' || settings.header_announcement_enabled === true;
   const announcementText = settings.header_announcement_text;
   const announcementLink = settings.header_announcement_link || '/offers';
-  const announcementBg = settings.header_announcement_bg || '#1c4289';
+  const announcementBg = settings.header_announcement_bg || '#0084ff';
   const announcementTextColor = settings.header_announcement_text_color || '#ffffff';
 
   // Action Button Toggles
@@ -432,11 +432,11 @@ export default function Navbar({ onOpenCart }) {
               placeholder={settings.search_placeholder || "Type a product, brand or model..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white text-slate-900 placeholder-slate-400 text-xs rounded-l pl-3 pr-8 py-2 border border-slate-300 focus:outline-none focus:ring-1 focus:ring-[#1c4289]"
+              className="w-full bg-white text-slate-900 placeholder-slate-400 text-xs rounded-l pl-3 pr-8 py-2 border border-slate-300 focus:outline-none focus:ring-1 focus:ring-[#0084ff]"
             />
             <button
               type="submit"
-              className="bg-[#1c4289] hover:bg-[#15326b] text-white px-3.5 py-2 rounded-r flex items-center justify-center shrink-0"
+              className="bg-[#0084ff] hover:bg-[#0070d6] text-white px-3.5 py-2 rounded-r flex items-center justify-center shrink-0"
               aria-label="Search"
             >
               <Search className="w-4 h-4" />

@@ -101,7 +101,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head>
         <title>Servicing & Repair Center - TechMarket BD</title>
         <meta name="description" content="Authorized laptop, desktop, printer, monitor, and computer component repair and servicing in Bangladesh. Genuine spare parts, official warranty claims, and fast turnaround." />
@@ -129,7 +129,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('featured-services')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Cpu className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Cpu className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Desktop Services</span>
               </button>
 
@@ -138,7 +138,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('featured-services')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Laptop className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Laptop className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Laptop Services</span>
               </button>
 
@@ -147,7 +147,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('featured-services')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Printer className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Printer className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Printer Services</span>
               </button>
 
@@ -156,7 +156,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('featured-services')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Monitor className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Monitor className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Monitor Service</span>
               </button>
 
@@ -165,7 +165,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('other-services')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Wrench className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Wrench className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Other Services</span>
               </button>
 
@@ -174,7 +174,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('service-centers')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#1c4289]" />
+                <MapPin className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Service Centers</span>
               </button>
 
@@ -183,7 +183,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('book-service-form')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Clock className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Clock className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Book a Service</span>
               </button>
 
@@ -192,7 +192,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('track-service-section')}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors cursor-pointer"
               >
-                <Wrench className="w-3.5 h-3.5 text-[#1c4289]" />
+                <Wrench className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Track Request</span>
               </button>
             </div>
@@ -200,7 +200,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
 
           {/* Section 1: Book a Service Form */}
           <div id="book-service-form" className="space-y-4">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Book a Service
             </div>
             <p className="text-xs text-slate-600">
@@ -219,7 +219,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
               {/* Step 1: Service & Purchase */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-2 text-xs font-bold text-slate-900">
-                  <span className="w-5 h-5 rounded-full bg-[#1c4289] text-white flex items-center justify-center text-[10px]">1</span>
+                  <span className="w-5 h-5 rounded-full bg-[#0084ff] text-white flex items-center justify-center text-[10px]">1</span>
                   <span>Service & Purchase</span>
                 </div>
 
@@ -231,7 +231,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                     <select
                       value={data.service_type}
                       onChange={(e) => setData('service_type', e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     >
                       <option value="Hardware Repair">Hardware Repair</option>
                       <option value="Software & OS Installation">Software & OS Installation</option>
@@ -248,7 +248,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                     <select
                       value={data.service_category}
                       onChange={(e) => setData('service_category', e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     >
                       <option value="Laptop Repair">Laptop Repair</option>
                       <option value="Desktop / Custom PC">Desktop / Custom PC</option>
@@ -270,7 +270,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                         onClick={() => setData('purchased_from_techmarket', 'Yes')}
                         className={`py-2 rounded text-xs font-bold transition-colors cursor-pointer border ${
                           data.purchased_from_techmarket === 'Yes'
-                            ? 'bg-[#1c4289] text-white border-[#1c4289]'
+                            ? 'bg-[#0084ff] text-white border-[#0084ff]'
                             : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
                         }`}
                       >
@@ -281,7 +281,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                         onClick={() => setData('purchased_from_techmarket', 'No')}
                         className={`py-2 rounded text-xs font-bold transition-colors cursor-pointer border ${
                           data.purchased_from_techmarket === 'No'
-                            ? 'bg-[#1c4289] text-white border-[#1c4289]'
+                            ? 'bg-[#0084ff] text-white border-[#0084ff]'
                             : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
                         }`}
                       >
@@ -295,7 +295,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
               {/* Step 2: Product & Problem Details */}
               <div className="space-y-3 pt-2 border-t border-slate-200">
                 <div className="flex items-center space-x-2 text-xs font-bold text-slate-900">
-                  <span className="w-5 h-5 rounded-full bg-[#1c4289] text-white flex items-center justify-center text-[10px]">2</span>
+                  <span className="w-5 h-5 rounded-full bg-[#0084ff] text-white flex items-center justify-center text-[10px]">2</span>
                   <span>Product & Problem Details</span>
                 </div>
 
@@ -310,7 +310,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       value={data.product_description}
                       onChange={(e) => setData('product_description', e.target.value)}
                       placeholder="Product name, model, brand (e.g. Asus ROG Strix G15, HP LaserJet 107a)..."
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     />
                   </div>
 
@@ -324,7 +324,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       value={data.problem_description}
                       onChange={(e) => setData('problem_description', e.target.value)}
                       placeholder="Describe the problem you're experiencing in detail..."
-                      className="w-full bg-white border border-slate-300 rounded p-3 text-xs focus:outline-none focus:border-[#1c4289] leading-relaxed"
+                      className="w-full bg-white border border-slate-300 rounded p-3 text-xs focus:outline-none focus:border-[#0084ff] leading-relaxed"
                     />
                   </div>
 
@@ -345,7 +345,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
               {/* Step 3: Contact Details */}
               <div className="space-y-3 pt-2 border-t border-slate-200">
                 <div className="flex items-center space-x-2 text-xs font-bold text-slate-900">
-                  <span className="w-5 h-5 rounded-full bg-[#1c4289] text-white flex items-center justify-center text-[10px]">3</span>
+                  <span className="w-5 h-5 rounded-full bg-[#0084ff] text-white flex items-center justify-center text-[10px]">3</span>
                   <span>Contact Details</span>
                 </div>
 
@@ -360,7 +360,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       value={data.name}
                       onChange={(e) => setData('name', e.target.value)}
                       placeholder="Your full name"
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     />
                   </div>
 
@@ -374,7 +374,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       value={data.email}
                       onChange={(e) => setData('email', e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     />
                   </div>
 
@@ -388,7 +388,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       value={data.phone}
                       onChange={(e) => setData('phone', e.target.value)}
                       placeholder="01XXXXXXXXX"
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     />
                   </div>
 
@@ -401,7 +401,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       value={data.address}
                       onChange={(e) => setData('address', e.target.value)}
                       placeholder="Your full delivery address"
-                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                      className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                     />
                   </div>
                 </div>
@@ -412,7 +412,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 <button
                   type="submit"
                   disabled={processing}
-                  className="bg-[#1c4289] hover:bg-[#15326b] text-white px-8 py-2.5 rounded text-xs font-bold transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                  className="bg-[#0084ff] hover:bg-[#0070d6] text-white px-8 py-2.5 rounded text-xs font-bold transition-colors shadow-xs cursor-pointer disabled:opacity-50"
                 >
                   {processing ? 'Submitting...' : 'Submit Service Request'}
                 </button>
@@ -423,7 +423,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
 
           {/* Section: Track Service Request */}
           <div id="track-service-section" className="space-y-4 pt-4 border-t border-slate-200">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Track Service Request
             </div>
             <p className="text-xs text-slate-600">
@@ -438,11 +438,11 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                   value={trackCode}
                   onChange={(e) => setTrackCode(e.target.value)}
                   placeholder="Enter Service Ticket ID or Phone Number (e.g. SRV-90812)"
-                  className="flex-1 bg-white border border-slate-300 rounded px-3.5 py-2 text-xs focus:outline-none focus:border-[#1c4289]"
+                  className="flex-1 bg-white border border-slate-300 rounded px-3.5 py-2 text-xs focus:outline-none focus:border-[#0084ff]"
                 />
                 <button
                   type="submit"
-                  className="bg-[#1c4289] hover:bg-[#15326b] text-white px-6 py-2 rounded text-xs font-bold transition-colors cursor-pointer shrink-0 shadow-xs flex items-center justify-center space-x-1.5"
+                  className="bg-[#0084ff] hover:bg-[#0070d6] text-white px-6 py-2 rounded text-xs font-bold transition-colors cursor-pointer shrink-0 shadow-xs flex items-center justify-center space-x-1.5"
                 >
                   <Wrench className="w-3.5 h-3.5" />
                   <span>Check Status</span>
@@ -463,7 +463,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                       <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Service Ticket</span>
                       <span className="font-extrabold text-slate-900 text-sm">{trackedService.id}</span>
                     </div>
-                    <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#1c4289] font-bold text-xs">
+                    <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#0084ff] font-bold text-xs">
                       <Clock className="w-3.5 h-3.5" />
                       <span>{trackedService.status}</span>
                     </div>
@@ -482,12 +482,12 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                         key={st.num}
                         className={`p-3 rounded-lg border text-center space-y-1 ${
                           st.num <= trackedService.step
-                            ? 'bg-blue-50/70 border-blue-200 text-[#1c4289]'
+                            ? 'bg-blue-50/70 border-blue-200 text-[#0084ff]'
                             : 'bg-slate-50 border-slate-200 text-slate-400'
                         }`}
                       >
                         <div className={`w-5 h-5 rounded-full mx-auto flex items-center justify-center text-[10px] font-bold ${
-                          st.num <= trackedService.step ? 'bg-[#1c4289] text-white' : 'bg-slate-200 text-slate-600'
+                          st.num <= trackedService.step ? 'bg-[#0084ff] text-white' : 'bg-slate-200 text-slate-600'
                         }`}>
                           {st.num}
                         </div>
@@ -508,14 +508,14 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
 
           {/* Section 2: Featured Services */}
           <div id="featured-services" className="space-y-4 pt-4 border-t border-slate-200">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Featured Services
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
               
-              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#1c4289] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1c4289]">
+              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#0084ff] transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#0084ff]">
                   <Cpu className="w-4 h-4" />
                 </div>
                 <h4 className="font-bold text-slate-900 text-xs">Desktop Services</h4>
@@ -524,8 +524,8 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 </p>
               </div>
 
-              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#1c4289] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1c4289]">
+              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#0084ff] transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#0084ff]">
                   <Laptop className="w-4 h-4" />
                 </div>
                 <h4 className="font-bold text-slate-900 text-xs">Laptop Services</h4>
@@ -534,8 +534,8 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 </p>
               </div>
 
-              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#1c4289] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1c4289]">
+              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#0084ff] transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#0084ff]">
                   <Printer className="w-4 h-4" />
                 </div>
                 <h4 className="font-bold text-slate-900 text-xs">Printer Services</h4>
@@ -544,8 +544,8 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 </p>
               </div>
 
-              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#1c4289] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1c4289]">
+              <div className="border border-slate-200 rounded-lg p-5 bg-white space-y-2 hover:border-[#0084ff] transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#0084ff]">
                   <Monitor className="w-4 h-4" />
                 </div>
                 <h4 className="font-bold text-slate-900 text-xs">Monitor Service</h4>
@@ -559,7 +559,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
 
           {/* Section 3: Other Services */}
           <div id="other-services" className="space-y-4 pt-4 border-t border-slate-200">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Other Services
             </div>
 
@@ -588,7 +588,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
 
           {/* Section 4: Our Service Centers */}
           <div id="service-centers" className="space-y-4 pt-4 border-t border-slate-200">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Our Service Centers
             </div>
 
@@ -630,7 +630,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
 
           {/* Section 5: Need Help With Servicing? */}
           <div className="space-y-3 pt-4 border-t border-slate-200">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Need Help With Servicing?
             </div>
             <p className="text-xs text-slate-600">
@@ -643,13 +643,13 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 onClick={() => scrollToSection('service-centers')}
                 className="inline-flex items-center space-x-2 px-4 py-2 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#1c4289]" />
+                <MapPin className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Our Locations</span>
               </button>
 
               <a
                 href={`tel:${settings.hotline || '+8809613562601'}`}
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-[#1c4289] hover:bg-[#15326b] text-white text-xs font-bold transition-colors shadow-xs"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-bold transition-colors shadow-xs"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Call: {settings.hotline || '09613562601'}</span>
@@ -659,7 +659,7 @@ export default function Servicing({ serviceCategories = [], branches = [] }) {
                 href="/complain-box"
                 className="inline-flex items-center space-x-2 px-4 py-2 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
               >
-                <MessageSquare className="w-3.5 h-3.5 text-[#1c4289]" />
+                <MessageSquare className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Complain Box</span>
               </Link>
             </div>

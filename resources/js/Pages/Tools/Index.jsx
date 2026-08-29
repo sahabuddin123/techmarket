@@ -14,7 +14,7 @@ export default function ToolsIndex() {
       href: '/tools/btu-calculator',
       badge: 'Cooling Advisor',
       icon: (
-        <svg className="w-20 h-20 text-[#1c4289]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="w-20 h-20 text-[#0084ff]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <rect x="6" y="16" width="52" height="24" rx="3" />
           <line x1="12" y1="23" x2="34" y2="23" />
           <circle cx="50" cy="23" r="1.5" fill="currentColor" />
@@ -35,7 +35,7 @@ export default function ToolsIndex() {
       href: '/tools/emi-calculator',
       badge: 'Finance Planner',
       icon: (
-        <svg className="w-20 h-20 text-[#1c4289]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="w-20 h-20 text-[#0084ff]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <rect x="8" y="14" width="48" height="40" rx="4" />
           <line x1="18" y1="8" x2="18" y2="16" />
           <line x1="32" y1="8" x2="32" y2="16" />
@@ -58,7 +58,7 @@ export default function ToolsIndex() {
       href: '/tools/third-party-pickup-points',
       badge: 'Nationwide Delivery',
       icon: (
-        <svg className="w-20 h-20 text-[#1c4289]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="w-20 h-20 text-[#0084ff]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d="M8 16l14-4 16 4 18-4v36l-18 4-16-4-14 4V16z" />
           <line x1="22" y1="12" x2="22" y2="48" />
           <line x1="38" y1="16" x2="38" y2="52" />
@@ -71,7 +71,7 @@ export default function ToolsIndex() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title="Useful Tools & Calculators - TechMarket BD" />
       <Navbar />
 
@@ -79,7 +79,7 @@ export default function ToolsIndex() {
       <div className="w-full bg-white border-b border-slate-200/90 py-3">
         <div className="max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-500 font-medium">
           <div className="flex items-center space-x-2 truncate">
-            <Link href="/" className="hover:text-[#1c4289] transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#0084ff] transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <span className="text-slate-900 font-bold truncate">Useful Tools & Calculators</span>
           </div>
@@ -94,7 +94,7 @@ export default function ToolsIndex() {
           {/* Header Section */}
           <div className="pb-6 border-b border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#1c4289] text-[11px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#0084ff] text-[11px] font-bold uppercase tracking-wider mb-2">
                 <Wrench className="w-3.5 h-3.5" />
                 <span>CUSTOMER UTILITIES</span>
               </div>
@@ -109,7 +109,7 @@ export default function ToolsIndex() {
             <div className="flex items-center gap-2">
               <Link 
                 href="/pc-builder" 
-                className="px-4 py-2 bg-[#1c4289] hover:bg-[#15326b] text-white text-xs sm:text-sm font-bold rounded-xl flex items-center gap-2 shadow-xs transition-all cursor-pointer"
+                className="px-4 py-2 bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs sm:text-sm font-bold rounded-xl flex items-center gap-2 shadow-xs transition-all cursor-pointer"
               >
                 <span>PC Builder Suite</span>
                 <ArrowRight className="w-4 h-4" />
@@ -126,7 +126,7 @@ export default function ToolsIndex() {
               >
                 {/* Badge */}
                 <div className="w-full flex justify-end mb-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-100/70 text-[#1c4289]">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-100/70 text-[#0084ff]">
                     {t.badge}
                   </span>
                 </div>
@@ -149,7 +149,7 @@ export default function ToolsIndex() {
                 {/* Navy Full-width Button */}
                 <Link
                   href={t.href}
-                  className="w-full bg-[#1c4289] hover:bg-[#15326b] text-white py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer group-hover:shadow"
+                  className="w-full bg-[#0084ff] hover:bg-[#0070d6] text-white py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer group-hover:shadow"
                 >
                   <span>{t.buttonText}</span>
                   <ArrowRight className="w-4 h-4" />

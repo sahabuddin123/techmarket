@@ -134,7 +134,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
           </button>
 
           {/* LEFT COLUMN: BRAND SIDEBAR */}
-          <div className="hidden md:flex md:w-5/12 bg-[#002a5c] text-white p-7 flex-col justify-between relative overflow-hidden">
+          <div className="hidden md:flex md:w-5/12 bg-[#0084ff] text-white p-7 flex-col justify-between relative overflow-hidden">
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-sm text-white shadow-sm">
@@ -252,7 +252,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={loginForm.data.phone}
                         onChange={(e) => loginForm.setData('phone', e.target.value)}
                         placeholder="017XXXXXXXX"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                     </div>
                   </div>
@@ -268,7 +268,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                           setTab('forgot-password');
                           setForgotStatus(null);
                         }}
-                        className="text-xs text-[#002a5c] font-semibold hover:underline"
+                        className="text-xs text-[#0084ff] font-semibold hover:underline"
                       >
                         Forgot password?
                       </button>
@@ -281,7 +281,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={loginForm.data.password}
                         onChange={(e) => loginForm.setData('password', e.target.value)}
                         placeholder="••••••••"
-                        className="w-full pl-9 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                       <button
                         type="button"
@@ -301,7 +301,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         type="checkbox"
                         checked={loginForm.data.remember}
                         onChange={(e) => loginForm.setData('remember', e.target.checked)}
-                        className="rounded border-slate-300 text-[#002a5c] focus:ring-[#002a5c]"
+                        className="rounded border-slate-300 text-[#0084ff] focus:ring-[#0084ff]"
                       />
                       <span className="text-xs text-slate-600">Remember me</span>
                     </label>
@@ -312,7 +312,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         setTab('forgot-phone');
                         setPhoneStatus(null);
                       }}
-                      className="text-xs text-slate-500 hover:text-[#002a5c] hover:underline"
+                      className="text-xs text-slate-500 hover:text-[#0084ff] hover:underline"
                     >
                       Forgot phone?
                     </button>
@@ -321,7 +321,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                   <button
                     type="submit"
                     disabled={loginForm.processing}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#002a5c] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-lg bg-[#0084ff] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {loginForm.processing ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -373,7 +373,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                     <button
                       type="button"
                       onClick={() => setTab('register')}
-                      className="text-[#002a5c] font-bold hover:underline ml-1"
+                      className="text-[#0084ff] font-bold hover:underline ml-1"
                     >
                       Register here
                     </button>
@@ -413,7 +413,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={registerForm.data.name}
                         onChange={(e) => registerForm.setData('name', e.target.value)}
                         placeholder="John Doe"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                     </div>
                   </div>
@@ -430,7 +430,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={registerForm.data.phone}
                         onChange={(e) => registerForm.setData('phone', e.target.value)}
                         placeholder="017XXXXXXXX"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                     </div>
                   </div>
@@ -446,7 +446,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={registerForm.data.email}
                         onChange={(e) => registerForm.setData('email', e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                     </div>
                   </div>
@@ -464,7 +464,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                           value={registerForm.data.password}
                           onChange={(e) => registerForm.setData('password', e.target.value)}
                           placeholder="••••••••"
-                          className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                          className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                         />
                         <button
                           type="button"
@@ -489,7 +489,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                           value={registerForm.data.password_confirmation}
                           onChange={(e) => registerForm.setData('password_confirmation', e.target.value)}
                           placeholder="••••••••"
-                          className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                          className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                         />
                         <button
                           type="button"
@@ -506,7 +506,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                   <button
                     type="submit"
                     disabled={registerForm.processing}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#002a5c] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
+                    className="w-full py-2.5 px-4 rounded-lg bg-[#0084ff] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
                   >
                     {registerForm.processing ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -558,7 +558,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                     <button
                       type="button"
                       onClick={() => setTab('login')}
-                      className="text-[#002a5c] font-bold hover:underline ml-1"
+                      className="text-[#0084ff] font-bold hover:underline ml-1"
                     >
                       Sign in
                     </button>
@@ -606,7 +606,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={forgotPhoneForm.data.email}
                         onChange={(e) => forgotPhoneForm.setData('email', e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                     </div>
                   </div>
@@ -614,7 +614,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                   <button
                     type="submit"
                     disabled={forgotPhoneForm.processing}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#002a5c] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-lg bg-[#0084ff] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {forgotPhoneForm.processing ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -631,7 +631,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                       setTab('login');
                       setPhoneStatus(null);
                     }}
-                    className="text-xs text-[#002a5c] font-semibold hover:underline"
+                    className="text-xs text-[#0084ff] font-semibold hover:underline"
                   >
                     ← Back to Sign In
                   </button>
@@ -678,7 +678,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                         value={forgotPasswordForm.data.email}
                         onChange={(e) => forgotPasswordForm.setData('email', e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#002a5c] focus:ring-1 focus:ring-[#002a5c] transition-all"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0084ff] focus:ring-1 focus:ring-[#0084ff] transition-all"
                       />
                     </div>
                   </div>
@@ -686,7 +686,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                   <button
                     type="submit"
                     disabled={forgotPasswordForm.processing}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#002a5c] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-lg bg-[#0084ff] hover:bg-[#001f44] text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {forgotPasswordForm.processing ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -703,7 +703,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSuc
                       setTab('login');
                       setForgotStatus(null);
                     }}
-                    className="text-xs text-[#002a5c] font-semibold hover:underline"
+                    className="text-xs text-[#0084ff] font-semibold hover:underline"
                   >
                     ← Back to Sign In
                   </button>

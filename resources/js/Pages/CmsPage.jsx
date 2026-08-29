@@ -23,7 +23,7 @@ export default function CmsPage({
   const isTerms = slug === 'terms-and-conditions' || title.toLowerCase().includes('terms');
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title={`${title} - TechMarket BD`} />
       <Navbar onOpenCart={() => setCartOpen(true)} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
@@ -59,7 +59,7 @@ export default function CmsPage({
               {sections.map((sec, idx) => (
                 <div key={idx} className="space-y-3">
                   {sec.badge && (
-                    <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+                    <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
                       {sec.badge}
                     </div>
                   )}
@@ -81,7 +81,7 @@ export default function CmsPage({
                     <div className="pt-2">
                       <Link
                         href="/tools/third-party-pickup-points"
-                        className="inline-flex items-center space-x-2 bg-[#1c4289] hover:bg-[#15326b] text-white px-4 py-2 rounded text-xs font-bold transition-colors shadow-xs"
+                        className="inline-flex items-center space-x-2 bg-[#0084ff] hover:bg-[#0070d6] text-white px-4 py-2 rounded text-xs font-bold transition-colors shadow-xs"
                       >
                         <MapPin className="w-3.5 h-3.5" />
                         <span>View Pickup Points</span>
@@ -96,7 +96,7 @@ export default function CmsPage({
                 <div className="pt-6 flex justify-center border-t border-slate-100">
                   <Link
                     href="/complain-box"
-                    className="inline-flex items-center space-x-2 bg-[#1c4289] hover:bg-[#15326b] text-white px-6 py-2.5 rounded text-xs font-bold transition-colors shadow-sm cursor-pointer"
+                    className="inline-flex items-center space-x-2 bg-[#0084ff] hover:bg-[#0070d6] text-white px-6 py-2.5 rounded text-xs font-bold transition-colors shadow-sm cursor-pointer"
                   >
                     <MessageSquare className="w-4 h-4" />
                     <span>Submit a Complaint</span>
@@ -107,7 +107,7 @@ export default function CmsPage({
               {/* Delivery Policy: Need Help With Delivery Card */}
               {isDeliveryPolicy && (
                 <div className="space-y-3 pt-4 border-t border-slate-100">
-                  <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+                  <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
                     Need Help With Delivery?
                   </div>
                   <p>
@@ -117,7 +117,7 @@ export default function CmsPage({
                   <div className="flex flex-wrap items-center gap-3 pt-2">
                     <a
                       href={`tel:${settings.hotline || '+8809613562601'}`}
-                      className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-[#1c4289] hover:bg-[#15326b] text-white text-xs font-bold transition-colors shadow-xs"
+                      className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-bold transition-colors shadow-xs"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call: {settings.hotline || '09613562601'}</span>
@@ -127,7 +127,7 @@ export default function CmsPage({
                       href="/servicing"
                       className="inline-flex items-center space-x-2 px-4 py-2 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
                     >
-                      <MapPin className="w-3.5 h-3.5 text-[#1c4289]" />
+                      <MapPin className="w-3.5 h-3.5 text-[#0084ff]" />
                       <span>Visit Our Stores</span>
                     </Link>
                   </div>
@@ -137,7 +137,7 @@ export default function CmsPage({
               {/* Privacy Policy: Contact Us Card */}
               {isPrivacyPolicy && (
                 <div className="space-y-3 pt-4 border-t border-slate-100">
-                  <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+                  <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
                     Contact Us
                   </div>
                   <p>
@@ -149,13 +149,13 @@ export default function CmsPage({
                       href={`mailto:${settings.support_email || 'info@techmarketbd.com'}`}
                       className="inline-flex items-center space-x-2 px-4 py-2 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
                     >
-                      <Mail className="w-3.5 h-3.5 text-[#1c4289]" />
+                      <Mail className="w-3.5 h-3.5 text-[#0084ff]" />
                       <span>{settings.support_email || 'info@techmarketbd.com'}</span>
                     </a>
 
                     <a
                       href={`tel:${settings.hotline || '+8809613562601'}`}
-                      className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-[#1c4289] hover:bg-[#15326b] text-white text-xs font-bold transition-colors shadow-xs"
+                      className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-bold transition-colors shadow-xs"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call: {settings.hotline || '09613562601'}</span>
@@ -165,7 +165,7 @@ export default function CmsPage({
                       href="/servicing"
                       className="inline-flex items-center space-x-2 px-4 py-2 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
                     >
-                      <MapPin className="w-3.5 h-3.5 text-[#1c4289]" />
+                      <MapPin className="w-3.5 h-3.5 text-[#0084ff]" />
                       <span>Visit Our Stores</span>
                     </Link>
                   </div>

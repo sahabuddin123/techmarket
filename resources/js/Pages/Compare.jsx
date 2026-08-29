@@ -104,7 +104,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
   };
 
   return (
-    <div className="min-h-screen bg-[#f1f3f6] text-[#1e293b] font-sans flex flex-col antialiased selection:bg-[#002a5c] selection:text-white">
+    <div className="min-h-screen bg-[#f1f3f6] text-[#1e293b] font-sans flex flex-col antialiased selection:bg-[#0084ff] selection:text-white">
       <Head title="Product Specification Comparison - TechMarket BD" />
 
       <Navbar onOpenCart={() => setCartOpen(true)} />
@@ -115,9 +115,9 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
         
         {/* BREADCRUMB */}
         <nav className="flex items-center space-x-2 text-[12px] text-[#64748b]">
-          <Link href="/" className="hover:text-[#002a5c] transition-colors">Home</Link>
+          <Link href="/" className="hover:text-[#0084ff] transition-colors">Home</Link>
           <ChevronRight className="w-3 h-3 text-[#94a3b8]" />
-          <Link href="/catalog" className="hover:text-[#002a5c] transition-colors">Catalog</Link>
+          <Link href="/catalog" className="hover:text-[#0084ff] transition-colors">Catalog</Link>
           <ChevronRight className="w-3 h-3 text-[#94a3b8]" />
           <span className="text-[#1e293b] font-semibold">Product Comparison</span>
         </nav>
@@ -175,7 +175,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                   onFocus={() => searchQuery.length >= 2 && setShowDropdown(true)}
                   placeholder="Search & Add Product to Compare (e.g. Ryzen 9, Vivobook, RTX 4070)..."
                   disabled={products.length >= maxCompare}
-                  className="w-full bg-[#f8fafc] border border-[#cbd5e1] rounded px-3.5 pl-9 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#1c4289] focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-[#f8fafc] border border-[#cbd5e1] rounded px-3.5 pl-9 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0084ff] focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {isSearching && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-medium">
@@ -218,7 +218,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
 
                         <button
                           type="button"
-                          className="bg-[#1c4289] hover:bg-[#15326b] text-white text-[11px] font-bold px-3 py-1.5 rounded shrink-0 transition-colors shadow-2xs"
+                          className="bg-[#0084ff] hover:bg-[#0070d6] text-white text-[11px] font-bold px-3 py-1.5 rounded shrink-0 transition-colors shadow-2xs"
                         >
                           + Compare
                         </button>
@@ -236,7 +236,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                   type="checkbox"
                   checked={highlightDifferences}
                   onChange={(e) => setHighlightDifferences(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#1c4289] focus:ring-[#1c4289] border-slate-300"
+                  className="w-4 h-4 rounded text-[#0084ff] focus:ring-[#0084ff] border-slate-300"
                 />
                 <span>Highlight Differences</span>
               </label>
@@ -249,7 +249,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
           /* EMPTY STATE */
           <div className="bg-white border border-[#d9dde3] rounded-[6px] p-12 text-center shadow-xs space-y-4 max-w-2xl mx-auto">
             <div className="w-16 h-16 rounded-full bg-[#f1f5f9] border border-[#e2e8f0] flex items-center justify-center mx-auto text-[#64748b]">
-              <ArrowRightLeft className="w-8 h-8 text-[#1c4289]" />
+              <ArrowRightLeft className="w-8 h-8 text-[#0084ff]" />
             </div>
             <div className="space-y-1">
               <h2 className="text-[17px] font-bold text-[#1e293b]">No Products in Comparison</h2>
@@ -260,7 +260,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
             <div className="pt-2">
               <Link
                 href="/catalog"
-                className="inline-flex items-center space-x-2 bg-[#1c4289] hover:bg-[#15326b] text-white text-xs font-bold px-6 py-2.5 rounded shadow-xs transition-colors"
+                className="inline-flex items-center space-x-2 bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-bold px-6 py-2.5 rounded shadow-xs transition-colors"
               >
                 <span>Browse Catalog</span>
                 <ChevronRight className="w-4 h-4" />
@@ -320,7 +320,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                             <div className="space-y-1">
                               <Link
                                 href={`/product/${product.slug}`}
-                                className="text-[13px] font-bold text-[#1c4289] hover:underline line-clamp-2 leading-snug block"
+                                className="text-[13px] font-bold text-[#0084ff] hover:underline line-clamp-2 leading-snug block"
                                 title={product.title}
                               >
                                 {product.title}
@@ -349,7 +349,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                                     ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                                     : isAdded
                                     ? 'bg-emerald-600 text-white'
-                                    : 'bg-[#1c4289] hover:bg-[#15326b] text-white'
+                                    : 'bg-[#0084ff] hover:bg-[#0070d6] text-white'
                                 }`}
                               >
                                 {isAdded ? (
@@ -383,7 +383,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                         {/* Blue Category Header Bar */}
                         <tr 
                           onClick={() => toggleGroup(group.group_name)}
-                          className="bg-[#1c4289] text-white cursor-pointer select-none hover:bg-[#15326b] transition-colors"
+                          className="bg-[#0084ff] text-white cursor-pointer select-none hover:bg-[#0070d6] transition-colors"
                         >
                           <td 
                             colSpan={products.length + 1} 
@@ -426,7 +426,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                                 <td 
                                   key={valIdx} 
                                   className={`p-3 text-[#1e293b] leading-relaxed align-top text-[11.5px] ${
-                                    isDiff ? 'font-semibold text-[#1c4289]' : ''
+                                    isDiff ? 'font-semibold text-[#0084ff]' : ''
                                   }`}
                                 >
                                   {val || '—'}
@@ -451,7 +451,7 @@ export default function Compare({ products = [], specMatrix = [], maxCompare = 4
                         <button
                           onClick={() => handleAddToCart(product)}
                           disabled={!product.in_stock}
-                          className="w-full py-2 px-3 rounded text-xs font-bold bg-[#1c4289] hover:bg-[#15326b] text-white flex items-center justify-center space-x-1.5 transition-colors shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full py-2 px-3 rounded text-xs font-bold bg-[#0084ff] hover:bg-[#0070d6] text-white flex items-center justify-center space-x-1.5 transition-colors shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <ShoppingCart className="w-3.5 h-3.5" />
                           <span>Buy Now</span>

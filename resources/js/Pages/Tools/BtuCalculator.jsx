@@ -48,7 +48,7 @@ export default function BtuCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title="AC BTU Calculator - TechMarket BD" />
       <Navbar />
 
@@ -56,9 +56,9 @@ export default function BtuCalculator() {
       <div className="w-full bg-white border-b border-slate-200/90 py-3">
         <div className="max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-500 font-medium">
           <div className="flex items-center space-x-2 truncate">
-            <Link href="/" className="hover:text-[#1c4289] transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#0084ff] transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <Link href="/tools" className="hover:text-[#1c4289] transition-colors">Useful Tools</Link>
+            <Link href="/tools" className="hover:text-[#0084ff] transition-colors">Useful Tools</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <span className="text-slate-900 font-bold truncate">AC BTU Calculator</span>
           </div>
@@ -72,7 +72,7 @@ export default function BtuCalculator() {
           {/* Header Section */}
           <div className="pb-6 border-b border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#1c4289] text-[11px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#0084ff] text-[11px] font-bold uppercase tracking-wider mb-2">
                 <Wind className="w-3.5 h-3.5" />
                 <span>COOLING POWER ESTIMATOR</span>
               </div>
@@ -86,7 +86,7 @@ export default function BtuCalculator() {
 
             <Link
               href="/tools"
-              className="text-xs sm:text-sm font-bold text-slate-600 hover:text-[#1c4289] flex items-center gap-1.5 self-start md:self-auto transition-colors"
+              className="text-xs sm:text-sm font-bold text-slate-600 hover:text-[#0084ff] flex items-center gap-1.5 self-start md:self-auto transition-colors"
             >
               <span>← Back to Tools</span>
             </Link>
@@ -113,7 +113,7 @@ export default function BtuCalculator() {
                   <select
                     value={form.roomSize}
                     onChange={(e) => setForm({ ...form, roomSize: e.target.value })}
-                    className="w-full bg-white text-slate-800 rounded-xl border border-slate-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1c4289] focus:border-[#1c4289] text-xs font-medium cursor-pointer shadow-2xs"
+                    className="w-full bg-white text-slate-800 rounded-xl border border-slate-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] text-xs font-medium cursor-pointer shadow-2xs"
                   >
                     {roomSizeOptions.map((opt) => (
                       <option key={opt} value={opt}>{opt}</option>
@@ -128,7 +128,7 @@ export default function BtuCalculator() {
                   <select
                     value={form.wallType}
                     onChange={(e) => setForm({ ...form, wallType: e.target.value })}
-                    className="w-full bg-white text-slate-800 rounded-xl border border-slate-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#1c4289] focus:border-[#1c4289] text-xs font-medium cursor-pointer shadow-2xs"
+                    className="w-full bg-white text-slate-800 rounded-xl border border-slate-300 py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] text-xs font-medium cursor-pointer shadow-2xs"
                   >
                     {wallTypeOptions.map((opt) => (
                       <option key={opt} value={opt}>{opt}</option>
@@ -152,7 +152,7 @@ export default function BtuCalculator() {
                         onClick={() => setForm({ ...form, sunlightWalls: val })}
                         className={`min-w-[50px] px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-[#1c4289] text-white shadow-xs'
+                            ? 'bg-[#0084ff] text-white shadow-xs'
                             : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 shadow-2xs'
                         }`}
                       >
@@ -179,7 +179,7 @@ export default function BtuCalculator() {
                           onClick={() => setForm({ ...form, roomPosition: val })}
                           className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-center ${
                             isSelected
-                              ? 'bg-[#1c4289] text-white shadow-xs'
+                              ? 'bg-[#0084ff] text-white shadow-xs'
                               : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 shadow-2xs'
                           }`}
                         >
@@ -204,7 +204,7 @@ export default function BtuCalculator() {
                           onClick={() => setForm({ ...form, doors: val })}
                           className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-center ${
                             isSelected
-                              ? 'bg-[#1c4289] text-white shadow-xs'
+                              ? 'bg-[#0084ff] text-white shadow-xs'
                               : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 shadow-2xs'
                           }`}
                         >
@@ -232,7 +232,7 @@ export default function BtuCalculator() {
                           onClick={() => setForm({ ...form, windows: val })}
                           className={`w-10 h-10 rounded-xl text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-[#1c4289] text-white shadow-xs'
+                              ? 'bg-[#0084ff] text-white shadow-xs'
                               : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 shadow-2xs'
                           }`}
                         >
@@ -257,7 +257,7 @@ export default function BtuCalculator() {
                           onClick={() => setForm({ ...form, people: val })}
                           className={`w-10 h-10 rounded-xl text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-[#1c4289] text-white shadow-xs'
+                              ? 'bg-[#0084ff] text-white shadow-xs'
                               : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 shadow-2xs'
                           }`}
                         >
@@ -273,7 +273,7 @@ export default function BtuCalculator() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-[#1c4289] hover:bg-[#15326b] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm hover:shadow"
+                  className="w-full bg-[#0084ff] hover:bg-[#0070d6] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm hover:shadow"
                 >
                   <Calculator className="w-4 h-4" />
                   <span>Calculate AC Capacity</span>
@@ -325,7 +325,7 @@ export default function BtuCalculator() {
                 </div>
               ) : (
                 <div className="bg-slate-50 rounded-2xl border border-dashed border-slate-300 p-8 text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-blue-50 text-[#1c4289] flex items-center justify-center mx-auto shadow-2xs">
+                  <div className="w-16 h-16 rounded-full bg-blue-50 text-[#0084ff] flex items-center justify-center mx-auto shadow-2xs">
                     <Wind className="w-8 h-8 stroke-[1.5]" />
                   </div>
                   <div className="space-y-1">
@@ -340,7 +340,7 @@ export default function BtuCalculator() {
               {/* Buying Tips Guide */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 space-y-3">
                 <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#1c4289]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#0084ff]" />
                   <span>Expert AC Sizing Guidelines</span>
                 </h4>
                 <ul className="text-xs text-slate-600 space-y-2 list-disc list-inside">

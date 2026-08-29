@@ -73,7 +73,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title="EMI Calculator - TechMarket BD" />
       <Navbar />
 
@@ -81,9 +81,9 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
       <div className="w-full bg-white border-b border-slate-200/90 py-3">
         <div className="max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-500 font-medium">
           <div className="flex items-center space-x-2 truncate">
-            <Link href="/" className="hover:text-[#1c4289] transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#0084ff] transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <Link href="/tools" className="hover:text-[#1c4289] transition-colors">Useful Tools</Link>
+            <Link href="/tools" className="hover:text-[#0084ff] transition-colors">Useful Tools</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <span className="text-slate-900 font-bold truncate">EMI Calculator</span>
           </div>
@@ -97,7 +97,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
           {/* Header Section */}
           <div className="pb-6 border-b border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#1c4289] text-[11px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#0084ff] text-[11px] font-bold uppercase tracking-wider mb-2">
                 <CreditCard className="w-3.5 h-3.5" />
                 <span>0% EMI FACILITY</span>
               </div>
@@ -111,7 +111,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
 
             <Link
               href="/tools"
-              className="text-xs sm:text-sm font-bold text-slate-600 hover:text-[#1c4289] flex items-center gap-1.5 self-start md:self-auto transition-colors"
+              className="text-xs sm:text-sm font-bold text-slate-600 hover:text-[#0084ff] flex items-center gap-1.5 self-start md:self-auto transition-colors"
             >
               <span>← Back to Tools</span>
             </Link>
@@ -134,7 +134,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
                     placeholder="e.g. 75000"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full bg-white text-slate-900 rounded-xl border border-slate-300 py-2.5 pl-8 pr-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1c4289] focus:border-[#1c4289] shadow-2xs"
+                    className="w-full bg-white text-slate-900 rounded-xl border border-slate-300 py-2.5 pl-8 pr-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] shadow-2xs"
                   />
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
                 <select
                   value={selectedBankName}
                   onChange={(e) => setSelectedBankName(e.target.value)}
-                  className="w-full bg-white text-slate-800 rounded-xl border border-slate-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#1c4289] focus:border-[#1c4289] cursor-pointer shadow-2xs"
+                  className="w-full bg-white text-slate-800 rounded-xl border border-slate-300 py-2.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] cursor-pointer shadow-2xs"
                 >
                   <option value="">-- Please Select Bank --</option>
                   {bankList.map((b) => (
@@ -160,7 +160,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
               <div className="md:col-span-2">
                 <button
                   type="submit"
-                  className="w-full bg-[#1c4289] hover:bg-[#15326b] text-white py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm hover:shadow"
+                  className="w-full bg-[#0084ff] hover:bg-[#0070d6] text-white py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-sm hover:shadow"
                 >
                   <Calculator className="w-4 h-4" />
                   <span>Calculate</span>
@@ -179,7 +179,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
                 <h3 className="text-base font-bold text-slate-900 font-heading">
-                  Available EMI Tenures for <span className="text-[#1c4289]">{calculatedPlan.bankName}</span>
+                  Available EMI Tenures for <span className="text-[#0084ff]">{calculatedPlan.bankName}</span>
                 </h3>
                 <span className="text-xs font-mono font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
                   Total Amount: ৳{calculatedPlan.amount.toLocaleString()}
@@ -202,7 +202,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
                         <td className="py-3.5 px-4 font-bold text-slate-900">
                           {p.months} Months
                         </td>
-                        <td className="py-3.5 px-4 font-mono font-extrabold text-[#1c4289] text-sm">
+                        <td className="py-3.5 px-4 font-mono font-extrabold text-[#0084ff] text-sm">
                           ৳{p.monthly.toLocaleString()} / mo
                         </td>
                         <td className="py-3.5 px-4">
@@ -221,7 +221,7 @@ export default function EmiCalculator({ partners = [], banks = [] }) {
             </div>
           ) : (
             <div className="bg-slate-50/70 rounded-2xl border border-dashed border-slate-300 p-8 text-center space-y-3">
-              <div className="w-14 h-14 rounded-full bg-blue-50 text-[#1c4289] flex items-center justify-center mx-auto shadow-2xs">
+              <div className="w-14 h-14 rounded-full bg-blue-50 text-[#0084ff] flex items-center justify-center mx-auto shadow-2xs">
                 <CreditCard className="w-7 h-7 stroke-[1.5]" />
               </div>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">

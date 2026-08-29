@@ -84,7 +84,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
               <div className="w-full aspect-square bg-slate-50 border border-slate-200/90 rounded-2xl p-6 flex items-center justify-center relative overflow-hidden group">
                 
                 {savings > 0 && (
-                  <span className="absolute top-3 left-3 bg-[#00897b] text-white font-bold text-xs px-2.5 py-1 rounded-md shadow-2xs z-10">
+                  <span className="absolute top-3 left-3 bg-[#0084ff] text-white font-bold text-xs px-2.5 py-1 rounded-md shadow-2xs z-10">
                     Save: ৳{savings.toLocaleString()}
                   </span>
                 )}
@@ -125,7 +125,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                 {/* Category / Brand Breadcrumb */}
                 <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                   {product.brand?.name && (
-                    <span className="text-[#1c4289] font-extrabold">{product.brand.name}</span>
+                    <span className="text-[#0084ff] font-extrabold">{product.brand.name}</span>
                   )}
                   {product.brand?.name && product.category?.name && <span>•</span>}
                   {product.category?.name && (
@@ -168,13 +168,13 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                 {specsList.length > 0 && (
                   <div className="mt-4 space-y-2">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-[#1c4289]" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#0084ff]" />
                       <span>Key Highlights</span>
                     </h3>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-slate-700">
                       {specsList.slice(0, 6).map((spec, idx) => (
                         <li key={idx} className="flex items-start gap-1.5 bg-slate-50/70 px-2.5 py-1.5 rounded-lg border border-slate-200/60">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#1c4289] mt-1.5 shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#0084ff] mt-1.5 shrink-0" />
                           <span className="leading-tight text-[11.5px]">{spec}</span>
                         </li>
                       ))}
@@ -218,7 +218,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                         : added
                         ? 'bg-emerald-600 text-white'
-                        : 'bg-[#1c4289] hover:bg-[#15326b] text-white'
+                        : 'bg-[#0084ff] hover:bg-[#0070d6] text-white'
                     }`}
                   >
                     {added ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
@@ -247,7 +247,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                   <Link
                     href={`/product/${product.slug}`}
                     onClick={onClose}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1c4289] hover:text-blue-700 hover:underline transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0084ff] hover:text-blue-700 hover:underline transition-colors"
                   >
                     <span>View Full Product Specifications & Warranty Details</span>
                     <ArrowRight className="w-3.5 h-3.5" />

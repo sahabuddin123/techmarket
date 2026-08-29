@@ -245,7 +245,7 @@ export default function ChatbotWidget() {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="group relative flex items-center justify-center p-2.5 sm:px-4 sm:py-2.5 bg-[#002a5c] hover:bg-[#1c4289] text-white rounded-full shadow-2xl hover:scale-105 transition-all duration-300 font-sans border-2 border-white/20 cursor-pointer shadow-blue-950/40 w-11 h-11 sm:w-auto sm:h-auto"
+            className="group relative flex items-center justify-center p-2.5 sm:px-4 sm:py-2.5 bg-[#0084ff] hover:bg-[#0084ff] text-white rounded-full shadow-2xl hover:scale-105 transition-all duration-300 font-sans border-2 border-white/20 cursor-pointer shadow-blue-950/40 w-11 h-11 sm:w-auto sm:h-auto"
             title="Live Support & AI Assistant"
             aria-label="Open Live Support AI Assistant"
           >
@@ -284,7 +284,7 @@ export default function ChatbotWidget() {
         <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:left-6 z-50 flex flex-col w-full sm:w-[410px] h-full sm:h-[620px] max-h-[100vh] sm:max-h-[85vh] bg-white sm:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden font-sans animate-in slide-in-from-bottom-left duration-200 selection:bg-blue-600 selection:text-white">
           
           {/* HEADER */}
-          <div className="bg-[#002a5c] text-white p-3.5 flex items-center justify-between shadow-md select-none shrink-0">
+          <div className="bg-[#0084ff] text-white p-3.5 flex items-center justify-between shadow-md select-none shrink-0">
             <div className="flex items-center space-x-2.5">
               <div className="w-9 h-9 rounded-full bg-blue-900 border border-blue-400/40 flex items-center justify-center relative shadow-xs">
                 <Bot className="w-5 h-5 text-amber-300" />
@@ -329,7 +329,7 @@ export default function ChatbotWidget() {
                 >
                   {/* Bot Avatar */}
                   {isBot && (
-                    <div className="w-7 h-7 rounded-full bg-[#002a5c] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                    <div className="w-7 h-7 rounded-full bg-[#0084ff] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                       <Bot className="w-4 h-4 text-amber-300" />
                     </div>
                   )}
@@ -342,7 +342,7 @@ export default function ChatbotWidget() {
                       className={`p-3 rounded-2xl shadow-xs ${
                         isBot
                           ? 'bg-white text-gray-800 border border-gray-200 rounded-tl-xs'
-                          : 'bg-[#002a5c] text-white rounded-tr-xs ml-auto'
+                          : 'bg-[#0084ff] text-white rounded-tr-xs ml-auto'
                       }`}
                     >
                       <p className="whitespace-pre-line leading-relaxed font-normal">
@@ -396,7 +396,7 @@ export default function ChatbotWidget() {
                                     className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 transition-colors ${
                                       addedProductId === prod.id
                                         ? 'bg-emerald-600 text-white'
-                                        : 'bg-[#002a5c] hover:bg-[#1c4289] text-white'
+                                        : 'bg-[#0084ff] hover:bg-[#0084ff] text-white'
                                     }`}
                                   >
                                     {addedProductId === prod.id ? <Check className="w-2.5 h-2.5" /> : <ShoppingCart className="w-2.5 h-2.5" />}
@@ -495,7 +495,7 @@ export default function ChatbotWidget() {
                         <button
                           type="submit"
                           disabled={isSubmittingTicket}
-                          className="w-full py-2 bg-[#002a5c] hover:bg-[#1c4289] text-white font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                          className="w-full py-2 bg-[#0084ff] hover:bg-[#0084ff] text-white font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                         >
                           {isSubmittingTicket ? (
                             <span>Submitting Inquiry...</span>
@@ -538,7 +538,7 @@ export default function ChatbotWidget() {
             {/* Typing Indicator */}
             {isLoading && (
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#002a5c] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <div className="w-7 h-7 rounded-full bg-[#0084ff] text-white flex items-center justify-center shrink-0 shadow-xs">
                   <Bot className="w-4 h-4 text-amber-300" />
                 </div>
                 <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-xs px-3.5 py-2 shadow-xs flex items-center space-x-1">
@@ -573,7 +573,7 @@ export default function ChatbotWidget() {
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isLoading}
-                className="p-2 rounded-xl bg-[#002a5c] hover:bg-[#1c4289] text-white font-bold transition-colors shadow-xs disabled:opacity-40 cursor-pointer"
+                className="p-2 rounded-xl bg-[#0084ff] hover:bg-[#0084ff] text-white font-bold transition-colors shadow-xs disabled:opacity-40 cursor-pointer"
                 title="Send Message"
               >
                 <Send className="w-4 h-4" />

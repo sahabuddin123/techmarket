@@ -106,8 +106,8 @@ export default function PcBuilder({ slots = [], selectedBuild = {}, summary = {}
         <div className="hidden print:block border-b-2 border-[#1e293b] pb-4 mb-4">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-2xl font-black text-[#002a5c] tracking-tight">
-                TECH<span className="text-[#0088cc]">MARKET</span>
+              <h1 className="text-2xl font-black text-[#0084ff] tracking-tight">
+                TECH<span className="text-[#0084ff]">MARKET</span>
               </h1>
               <p className="text-xs font-semibold text-gray-700">Custom PC Build Official Quotation</p>
               <p className="text-[10px] text-gray-500">
@@ -172,8 +172,8 @@ export default function PcBuilder({ slots = [], selectedBuild = {}, summary = {}
             <div className="print:hidden">
               <div className="flex items-center space-x-2">
                 <h1 className="text-[24px] font-black tracking-tight text-[#1e293b]">
-                  <span className="text-[#002a5c]">TECH</span>
-                  <span className="text-[#0088cc]">MARKET</span>
+                  <span className="text-[#0084ff]">TECH</span>
+                  <span className="text-[#0084ff]">MARKET</span>
                 </h1>
               </div>
               <p className="text-[15px] font-bold text-[#475569]">Build your own PC</p>
@@ -216,7 +216,7 @@ export default function PcBuilder({ slots = [], selectedBuild = {}, summary = {}
                       href="/account/saved-pc-builds"
                       className="w-full text-left px-4 py-2 hover:bg-[#f1f5f9] flex items-center space-x-2 block"
                     >
-                      <Eye className="w-3.5 h-3.5 text-[#0088cc]" />
+                      <Eye className="w-3.5 h-3.5 text-[#0084ff]" />
                       <span>View Saved Builds</span>
                     </Link>
                     <button
@@ -478,7 +478,7 @@ function ComponentGroupSection({
                     <div className="space-y-0.5">
                       <Link
                         href={`/product/${product.slug}`}
-                        className="text-[13px] font-semibold text-[#002a5c] hover:underline block truncate print:text-xs print:text-black print:no-underline"
+                        className="text-[13px] font-semibold text-[#0084ff] hover:underline block truncate print:text-xs print:text-black print:no-underline"
                         title={product.title}
                       >
                         {product.title}

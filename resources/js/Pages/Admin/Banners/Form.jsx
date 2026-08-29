@@ -429,7 +429,7 @@ export default function BannerForm({ banner }) {
                       </div>
                     )}
                     {data.button_text && (
-                      <span className="mt-1.5 inline-block self-start px-2.5 py-1 rounded bg-[#1c4289] text-[9.5px] font-bold shadow-xs">
+                      <span className="mt-1.5 inline-block self-start px-2.5 py-1 rounded bg-[#0084ff] text-[9.5px] font-bold shadow-xs">
                         {data.button_text} →
                       </span>
                     )}

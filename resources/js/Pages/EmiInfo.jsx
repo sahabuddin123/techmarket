@@ -58,7 +58,7 @@ export default function EmiInfo() {
   }, [searchBank, filterTerm]);
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title="EMI Information & Bank Partner Facilities - TechMarket BD" />
       <Navbar onOpenCart={() => setCartOpen(true)} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
@@ -84,7 +84,7 @@ export default function EmiInfo() {
 
           {/* Section 1: Our Global EMI Policy */}
           <div className="space-y-3">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Our Global EMI Policy
             </div>
             
@@ -100,7 +100,7 @@ export default function EmiInfo() {
 
           {/* Section 2: EMI Terms & Conditions */}
           <div className="space-y-3 pt-2">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               EMI Terms & Conditions
             </div>
 
@@ -117,14 +117,14 @@ export default function EmiInfo() {
 
           {/* Section 3: Banks Under Online EMI And Its Charges */}
           <div className="space-y-5 pt-2">
-            <div className="inline-block bg-[#1c4289] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#0084ff] text-white px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Banks Under Online EMI And Its Charges
             </div>
 
             {/* Bank Logos Strip Matching Reference Screenshot */}
             <div className="bg-slate-50/70 border border-slate-200 rounded-lg p-4 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-3 items-center justify-center text-center">
               {['BRAC Bank', 'City Bank', 'Bank Asia', 'Dhaka Bank', 'Jamuna Bank', 'DBBL', 'EBL', 'MTB', 'Islami Bank', 'NCC Bank', 'Standard Bank', 'NRB Bank', 'Meghna Bank', 'SBAC Bank'].map((bName, bIdx) => (
-                <div key={bIdx} className="bg-white border border-slate-200 rounded p-2 text-[10px] font-bold text-slate-700 shadow-2xs hover:border-[#1c4289] transition-colors truncate">
+                <div key={bIdx} className="bg-white border border-slate-200 rounded p-2 text-[10px] font-bold text-slate-700 shadow-2xs hover:border-[#0084ff] transition-colors truncate">
                   {bName}
                 </div>
               ))}
@@ -138,7 +138,7 @@ export default function EmiInfo() {
                   value={searchBank}
                   onChange={(e) => setSearchBank(e.target.value)}
                   placeholder="Search bank name..."
-                  className="w-full bg-white border border-slate-300 rounded px-3 py-1.5 pl-8 text-xs focus:outline-none focus:border-[#1c4289]"
+                  className="w-full bg-white border border-slate-300 rounded px-3 py-1.5 pl-8 text-xs focus:outline-none focus:border-[#0084ff]"
                 />
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
               </div>
@@ -148,7 +148,7 @@ export default function EmiInfo() {
                 <select
                   value={filterTerm}
                   onChange={(e) => setFilterTerm(e.target.value)}
-                  className="bg-white border border-slate-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-[#1c4289]"
+                  className="bg-white border border-slate-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-[#0084ff]"
                 >
                   <option value="All">All Terms</option>
                   <option value="3 Month">3 Month</option>

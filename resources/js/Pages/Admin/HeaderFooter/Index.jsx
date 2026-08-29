@@ -36,7 +36,7 @@ export default function HeaderFooterBuilder({
       header_announcement_enabled: settings.header_announcement_enabled || '0',
       header_announcement_text: settings.header_announcement_text || '🎉 Special Eid Campaign 2026: Enjoy Up To 40% Off + Free Shipping on all Laptops!',
       header_announcement_link: settings.header_announcement_link || '/offers',
-      header_announcement_bg: settings.header_announcement_bg || '#1c4289',
+      header_announcement_bg: settings.header_announcement_bg || '#0084ff',
       header_announcement_text_color: settings.header_announcement_text_color || '#ffffff',
 
       // Header Quick Actions

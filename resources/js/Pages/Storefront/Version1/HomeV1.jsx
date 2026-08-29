@@ -120,11 +120,11 @@ export default function HomeV1({
   // Quick Action Icon Mapper
   const getQuickActionIcon = (iconName) => {
     const name = (iconName || '').toLowerCase();
-    if (name.includes('cpu') || name.includes('builder')) return <Cpu className="w-5 h-5 text-[#1c4289]" />;
-    if (name.includes('wrench') || name.includes('service')) return <Wrench className="w-5 h-5 text-[#1c4289]" />;
-    if (name.includes('compare') || name.includes('arrow')) return <ArrowRightLeft className="w-5 h-5 text-[#1c4289]" />;
-    if (name.includes('deal') || name.includes('tag')) return <Tag className="w-5 h-5 text-[#1c4289]" />;
-    return <Zap className="w-5 h-5 text-[#1c4289]" />;
+    if (name.includes('cpu') || name.includes('builder')) return <Cpu className="w-5 h-5 text-[#0084ff]" />;
+    if (name.includes('wrench') || name.includes('service')) return <Wrench className="w-5 h-5 text-[#0084ff]" />;
+    if (name.includes('compare') || name.includes('arrow')) return <ArrowRightLeft className="w-5 h-5 text-[#0084ff]" />;
+    if (name.includes('deal') || name.includes('tag')) return <Tag className="w-5 h-5 text-[#0084ff]" />;
+    return <Zap className="w-5 h-5 text-[#0084ff]" />;
   };
 
   // Check if a section is enabled (defaults to true)
@@ -142,7 +142,7 @@ export default function HomeV1({
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7f9] text-slate-900 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f4f7f9] text-slate-900 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title={`${settings.site_name || 'TechMarket BD'} - Trusted Retail Computer Shop in Bangladesh`} />
 
       {/* 1. Header & Mega Navigation */}
@@ -273,13 +273,13 @@ export default function HomeV1({
                 <Link
                   key={qa.id}
                   href={qa.url}
-                  className="bg-white border border-slate-200 hover:border-[#002a5c] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group"
+                  className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group"
                 >
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 group-hover:bg-[#002a5c] group-hover:text-white transition-colors">
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 group-hover:bg-[#0084ff] group-hover:text-white transition-colors">
                     {getQuickActionIcon(qa.icon || qa.title)}
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight group-hover:text-[#002a5c] transition-colors truncate">
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-[15px] leading-tight group-hover:text-[#0084ff] transition-colors truncate">
                       {qa.title}
                     </h4>
                     <p className="text-xs text-slate-500 truncate mt-0.5 font-medium">
@@ -290,8 +290,8 @@ export default function HomeV1({
               ))
             ) : (
               <>
-                <Link href="/pc-builder" className="bg-white border border-slate-200 hover:border-[#002a5c] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#002a5c]">
+                <Link href="/pc-builder" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
                     <Cpu className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
@@ -300,8 +300,8 @@ export default function HomeV1({
                   </div>
                 </Link>
 
-                <Link href="/servicing" className="bg-white border border-slate-200 hover:border-[#002a5c] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#002a5c]">
+                <Link href="/servicing" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
                     <Wrench className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
@@ -310,8 +310,8 @@ export default function HomeV1({
                   </div>
                 </Link>
 
-                <Link href="/compare" className="bg-white border border-slate-200 hover:border-[#002a5c] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#002a5c]">
+                <Link href="/compare" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
                     <ArrowRightLeft className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
@@ -320,8 +320,8 @@ export default function HomeV1({
                   </div>
                 </Link>
 
-                <Link href="/offers" className="bg-white border border-slate-200 hover:border-[#002a5c] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
-                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#002a5c]">
+                <Link href="/offers" className="bg-white border border-slate-200 hover:border-[#0084ff] rounded-xl p-4 flex items-center space-x-3.5 shadow-xs hover:shadow transition-all group">
+                  <div className="w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-[#0084ff]">
                     <Tag className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
@@ -353,12 +353,12 @@ export default function HomeV1({
                 <Link
                   key={cat.id || cat.slug}
                   href={`/category/${cat.slug}`}
-                  className="bg-white border border-slate-200 hover:border-[#002a5c] hover:shadow-md rounded-xl p-2.5 sm:p-3.5 flex flex-col items-center justify-center text-center transition-all group aspect-square"
+                  className="bg-white border border-slate-200 hover:border-[#0084ff] hover:shadow-md rounded-xl p-2.5 sm:p-3.5 flex flex-col items-center justify-center text-center transition-all group aspect-square"
                 >
                   <div className="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
                     {getCategoryIcon(cat.slug)}
                   </div>
-                  <span className="text-[11px] sm:text-[13px] font-bold text-slate-800 group-hover:text-[#002a5c] transition-colors leading-tight line-clamp-2">
+                  <span className="text-[11px] sm:text-[13px] font-bold text-slate-800 group-hover:text-[#0084ff] transition-colors leading-tight line-clamp-2">
                     {cat.name}
                   </span>
                 </Link>
@@ -410,7 +410,7 @@ export default function HomeV1({
                 <div className="flex items-center space-x-1 pl-2">
                   <Link
                     href="/catalog?flash_sale=true"
-                    className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#002a5c] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
+                    className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#0084ff] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
                   >
                     <span>View All</span>
                     <ChevronRight className="w-4 h-4 ml-0.5" />
@@ -446,7 +446,7 @@ export default function HomeV1({
               <div className="flex items-center space-x-2">
                 <Link
                   href="/catalog?featured=true"
-                  className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#002a5c] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
+                  className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#0084ff] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
                 >
                   <span>View All</span>
                   <ChevronRight className="w-4 h-4 ml-0.5" />
@@ -480,7 +480,7 @@ export default function HomeV1({
               <div className="flex items-center space-x-2">
                 <Link
                   href="/catalog?sort=latest"
-                  className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#002a5c] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
+                  className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#0084ff] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
                 >
                   <span>View All</span>
                   <ChevronRight className="w-4 h-4 ml-0.5" />
@@ -514,7 +514,7 @@ export default function HomeV1({
               <div className="flex items-center space-x-2">
                 <Link
                   href="/catalog?sort=bestseller"
-                  className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#002a5c] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
+                  className="text-xs sm:text-[13px] font-bold text-slate-700 hover:text-[#0084ff] px-3 py-1.5 rounded bg-white border border-slate-200 shadow-xs flex items-center"
                 >
                   <span>View All</span>
                   <ChevronRight className="w-4 h-4 ml-0.5" />

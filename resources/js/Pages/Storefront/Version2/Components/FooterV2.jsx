@@ -291,7 +291,7 @@ export default function FooterV2({ onOpenCart }) {
         {showFloatingHotline && (
           <a
             href={`tel:${settings.hotline || '+8809613562601'}`}
-            className="w-11 h-11 rounded-full bg-[#1c4289] hover:bg-[#15326b] text-white flex items-center justify-center shadow-xl border border-blue-900/60 transition-all hover:scale-108"
+            className="w-11 h-11 rounded-full bg-[#0084ff] hover:bg-[#0070d6] text-white flex items-center justify-center shadow-xl border border-blue-900/60 transition-all hover:scale-108"
             title="Call Hotline"
             aria-label="Call Hotline"
           >

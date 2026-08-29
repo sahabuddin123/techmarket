@@ -61,7 +61,7 @@ export default function CartDrawer({ isOpen, onClose }) {
               ? 'bg-gradient-to-r from-[#0153FD] to-[#002268] border-b border-[#8BB1FF]/30'
               : isV2
               ? 'bg-[#0b1a36] border-b border-blue-950'
-              : 'bg-[#002a5c] border-b border-[#001f44]'
+              : 'bg-[#0084ff] border-b border-[#001f44]'
           }`}>
             <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-white shadow-xs shrink-0">

@@ -87,7 +87,7 @@ export default function ProductCard({ product, variant = 'standard' }) {
         {/* Top Badges & Actions */}
         <div className="flex items-start justify-between min-h-[22px] mb-1.5">
           {savings > 0 ? (
-            <span className="bg-[#00897b] text-white font-bold text-[11px] px-2 py-0.5 rounded-sm inline-block shadow-2xs">
+            <span className="bg-[#0084ff] text-white font-bold text-[11px] px-2 py-0.5 rounded-sm inline-block shadow-2xs">
               Save: ৳{savings.toLocaleString()}
             </span>
           ) : (
@@ -111,12 +111,12 @@ export default function ProductCard({ product, variant = 'standard' }) {
               onClick={handleCompare}
               className={`p-1.5 rounded transition-all cursor-pointer ${
                 compareActive 
-                  ? 'text-[#1c4289] bg-blue-50 hover:bg-blue-100' 
-                  : 'text-gray-400 hover:text-[#1c4289] hover:bg-gray-100'
+                  ? 'text-[#0084ff] bg-blue-50 hover:bg-blue-100' 
+                  : 'text-gray-400 hover:text-[#0084ff] hover:bg-gray-100'
               }`}
               title={compareActive ? "Added to Compare" : "Add to Compare"}
             >
-              <ArrowRightLeft className={`w-4 h-4 transition-transform active:scale-125 ${compareActive ? 'stroke-[2.5] text-[#1c4289]' : ''}`} />
+              <ArrowRightLeft className={`w-4 h-4 transition-transform active:scale-125 ${compareActive ? 'stroke-[2.5] text-[#0084ff]' : ''}`} />
             </button>
             <button
               onClick={(e) => { e.preventDefault(); setQuickViewOpen(true); }}

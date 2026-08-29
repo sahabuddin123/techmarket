@@ -142,9 +142,9 @@ export default function ComponentChoose({
         
         {/* BREADCRUMB */}
         <nav className="flex items-center space-x-2 text-[12px] text-[#64748b]">
-          <Link href="/" className="hover:text-[#002a5c]">Home</Link>
+          <Link href="/" className="hover:text-[#0084ff]">Home</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/pc-builder" className="hover:text-[#002a5c]">PC Builder</Link>
+          <Link href="/pc-builder" className="hover:text-[#0084ff]">PC Builder</Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <span className="text-[#1e293b] font-semibold">{pageTitle}</span>
         </nav>
@@ -396,7 +396,7 @@ export default function ComponentChoose({
                       {/* Product Title */}
                       <Link
                         href={`/product/${product.slug}`}
-                        className="text-[12.5px] font-bold text-[#1e293b] hover:text-[#002a5c] line-clamp-2 leading-tight mb-2 min-h-[34px]"
+                        className="text-[12.5px] font-bold text-[#1e293b] hover:text-[#0084ff] line-clamp-2 leading-tight mb-2 min-h-[34px]"
                         title={product.title}
                       >
                         {product.title}

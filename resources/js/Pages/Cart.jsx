@@ -102,7 +102,7 @@ export default function Cart(props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-[#333] font-sans flex flex-col selection:bg-[#002a5c] selection:text-white">
+    <div className="min-h-screen bg-[#f3f4f6] text-[#333] font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title={`Shopping Cart (${itemCount}) | TechMarket BD`} />
 
       {/* 1. GLOBAL HEADER & MEGA MENU */}
@@ -271,7 +271,7 @@ export default function Cart(props) {
               {/* Continue Shopping Link */}
               <Link
                 href="/shop"
-                className="text-[12px] text-[#002a5c] font-semibold hover:underline flex items-center gap-1 mt-3 inline-block"
+                className="text-[12px] text-[#0084ff] font-semibold hover:underline flex items-center gap-1 mt-3 inline-block"
               >
                 <ArrowLeft className="w-3.5 h-3.5 inline" />
                 <span>Continue Shopping</span>
@@ -316,7 +316,7 @@ export default function Cart(props) {
                   {/* Total Divider */}
                   <div className="pt-2 border-t border-[#eee] flex justify-between items-baseline">
                     <span className="text-[13px] font-bold text-[#111]">Total</span>
-                    <span className="text-[18px] sm:text-[20px] font-black text-[#002a5c]">
+                    <span className="text-[18px] sm:text-[20px] font-black text-[#0084ff]">
                       ৳{grandTotal.toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
@@ -325,7 +325,7 @@ export default function Cart(props) {
                 {/* PROMO CODE SECTION */}
                 <div className="pt-2 border-t border-[#eee] space-y-1.5">
                   <span className="text-[12px] font-bold text-[#333] flex items-center gap-1.5">
-                    <Tag className="w-3.5 h-3.5 text-[#002a5c]" />
+                    <Tag className="w-3.5 h-3.5 text-[#0084ff]" />
                     <span>Promo Code</span>
                   </span>
 
@@ -353,12 +353,12 @@ export default function Cart(props) {
                         placeholder="Enter code"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
-                        className="flex-1 px-2.5 py-1.5 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#002a5c] text-[#333] uppercase"
+                        className="flex-1 px-2.5 py-1.5 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#0084ff] text-[#333] uppercase"
                       />
                       <button
                         type="submit"
                         disabled={isApplyingCoupon || !couponCode.trim()}
-                        className="bg-[#002a5c] hover:bg-[#1c4289] text-white text-[12px] font-bold px-4 py-1.5 rounded-[2px] transition-colors cursor-pointer disabled:opacity-60"
+                        className="bg-[#0084ff] hover:bg-[#0084ff] text-white text-[12px] font-bold px-4 py-1.5 rounded-[2px] transition-colors cursor-pointer disabled:opacity-60"
                       >
                         {isApplyingCoupon ? '...' : 'Apply'}
                       </button>
@@ -402,12 +402,12 @@ export default function Cart(props) {
                         placeholder="Enter points"
                         value={pointsInput}
                         onChange={(e) => setPointsInput(e.target.value)}
-                        className="flex-1 px-2.5 py-1.5 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#002a5c] text-[#333]"
+                        className="flex-1 px-2.5 py-1.5 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#0084ff] text-[#333]"
                       />
                       <button
                         type="submit"
                         disabled={isApplyingPoints || !pointsInput || summary.available_points <= 0}
-                        className="bg-[#002a5c] hover:bg-[#1c4289] text-white text-[12px] font-bold px-4 py-1.5 rounded-[2px] transition-colors cursor-pointer disabled:opacity-60"
+                        className="bg-[#0084ff] hover:bg-[#0084ff] text-white text-[12px] font-bold px-4 py-1.5 rounded-[2px] transition-colors cursor-pointer disabled:opacity-60"
                       >
                         {isApplyingPoints ? '...' : 'Apply'}
                       </button>
@@ -418,7 +418,7 @@ export default function Cart(props) {
                 {/* PROCEED TO CHECKOUT BUTTON */}
                 <Link
                   href="/checkout"
-                  className="w-full py-2.5 bg-[#002a5c] hover:bg-[#1c4289] text-white text-[13px] font-bold rounded-[3px] flex items-center justify-center gap-1.5 transition-colors shadow-none cursor-pointer"
+                  className="w-full py-2.5 bg-[#0084ff] hover:bg-[#0084ff] text-white text-[13px] font-bold rounded-[3px] flex items-center justify-center gap-1.5 transition-colors shadow-none cursor-pointer"
                 >
                   <Lock className="w-3.5 h-3.5" />
                   <span>Proceed to Checkout</span>
@@ -455,7 +455,7 @@ export default function Cart(props) {
             </p>
             <Link
               href="/shop"
-              className="inline-block px-5 py-2 bg-[#002a5c] hover:bg-[#1c4289] text-white text-[12px] font-bold rounded-[3px] transition-colors"
+              className="inline-block px-5 py-2 bg-[#0084ff] hover:bg-[#0084ff] text-white text-[12px] font-bold rounded-[3px] transition-colors"
             >
               Continue Shopping
             </Link>

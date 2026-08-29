@@ -18,7 +18,7 @@ export default function Wishlist({ wishlists = [], products = [] }) {
     : [];
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title={`My Wishlist (${productList.length}) - ${settings.site_name || 'TechMarket BD'}`} />
 
       <Navbar onOpenCart={() => setCartOpen(true)} />
@@ -28,7 +28,7 @@ export default function Wishlist({ wishlists = [], products = [] }) {
       <div className="w-full bg-white border-b border-slate-200/90 py-3">
         <div className="max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-500 font-medium">
           <div className="flex items-center space-x-2 truncate">
-            <Link href="/" className="hover:text-[#1c4289] transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#0084ff] transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <span className="text-slate-900 font-bold truncate">My Wishlist</span>
           </div>
@@ -80,7 +80,7 @@ export default function Wishlist({ wishlists = [], products = [] }) {
             </div>
             <Link
               href="/catalog"
-              className="inline-flex items-center space-x-2 bg-[#1c4289] hover:bg-[#15326b] text-white font-extrabold text-xs sm:text-sm px-7 py-3 rounded-xl shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center space-x-2 bg-[#0084ff] hover:bg-[#0070d6] text-white font-extrabold text-xs sm:text-sm px-7 py-3 rounded-xl shadow-xs transition-all cursor-pointer"
             >
               <span>Browse Catalog</span>
               <ArrowRight className="w-4 h-4" />

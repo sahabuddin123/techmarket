@@ -34,7 +34,7 @@ export default function MobileNavigation({ isOpen, onClose, categories = [], aut
             {/* Slide-out Drawer Panel */}
             <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl z-50 flex flex-col transform transition-transform duration-300">
                 {/* Header */}
-                <div className="p-3.5 bg-[#002a5c] text-white flex items-center justify-between border-b border-blue-950">
+                <div className="p-3.5 bg-[#0084ff] text-white flex items-center justify-between border-b border-blue-950">
                     <Link href="/" onClick={onClose} className="flex items-center gap-2.5 max-w-[200px]">
                         {settings.site_logo ? (
                             <img
@@ -195,7 +195,7 @@ export default function MobileNavigation({ isOpen, onClose, categories = [], aut
                                     onClose();
                                     window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'register' } }));
                                 }}
-                                className="flex-1 py-2 text-center bg-[#002a5c] text-white rounded-lg font-bold text-xs hover:bg-[#001f44] transition-colors"
+                                className="flex-1 py-2 text-center bg-[#0084ff] text-white rounded-lg font-bold text-xs hover:bg-[#001f44] transition-colors"
                             >
                                 Register
                             </button>

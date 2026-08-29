@@ -15,7 +15,7 @@ export default function Invoice({ order }) {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans py-8 px-4 sm:px-6 selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-white text-slate-900 font-sans py-8 px-4 sm:px-6 selection:bg-[#0084ff] selection:text-white">
       <Head title={`Invoice #${order.order_number} - TechMarket BD`} />
 
       <div className="max-w-4xl mx-auto space-y-6">
@@ -23,7 +23,7 @@ export default function Invoice({ order }) {
         <div className="flex items-center justify-between no-print border-b border-slate-100 pb-4">
           <Link
             href="/"
-            className="text-xs font-bold text-[#1c4289] hover:underline flex items-center space-x-1.5"
+            className="text-xs font-bold text-[#0084ff] hover:underline flex items-center space-x-1.5"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Storefront</span>
@@ -31,7 +31,7 @@ export default function Invoice({ order }) {
 
           <button
             onClick={handlePrint}
-            className="bg-[#1c4289] hover:bg-[#15326b] text-white font-bold text-xs px-5 py-2.5 rounded-lg flex items-center space-x-2 transition-all shadow-xs cursor-pointer"
+            className="bg-[#0084ff] hover:bg-[#0070d6] text-white font-bold text-xs px-5 py-2.5 rounded-lg flex items-center space-x-2 transition-all shadow-xs cursor-pointer"
           >
             <Printer className="w-4 h-4" />
             <span>PRINT OFFICIAL INVOICE</span>
@@ -44,8 +44,8 @@ export default function Invoice({ order }) {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-6 gap-4">
             <div className="space-y-1">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded bg-[#1c4289] text-white font-black flex items-center justify-center text-sm">TM</div>
-                <span className="text-xl font-extrabold tracking-tight text-slate-900">TECHMARKET <span className="text-[#1c4289]">BD</span></span>
+                <div className="w-8 h-8 rounded bg-[#0084ff] text-white font-black flex items-center justify-center text-sm">TM</div>
+                <span className="text-xl font-extrabold tracking-tight text-slate-900">TECHMARKET <span className="text-[#0084ff]">BD</span></span>
               </div>
               <p className="text-xs text-slate-500">Multiplan Center, Level-6, Elephant Road, Dhaka-1205</p>
               <p className="text-xs text-slate-500">Hotline: 09613562601 | Trade Lic: TRAD/DNCC/012948</p>

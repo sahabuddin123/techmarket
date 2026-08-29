@@ -10,14 +10,14 @@ export function applyStorefrontTheme(themeConfig, versionKey = 'v3') {
   // Default theme presets if custom config is missing
   const presets = {
     v1: {
-      '--storefront-primary': '#e11b22',
-      '--storefront-secondary': '#002a5c',
-      '--storefront-accent': '#ff9800',
-      '--storefront-bg': '#f1f5f9',
+      '--storefront-primary': '#0084ff',
+      '--storefront-secondary': '#0c1424',
+      '--storefront-accent': '#38bdf8',
+      '--storefront-bg': '#f4f7f9',
       '--storefront-surface': '#ffffff',
-      '--storefront-text': '#1e293b',
+      '--storefront-text': '#0f172a',
       '--storefront-border': '#e2e8f0',
-      '--storefront-radius': '8px',
+      '--storefront-radius': '10px',
     },
     v2: {
       '--storefront-primary': '#2563eb',

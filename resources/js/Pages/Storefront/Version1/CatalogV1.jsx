@@ -234,7 +234,7 @@ export default function CatalogV1(props) {
   const totalCount = productsData.total ?? products.length;
 
   return (
-    <div className="min-h-screen bg-[#f2f4f8] text-[#333] font-sans flex flex-col selection:bg-[#002a5c] selection:text-white">
+    <div className="min-h-screen bg-[#f2f4f8] text-[#333] font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head>
         <title>{category?.seo_title || `${displayTitle} | TechMarket BD`}</title>
         <meta
@@ -423,7 +423,7 @@ export default function CatalogV1(props) {
                             type="checkbox"
                             checked={selectedAvailability.includes(item.key)}
                             onChange={() => toggleAvailability(item.key)}
-                            className="rounded-[2px] border-[#cbd5e1] text-[#002a5c] focus:ring-[#002a5c] w-3.5 h-3.5 cursor-pointer"
+                            className="rounded-[2px] border-[#cbd5e1] text-[#0084ff] focus:ring-[#0084ff] w-3.5 h-3.5 cursor-pointer"
                           />
                           <span className={selectedAvailability.includes(item.key) ? 'font-bold text-[#111]' : ''}>
                             {item.label}
@@ -460,7 +460,7 @@ export default function CatalogV1(props) {
                           value={minPrice}
                           onChange={(e) => setMinPrice(e.target.value)}
                           onBlur={handlePriceApply}
-                          className="w-full pl-5 pr-1 py-1 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#002a5c] font-medium text-center"
+                          className="w-full pl-5 pr-1 py-1 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#0084ff] font-medium text-center"
                         />
                       </div>
                       <span className="text-[#888] text-[11px]">—</span>
@@ -472,7 +472,7 @@ export default function CatalogV1(props) {
                           value={maxPrice}
                           onChange={(e) => setMaxPrice(e.target.value)}
                           onBlur={handlePriceApply}
-                          className="w-full pl-5 pr-1 py-1 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#002a5c] font-medium text-center"
+                          className="w-full pl-5 pr-1 py-1 text-[12px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#0084ff] font-medium text-center"
                         />
                       </div>
                     </div>
@@ -501,7 +501,7 @@ export default function CatalogV1(props) {
                             placeholder="Search Brand..."
                             value={brandSearch}
                             onChange={(e) => setBrandSearch(e.target.value)}
-                            className="w-full pl-6 pr-2 py-0.5 text-[11px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#002a5c]"
+                            className="w-full pl-6 pr-2 py-0.5 text-[11px] rounded-[2px] border border-[#cbd5e1] focus:outline-none focus:border-[#0084ff]"
                           />
                           <Search className="w-3 h-3 text-[#888] absolute left-1.5 top-1/2 -translate-y-1/2" />
                         </div>
@@ -518,7 +518,7 @@ export default function CatalogV1(props) {
                                 type="checkbox"
                                 checked={selectedBrands.includes(b.slug)}
                                 onChange={() => toggleBrand(b.slug)}
-                                className="rounded-[2px] border-[#cbd5e1] text-[#002a5c] focus:ring-[#002a5c] w-3.5 h-3.5 cursor-pointer"
+                                className="rounded-[2px] border-[#cbd5e1] text-[#0084ff] focus:ring-[#0084ff] w-3.5 h-3.5 cursor-pointer"
                               />
                               <span className={selectedBrands.includes(b.slug) ? 'font-bold text-[#111]' : ''}>
                                 {b.name}
@@ -563,7 +563,7 @@ export default function CatalogV1(props) {
                                 type="checkbox"
                                 checked={activeInGroup.includes(opt.value)}
                                 onChange={() => toggleSpec(group.id, opt.value)}
-                                className="rounded-[2px] border-[#cbd5e1] text-[#002a5c] focus:ring-[#002a5c] w-3.5 h-3.5 cursor-pointer"
+                                className="rounded-[2px] border-[#cbd5e1] text-[#0084ff] focus:ring-[#0084ff] w-3.5 h-3.5 cursor-pointer"
                               />
                               <span className={activeInGroup.includes(opt.value) ? 'font-bold text-[#111]' : ''}>
                                 {opt.label}
@@ -582,7 +582,7 @@ export default function CatalogV1(props) {
               <button
                 type="button"
                 onClick={handleResetAll}
-                className="w-full py-1.5 bg-[#002a5c] hover:bg-[#1c4289] text-white text-[12px] font-bold rounded-[3px] shadow-none transition-colors text-center mt-1 cursor-pointer"
+                className="w-full py-1.5 bg-[#0084ff] hover:bg-[#0084ff] text-white text-[12px] font-bold rounded-[3px] shadow-none transition-colors text-center mt-1 cursor-pointer"
               >
                 Clear All
               </button>
@@ -601,10 +601,10 @@ export default function CatalogV1(props) {
                 onClick={() => setIsMobileFilterOpen(true)}
                 className="lg:hidden px-2.5 py-1 rounded-[3px] border border-[#cbd5e1] bg-white text-[12px] font-bold text-[#444] flex items-center gap-1.5"
               >
-                <Filter className="w-3.5 h-3.5 text-[#002a5c]" />
+                <Filter className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>Filters</span>
                 {activeFiltersCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-[#002a5c] text-white text-[10px]">
+                  <span className="px-1.5 py-0.2 rounded-full bg-[#0084ff] text-white text-[10px]">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -623,7 +623,7 @@ export default function CatalogV1(props) {
                   placeholder="Search by product name..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-3 pr-7 py-1 text-[12px] rounded-[3px] border border-[#cbd5e1] focus:outline-none focus:border-[#002a5c] text-[#333] placeholder-[#999]"
+                  className="w-full pl-3 pr-7 py-1 text-[12px] rounded-[3px] border border-[#cbd5e1] focus:outline-none focus:border-[#0084ff] text-[#333] placeholder-[#999]"
                 />
                 <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-[#888] hover:text-[#333]">
                   <Search className="w-3.5 h-3.5" />
@@ -638,7 +638,7 @@ export default function CatalogV1(props) {
                     setSort(e.target.value);
                     applyFilters({ sort: e.target.value, page: 1 });
                   }}
-                  className="text-[12px] rounded-[3px] border border-[#cbd5e1] py-1 px-2 bg-white focus:outline-none focus:border-[#002a5c] font-medium text-[#444] cursor-pointer"
+                  className="text-[12px] rounded-[3px] border border-[#cbd5e1] py-1 px-2 bg-white focus:outline-none focus:border-[#0084ff] font-medium text-[#444] cursor-pointer"
                 >
                   <option value="default">Default</option>
                   <option value="price_asc">Price (Low &gt; High)</option>
@@ -672,12 +672,12 @@ export default function CatalogV1(props) {
                   return (
                     <div
                       key={product.id}
-                      className="group bg-white rounded-[3px] border border-[#e2e8f0] hover:border-[#002a5c] hover:shadow-md transition-all duration-150 flex flex-col justify-between overflow-hidden relative p-3 select-none"
+                      className="group bg-white rounded-[3px] border border-[#e2e8f0] hover:border-[#0084ff] hover:shadow-md transition-all duration-150 flex flex-col justify-between overflow-hidden relative p-3 select-none"
                     >
                       {/* Top Badges & Actions */}
                       <div className="flex items-start justify-between min-h-[18px] mb-1">
                         {savings > 0 ? (
-                          <span className="bg-[#00897b] text-white font-bold text-[10px] px-1.5 py-0.5 rounded-[2px] inline-block">
+                          <span className="bg-[#0084ff] text-white font-bold text-[10px] px-1.5 py-0.5 rounded-[2px] inline-block">
                             Save: ৳{savings.toLocaleString()}
                           </span>
                         ) : (
@@ -775,7 +775,7 @@ export default function CatalogV1(props) {
                               className={`flex-1 py-1.5 px-2 rounded-[3px] text-[11px] font-bold flex items-center justify-center gap-1 transition-colors shadow-none cursor-pointer ${
                                 isAdded
                                   ? 'bg-emerald-600 text-white'
-                                  : 'bg-[#002a5c] hover:bg-[#1c4289] text-white'
+                                  : 'bg-[#0084ff] hover:bg-[#0084ff] text-white'
                               }`}
                             >
                               {isAdded ? (
@@ -819,7 +819,7 @@ export default function CatalogV1(props) {
                 <button
                   type="button"
                   onClick={handleResetAll}
-                  className="px-3.5 py-1.5 bg-[#002a5c] hover:bg-[#1c4289] text-white text-xs font-bold rounded-[3px] transition-colors"
+                  className="px-3.5 py-1.5 bg-[#0084ff] hover:bg-[#0084ff] text-white text-xs font-bold rounded-[3px] transition-colors"
                 >
                   Reset All Filters
                 </button>
@@ -835,7 +835,7 @@ export default function CatalogV1(props) {
                     setPerPage(Number(e.target.value));
                     applyFilters({ per_page: Number(e.target.value), page: 1 });
                   }}
-                  className="rounded-[3px] border border-[#cbd5e1] py-0.5 px-1.5 text-[11px] bg-white focus:outline-none focus:border-[#002a5c] font-medium cursor-pointer"
+                  className="rounded-[3px] border border-[#cbd5e1] py-0.5 px-1.5 text-[11px] bg-white focus:outline-none focus:border-[#0084ff] font-medium cursor-pointer"
                 >
                   <option value={12}>12</option>
                   <option value={16}>16</option>
@@ -859,7 +859,7 @@ export default function CatalogV1(props) {
                       dangerouslySetInnerHTML={{ __html: link.label }}
                       className={`px-2.5 py-1 text-[12px] font-semibold rounded-[3px] border transition-colors cursor-pointer ${
                         link.active
-                          ? 'bg-[#002a5c] text-white border-[#002a5c]'
+                          ? 'bg-[#0084ff] text-white border-[#0084ff]'
                           : link.url
                           ? 'bg-white text-[#444] border-[#cbd5e1] hover:bg-[#f8fafc]'
                           : 'bg-gray-100 text-[#999] border-gray-200 cursor-not-allowed'
@@ -904,7 +904,7 @@ export default function CatalogV1(props) {
             {priceTables.length > 0 && (
               <div className="space-y-2 pt-1">
                 <h3 className="text-[13px] sm:text-[14px] font-bold text-[#111] flex items-center gap-1.5">
-                  <TableIcon className="w-3.5 h-3.5 text-[#002a5c]" />
+                  <TableIcon className="w-3.5 h-3.5 text-[#0084ff]" />
                   <span>{displayTitle} Price List in Bangladesh (2026)</span>
                 </h3>
 
@@ -945,7 +945,7 @@ export default function CatalogV1(props) {
             {faqs.length > 0 && (
               <div className="space-y-2 pt-3 border-t border-[#eee]">
                 <h3 className="text-[13px] sm:text-[14px] font-bold text-[#111] flex items-center gap-1.5">
-                  <HelpCircle className="w-3.5 h-3.5 text-[#002a5c]" />
+                  <HelpCircle className="w-3.5 h-3.5 text-[#0084ff]" />
                   <span>Frequently Asked Questions ({category?.name || 'Products'})</span>
                 </h3>
 
@@ -963,7 +963,7 @@ export default function CatalogV1(props) {
                           className="w-full flex items-center justify-between p-2.5 text-left text-[12px] font-bold text-[#111] bg-[#f8fafc] hover:bg-[#f1f5f9] transition-colors cursor-pointer"
                         >
                           <span className="flex items-center gap-2">
-                            <span className="text-[#002a5c] font-bold">Q.</span>
+                            <span className="text-[#0084ff] font-bold">Q.</span>
                             <span>{faq.question}</span>
                           </span>
                           {isOpen ? (
@@ -1063,7 +1063,7 @@ export default function CatalogV1(props) {
                       type="checkbox"
                       checked={selectedAvailability.includes(key)}
                       onChange={() => toggleAvailability(key)}
-                      className="rounded text-[#002a5c]"
+                      className="rounded text-[#0084ff]"
                     />
                     <span className="capitalize">{key.replace(/_/g, ' ')}</span>
                   </label>
@@ -1082,7 +1082,7 @@ export default function CatalogV1(props) {
                             type="checkbox"
                             checked={selectedBrands.includes(b.slug)}
                             onChange={() => toggleBrand(b.slug)}
-                            className="rounded text-[#002a5c]"
+                            className="rounded text-[#0084ff]"
                           />
                           <span>{b.name}</span>
                         </div>
@@ -1106,7 +1106,7 @@ export default function CatalogV1(props) {
               <button
                 type="button"
                 onClick={() => { handlePriceApply(); setIsMobileFilterOpen(false); }}
-                className="flex-1 py-1.5 rounded-[3px] bg-[#002a5c] text-white font-bold text-xs"
+                className="flex-1 py-1.5 rounded-[3px] bg-[#0084ff] text-white font-bold text-xs"
               >
                 Apply Filters
               </button>

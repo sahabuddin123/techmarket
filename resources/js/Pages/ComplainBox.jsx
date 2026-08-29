@@ -25,7 +25,7 @@ export default function ComplainBox() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title="Complain Box - TechMarket BD" />
       <Navbar onOpenCart={() => setCartOpen(true)} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
@@ -66,7 +66,7 @@ export default function ComplainBox() {
                   value={data.name}
                   onChange={(e) => setData('name', e.target.value)}
                   placeholder="Your full name"
-                  className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#1c4289]"
+                  className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0084ff]"
                 />
                 {errors.name && <p className="text-red-500 text-[11px] mt-1">{errors.name}</p>}
               </div>
@@ -82,7 +82,7 @@ export default function ComplainBox() {
                     value={data.phone}
                     onChange={(e) => setData('phone', e.target.value)}
                     placeholder="01XXXXXXXXX"
-                    className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#1c4289]"
+                    className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0084ff]"
                   />
                   {errors.phone && <p className="text-red-500 text-[11px] mt-1">{errors.phone}</p>}
                 </div>
@@ -97,7 +97,7 @@ export default function ComplainBox() {
                     value={data.email}
                     onChange={(e) => setData('email', e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#1c4289]"
+                    className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0084ff]"
                   />
                   {errors.email && <p className="text-red-500 text-[11px] mt-1">{errors.email}</p>}
                 </div>
@@ -113,7 +113,7 @@ export default function ComplainBox() {
                   value={data.subject}
                   onChange={(e) => setData('subject', e.target.value)}
                   placeholder="Enter complain subject"
-                  className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#1c4289]"
+                  className="w-full bg-white border border-slate-300 rounded px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0084ff]"
                 />
                 {errors.subject && <p className="text-red-500 text-[11px] mt-1">{errors.subject}</p>}
               </div>
@@ -128,7 +128,7 @@ export default function ComplainBox() {
                   value={data.details}
                   onChange={(e) => setData('details', e.target.value)}
                   placeholder="Write your detailed complaint..."
-                  className="w-full bg-white border border-slate-300 rounded p-3.5 text-xs text-slate-900 focus:outline-none focus:border-[#1c4289] leading-relaxed"
+                  className="w-full bg-white border border-slate-300 rounded p-3.5 text-xs text-slate-900 focus:outline-none focus:border-[#0084ff] leading-relaxed"
                 />
                 {errors.details && <p className="text-red-500 text-[11px] mt-1">{errors.details}</p>}
               </div>
@@ -137,7 +137,7 @@ export default function ComplainBox() {
                 <button
                   type="submit"
                   disabled={processing}
-                  className="bg-[#1c4289] hover:bg-[#15326b] text-white px-8 py-2.5 rounded text-xs font-bold transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                  className="bg-[#0084ff] hover:bg-[#0070d6] text-white px-8 py-2.5 rounded text-xs font-bold transition-colors shadow-xs cursor-pointer disabled:opacity-50"
                 >
                   {processing ? 'Submitting...' : 'Submit'}
                 </button>
@@ -150,7 +150,7 @@ export default function ComplainBox() {
               
               {/* Section 1: Need Immediate Help? */}
               <div className="space-y-3.5">
-                <div className="inline-block relative bg-[#1c4289] text-white px-3.5 py-1.5 rounded-l text-xs font-bold shadow-2xs pr-5 [clip-path:polygon(0%_0%,calc(100%-8px)_0%,100%_50%,calc(100%-8px)_100%,0%_100%)]">
+                <div className="inline-block relative bg-[#0084ff] text-white px-3.5 py-1.5 rounded-l text-xs font-bold shadow-2xs pr-5 [clip-path:polygon(0%_0%,calc(100%-8px)_0%,100%_50%,calc(100%-8px)_100%,0%_100%)]">
                   Need Immediate Help?
                 </div>
 
@@ -161,7 +161,7 @@ export default function ComplainBox() {
                 <div className="space-y-2.5 pt-1">
                   <a
                     href={`tel:${settings.hotline || '+8809613562601'}`}
-                    className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded bg-[#1c4289] hover:bg-[#15326b] text-white text-xs font-bold transition-colors shadow-xs"
+                    className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-bold transition-colors shadow-xs"
                   >
                     <Phone className="w-3.5 h-3.5" />
                     <span>Call: {settings.hotline || '09613562601'}</span>
@@ -171,7 +171,7 @@ export default function ComplainBox() {
                     href={`mailto:${settings.support_email || 'info@techmarketbd.com'}`}
                     className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
                   >
-                    <Mail className="w-3.5 h-3.5 text-[#1c4289]" />
+                    <Mail className="w-3.5 h-3.5 text-[#0084ff]" />
                     <span>{settings.support_email || 'info@techmarketbd.com'}</span>
                   </a>
 
@@ -179,7 +179,7 @@ export default function ComplainBox() {
                     href="/servicing"
                     className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
                   >
-                    <MapPin className="w-3.5 h-3.5 text-[#1c4289]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#0084ff]" />
                     <span>Visit Our Stores</span>
                   </Link>
                 </div>
@@ -187,7 +187,7 @@ export default function ComplainBox() {
 
               {/* Section 2: Before You Submit */}
               <div className="space-y-3 pt-2">
-                <div className="inline-block relative bg-[#1c4289] text-white px-3.5 py-1.5 rounded-l text-xs font-bold shadow-2xs pr-5 [clip-path:polygon(0%_0%,calc(100%-8px)_0%,100%_50%,calc(100%-8px)_100%,0%_100%)]">
+                <div className="inline-block relative bg-[#0084ff] text-white px-3.5 py-1.5 rounded-l text-xs font-bold shadow-2xs pr-5 [clip-path:polygon(0%_0%,calc(100%-8px)_0%,100%_50%,calc(100%-8px)_100%,0%_100%)]">
                   Before You Submit
                 </div>
 

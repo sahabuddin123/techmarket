@@ -177,7 +177,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             type="button"
             onClick={() => setActiveTab('basic')}
             className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-              activeTab === 'basic' ? 'bg-[#1c4289] text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'basic' ? 'bg-[#0084ff] text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Tag className="w-3.5 h-3.5" />
@@ -188,7 +188,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             type="button"
             onClick={() => setActiveTab('schedule')}
             className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-              activeTab === 'schedule' ? 'bg-[#1c4289] text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'schedule' ? 'bg-[#0084ff] text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -199,7 +199,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             type="button"
             onClick={() => setActiveTab('media')}
             className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-              activeTab === 'media' ? 'bg-[#1c4289] text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'media' ? 'bg-[#0084ff] text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <ImageIcon className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             type="button"
             onClick={() => setActiveTab('content')}
             className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-              activeTab === 'content' ? 'bg-[#1c4289] text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'content' ? 'bg-[#0084ff] text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -221,7 +221,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             type="button"
             onClick={() => setActiveTab('products')}
             className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-              activeTab === 'products' ? 'bg-[#1c4289] text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'products' ? 'bg-[#0084ff] text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <ShoppingBag className="w-3.5 h-3.5" />
@@ -232,7 +232,7 @@ export default function AdminOfferForm({ offer = null, products = [] }) {
             type="button"
             onClick={() => setActiveTab('seo')}
             className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-              activeTab === 'seo' ? 'bg-[#1c4289] text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'seo' ? 'bg-[#0084ff] text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Globe className="w-3.5 h-3.5" />

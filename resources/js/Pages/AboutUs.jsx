@@ -13,7 +13,7 @@ export default function AboutUs() {
   const [cartOpen, setCartOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
       <Head title="About Tech Market BD - Your Trusted Technology Partner" />
       <Navbar onOpenCart={() => setCartOpen(true)} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
@@ -33,7 +33,7 @@ export default function AboutUs() {
 
           {/* Section 1: Introduction */}
           <div className="space-y-3">
-            <div className="inline-block bg-[#ebf3ff] text-[#1c4289] px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
+            <div className="inline-block bg-[#ebf3ff] text-[#0084ff] px-3.5 py-1.5 rounded text-xs font-bold shadow-2xs">
               Introduction
             </div>
             
@@ -47,15 +47,15 @@ export default function AboutUs() {
 
             <div className="flex flex-wrap gap-2.5 pt-1">
               <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1c4289]" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>DBID: 312659016</span>
               </span>
               <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1c4289]" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>BIN: 001614123-0201</span>
               </span>
               <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1c4289]" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#0084ff]" />
                 <span>TIN: 363773344098</span>
               </span>
             </div>
@@ -85,7 +85,7 @@ export default function AboutUs() {
             {/* 4 Principle Cards Matching Reference Screenshot */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/40 space-y-1.5">
-                <div className="flex items-center space-x-2 text-[#1c4289] font-bold">
+                <div className="flex items-center space-x-2 text-[#0084ff] font-bold">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Quality</span>
                 </div>
@@ -95,7 +95,7 @@ export default function AboutUs() {
               </div>
 
               <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/40 space-y-1.5">
-                <div className="flex items-center space-x-2 text-[#1c4289] font-bold">
+                <div className="flex items-center space-x-2 text-[#0084ff] font-bold">
                   <ShieldCheck className="w-4 h-4" />
                   <span>Service</span>
                 </div>
@@ -105,7 +105,7 @@ export default function AboutUs() {
               </div>
 
               <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/40 space-y-1.5">
-                <div className="flex items-center space-x-2 text-[#1c4289] font-bold">
+                <div className="flex items-center space-x-2 text-[#0084ff] font-bold">
                   <Zap className="w-4 h-4" />
                   <span>Efficiency</span>
                 </div>
@@ -115,7 +115,7 @@ export default function AboutUs() {
               </div>
 
               <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/40 space-y-1.5">
-                <div className="flex items-center space-x-2 text-[#1c4289] font-bold">
+                <div className="flex items-center space-x-2 text-[#0084ff] font-bold">
                   <Lightbulb className="w-4 h-4" />
                   <span>Innovation</span>
                 </div>
@@ -259,22 +259,22 @@ export default function AboutUs() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
               
               <div className="border border-slate-200 rounded-lg p-4 bg-white text-center space-y-2">
-                <div className="font-extrabold text-[#1c4289] text-base">BASIS</div>
+                <div className="font-extrabold text-[#0084ff] text-base">BASIS</div>
                 <div className="text-[10px] text-slate-500 font-medium">Member ID: AF-24-08-060</div>
               </div>
 
               <div className="border border-slate-200 rounded-lg p-4 bg-white text-center space-y-2">
-                <div className="font-extrabold text-[#1c4289] text-base">BCS</div>
+                <div className="font-extrabold text-[#0084ff] text-base">BCS</div>
                 <div className="text-[10px] text-slate-500 font-medium">Member ID: 1597</div>
               </div>
 
               <div className="border border-slate-200 rounded-lg p-4 bg-white text-center space-y-2">
-                <div className="font-extrabold text-[#1c4289] text-base">ECSKB</div>
+                <div className="font-extrabold text-[#0084ff] text-base">ECSKB</div>
                 <div className="text-[10px] text-slate-500 font-medium">Member ID: 341</div>
               </div>
 
               <div className="border border-slate-200 rounded-lg p-4 bg-white text-center space-y-2">
-                <div className="font-extrabold text-[#1c4289] text-base">e-CAB</div>
+                <div className="font-extrabold text-[#0084ff] text-base">e-CAB</div>
                 <div className="text-[10px] text-slate-500 font-medium">Member ID: 1690</div>
               </div>
 
@@ -299,7 +299,7 @@ export default function AboutUs() {
             <div className="pt-2 flex justify-center">
               <Link
                 href="/servicing"
-                className="inline-flex items-center space-x-2 bg-[#1c4289] hover:bg-[#15326b] text-white px-6 py-2.5 rounded text-xs font-bold transition-colors shadow-xs"
+                className="inline-flex items-center space-x-2 bg-[#0084ff] hover:bg-[#0070d6] text-white px-6 py-2.5 rounded text-xs font-bold transition-colors shadow-xs"
               >
                 <Store className="w-4 h-4" />
                 <span>Visit Our Stores</span>

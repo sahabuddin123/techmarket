@@ -42,7 +42,7 @@ export default function NotFound({
   ];
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 flex flex-col font-sans selection:bg-[#1c4289] selection:text-white">
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-800 flex flex-col font-sans selection:bg-[#0084ff] selection:text-white">
       <Head>
         <title>404 - Page Not Found | TechMarket BD</title>
         <meta name="robots" content="noindex, nofollow" />
@@ -66,7 +66,7 @@ export default function NotFound({
             
             {/* Big Gradient 404 Title */}
             <div className="space-y-1">
-              <h1 className="text-8xl sm:text-9xl font-black tracking-tight leading-none bg-gradient-to-r from-[#1c4289] via-[#2563eb] to-[#ea580c] bg-clip-text text-transparent select-none drop-shadow-2xs">
+              <h1 className="text-8xl sm:text-9xl font-black tracking-tight leading-none bg-gradient-to-r from-[#0084ff] via-[#2563eb] to-[#ea580c] bg-clip-text text-transparent select-none drop-shadow-2xs">
                 404
               </h1>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight pt-2">
@@ -79,7 +79,7 @@ export default function NotFound({
 
             {/* Centered Integrated Search Form */}
             <form onSubmit={handleSearchSubmit} className="max-w-lg mx-auto w-full pt-2">
-              <div className="relative flex items-center bg-slate-50 hover:bg-white focus-within:bg-white border border-slate-300 focus-within:border-[#1c4289] focus-within:ring-3 focus-within:ring-[#1c4289]/15 rounded-xl shadow-2xs transition-all">
+              <div className="relative flex items-center bg-slate-50 hover:bg-white focus-within:bg-white border border-slate-300 focus-within:border-[#0084ff] focus-within:ring-3 focus-within:ring-[#0084ff]/15 rounded-xl shadow-2xs transition-all">
                 <Search className="w-4 h-4 text-slate-400 ml-3.5 shrink-0" />
                 <input
                   type="text"
@@ -90,7 +90,7 @@ export default function NotFound({
                 />
                 <button
                   type="submit"
-                  className="absolute right-1.5 px-4 py-2 bg-[#1c4289] hover:bg-[#15326b] text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                  className="absolute right-1.5 px-4 py-2 bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                 >
                   <Search className="w-3.5 h-3.5" />
                   <span>Search</span>
@@ -108,7 +108,7 @@ export default function NotFound({
                   <Link
                     key={idx}
                     href={pill.url}
-                    className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100/90 hover:bg-[#1c4289] text-slate-700 hover:text-white border border-slate-200 transition-all duration-150"
+                    className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100/90 hover:bg-[#0084ff] text-slate-700 hover:text-white border border-slate-200 transition-all duration-150"
                   >
                     {pill.label}
                   </Link>
@@ -120,7 +120,7 @@ export default function NotFound({
             <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/"
-                className="px-6 py-2.5 bg-[#1c4289] hover:bg-[#15326b] text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer"
+                className="px-6 py-2.5 bg-[#0084ff] hover:bg-[#0070d6] text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer"
               >
                 <Home className="w-4 h-4" />
                 <span>Back to Homepage</span>
@@ -149,7 +149,7 @@ export default function NotFound({
           <section className="space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#1c4289] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0084ff] flex items-center justify-center font-bold">
                   <TrendingUp className="w-4 h-4" />
                 </div>
                 <div>
@@ -161,7 +161,7 @@ export default function NotFound({
               </div>
               <Link 
                 href="/catalog" 
-                className="text-xs sm:text-sm font-bold text-[#1c4289] hover:text-[#ea580c] flex items-center gap-1.5 transition-colors group"
+                className="text-xs sm:text-sm font-bold text-[#0084ff] hover:text-[#ea580c] flex items-center gap-1.5 transition-colors group"
               >
                 <span>View All Products</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

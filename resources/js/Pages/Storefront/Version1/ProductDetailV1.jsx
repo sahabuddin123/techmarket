@@ -206,7 +206,7 @@ export default function ProductDetailV1(props) {
               {idx === breadcrumbs.length - 1 ? (
                 <span className="font-semibold text-slate-900 truncate">{bc.label}</span>
               ) : (
-                <Link href={bc.url} className="hover:text-[#1c4289] transition-colors shrink-0">
+                <Link href={bc.url} className="hover:text-[#0084ff] transition-colors shrink-0">
                   {bc.label}
                 </Link>
               )}
@@ -247,7 +247,7 @@ export default function ProductDetailV1(props) {
                       <div className="min-w-0 flex-1">
                         <Link
                           href={`/product/${rel.slug}`}
-                          className="text-[12px] font-semibold text-slate-900 hover:text-[#1c4289] transition-colors line-clamp-2 leading-snug"
+                          className="text-[12px] font-semibold text-slate-900 hover:text-[#0084ff] transition-colors line-clamp-2 leading-snug"
                           title={rel.title}
                         >
                           {rel.title}
@@ -277,7 +277,7 @@ export default function ProductDetailV1(props) {
                 <div className="pt-2 border-t border-slate-100">
                   <Link
                     href={`/brands/${product.brand.slug || ''}`}
-                    className="w-full block text-center py-2 px-3 bg-[#1c4289] hover:bg-[#15326b] text-white text-[12px] font-bold rounded transition-colors"
+                    className="w-full block text-center py-2 px-3 bg-[#0084ff] hover:bg-[#0070d6] text-white text-[12px] font-bold rounded transition-colors"
                   >
                     View All {product.brand.name}
                   </Link>
@@ -297,7 +297,7 @@ export default function ProductDetailV1(props) {
                 <div className="md:col-span-5 space-y-3">
                   <div 
                     onClick={() => setIsLightboxOpen(true)}
-                    className="bg-white border border-slate-200 rounded aspect-square flex items-center justify-center p-4 relative group overflow-hidden cursor-pointer hover:border-[#1c4289] transition-all"
+                    className="bg-white border border-slate-200 rounded aspect-square flex items-center justify-center p-4 relative group overflow-hidden cursor-pointer hover:border-[#0084ff] transition-all"
                     title="Click to view full image and zoom"
                   >
                     {savings > 0 && (
@@ -330,7 +330,7 @@ export default function ProductDetailV1(props) {
                             onClick={() => setSelectedImageIndex(idx)}
                             className={`w-14 h-14 rounded border p-1 shrink-0 bg-white cursor-pointer transition-all ${
                               selectedImageIndex === idx
-                                ? 'border-[#1c4289] ring-2 ring-[#1c4289]/20'
+                                ? 'border-[#0084ff] ring-2 ring-[#0084ff]/20'
                                 : 'border-slate-200 hover:border-slate-400'
                             }`}
                           >
@@ -367,7 +367,7 @@ export default function ProductDetailV1(props) {
                         type="button" 
                         onClick={() => setBookmarked(!bookmarked)}
                         className={`inline-flex items-center gap-1 text-[11.5px] font-semibold transition-colors cursor-pointer ${
-                          bookmarked ? 'text-[#1c4289]' : 'text-slate-600 hover:text-[#1c4289]'
+                          bookmarked ? 'text-[#0084ff]' : 'text-slate-600 hover:text-[#0084ff]'
                         }`}
                       >
                         <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current' : ''}`} />
@@ -414,7 +414,7 @@ export default function ProductDetailV1(props) {
                         <ul className="space-y-1 text-[12px] text-slate-700">
                           {keySpecsList.slice(0, 5).map((spec, idx) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <span className="text-[#1c4289] font-bold mt-0.5">•</span>
+                              <span className="text-[#0084ff] font-bold mt-0.5">•</span>
                               <span className="leading-tight">{spec}</span>
                             </li>
                           ))}
@@ -423,7 +423,7 @@ export default function ProductDetailV1(props) {
                         <button
                           type="button"
                           onClick={() => scrollToSection('specification')}
-                          className="text-[12px] font-bold text-[#1c4289] hover:underline pt-1 inline-block cursor-pointer"
+                          className="text-[12px] font-bold text-[#0084ff] hover:underline pt-1 inline-block cursor-pointer"
                         >
                           View More Info
                         </button>
@@ -449,7 +449,7 @@ export default function ProductDetailV1(props) {
                         <button
                           type="button"
                           onClick={() => setShowEmiModal(true)}
-                          className="text-[11.5px] text-[#1c4289] font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer bg-transparent border-0 p-0"
+                          className="text-[11.5px] text-[#0084ff] font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer bg-transparent border-0 p-0"
                         >
                           <span>+ Available Payment Method & EMI Facilities</span>
                         </button>
@@ -494,7 +494,7 @@ export default function ProductDetailV1(props) {
                             ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
                             : added
                             ? 'bg-emerald-600'
-                            : 'bg-[#1c4289] hover:bg-[#15326b]'
+                            : 'bg-[#0084ff] hover:bg-[#0070d6]'
                         }`}
                       >
                         {added ? (
@@ -563,7 +563,7 @@ export default function ProductDetailV1(props) {
                   onClick={() => scrollToSection(tab.id)}
                   className={`py-2 px-4 rounded text-[13px] font-bold transition-all cursor-pointer ${
                     activeTab === tab.id
-                      ? 'bg-[#1c4289] text-white shadow-2xs'
+                      ? 'bg-[#0084ff] text-white shadow-2xs'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
@@ -662,7 +662,7 @@ export default function ProductDetailV1(props) {
                 <button
                   type="button"
                   onClick={() => setShowReviewForm(prev => !prev)}
-                  className="text-[12px] font-bold bg-[#1c4289] hover:bg-[#15326b] text-white px-3.5 py-1.5 rounded transition-colors cursor-pointer"
+                  className="text-[12px] font-bold bg-[#0084ff] hover:bg-[#0070d6] text-white px-3.5 py-1.5 rounded transition-colors cursor-pointer"
                 >
                   Write a Review
                 </button>
@@ -737,14 +737,14 @@ export default function ProductDetailV1(props) {
                     value={reviewComment}
                     onChange={(e) => setReviewComment(e.target.value)}
                     placeholder="Write your honest review and experience..."
-                    className="w-full text-[12.5px] p-2.5 rounded border border-slate-300 focus:outline-none focus:border-[#1c4289] bg-white"
+                    className="w-full text-[12.5px] p-2.5 rounded border border-slate-300 focus:outline-none focus:border-[#0084ff] bg-white"
                     required
                   />
                   <div className="flex justify-end">
                     <button
                       type="submit"
                       disabled={submittingReview}
-                      className="bg-[#1c4289] hover:bg-[#15326b] text-white text-[12px] font-bold px-4 py-2 rounded cursor-pointer"
+                      className="bg-[#0084ff] hover:bg-[#0070d6] text-white text-[12px] font-bold px-4 py-2 rounded cursor-pointer"
                     >
                       {submittingReview ? 'Submitting...' : 'Post Review'}
                     </button>
@@ -800,7 +800,7 @@ export default function ProductDetailV1(props) {
                 <button
                   type="button"
                   onClick={() => setShowQuestionForm(prev => !prev)}
-                  className="text-[12px] font-bold bg-[#1c4289] hover:bg-[#15326b] text-white px-3.5 py-1.5 rounded transition-colors cursor-pointer"
+                  className="text-[12px] font-bold bg-[#0084ff] hover:bg-[#0070d6] text-white px-3.5 py-1.5 rounded transition-colors cursor-pointer"
                 >
                   Ask a Question
                 </button>
@@ -832,7 +832,7 @@ export default function ProductDetailV1(props) {
                     value={questionText}
                     onChange={(e) => setQuestionText(e.target.value)}
                     placeholder="Ask about technical specifications, warranty, delivery times..."
-                    className="w-full text-[12.5px] p-2.5 rounded border border-slate-300 focus:outline-none focus:border-[#1c4289] bg-white"
+                    className="w-full text-[12.5px] p-2.5 rounded border border-slate-300 focus:outline-none focus:border-[#0084ff] bg-white"
                     required
                   />
                   <div className="flex items-center justify-between">
@@ -840,7 +840,7 @@ export default function ProductDetailV1(props) {
                     <button
                       type="submit"
                       disabled={submittingQuestion}
-                      className="bg-[#1c4289] hover:bg-[#15326b] text-white text-[12px] font-bold px-4 py-2 rounded cursor-pointer"
+                      className="bg-[#0084ff] hover:bg-[#0070d6] text-white text-[12px] font-bold px-4 py-2 rounded cursor-pointer"
                     >
                       {submittingQuestion ? 'Submitting...' : 'Submit Question'}
                     </button>
@@ -859,7 +859,7 @@ export default function ProductDetailV1(props) {
                   {questions.map((q) => (
                     <div key={q.id} className="pt-3 first:pt-0 space-y-1.5 text-[12.5px]">
                       <div className="flex items-start gap-2">
-                        <span className="font-bold text-[#1c4289] shrink-0">Q.</span>
+                        <span className="font-bold text-[#0084ff] shrink-0">Q.</span>
                         <span className="font-semibold text-slate-900">{q.question}</span>
                       </div>
                       {q.answer ? (
@@ -886,12 +886,12 @@ export default function ProductDetailV1(props) {
                 What is the price of {product.title} Price in Bangladesh 2026?
               </h3>
               <p>
-                The latest <Link href="#" className="text-[#1c4289] font-semibold hover:underline">{product.title}</Link> price in BD is <strong>৳{currentPrice.toLocaleString()}</strong>. 
+                The latest <Link href="#" className="text-[#0084ff] font-semibold hover:underline">{product.title}</Link> price in BD is <strong>৳{currentPrice.toLocaleString()}</strong>. 
                 The {product.title} manufactured by <strong>{product.brand?.name || 'Manufacturer'}</strong> comes with <strong>{product.warranty || '2 Years'} Warranty</strong> in Bangladesh. 
-                To buy or order it online, visit <Link href="/" className="text-[#1c4289] font-semibold hover:underline">TechMarket BD Shop</Link> or order online. 
+                To buy or order it online, visit <Link href="/" className="text-[#0084ff] font-semibold hover:underline">TechMarket BD Shop</Link> or order online. 
                 Regular price is <strong>৳{(regularPrice || currentPrice).toLocaleString()}</strong> and discounted cash price is <strong>৳{currentPrice.toLocaleString()}</strong> in Bangladesh. 
-                Read our latest Showroom Address or follow us on <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#1c4289] font-semibold hover:underline">Facebook</a> for regular updates & offers. 
-                Subscribe to our <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#1c4289] font-semibold hover:underline">YouTube</a> channel for product unboxing & reviews.
+                Read our latest Showroom Address or follow us on <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#0084ff] font-semibold hover:underline">Facebook</a> for regular updates & offers. 
+                Subscribe to our <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-[#0084ff] font-semibold hover:underline">YouTube</a> channel for product unboxing & reviews.
               </p>
             </section>
 
@@ -912,7 +912,7 @@ export default function ProductDetailV1(props) {
             {/* Modal Header */}
             <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-[#1c4289]/10 flex items-center justify-center text-[#1c4289]">
+                <div className="w-8 h-8 rounded-full bg-[#0084ff]/10 flex items-center justify-center text-[#0084ff]">
                   <Building2 className="w-4 h-4" />
                 </div>
                 <div>
@@ -948,7 +948,7 @@ export default function ProductDetailV1(props) {
                 </div>
                 <div className="text-right shrink-0">
                   <span className="text-[10px] text-slate-500 block uppercase font-bold">Starting EMI</span>
-                  <span className="text-xs font-black text-[#1c4289]">৳{Math.round(currentPrice / 36 || 218).toLocaleString()}/mo</span>
+                  <span className="text-xs font-black text-[#0084ff]">৳{Math.round(currentPrice / 36 || 218).toLocaleString()}/mo</span>
                 </div>
               </div>
 
@@ -965,7 +965,7 @@ export default function ProductDetailV1(props) {
                       onClick={() => setSelectedTenure(months)}
                       className={`py-2 px-1 text-center rounded text-xs font-bold transition-all cursor-pointer border ${
                         selectedTenure === months
-                          ? 'bg-[#1c4289] text-white border-[#1c4289] shadow-xs'
+                          ? 'bg-[#0084ff] text-white border-[#0084ff] shadow-xs'
                           : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
                       }`}
                     >
@@ -999,7 +999,7 @@ export default function ProductDetailV1(props) {
                           <span className="text-[10px] text-slate-500 block">{partner.interest_rate_note || '0% Interest available'}</span>
                         </div>
                         <div className="col-span-4 text-right">
-                          <span className={`font-extrabold block ${isEligible ? 'text-[#1c4289]' : 'text-slate-400'}`}>
+                          <span className={`font-extrabold block ${isEligible ? 'text-[#0084ff]' : 'text-slate-400'}`}>
                             ৳{monthlyAmount.toLocaleString()} <span className="text-[10px] font-normal text-slate-500">/ mo</span>
                           </span>
                           <span className="text-[9px] text-slate-400 block">for {selectedTenure} months</span>
@@ -1043,7 +1043,7 @@ export default function ProductDetailV1(props) {
             <div className="px-5 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
               <Link
                 href="/tools/emi-calculator"
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1c4289] hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0084ff] hover:underline"
               >
                 <Calculator className="w-3.5 h-3.5" />
                 <span>Open Advanced EMI Calculator</span>

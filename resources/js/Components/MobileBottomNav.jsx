@@ -35,7 +35,7 @@ export default function MobileBottomNav({ onOpenCart }) {
   return (
     <>
       {/* FIXED MOBILE BOTTOM NAVIGATION BAR (Exact TechLand UI) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#002a5c] border-t border-blue-950/80 shadow-2xl select-none">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0084ff] border-t border-blue-950/80 shadow-2xl select-none">
         <div className="grid grid-cols-5 h-14 text-center items-center">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -89,7 +89,7 @@ export default function MobileBottomNav({ onOpenCart }) {
           {/* Right Slide-in Panel */}
           <div className="fixed inset-y-0 right-0 max-w-[280px] w-full bg-[#0f172a] text-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-250 border-l border-slate-800">
             {/* Header */}
-            <div className="p-4 bg-[#002a5c] flex items-center justify-between border-b border-blue-900 shadow-sm">
+            <div className="p-4 bg-[#0084ff] flex items-center justify-between border-b border-blue-900 shadow-sm">
               <h3 className="font-extrabold text-base tracking-tight text-white">Menu</h3>
               <button 
                 onClick={() => setIsMenuOpen(false)}
