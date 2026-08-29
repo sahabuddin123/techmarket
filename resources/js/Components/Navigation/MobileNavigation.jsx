@@ -37,11 +37,13 @@ export default function MobileNavigation({ isOpen, onClose, categories = [], aut
                 <div className="p-3.5 bg-[#002a5c] text-white flex items-center justify-between border-b border-blue-950">
                     <Link href="/" onClick={onClose} className="flex items-center gap-2.5 max-w-[200px]">
                         {settings.site_logo ? (
-                            <img
-                                src={settings.site_logo}
-                                alt={settings.site_name || 'TechMarket BD'}
-                                className="h-8 max-w-[140px] w-auto object-contain"
-                            />
+                            <div className="bg-white px-2.5 py-1 rounded-lg shadow-xs flex items-center">
+                                <img
+                                    src={settings.site_logo_dark || settings.site_logo}
+                                    alt={settings.site_name || 'TechMarket BD'}
+                                    className="h-7 max-w-[140px] w-auto object-contain"
+                                />
+                            </div>
                         ) : (
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded bg-[#ff2e3b] flex items-center justify-center font-black text-white text-xs tracking-wider shrink-0 shadow-xs">
