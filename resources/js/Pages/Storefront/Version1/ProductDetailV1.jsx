@@ -119,12 +119,16 @@ export default function ProductDetailV1(props) {
   const handleAddToCart = (directCheckout = false) => {
     if (isOutOfStock) return;
     trackAddToCart(product, quantity);
-    router.post('/cart/add', { product_id: product.id, quantity }, {
-      preserveScroll: true,
+    router.post('/cart/add', { 
+      product_id: product.id, 
+      quantity, 
+      buy_now: directCheckout ? 1 : 0 
+    }, {
+      preserveScroll: !directCheckout,
       onSuccess: () => {
         setAdded(true);
         if (directCheckout) {
-          router.get('/checkout');
+          router.visit('/checkout');
         } else {
           setIsCartOpen(true);
           setTimeout(() => setAdded(false), 2000);

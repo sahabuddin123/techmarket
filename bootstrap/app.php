@@ -124,9 +124,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
 
         $middleware->validateCsrfTokens(except: [
+            'api/*',
             'api/chatbot/*',
+            'api/tracking/*',
             'api/tracking/event',
             'payment/sslcommerz/*',
+            'cart/*',
+            'wishlist/*',
+            'compare/*',
+            'tracking/*',
         ]);
 
         $middleware->alias([
