@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\SanitizesUtf8;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductSpecificationValue extends Model
 {
-    use HasFactory;
+    use HasFactory, SanitizesUtf8;
 
     protected $fillable = ['product_id', 'specification_attribute_id', 'value'];
 

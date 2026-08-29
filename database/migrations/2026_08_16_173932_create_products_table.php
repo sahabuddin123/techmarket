@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->json('gallery')->nullable();
             $table->text('description')->nullable();
-            $table->string('warranty')->default('1 Year Warranty');
+            $table->string('warranty')->nullable()->default('1 Year Warranty');
             $table->timestamps();
         });
     }

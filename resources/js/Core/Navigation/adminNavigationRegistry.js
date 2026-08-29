@@ -997,6 +997,17 @@ export const ADMIN_NAV_ITEMS = [
     description: 'Database telemetry, queue backlog, cache hit ratio, and server performance',
   },
   {
+    id: 'database_backups',
+    label: 'Database Backups',
+    icon: 'Database',
+    route: '/admin/backups',
+    group: ADMIN_NAV_GROUPS.SYSTEM,
+    permission: 'backups.view',
+    badge: 'SQL/SQLite',
+    order: 1442,
+    description: 'SQLite database snapshots, SQL dumps, automated scheduler & retention pruning',
+  },
+  {
     id: 'admin_appearance',
     label: 'Admin Theme & Branding',
     icon: 'Palette',

@@ -579,6 +579,15 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Admin Operational System Health
     Route::get('/system-health', [\App\Http\Controllers\Admin\SystemHealthController::class, 'index'])->name('admin.systemHealth');
 
+    // Admin Database Backups & Schedule Management
+    Route::get('/backups', [\App\Http\Controllers\Admin\BackupController::class, 'index'])->name('admin.backups');
+    Route::post('/backups', [\App\Http\Controllers\Admin\BackupController::class, 'store'])->name('admin.backups.store');
+    Route::get('/backups/{backup}/download', [\App\Http\Controllers\Admin\BackupController::class, 'download'])->name('admin.backups.download');
+    Route::delete('/backups/{backup}', [\App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('admin.backups.delete');
+    Route::post('/backups/schedule', [\App\Http\Controllers\Admin\BackupController::class, 'updateSchedule'])->name('admin.backups.schedule');
+    Route::post('/backups/run-scheduled-now', [\App\Http\Controllers\Admin\BackupController::class, 'runScheduledNow'])->name('admin.backups.runScheduledNow');
+    Route::post('/backups/prune', [\App\Http\Controllers\Admin\BackupController::class, 'pruneExpired'])->name('admin.backups.prune');
+
     // Admin Unified Customer Support Workspace
     Route::get('/support', [\App\Http\Controllers\Admin\CustomerSupportController::class, 'index'])->name('admin.support');
 

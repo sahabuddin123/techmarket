@@ -218,6 +218,9 @@ class AdminController extends Controller
             'specification_values' => 'nullable|array',
         ]);
 
+        // Ensure warranty has default fallback if empty
+        $validated['warranty'] = !empty($validated['warranty']) ? trim((string)$validated['warranty']) : '1 Year Warranty';
+
         // Clean SEO-friendly collision-safe slug
         $validated['slug'] = \App\Services\ProductSeoService::generateUniqueSlug(
             $validated['title'],
@@ -368,6 +371,9 @@ class AdminController extends Controller
         ]);
 
         $oldValues = $product->toArray();
+
+        // Ensure warranty has default fallback if empty
+        $validated['warranty'] = !empty($validated['warranty']) ? trim((string)$validated['warranty']) : ($product->warranty ?: '1 Year Warranty');
 
         // Check for slug changes and maintain 301 redirect map
         $targetSlug = $request->input('seo_slug') ?: $validated['title'];

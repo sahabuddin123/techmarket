@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Services\ProductSeoService;
+use App\Traits\SanitizesUtf8;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SanitizesUtf8;
 
     protected $fillable = [
         'title',

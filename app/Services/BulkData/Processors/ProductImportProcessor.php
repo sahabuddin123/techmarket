@@ -236,7 +236,8 @@ class ProductImportProcessor implements ImportProcessorInterface
         $normalized['component_type'] = in_array($compInput, $allowedComponents, true) ? $compInput : null;
 
         // 11. Text fields
-        $normalized['warranty'] = trim((string)($row['warranty'] ?? $row['Warranty Policy'] ?? '2 Years Official Warranty'));
+        $warrantyRaw = trim((string)($row['warranty'] ?? $row['Warranty Policy'] ?? ''));
+        $normalized['warranty'] = $warrantyRaw !== '' ? $warrantyRaw : '1 Year Warranty';
         $normalized['short_description'] = trim((string)($row['short_description'] ?? $row['Short Summary'] ?? ''));
         $normalized['description'] = trim((string)($row['description'] ?? $row['Full Description HTML'] ?? ''));
         $normalized['image'] = trim((string)($row['image'] ?? $row['Primary Image URL'] ?? ''));

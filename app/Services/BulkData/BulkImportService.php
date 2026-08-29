@@ -227,8 +227,11 @@ class BulkImportService
                     $hasValues = false;
 
                     foreach ($headerMap as $idx => $systemKey) {
-                        $val = $row[$idx] ?? '';
-                        $rowData[$systemKey] = trim((string)$val);
+                        $val = (string)($row[$idx] ?? '');
+                        if (!mb_check_encoding($val, 'UTF-8')) {
+                            $val = mb_convert_encoding($val, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252, ASCII');
+                        }
+                        $rowData[$systemKey] = trim($val);
                         if ($val !== '') $hasValues = true;
                     }
 
