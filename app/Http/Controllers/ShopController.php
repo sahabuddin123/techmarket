@@ -50,12 +50,45 @@ class ShopController extends Controller
         return Inertia::render('Home', $data);
     }
 
-    /**
-     * Category specific listing endpoint: /category/{slug}
-     */
     public function category($slug, Request $request)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
+        $category = Category::where('slug', $slug)->first();
+        if (!$category) {
+            $recommendedProducts = Product::where(function ($q) {
+                $q->where('is_active', true)->orWhereNull('is_active');
+            })
+            ->where('is_featured', true)
+            ->latest()
+            ->take(8)
+            ->get();
+
+            if ($recommendedProducts->count() < 4) {
+                $recommendedProducts = Product::where(function ($q) {
+                    $q->where('is_active', true)->orWhereNull('is_active');
+                })
+                ->latest()
+                ->take(8)
+                ->get();
+            }
+
+            $topCategories = Category::whereNull('parent_id')
+                ->where('is_nav_visible', true)
+                ->orderBy('sort_order')
+                ->take(8)
+                ->get();
+
+            return Inertia::render('Errors/NotFound', [
+                'status' => 404,
+                'requestedPath' => $request->path(),
+                'recommendedProducts' => $recommendedProducts,
+                'topCategories' => $topCategories,
+                'seo' => [
+                    'title' => '404 - Category Not Found | TechMarket BD',
+                    'description' => 'Sorry, the category you are looking for does not exist. Explore our hardware catalog.',
+                    'meta_robots' => 'noindex, nofollow',
+                ],
+            ]);
+        }
         return $this->renderShopPage($request, $category);
     }
 
@@ -450,7 +483,44 @@ class ShopController extends Controller
             'reviews',
         ])
         ->where('slug', $slug)
-        ->firstOrFail();
+        ->first();
+
+        if (!$product) {
+            $recommendedProducts = Product::where(function ($q) {
+                $q->where('is_active', true)->orWhereNull('is_active');
+            })
+            ->where('is_featured', true)
+            ->latest()
+            ->take(8)
+            ->get();
+
+            if ($recommendedProducts->count() < 4) {
+                $recommendedProducts = Product::where(function ($q) {
+                    $q->where('is_active', true)->orWhereNull('is_active');
+                })
+                ->latest()
+                ->take(8)
+                ->get();
+            }
+
+            $topCategories = Category::whereNull('parent_id')
+                ->where('is_nav_visible', true)
+                ->orderBy('sort_order')
+                ->take(8)
+                ->get();
+
+            return Inertia::render('Errors/NotFound', [
+                'status' => 404,
+                'requestedPath' => request()->path(),
+                'recommendedProducts' => $recommendedProducts,
+                'topCategories' => $topCategories,
+                'seo' => [
+                    'title' => '404 - Product Not Found | TechMarket BD',
+                    'description' => 'Sorry, this product is no longer available or the URL is broken. Explore our latest tech hardware.',
+                    'meta_robots' => 'noindex, nofollow',
+                ],
+            ]);
+        }
 
         $seo = \App\Services\ProductSeoService::resolveProductSeo($product);
 
