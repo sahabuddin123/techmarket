@@ -99,6 +99,14 @@ const logInternalEvent = async (payload) => {
 export const trackPageView = (url = window.location.pathname, title = document.title) => {
   if (typeof window === 'undefined') return;
 
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'page_view',
+    page_location: window.location.href,
+    page_path: url,
+    page_title: title,
+  });
+
   if (window.gtag) {
     window.gtag('event', 'page_view', {
       page_location: window.location.href,
@@ -126,19 +134,32 @@ export const trackViewContent = (product) => {
   const contentId = getCanonicalContentId(product);
   const price = Number(product.price || 0);
   const eventId = generateEventId('VIEW');
+  const items = [{
+    item_id: contentId,
+    item_name: product.title,
+    price: price,
+    item_category: product.category?.name || 'Hardware',
+    item_brand: product.brand?.name || 'TechMarket',
+  }];
+
+  // GTM dataLayer
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: 'view_item',
+    ecommerce: {
+      currency: 'BDT',
+      value: price,
+      items: items,
+    }
+  });
 
   // GA4
   if (window.gtag) {
     window.gtag('event', 'view_item', {
       currency: 'BDT',
       value: price,
-      items: [{
-        item_id: contentId,
-        item_name: product.title,
-        price: price,
-        item_category: product.category?.name || 'Hardware',
-        item_brand: product.brand?.name || 'TechMarket',
-      }]
+      items: items,
     });
   }
 
@@ -170,6 +191,12 @@ export const trackViewContent = (product) => {
 export const trackSearch = (searchQuery) => {
   if (!searchQuery || typeof window === 'undefined') return;
 
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'search',
+    search_term: searchQuery,
+  });
+
   if (window.gtag) {
     window.gtag('event', 'search', { search_term: searchQuery });
   }
@@ -189,6 +216,13 @@ export const trackSearch = (searchQuery) => {
  */
 export const trackViewCategory = (category) => {
   if (!category || typeof window === 'undefined') return;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'view_item_list',
+    item_list_name: category.name,
+    category_id: category.id,
+  });
 
   if (window.gtag) {
     window.gtag('event', 'view_item_list', { item_list_name: category.name });
@@ -215,18 +249,31 @@ export const trackAddToCart = (product, quantity = 1) => {
   const price = Number(product.price || 0);
   const totalValue = price * quantity;
   const eventId = generateEventId('ATC');
+  const items = [{
+    item_id: contentId,
+    item_name: product.title,
+    price: price,
+    quantity: quantity,
+  }];
+
+  // GTM dataLayer
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: 'add_to_cart',
+    ecommerce: {
+      currency: 'BDT',
+      value: totalValue,
+      items: items,
+    }
+  });
 
   // GA4
   if (window.gtag) {
     window.gtag('event', 'add_to_cart', {
       currency: 'BDT',
       value: totalValue,
-      items: [{
-        item_id: contentId,
-        item_name: product.title,
-        price: price,
-        quantity: quantity,
-      }]
+      items: items,
     });
   }
 
@@ -259,17 +306,29 @@ export const trackRemoveFromCart = (product, quantity = 1) => {
 
   const contentId = getCanonicalContentId(product);
   const price = Number(product.price || 0);
+  const items = [{
+    item_id: contentId,
+    item_name: product.title,
+    price: price,
+    quantity: quantity,
+  }];
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: 'remove_from_cart',
+    ecommerce: {
+      currency: 'BDT',
+      value: price * quantity,
+      items: items,
+    }
+  });
 
   if (window.gtag) {
     window.gtag('event', 'remove_from_cart', {
       currency: 'BDT',
       value: price * quantity,
-      items: [{
-        item_id: contentId,
-        item_name: product.title,
-        price: price,
-        quantity: quantity,
-      }]
+      items: items,
     });
   }
 
@@ -288,18 +347,31 @@ export const trackInitiateCheckout = (cartItems = [], total = 0) => {
 
   const contentIds = cartItems.map(getCanonicalContentId);
   const eventId = generateEventId('CHK');
+  const items = cartItems.map(item => ({
+    item_id: getCanonicalContentId(item.product || item),
+    item_name: item.product?.title || item.title,
+    price: Number(item.price),
+    quantity: item.quantity,
+  }));
+
+  // GTM dataLayer
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: 'begin_checkout',
+    ecommerce: {
+      currency: 'BDT',
+      value: Number(total),
+      items: items,
+    }
+  });
 
   // GA4
   if (window.gtag) {
     window.gtag('event', 'begin_checkout', {
       currency: 'BDT',
       value: Number(total),
-      items: cartItems.map(item => ({
-        item_id: getCanonicalContentId(item.product || item),
-        item_name: item.product?.title || item.title,
-        price: Number(item.price),
-        quantity: item.quantity,
-      })),
+      items: items,
     });
   }
 
@@ -327,6 +399,14 @@ export const trackInitiateCheckout = (cartItems = [], total = 0) => {
  */
 export const trackAddPaymentInfo = (paymentMethod, total = 0) => {
   if (typeof window === 'undefined') return;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'add_payment_info',
+    payment_type: paymentMethod,
+    currency: 'BDT',
+    value: Number(total),
+  });
 
   if (window.gtag) {
     window.gtag('event', 'add_payment_info', {
@@ -362,20 +442,35 @@ export const trackPurchase = (order) => {
   const contentIds = items.map(item => getCanonicalContentId(item.product || item));
   const stableEventId = `PURCHASE_${orderNumber}`;
   const totalValue = Number(order.total || 0);
+  const formattedItems = items.map(item => ({
+    item_id: getCanonicalContentId(item.product || item),
+    item_name: item.product_name || item.product?.title || 'Hardware Item',
+    price: Number(item.price || 0),
+    quantity: Number(item.quantity || 1),
+  }));
+
+  // GTM dataLayer
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: 'purchase',
+    ecommerce: {
+      transaction_id: String(orderNumber),
+      value: totalValue,
+      currency: 'BDT',
+      shipping: Number(order.shipping_cost || 0),
+      items: formattedItems,
+    }
+  });
 
   // GA4
   if (window.gtag) {
     window.gtag('event', 'purchase', {
-      transaction_id: orderNumber,
+      transaction_id: String(orderNumber),
       value: totalValue,
       currency: 'BDT',
       shipping: Number(order.shipping_cost || 0),
-      items: items.map(item => ({
-        item_id: getCanonicalContentId(item.product || item),
-        item_name: item.product_name || item.product?.title || 'Hardware Item',
-        price: Number(item.price || 0),
-        quantity: Number(item.quantity || 1),
-      })),
+      items: formattedItems,
     });
   }
 

@@ -165,12 +165,12 @@
       "_vendor-react-Dq2RXA99.js"
     ]
   },
-  "_ProductCard-B45W6eqq.js": {
-    "file": "assets/ProductCard-B45W6eqq.js",
+  "_ProductCard-CqHRw3TE.js": {
+    "file": "assets/ProductCard-CqHRw3TE.js",
     "name": "ProductCard",
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -181,8 +181,8 @@
       "_vendor-react-Dq2RXA99.js"
     ]
   },
-  "_QuickViewModal-5GvZqlp0.js": {
-    "file": "assets/QuickViewModal-5GvZqlp0.js",
+  "_QuickViewModal-DlK-vbGo.js": {
+    "file": "assets/QuickViewModal-DlK-vbGo.js",
     "name": "QuickViewModal",
     "imports": [
       "_vendor-react-Dq2RXA99.js",
@@ -217,8 +217,8 @@
       "_vendor-inertia-CIHpabrm.js"
     ]
   },
-  "_versionRegistry-CgIDpq_D.js": {
-    "file": "assets/versionRegistry-CgIDpq_D.js",
+  "_versionRegistry-xLaYO_pN.js": {
+    "file": "assets/versionRegistry-xLaYO_pN.js",
     "name": "versionRegistry",
     "imports": [
       "_Footer-aMQO3i-B.js",
@@ -262,14 +262,14 @@
     ]
   },
   "resources/js/Pages/Account/CctvCreateServiceRequest.jsx": {
-    "file": "assets/CctvCreateServiceRequest-BW50W_AB.js",
+    "file": "assets/CctvCreateServiceRequest-CXXiy9AQ.js",
     "name": "CctvCreateServiceRequest",
     "src": "resources/js/Pages/Account/CctvCreateServiceRequest.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_vendor-inertia-CIHpabrm.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_Footer-aMQO3i-B.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -282,8 +282,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -322,13 +322,13 @@
     ]
   },
   "resources/js/Pages/Account/CctvEquipment.jsx": {
-    "file": "assets/CctvEquipment-CWWgd8oK.js",
+    "file": "assets/CctvEquipment-CJ1kKgTr.js",
     "name": "CctvEquipment",
     "src": "resources/js/Pages/Account/CctvEquipment.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
       "_Footer-aMQO3i-B.js",
@@ -342,8 +342,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -382,14 +382,14 @@
     ]
   },
   "resources/js/Pages/Account/CctvProjectShow.jsx": {
-    "file": "assets/CctvProjectShow-JRqQgiWy.js",
+    "file": "assets/CctvProjectShow-BDKuuiMZ.js",
     "name": "CctvProjectShow",
     "src": "resources/js/Pages/Account/CctvProjectShow.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_vendor-inertia-CIHpabrm.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_Footer-aMQO3i-B.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -402,8 +402,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -442,14 +442,14 @@
     ]
   },
   "resources/js/Pages/Account/CctvProjects.jsx": {
-    "file": "assets/CctvProjects-CwJXVeG7.js",
+    "file": "assets/CctvProjects-DGPyWEvm.js",
     "name": "CctvProjects",
     "src": "resources/js/Pages/Account/CctvProjects.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_vendor-inertia-CIHpabrm.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_Footer-aMQO3i-B.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -462,8 +462,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -502,13 +502,13 @@
     ]
   },
   "resources/js/Pages/Account/CctvServiceRequests.jsx": {
-    "file": "assets/CctvServiceRequests-yCx0MXqg.js",
+    "file": "assets/CctvServiceRequests-BwNBcPWf.js",
     "name": "CctvServiceRequests",
     "src": "resources/js/Pages/Account/CctvServiceRequests.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
       "_Footer-aMQO3i-B.js",
@@ -522,8 +522,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -2243,7 +2243,7 @@
     ]
   },
   "resources/js/Pages/Admin/Settings/Index.jsx": {
-    "file": "assets/Index-CLscldcb.js",
+    "file": "assets/Index-DXK8xSdG.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Settings/Index.jsx",
     "isDynamicEntry": true,
@@ -2605,7 +2605,7 @@
     ]
   },
   "resources/js/Pages/Brands/Show.jsx": {
-    "file": "assets/Show-CloTnUYr.js",
+    "file": "assets/Show-ietZZPrq.js",
     "name": "Show",
     "src": "resources/js/Pages/Brands/Show.jsx",
     "isDynamicEntry": true,
@@ -2613,7 +2613,7 @@
       "_vendor-react-Dq2RXA99.js",
       "_Footer-aMQO3i-B.js",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
+      "_ProductCard-CqHRw3TE.js",
       "_vendor-inertia-CIHpabrm.js",
       "_MegaMenu-DGq0IHaF.js",
       "_AuthModal-CjLwluP7.js",
@@ -2624,7 +2624,7 @@
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -2650,13 +2650,13 @@
     ]
   },
   "resources/js/Pages/Catalog.jsx": {
-    "file": "assets/Catalog-Buh0YiDc.js",
+    "file": "assets/Catalog-BJBt8YOB.js",
     "name": "Catalog",
     "src": "resources/js/Pages/Catalog.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "_SeoHead-C81nWQkZ.js",
       "_vendor-inertia-CIHpabrm.js",
       "_Footer-aMQO3i-B.js",
@@ -2671,8 +2671,8 @@
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -2711,14 +2711,14 @@
     ]
   },
   "resources/js/Pages/CctvEstimator.jsx": {
-    "file": "assets/CctvEstimator-Bf5WtMOP.js",
+    "file": "assets/CctvEstimator-Q8flW7w7.js",
     "name": "CctvEstimator",
     "src": "resources/js/Pages/CctvEstimator.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_vendor-inertia-CIHpabrm.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_Footer-aMQO3i-B.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -2731,8 +2731,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -2771,14 +2771,14 @@
     ]
   },
   "resources/js/Pages/CctvQuoteView.jsx": {
-    "file": "assets/CctvQuoteView-oz2-QOsH.js",
+    "file": "assets/CctvQuoteView-B2SIVp8_.js",
     "name": "CctvQuoteView",
     "src": "resources/js/Pages/CctvQuoteView.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_vendor-inertia-CIHpabrm.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_Footer-aMQO3i-B.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -2791,8 +2791,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -2831,14 +2831,14 @@
     ]
   },
   "resources/js/Pages/CctvSiteSurveyRequest.jsx": {
-    "file": "assets/CctvSiteSurveyRequest-DmGeX_iy.js",
+    "file": "assets/CctvSiteSurveyRequest-Bpx12ZVq.js",
     "name": "CctvSiteSurveyRequest",
     "src": "resources/js/Pages/CctvSiteSurveyRequest.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_vendor-inertia-CIHpabrm.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_Footer-aMQO3i-B.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -2851,8 +2851,8 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -2891,7 +2891,7 @@
     ]
   },
   "resources/js/Pages/Checkout.jsx": {
-    "file": "assets/Checkout-D5b5Gq83.js",
+    "file": "assets/Checkout-DYra4-ZS.js",
     "name": "Checkout",
     "src": "resources/js/Pages/Checkout.jsx",
     "isDynamicEntry": true,
@@ -3053,7 +3053,7 @@
     ]
   },
   "resources/js/Pages/Error.jsx": {
-    "file": "assets/Error-Dx_DGXWs.js",
+    "file": "assets/Error-URraRdE1.js",
     "name": "Error",
     "src": "resources/js/Pages/Error.jsx",
     "isDynamicEntry": true,
@@ -3072,13 +3072,13 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Errors/NotFound.jsx": {
-    "file": "assets/NotFound-B1cdva81.js",
+    "file": "assets/NotFound-Dge8BsaU.js",
     "name": "NotFound",
     "src": "resources/js/Pages/Errors/NotFound.jsx",
     "isDynamicEntry": true,
@@ -3086,7 +3086,7 @@
       "_vendor-react-Dq2RXA99.js",
       "_Footer-aMQO3i-B.js",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
+      "_ProductCard-CqHRw3TE.js",
       "_vendor-inertia-CIHpabrm.js",
       "_MegaMenu-DGq0IHaF.js",
       "_AuthModal-CjLwluP7.js",
@@ -3097,18 +3097,18 @@
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Home.jsx": {
-    "file": "assets/Home-ZwdOSlbV.js",
+    "file": "assets/Home-CA6GuKsw.js",
     "name": "Home",
     "src": "resources/js/Pages/Home.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "_SeoHead-C81nWQkZ.js",
       "_vendor-inertia-CIHpabrm.js",
       "_Footer-aMQO3i-B.js",
@@ -3123,8 +3123,8 @@
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -3163,7 +3163,7 @@
     ]
   },
   "resources/js/Pages/Invoice.jsx": {
-    "file": "assets/Invoice-CHjnt2OY.js",
+    "file": "assets/Invoice-D7GEsALa.js",
     "name": "Invoice",
     "src": "resources/js/Pages/Invoice.jsx",
     "isDynamicEntry": true,
@@ -3174,7 +3174,7 @@
     ]
   },
   "resources/js/Pages/LandingPages/Show.jsx": {
-    "file": "assets/Show-UmYqWVLz.js",
+    "file": "assets/Show-B5VcUELj.js",
     "name": "Show",
     "src": "resources/js/Pages/LandingPages/Show.jsx",
     "isDynamicEntry": true,
@@ -3185,7 +3185,7 @@
     ]
   },
   "resources/js/Pages/Offers/Index.jsx": {
-    "file": "assets/Index-BAgmb_-l.js",
+    "file": "assets/Index-B8NOg9TB.js",
     "name": "Index",
     "src": "resources/js/Pages/Offers/Index.jsx",
     "isDynamicEntry": true,
@@ -3205,19 +3205,19 @@
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Offers/Show.jsx": {
-    "file": "assets/Show-hzTsDHbn.js",
+    "file": "assets/Show-nABpWQAl.js",
     "name": "Show",
     "src": "resources/js/Pages/Offers/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
       "_Footer-aMQO3i-B.js",
-      "_ProductCard-B45W6eqq.js",
+      "_ProductCard-CqHRw3TE.js",
       "_CartDrawer-VhiF3t3A.js",
       "_vendor-inertia-CIHpabrm.js",
       "_MegaMenu-DGq0IHaF.js",
@@ -3229,7 +3229,7 @@
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3316,13 +3316,13 @@
     ]
   },
   "resources/js/Pages/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-r6zZqHYm.js",
+    "file": "assets/ProductDetail-DKv6TXmN.js",
     "name": "ProductDetail",
     "src": "resources/js/Pages/ProductDetail.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_versionRegistry-CgIDpq_D.js",
+      "_versionRegistry-xLaYO_pN.js",
       "_SeoHead-C81nWQkZ.js",
       "_vendor-inertia-CIHpabrm.js",
       "_Footer-aMQO3i-B.js",
@@ -3337,8 +3337,8 @@
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_ProductCard-CqHRw3TE.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
       "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
@@ -3456,7 +3456,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version1/CatalogV1.jsx": {
-    "file": "assets/CatalogV1-DlS9ovZz.js",
+    "file": "assets/CatalogV1-C7kqvk8q.js",
     "name": "CatalogV1",
     "src": "resources/js/Pages/Storefront/Version1/CatalogV1.jsx",
     "isDynamicEntry": true,
@@ -3464,7 +3464,7 @@
       "_vendor-react-Dq2RXA99.js",
       "_Footer-aMQO3i-B.js",
       "_CartDrawer-VhiF3t3A.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "_vendor-inertia-CIHpabrm.js",
       "_MegaMenu-DGq0IHaF.js",
       "_AuthModal-CjLwluP7.js",
@@ -3479,7 +3479,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version1/HomeV1.jsx": {
-    "file": "assets/HomeV1-DIEBHm-g.js",
+    "file": "assets/HomeV1-e_SmadkF.js",
     "name": "HomeV1",
     "src": "resources/js/Pages/Storefront/Version1/HomeV1.jsx",
     "isDynamicEntry": true,
@@ -3487,7 +3487,7 @@
       "_vendor-react-Dq2RXA99.js",
       "_Footer-aMQO3i-B.js",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
+      "_ProductCard-CqHRw3TE.js",
       "_vendor-inertia-CIHpabrm.js",
       "_MegaMenu-DGq0IHaF.js",
       "_AuthModal-CjLwluP7.js",
@@ -3498,12 +3498,12 @@
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx": {
-    "file": "assets/ProductDetailV1-BosqhuY7.js",
+    "file": "assets/ProductDetailV1-CE_HSkWs.js",
     "name": "ProductDetailV1",
     "src": "resources/js/Pages/Storefront/Version1/ProductDetailV1.jsx",
     "isDynamicEntry": true,
@@ -3525,7 +3525,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version2/CatalogV2.jsx": {
-    "file": "assets/CatalogV2-BdPk3Kcr.js",
+    "file": "assets/CatalogV2-Y_HJeur1.js",
     "name": "CatalogV2",
     "src": "resources/js/Pages/Storefront/Version2/CatalogV2.jsx",
     "isDynamicEntry": true,
@@ -3534,7 +3534,7 @@
       "resources/js/Pages/Storefront/Version2/Components/NavbarV2.jsx",
       "_FooterV2-BwySE7KX.js",
       "_CartDrawer-VhiF3t3A.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "_vendor-inertia-CIHpabrm.js",
       "_AuthModal-CjLwluP7.js",
@@ -3542,7 +3542,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version2/Components/BestSellersSectionV2.jsx": {
-    "file": "assets/BestSellersSectionV2-BpAARrwE.js",
+    "file": "assets/BestSellersSectionV2-DkEoViJP.js",
     "name": "BestSellersSectionV2",
     "src": "resources/js/Pages/Storefront/Version2/Components/BestSellersSectionV2.jsx",
     "isDynamicEntry": true,
@@ -3550,7 +3550,7 @@
       "_vendor-react-Dq2RXA99.js",
       "resources/js/Pages/Storefront/Version2/Components/ProductCardV2.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3575,7 +3575,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version2/Components/FlashSaleSectionV2.jsx": {
-    "file": "assets/FlashSaleSectionV2-Daddy_Bm.js",
+    "file": "assets/FlashSaleSectionV2-NiZMdbJ_.js",
     "name": "FlashSaleSectionV2",
     "src": "resources/js/Pages/Storefront/Version2/Components/FlashSaleSectionV2.jsx",
     "isDynamicEntry": true,
@@ -3583,7 +3583,7 @@
       "_vendor-react-Dq2RXA99.js",
       "resources/js/Pages/Storefront/Version2/Components/ProductCardV2.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3608,7 +3608,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version2/Components/LatestProductsSectionV2.jsx": {
-    "file": "assets/LatestProductsSectionV2-CXSSoHHR.js",
+    "file": "assets/LatestProductsSectionV2-Ldf-D4oZ.js",
     "name": "LatestProductsSectionV2",
     "src": "resources/js/Pages/Storefront/Version2/Components/LatestProductsSectionV2.jsx",
     "isDynamicEntry": true,
@@ -3616,7 +3616,7 @@
       "_vendor-react-Dq2RXA99.js",
       "resources/js/Pages/Storefront/Version2/Components/ProductCardV2.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3632,13 +3632,13 @@
     ]
   },
   "resources/js/Pages/Storefront/Version2/Components/ProductCardV2.jsx": {
-    "file": "assets/ProductCardV2-6Ei17IAz.js",
+    "file": "assets/ProductCardV2-2wd_BmaG.js",
     "name": "ProductCardV2",
     "src": "resources/js/Pages/Storefront/Version2/Components/ProductCardV2.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "_vendor-inertia-CIHpabrm.js"
     ]
@@ -3704,7 +3704,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version2/HomeV2.jsx": {
-    "file": "assets/HomeV2-BK44tmbu.js",
+    "file": "assets/HomeV2-Bkn-Z19Q.js",
     "name": "HomeV2",
     "src": "resources/js/Pages/Storefront/Version2/HomeV2.jsx",
     "isDynamicEntry": true,
@@ -3729,12 +3729,12 @@
       "_vendor-inertia-CIHpabrm.js",
       "_AuthModal-CjLwluP7.js",
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Storefront/Version2/ProductDetailV2.jsx": {
-    "file": "assets/ProductDetailV2-tSg1PlSX.js",
+    "file": "assets/ProductDetailV2-D5ZEspVr.js",
     "name": "ProductDetailV2",
     "src": "resources/js/Pages/Storefront/Version2/ProductDetailV2.jsx",
     "isDynamicEntry": true,
@@ -3749,7 +3749,7 @@
       "_vendor-inertia-CIHpabrm.js",
       "_AuthModal-CjLwluP7.js",
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js"
+      "_QuickViewModal-DlK-vbGo.js"
     ]
   },
   "resources/js/Pages/Storefront/Version3/BrandsV3.jsx": {
@@ -3770,7 +3770,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version3/CatalogV3.jsx": {
-    "file": "assets/CatalogV3-CwZ40DB2.js",
+    "file": "assets/CatalogV3-DKz_SBVb.js",
     "name": "CatalogV3",
     "src": "resources/js/Pages/Storefront/Version3/CatalogV3.jsx",
     "isDynamicEntry": true,
@@ -3785,7 +3785,7 @@
       "_AuthModal-CjLwluP7.js",
       "resources/js/Pages/Storefront/Version3/Components/TopUtilityBarV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3854,7 +3854,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version3/Components/GadgetsForYouSectionV3.jsx": {
-    "file": "assets/GadgetsForYouSectionV3-Deq_mmxs.js",
+    "file": "assets/GadgetsForYouSectionV3-CoAjAV-J.js",
     "name": "GadgetsForYouSectionV3",
     "src": "resources/js/Pages/Storefront/Version3/Components/GadgetsForYouSectionV3.jsx",
     "isDynamicEntry": true,
@@ -3863,7 +3863,7 @@
       "resources/js/Pages/Storefront/Version3/Components/SectionBoxV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3878,7 +3878,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version3/Components/LimitedTimeOfferSectionV3.jsx": {
-    "file": "assets/LimitedTimeOfferSectionV3-Ci2DJOtJ.js",
+    "file": "assets/LimitedTimeOfferSectionV3-CR3EumEo.js",
     "name": "LimitedTimeOfferSectionV3",
     "src": "resources/js/Pages/Storefront/Version3/Components/LimitedTimeOfferSectionV3.jsx",
     "isDynamicEntry": true,
@@ -3886,7 +3886,7 @@
       "_vendor-react-Dq2RXA99.js",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3913,7 +3913,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version3/Components/NewArrivalsCarouselV3.jsx": {
-    "file": "assets/NewArrivalsCarouselV3-K_mNspE9.js",
+    "file": "assets/NewArrivalsCarouselV3-XSDLdnCh.js",
     "name": "NewArrivalsCarouselV3",
     "src": "resources/js/Pages/Storefront/Version3/Components/NewArrivalsCarouselV3.jsx",
     "isDynamicEntry": true,
@@ -3922,18 +3922,18 @@
       "resources/js/Pages/Storefront/Version3/Components/SectionBoxV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx": {
-    "file": "assets/ProductCardV3-BMIpS7LK.js",
+    "file": "assets/ProductCardV3-B_bkTkc3.js",
     "name": "ProductCardV3",
     "src": "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-react-Dq2RXA99.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "_vendor-inertia-CIHpabrm.js"
     ]
@@ -3949,7 +3949,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version3/Components/TopTrendingSectionV3.jsx": {
-    "file": "assets/TopTrendingSectionV3-DEAVGKDT.js",
+    "file": "assets/TopTrendingSectionV3-Be0Td4SH.js",
     "name": "TopTrendingSectionV3",
     "src": "resources/js/Pages/Storefront/Version3/Components/TopTrendingSectionV3.jsx",
     "isDynamicEntry": true,
@@ -3958,12 +3958,12 @@
       "resources/js/Pages/Storefront/Version3/Components/SectionBoxV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Storefront/Version3/Components/TopTrendingSplitSectionV3.jsx": {
-    "file": "assets/TopTrendingSplitSectionV3-8Nb21F_y.js",
+    "file": "assets/TopTrendingSplitSectionV3-ZJOgaDzD.js",
     "name": "TopTrendingSplitSectionV3",
     "src": "resources/js/Pages/Storefront/Version3/Components/TopTrendingSplitSectionV3.jsx",
     "isDynamicEntry": true,
@@ -3971,7 +3971,7 @@
       "_vendor-react-Dq2RXA99.js",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
       "_vendor-inertia-CIHpabrm.js",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
@@ -3997,7 +3997,7 @@
     ]
   },
   "resources/js/Pages/Storefront/Version3/HomeV3.jsx": {
-    "file": "assets/HomeV3-NjAZFUcJ.js",
+    "file": "assets/HomeV3-ChhNexcH.js",
     "name": "HomeV3",
     "src": "resources/js/Pages/Storefront/Version3/HomeV3.jsx",
     "isDynamicEntry": true,
@@ -4020,13 +4020,13 @@
       "resources/js/Pages/Storefront/Version3/Components/TopUtilityBarV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ProductCardV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx",
       "resources/js/Pages/Storefront/Version3/Components/SectionBoxV3.jsx"
     ]
   },
   "resources/js/Pages/Storefront/Version3/OffersV3.jsx": {
-    "file": "assets/OffersV3-A8xzba-A.js",
+    "file": "assets/OffersV3-CVv5uFAc.js",
     "name": "OffersV3",
     "src": "resources/js/Pages/Storefront/Version3/OffersV3.jsx",
     "isDynamicEntry": true,
@@ -4040,12 +4040,12 @@
       "_AuthModal-CjLwluP7.js",
       "resources/js/Pages/Storefront/Version3/Components/TopUtilityBarV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Storefront/Version3/ProductDetailV3.jsx": {
-    "file": "assets/ProductDetailV3--qTt-Yl4.js",
+    "file": "assets/ProductDetailV3-1VSfG-mz.js",
     "name": "ProductDetailV3",
     "src": "resources/js/Pages/Storefront/Version3/ProductDetailV3.jsx",
     "isDynamicEntry": true,
@@ -4063,7 +4063,7 @@
       "_AuthModal-CjLwluP7.js",
       "resources/js/Pages/Storefront/Version3/Components/TopUtilityBarV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js"
+      "_QuickViewModal-DlK-vbGo.js"
     ]
   },
   "resources/js/Pages/Tools/BtuCalculator.jsx": {
@@ -4178,7 +4178,7 @@
     ]
   },
   "resources/js/Pages/Wishlist.jsx": {
-    "file": "assets/Wishlist-H0Meg_Mo.js",
+    "file": "assets/Wishlist-CWHLEenE.js",
     "name": "Wishlist",
     "src": "resources/js/Pages/Wishlist.jsx",
     "isDynamicEntry": true,
@@ -4186,7 +4186,7 @@
       "_vendor-react-Dq2RXA99.js",
       "_Footer-aMQO3i-B.js",
       "_CartDrawer-VhiF3t3A.js",
-      "_ProductCard-B45W6eqq.js",
+      "_ProductCard-CqHRw3TE.js",
       "_vendor-inertia-CIHpabrm.js",
       "_MegaMenu-DGq0IHaF.js",
       "_AuthModal-CjLwluP7.js",
@@ -4197,12 +4197,12 @@
       "resources/js/Pages/Storefront/Version3/Components/MobileBottomNavV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/FooterV3.jsx",
       "resources/js/Pages/Storefront/Version3/Components/ChatWidgetV3.jsx",
-      "_QuickViewModal-5GvZqlp0.js",
+      "_QuickViewModal-DlK-vbGo.js",
       "resources/js/app.jsx"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-C3m4ssfY.js",
+    "file": "assets/app-BYnnPBp5.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,

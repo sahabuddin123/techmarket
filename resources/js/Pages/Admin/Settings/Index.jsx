@@ -8,7 +8,8 @@ import {
   Sliders, Save, Globe, Image as ImageIcon, Store, Search, 
   Phone, CreditCard, Truck, Activity, RefreshCw, CheckCircle2,
   AlertTriangle, ShieldCheck, Database, Server, HardDrive, Sparkles,
-  Palette, Info, ExternalLink, HelpCircle, Check
+  Palette, Info, ExternalLink, HelpCircle, Check, Zap, Layers,
+  ArrowRight, Table, Tag, ShoppingBag
 } from 'lucide-react';
 
 export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) {
@@ -680,6 +681,115 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                       <div className="pt-1 border-t border-slate-100 dark:border-slate-800 text-[10.5px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                         <Check className="w-3 h-3 shrink-0" />
                         <span>Fires PageView, ViewContent, AddToCart & Purchases</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Event Tracking & GTM Setup Cheatsheet */}
+                <div className="mt-4 p-4.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <div className="flex items-center space-x-2 text-slate-900 dark:text-slate-100 font-extrabold text-sm">
+                      <Zap className="w-4 h-4 text-amber-500" />
+                      <span>E-Commerce Event Tracking Map & GTM Recipes</span>
+                    </div>
+                    <span className="text-[11px] font-semibold text-[#0084ff] bg-blue-50 dark:bg-blue-950/60 px-2.5 py-1 rounded-lg border border-blue-200 dark:border-blue-800">
+                      ⚡ Automated DataLayer Engine Active
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+                    {/* Left: What Events Are Tracked */}
+                    <div className="space-y-2.5">
+                      <h5 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <ShoppingBag className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>১. যেসব ইভেন্ট স্বয়ংক্রিয়ভাবে ট্র্যাক হয় (Automated Events)</span>
+                      </h5>
+                      
+                      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
+                        <div className="p-2.5 flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-[11px]">page_view</div>
+                            <div className="text-slate-500 text-[10.5px]">যে কোনো পেজ লোড বা নেভিগেট করলে ফায়ার হয়।</div>
+                          </div>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-bold shrink-0">GA4 + Pixel</span>
+                        </div>
+
+                        <div className="p-2.5 flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-[11px]">view_item <span className="text-slate-400 font-normal">/ ViewContent</span></div>
+                            <div className="text-slate-500 text-[10.5px]">কাস্টমার প্রোডাক্ট ডিটেইল বা কুইক ভিউ ওপেন করলে প্রডাক্ট আইডি, নাম ও প্রাইস সহ ফায়ার হয়।</div>
+                          </div>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-bold shrink-0">GA4 + Pixel</span>
+                        </div>
+
+                        <div className="p-2.5 flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-[11px]">add_to_cart <span className="text-slate-400 font-normal">/ AddToCart</span></div>
+                            <div className="text-slate-500 text-[10.5px]">"Add to Cart" অথবা "Buy Now" বাটনে ক্লিক করলে কার্ট ভ্যালু ও কোয়ান্টিটি সহ ফায়ার হয়।</div>
+                          </div>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-bold shrink-0">GA4 + Pixel</span>
+                        </div>
+
+                        <div className="p-2.5 flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-[11px]">begin_checkout <span className="text-slate-400 font-normal">/ InitiateCheckout</span></div>
+                            <div className="text-slate-500 text-[10.5px]">কাস্টমার চেকআউট পেজে প্রবেশ করলে পুরো কার্টের টোটাল টাকার পরিমাণ সহ ফায়ার হয়।</div>
+                          </div>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-bold shrink-0">GA4 + Pixel</span>
+                        </div>
+
+                        <div className="p-2.5 flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-[11px]">purchase <span className="text-slate-400 font-normal">/ Purchase</span></div>
+                            <div className="text-slate-500 text-[10.5px]">অর্ডার কনফার্ম হলে অর্ডার নম্বর (Transaction ID), ডেলিভারি চার্জ ও প্রোডাক্ট লিস্ট সহ একবারই রেকর্ড হয়।</div>
+                          </div>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 font-bold shrink-0">Conversion</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: How to configure in GTM */}
+                    <div className="space-y-2.5">
+                      <h5 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <Layers className="w-3.5 h-3.5 text-blue-500" />
+                        <span>২. Google Tag Manager (GTM)-এ সেটআপ করার সহজ নিয়ম</span>
+                      </h5>
+
+                      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-3 space-y-3">
+                        <div className="space-y-1">
+                          <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5 text-[11.5px]">
+                            <span className="w-4 h-4 rounded-full bg-blue-100 dark:bg-blue-950 text-[#0084ff] flex items-center justify-center text-[10px] font-bold">A</span>
+                            <span>Google Tag (Main Configuration Tag)</span>
+                          </div>
+                          <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed pl-5">
+                            GTM &rarr; <strong>Tags</strong> &rarr; <strong>New</strong> &rarr; Tag Type: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-mono font-bold text-slate-800 dark:text-slate-200">Google Tag</code>.<br />
+                            Tag ID: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-mono text-[#0084ff] font-bold">{data.ga_measurement_id || 'G-739XJECS0D'}</code> &rarr; Trigger: <strong>Initialization - All Pages</strong>.
+                          </p>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                          <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5 text-[11.5px]">
+                            <span className="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px] font-bold">B</span>
+                            <span>GA4 E-Commerce Events Tag (সব ইভেন্টের জন্য ১টি ট্যাগ)</span>
+                          </div>
+                          <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed pl-5">
+                            Tag Type: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-mono font-bold text-slate-800 dark:text-slate-200">Google Analytics: GA4 Event</code>.<br />
+                            Event Name: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-mono text-purple-600 font-bold">{'{{Event}}'}</code>.<br />
+                            More Settings &rarr; টিক দিন: <strong>Send Ecommerce data (Data Layer)</strong>.<br />
+                            Trigger &rarr; <strong>Custom Event</strong> &rarr; Event Name: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-mono text-emerald-600 font-bold">view_item|add_to_cart|begin_checkout|purchase</code> (Regex matching: On).
+                          </p>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                          <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5 text-[11.5px]">
+                            <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px] font-bold">C</span>
+                            <span>Submit & Publish</span>
+                          </div>
+                          <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed pl-5">
+                            ট্যাগ দুটি তৈরি করে GTM-এর উপরের ডানপাশের <strong>Submit &rarr; Publish</strong> বাটনে ক্লিক করুন। সাথে সাথে সব ইভেন্ট লাইভ ট্র্যাক হওয়া শুরু হবে!
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
