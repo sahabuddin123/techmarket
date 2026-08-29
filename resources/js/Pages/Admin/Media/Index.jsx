@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import AdminShell from '../../../Components/Admin/AdminShell';
 import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
 import { 
   Image as ImageIcon, Upload, Grid, List, Search, Filter, 
   Trash2, Copy, Check, ExternalLink, Info, AlertTriangle, 
   Folder, X, Sparkles, RefreshCw, Layers, CheckCircle2,
-  FileText, ShieldCheck, ArrowUpDown, Database
+  FileText, ShieldCheck, ArrowUpDown, Database, Zap
 } from 'lucide-react';
 
 export default function MediaLibrary(props) {
@@ -163,6 +163,15 @@ export default function MediaLibrary(props) {
           subtitle="Upload, organize, search, and reuse product images and other storefront assets."
           actions={
             <div className="flex items-center space-x-3">
+              {/* Image Optimizer Action */}
+              <Link
+                href="/admin/media/optimizer"
+                className="px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 font-bold text-xs flex items-center space-x-1.5 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors shadow-2xs"
+              >
+                <Zap className="w-3.5 h-3.5 text-amber-500" />
+                <span>Image Optimizer & WebP</span>
+              </Link>
+
               {/* Storage Info Badge */}
               <div className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-mono text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center space-x-2 shadow-2xs">
                 <Database className="w-3.5 h-3.5 text-slate-400 shrink-0" />

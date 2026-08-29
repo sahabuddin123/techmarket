@@ -363,6 +363,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Central Media Library (Inertia View)
     Route::get('/media', [MediaController::class, 'index'])->name('admin.media');
+    Route::get('/media/optimizer', [MediaController::class, 'optimizer'])->name('admin.media.optimizer');
+    Route::post('/media/optimizer/process', [MediaController::class, 'processOptimizer'])->name('admin.media.optimizer.process');
+    Route::post('/media/optimizer/settings', [MediaController::class, 'saveOptimizerSettings'])->name('admin.media.optimizer.settings');
     Route::get('/media/data', [MediaController::class, 'apiList'])->name('admin.media.data');
     Route::get('/media/folders', [MediaController::class, 'folders'])->name('admin.media.folders');
     Route::get('/api/media', [MediaController::class, 'apiList'])->name('admin.media.api');

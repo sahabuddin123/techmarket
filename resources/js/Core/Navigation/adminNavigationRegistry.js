@@ -113,6 +113,17 @@ export const ADMIN_NAV_ITEMS = [
     description: 'Centralized digital asset manager, CDN image optimizer, and folders',
   },
   {
+    id: 'image_optimizer',
+    label: 'Image Optimizer (WebP)',
+    icon: 'Zap',
+    route: '/admin/media/optimizer',
+    group: ADMIN_NAV_GROUPS.CATALOG,
+    permission: 'media.manage',
+    badge: 'Speed',
+    order: 142,
+    description: 'Automatic WebP conversion, image compression, and disk space saver',
+  },
+  {
     id: 'units',
     label: 'Units',
     icon: 'Ruler',

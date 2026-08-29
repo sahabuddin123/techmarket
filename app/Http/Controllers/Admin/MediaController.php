@@ -216,6 +216,33 @@ class MediaController extends Controller
                 $height = $h;
             }
 
+            // Auto-convert to WebP if image and setting enabled
+            $autoWebp = \App\Models\Setting::get('image_optimizer_auto_webp', '1') === '1';
+            $isConvertible = in_array($extension, ['jpeg', 'jpg', 'png', 'bmp', 'gif', 'jfif', 'webp']);
+
+            if ($autoWebp && $isConvertible && \App\Services\ImageOptimizerService::isWebPSupported()) {
+                $webpSafeName = date('Ymd_His') . '_' . Str::random(8) . '.webp';
+                $webpSubPath = "media/{$folder}/" . date('Y/m');
+                $webpStoredPath = "{$webpSubPath}/{$webpSafeName}";
+                $webpLocalPath = Storage::disk($disk)->path($webpStoredPath);
+
+                $optResult = \App\Services\ImageOptimizerService::optimizeAndConvertToWebP($fullLocalPath, $webpLocalPath);
+
+                if ($optResult['success']) {
+                    // Remove original raw file if different
+                    if ($fullLocalPath !== $webpLocalPath && file_exists($fullLocalPath)) {
+                        @unlink($fullLocalPath);
+                    }
+
+                    $safeName = $webpSafeName;
+                    $storedPath = $webpStoredPath;
+                    $fileSize = $optResult['optimized_size'];
+                    $mimeType = 'image/webp';
+                    $width = $optResult['width'];
+                    $height = $optResult['height'];
+                }
+            }
+
             $media = Media::create([
                 'filename' => $safeName,
                 'original_name' => $originalName,
@@ -243,12 +270,12 @@ class MediaController extends Controller
         if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
             return response()->json([
                 'success' => true,
-                'message' => count($createdRecords) . ' media item(s) uploaded successfully.',
+                'message' => count($createdRecords) . ' media item(s) uploaded and optimized successfully.',
                 'media' => count($createdRecords) === 1 ? $createdRecords[0] : $createdRecords,
             ]);
         }
 
-        return back()->with('success', count($createdRecords) . ' media file(s) uploaded successfully!');
+        return back()->with('success', count($createdRecords) . ' media file(s) uploaded and optimized successfully!');
     }
 
     /**
@@ -315,6 +342,66 @@ class MediaController extends Controller
         }
 
         return back()->with('success', 'Media file removed from library.');
+    }
+
+    /**
+     * Display the Image Optimizer and WebP dashboard.
+     */
+    public function optimizer(Request $request)
+    {
+        $stats = \App\Services\ImageOptimizerService::getStats();
+
+        return Inertia::render('Admin/Media/Optimizer', [
+            'stats' => $stats,
+        ]);
+    }
+
+    /**
+     * Process batch optimization of images to WebP.
+     */
+    public function processOptimizer(Request $request)
+    {
+        $limit = (int) $request->input('limit', 50);
+        $folder = $request->input('folder', 'all');
+        $quality = (int) $request->input('quality', \App\Models\Setting::get('image_optimizer_quality', 85));
+
+        $result = \App\Services\ImageOptimizerService::bulkOptimizeAll([
+            'limit' => $limit,
+            'folder' => $folder,
+            'quality' => $quality,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'result' => $result,
+            'stats' => \App\Services\ImageOptimizerService::getStats(),
+        ]);
+    }
+
+    /**
+     * Save Image Optimizer configurations.
+     */
+    public function saveOptimizerSettings(Request $request)
+    {
+        $validated = $request->validate([
+            'auto_webp' => 'required|boolean',
+            'quality' => 'required|integer|min:30|max:100',
+            'max_width' => 'required|integer|min:400|max:4000',
+        ]);
+
+        \App\Models\Setting::set('image_optimizer_auto_webp', $validated['auto_webp'] ? '1' : '0');
+        \App\Models\Setting::set('image_optimizer_quality', (string) $validated['quality']);
+        \App\Models\Setting::set('image_optimizer_max_width', (string) $validated['max_width']);
+
+        if (!$request->header('X-Inertia') && $request->wantsJson()) {
+            return response()->json([
+                'success' => true, 
+                'message' => 'Optimizer settings updated!',
+                'stats' => \App\Services\ImageOptimizerService::getStats(),
+            ]);
+        }
+
+        return back()->with('success', 'Image Optimizer settings saved successfully!');
     }
 
     private function formatBytes(int $bytes): string
