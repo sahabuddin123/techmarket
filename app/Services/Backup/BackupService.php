@@ -228,44 +228,53 @@ class BackupService
             }
         };
 
-        // Header Comments
+        // phpMyAdmin / MySQL / MariaDB Header
         $appName = config('app.name', 'TechMarket BD');
-        $now = Carbon::now()->toIso8601String();
+        $now = Carbon::now()->format('Y-m-d H:i:s');
         $dbDriver = DB::getDriverName();
 
-        $writer("-- ========================================================\n");
-        $writer("-- {$appName} Database SQL Dump\n");
-        $writer("-- Generated: {$now}\n");
-        $writer("-- Database Driver: {$dbDriver}\n");
-        $writer("-- Tables: {$tablesCount}\n");
-        $writer("-- ========================================================\n\n");
-        $writer("PRAGMA foreign_keys = OFF;\n");
-        $writer("BEGIN TRANSACTION;\n\n");
+        $writer("-- phpMyAdmin SQL Dump\n");
+        $writer("-- version 5.2.1\n");
+        $writer("-- Host: localhost\n");
+        $writer("-- Generation Time: {$now}\n");
+        $writer("-- Application: {$appName}\n");
+        $writer("-- Source Driver: {$dbDriver}\n");
+        $writer("-- Total Tables: {$tablesCount}\n\n");
+
+        $writer("SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";\n");
+        $writer("START TRANSACTION;\n");
+        $writer("SET time_zone = \"+00:00\";\n\n");
+        $writer("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n");
+        $writer("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n");
+        $writer("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n");
+        $writer("/*!40101 SET NAMES utf8mb4 */;\n");
+        $writer("SET FOREIGN_KEY_CHECKS = 0;\n");
+        $writer("SET UNIQUE_CHECKS = 0;\n\n");
 
         foreach ($tables as $table) {
             if ($table === 'sqlite_sequence') continue;
 
             $writer("-- --------------------------------------------------------\n");
             $writer("-- Table structure for table `{$table}`\n");
-            $writer("-- --------------------------------------------------------\n");
-            $writer("DROP TABLE IF EXISTS \"{$table}\";\n");
+            $writer("-- --------------------------------------------------------\n\n");
+            $writer("DROP TABLE IF EXISTS `{$table}`;\n");
 
-            // Extract CREATE TABLE statement
+            // Generate clean MySQL DDL statement
             $createTableSql = $this->getCreateTableSql($table);
             if ($createTableSql) {
-                $writer("{$createTableSql};\n\n");
+                $writer("{$createTableSql}\n\n");
             }
 
             // Dump Table Data
-            $writer("-- Dumping data for table `{$table}`\n");
             $rows = DB::table($table)->get();
             $tableRowCount = $rows->count();
             $recordsCount += $tableRowCount;
 
             if ($tableRowCount > 0) {
+                $writer("-- Dumping data for table `{$table}`\n\n");
                 $firstRow = (array)$rows->first();
                 $columns = array_keys($firstRow);
-                $escapedColumns = implode(', ', array_map(fn($c) => "\"{$c}\"", $columns));
+                $escapedColumns = implode(', ', array_map(fn($c) => "`{$c}`", $columns));
 
                 $chunks = $rows->chunk(100);
                 foreach ($chunks as $chunk) {
@@ -275,14 +284,21 @@ class BackupService
                         foreach ((array)$row as $val) {
                             if (is_null($val)) {
                                 $values[] = 'NULL';
-                            } elseif (is_numeric($val) && !is_string($val)) {
+                            } elseif (is_int($val) || is_float($val)) {
                                 $values[] = $val;
+                            } elseif (is_bool($val)) {
+                                $values[] = $val ? '1' : '0';
                             } else {
-                                $escapedVal = str_replace(["\\", "'", "\0"], ["\\\\", "''", "\\0"], (string)$val);
-                                // Ensure valid UTF-8
-                                if (!mb_check_encoding($escapedVal, 'UTF-8')) {
-                                    $escapedVal = mb_convert_encoding($escapedVal, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
+                                $valStr = (string)$val;
+                                if (!mb_check_encoding($valStr, 'UTF-8')) {
+                                    $valStr = mb_convert_encoding($valStr, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
                                 }
+                                // MySQL standard escape
+                                $escapedVal = str_replace(
+                                    ['\\', "\0", "\n", "\r", "'", '"', "\x1a"],
+                                    ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'],
+                                    $valStr
+                                );
                                 $values[] = "'{$escapedVal}'";
                             }
                         }
@@ -290,7 +306,7 @@ class BackupService
                     }
 
                     if (!empty($insertValues)) {
-                        $writer("INSERT INTO \"{$table}\" ({$escapedColumns}) VALUES\n  " . implode(",\n  ", $insertValues) . ";\n");
+                        $writer("INSERT INTO `{$table}` ({$escapedColumns}) VALUES\n  " . implode(",\n  ", $insertValues) . ";\n\n");
                     }
                 }
             }
@@ -298,8 +314,12 @@ class BackupService
             $writer("\n");
         }
 
-        $writer("COMMIT;\n");
-        $writer("PRAGMA foreign_keys = ON;\n");
+        $writer("SET FOREIGN_KEY_CHECKS = 1;\n");
+        $writer("SET UNIQUE_CHECKS = 1;\n");
+        $writer("COMMIT;\n\n");
+        $writer("/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;\n");
+        $writer("/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;\n");
+        $writer("/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;\n");
 
         if ($compress) {
             gzclose($handle);
@@ -314,23 +334,102 @@ class BackupService
     }
 
     /**
-     * Get CREATE TABLE statement for a table.
+     * Get MySQL / MariaDB / phpMyAdmin compliant CREATE TABLE statement for a table.
      */
     protected function getCreateTableSql(string $table): ?string
     {
         $driver = DB::getDriverName();
-        if ($driver === 'sqlite') {
-            $res = DB::select("SELECT sql FROM sqlite_master WHERE type='table' AND name = ?", [$table]);
-            return $res[0]->sql ?? null;
-        }
 
         if ($driver === 'mysql') {
             $res = DB::select("SHOW CREATE TABLE `{$table}`");
             $arr = (array)($res[0] ?? []);
-            return $arr['Create Table'] ?? null;
+            return ($arr['Create Table'] ?? '') . ';';
         }
 
-        return null;
+        // For SQLite or generic driver: Convert schema into clean MySQL / MariaDB DDL
+        try {
+            $columns = Schema::getColumns($table);
+            $indexes = Schema::getIndexes($table);
+
+            $lines = [];
+            $primaryKeys = [];
+            $uniqueKeys = [];
+            $normalIndexes = [];
+
+            foreach ($columns as $col) {
+                $name = $col['name'];
+                $typeName = strtolower($col['type_name'] ?? '');
+                $nullable = !empty($col['nullable']) ? 'NULL' : 'NOT NULL';
+                $default = $col['default'] ?? null;
+                $autoInc = !empty($col['auto_increment']);
+
+                // Map types to clean standard MySQL types
+                $mysqlType = 'varchar(255)';
+                if ($autoInc || ($name === 'id' && in_array($typeName, ['integer', 'bigint', 'int']))) {
+                    $mysqlType = 'bigint(20) UNSIGNED';
+                    $autoInc = true;
+                } elseif (in_array($typeName, ['integer', 'bigint', 'int'])) {
+                    $mysqlType = str_ends_with($name, '_id') ? 'bigint(20) UNSIGNED' : 'bigint(20)';
+                } elseif ($typeName === 'tinyint' || $typeName === 'boolean') {
+                    $mysqlType = 'tinyint(1)';
+                } elseif ($typeName === 'numeric' || $typeName === 'decimal') {
+                    $mysqlType = 'decimal(12,2)';
+                } elseif ($typeName === 'float' || $typeName === 'double' || $typeName === 'real') {
+                    $mysqlType = 'double';
+                } elseif ($typeName === 'text' || $typeName === 'json' || $typeName === 'longtext') {
+                    $mysqlType = 'longtext';
+                } elseif ($typeName === 'mediumtext') {
+                    $mysqlType = 'mediumtext';
+                } elseif ($typeName === 'datetime' || $typeName === 'timestamp') {
+                    $mysqlType = 'datetime';
+                } elseif ($typeName === 'date') {
+                    $mysqlType = 'date';
+                } elseif ($typeName === 'time') {
+                    $mysqlType = 'time';
+                } elseif (str_contains($typeName, 'varchar') || str_contains($typeName, 'string')) {
+                    $mysqlType = 'varchar(255)';
+                }
+
+                // Default clause
+                $defaultClause = '';
+                if (!$autoInc) {
+                    if ($default !== null) {
+                        $cleanDefault = trim($default, "'\"");
+                        if (strtoupper($cleanDefault) === 'NULL') {
+                            $defaultClause = ' DEFAULT NULL';
+                        } elseif (is_numeric($cleanDefault)) {
+                            $defaultClause = " DEFAULT {$cleanDefault}";
+                        } else {
+                            $defaultClause = " DEFAULT '{$cleanDefault}'";
+                        }
+                    } elseif (!empty($col['nullable'])) {
+                        $defaultClause = ' DEFAULT NULL';
+                    }
+                }
+
+                $autoIncClause = $autoInc ? ' AUTO_INCREMENT' : '';
+
+                $lines[] = "  `{$name}` {$mysqlType} {$nullable}{$defaultClause}{$autoIncClause}";
+            }
+
+            // Indexes
+            foreach ($indexes as $idx) {
+                $idxCols = implode(', ', array_map(fn($c) => "`{$c}`", $idx['columns']));
+                if (!empty($idx['primary'])) {
+                    $primaryKeys[] = "  PRIMARY KEY ({$idxCols})";
+                } elseif (!empty($idx['unique'])) {
+                    $uniqueKeys[] = "  UNIQUE KEY `{$idx['name']}` ({$idxCols})";
+                } else {
+                    $normalIndexes[] = "  KEY `{$idx['name']}` ({$idxCols})";
+                }
+            }
+
+            $allDefs = array_merge($lines, $primaryKeys, $uniqueKeys, $normalIndexes);
+
+            return "CREATE TABLE IF NOT EXISTS `{$table}` (\n" . implode(",\n", $allDefs) . "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     /**
