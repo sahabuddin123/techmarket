@@ -152,15 +152,52 @@ class OrderTrackingController extends Controller
             'discount' => (float)$order->discount,
             'total' => (float)$order->total,
             'items' => $order->items->map(function ($item) {
+                $qty = (int)($item->quantity ?: 1);
+                $unitPrice = (float)($item->price ?: ($item->total && $qty ? $item->total / $qty : ($item->product?->price ?: 0)));
+                $totalPrice = (float)($item->total ?: ($unitPrice * $qty));
+
                 return [
                     'id' => $item->id,
                     'title' => $item->product_name ?: ($item->product?->title ?: 'Tech Product'),
-                    'quantity' => (int)$item->quantity,
-                    'price' => (float)$item->unit_price,
-                    'total' => (float)$item->total_price,
-                    'image' => $item->product?->featured_image_url ?: '/assets/placeholder-product.png',
+                    'quantity' => $qty,
+                    'price' => $unitPrice,
+                    'total' => $totalPrice,
+                    'image' => $this->resolveItemImage($item),
                 ];
             })->values()->all(),
         ];
+    }
+
+    /**
+     * Resolve valid absolute/storage URL for product thumbnail.
+     */
+    protected function resolveItemImage($item): string
+    {
+        $img = $item->image_snapshot ?: ($item->product?->image ?: null);
+        if (!$img && $item->product && is_array($item->product->gallery) && count($item->product->gallery) > 0) {
+            $img = $item->product->gallery[0];
+        }
+
+        if (!$img) {
+            return '';
+        }
+
+        if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://') || str_starts_with($img, 'data:')) {
+            return $img;
+        }
+
+        if (str_starts_with($img, '/storage/')) {
+            return $img;
+        }
+
+        if (str_starts_with($img, 'storage/')) {
+            return '/' . $img;
+        }
+
+        if (str_starts_with($img, '/')) {
+            return $img;
+        }
+
+        return '/storage/' . ltrim($img, '/');
     }
 }

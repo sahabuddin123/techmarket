@@ -337,13 +337,25 @@ export default function TrackOrder(props) {
                   {trackedOrder.items.map((item, idx) => (
                     <div key={idx} className="p-3 sm:p-4 flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-3 min-w-0">
-                        {item.image && (
-                          <img 
-                            src={item.image} 
-                            alt={item.title} 
-                            className="w-12 h-12 rounded-xl object-contain bg-slate-50 border border-slate-100 p-1 shrink-0" 
-                          />
-                        )}
+                        <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 p-1 shrink-0 flex items-center justify-center overflow-hidden">
+                          {item.image ? (
+                            <img 
+                              src={item.image} 
+                              alt={item.title} 
+                              className="w-full h-full object-contain"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div 
+                            style={{ display: item.image ? 'none' : 'flex' }} 
+                            className="w-full h-full items-center justify-center text-slate-400 bg-blue-50/50 rounded-lg font-black text-[10px]"
+                          >
+                            <Package className="w-5 h-5 text-blue-500" />
+                          </div>
+                        </div>
                         <div className="min-w-0">
                           <p className="font-bold text-slate-900 line-clamp-1">{item.title}</p>
                           <p className="text-slate-400 text-[11px]">Qty: {item.quantity} × ৳{Number(item.price).toLocaleString()}</p>
