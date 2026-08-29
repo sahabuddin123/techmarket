@@ -62,8 +62,9 @@
         @endif
 
         @php
-            $googleVerification = \App\Models\Setting::get('google_search_console_code');
-            $bingVerification = \App\Models\Setting::get('bing_webmaster_code');
+            $googleVerification = \App\Models\Setting::get('google_search_console_code') ?: \App\Models\Setting::get('google_site_verification');
+            $bingVerification = \App\Models\Setting::get('bing_webmaster_code') ?: \App\Models\Setting::get('bing_site_verification');
+            $seoRobots = \App\Models\Setting::get('seo_robots_indexing', 'index, follow');
             $customHeaderScripts = \App\Models\Setting::get('custom_header_scripts');
             $customFooterScripts = \App\Models\Setting::get('custom_footer_scripts');
 
@@ -72,9 +73,14 @@
             $product = $props['product'] ?? null;
             $siteName = \App\Models\Setting::get('site_name', config('app.name', 'TechMarket BD'));
             $siteLogo = \App\Models\Setting::get('site_logo', url('/storage/logo.png'));
+            $defaultOgSetting = \App\Models\Setting::get('default_og_image');
+            $defaultTitleSetting = \App\Models\Setting::get('default_meta_title', "{$siteName} | Best Computer, Laptop, Component & CCTV Shop in Bangladesh");
+            $defaultDescSetting = \App\Models\Setting::get('default_meta_description', "Buy authentic Computers, Laptops, Components and CCTV in Bangladesh from {$siteName}.");
+            $defaultKeywordsSetting = \App\Models\Setting::get('default_meta_keywords', 'computer shop bd, pc builder bangladesh, laptop price in bd, cctv package bangladesh, tech market bd');
             
-            $metaTitle = $seo['title'] ?? ($product ? (($product['title'] ?? '') . " Price in Bangladesh | {$siteName}") : "{$siteName} | Leading Computer, Laptop & Tech Shop in Bangladesh");
-            $metaDesc = $seo['description'] ?? ($product ? strip_tags((string)($product['short_description'] ?? $product['description'] ?? 'Buy authentic tech products at best price in BD')) : "Buy authentic Computers, Laptops, Components and CCTV in Bangladesh from {$siteName}.");
+            $metaTitle = $seo['title'] ?? ($product ? (($product['title'] ?? '') . " Price in Bangladesh | {$siteName}") : $defaultTitleSetting);
+            $metaDesc = $seo['description'] ?? ($product ? strip_tags((string)($product['short_description'] ?? $product['description'] ?? $defaultDescSetting)) : $defaultDescSetting);
+            $metaKeywords = $seo['keywords'] ?? $defaultKeywordsSetting;
             
             $ogImage = $seo['og']['image'] ?? null;
             if (!$ogImage && $product) {
@@ -93,12 +99,25 @@
                     }
                 }
             }
+            if (!$ogImage && $defaultOgSetting) {
+                $ogImage = str_starts_with($defaultOgSetting, 'http') ? $defaultOgSetting : url('/' . ltrim($defaultOgSetting, '/'));
+            }
             if (!$ogImage) {
                 $ogImage = str_starts_with($siteLogo, 'http') ? $siteLogo : url('/' . ltrim($siteLogo, '/'));
             }
 
             $currentCanonical = $seo['canonical_url'] ?? url()->current();
         @endphp
+
+        <!-- Search Engine Robots Indexing -->
+        <meta name="robots" content="{{ $seoRobots }}">
+        <meta name="googlebot" content="{{ $seoRobots }}">
+
+        <!-- Core Meta & Keywords -->
+        <meta name="description" content="{{ $metaDesc }}">
+        <meta name="keywords" content="{{ $metaKeywords }}">
+        <link rel="canonical" href="{{ $currentCanonical }}">
+
         @if ($googleVerification)
             <meta name="google-site-verification" content="{{ $googleVerification }}">
         @endif
@@ -107,8 +126,6 @@
         @endif
 
         <!-- Server-Side Open Graph & Meta for Social Bots (WhatsApp, Telegram, Facebook, Messenger) -->
-        <meta name="description" content="{{ $metaDesc }}">
-        <link rel="canonical" href="{{ $currentCanonical }}">
         <meta property="og:site_name" content="{{ $siteName }}">
         <meta property="og:type" content="{{ !empty($product) ? 'product' : 'website' }}">
         <meta property="og:url" content="{{ $currentCanonical }}">

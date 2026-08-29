@@ -62,7 +62,6 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
     site_logo_dark: settings.site_logo_dark || '',
     site_favicon: settings.site_favicon || '',
     admin_logo: settings.admin_logo || '',
-    default_og_image: settings.default_og_image || '',
 
     // 3. Store & Inventory
     store_name: settings.store_name || 'TechMarket BD Online Shop',
@@ -73,9 +72,13 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
     allow_guest_checkout: settings.allow_guest_checkout !== undefined ? (settings.allow_guest_checkout === '1' || settings.allow_guest_checkout === true) : true,
 
     // 4. SEO & Analytics
+    seo_robots_indexing: settings.seo_robots_indexing || 'index, follow',
     default_meta_title: settings.default_meta_title || 'TechMarket BD | Best Computer & Laptop Shop in Bangladesh',
     default_meta_description: settings.default_meta_description || 'Buy authentic Laptops, Desktop PC, Graphics Cards, Processors, and Gaming Accessories at the best price in Bangladesh with official manufacturer warranty from TechMarket BD.',
-    default_meta_keywords: settings.default_meta_keywords || 'computer shop bd, pc builder bangladesh, laptop price in bd, graphics card price, techland alternative',
+    default_meta_keywords: settings.default_meta_keywords || 'computer shop bd, pc builder bangladesh, laptop price in bd, graphics card price, techland alternative, cctv bd',
+    default_og_image: settings.default_og_image || '',
+    google_search_console_code: settings.google_search_console_code || settings.google_site_verification || '',
+    bing_webmaster_code: settings.bing_webmaster_code || settings.bing_site_verification || '',
     ga_measurement_id: settings.ga_measurement_id || '',
     gtm_container_id: settings.gtm_container_id || '',
     fb_pixel_id: settings.fb_pixel_id || '',
@@ -535,60 +538,217 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
 
           {/* TAB 5: SEO & ANALYTICS */}
           {activeTab === 'seo' && (
-            <SectionCard title="Search Engine Optimization & Marketing Tracking" subtitle="Global meta defaults and tag manager identifiers" icon={Search}>
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Default Global Meta Title</label>
-                  <input
-                    type="text"
-                    value={data.default_meta_title}
-                    onChange={(e) => setData('default_meta_title', e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-medium"
-                  />
+            <SectionCard title="Search Engine Optimization & Marketing Tracking" subtitle="Manage search engine indexing, meta tags, social share graphics, webmaster verification, and tracking IDs" icon={Search}>
+              <div className="space-y-6">
+                
+                {/* 1. Robots Indexing & Crawl Directives */}
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block text-slate-800 dark:text-slate-200 font-bold text-xs">Search Engine Indexing Directive (Robots Meta Tag)</label>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Control whether Google, Bing, and other search engines are allowed to index and rank your pages.</p>
+                    </div>
+                    <span className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold ${data.seo_robots_indexing?.includes('noindex') ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200' : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200'}`}>
+                      {data.seo_robots_indexing?.includes('noindex') ? '🚫 No-Index (Hidden)' : '🟢 Public Indexing Active'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <label 
+                      onClick={() => setData('seo_robots_indexing', 'index, follow')}
+                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${data.seo_robots_indexing === 'index, follow' ? 'bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-600 shadow-2xs' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">index, follow</span>
+                        <input type="radio" checked={data.seo_robots_indexing === 'index, follow'} onChange={() => {}} className="text-indigo-600" />
+                      </div>
+                      <span className="text-[10.5px] text-slate-500 mt-1">Recommended for live public stores. All pages indexed & ranked.</span>
+                    </label>
+
+                    <label 
+                      onClick={() => setData('seo_robots_indexing', 'noindex, follow')}
+                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${data.seo_robots_indexing === 'noindex, follow' ? 'bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-600 shadow-2xs' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">noindex, follow</span>
+                        <input type="radio" checked={data.seo_robots_indexing === 'noindex, follow'} onChange={() => {}} className="text-indigo-600" />
+                      </div>
+                      <span className="text-[10.5px] text-slate-500 mt-1">Follow internal links but hide pages from search result listings.</span>
+                    </label>
+
+                    <label 
+                      onClick={() => setData('seo_robots_indexing', 'noindex, nofollow')}
+                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${data.seo_robots_indexing === 'noindex, nofollow' ? 'bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-600 shadow-2xs' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">noindex, nofollow</span>
+                        <input type="radio" checked={data.seo_robots_indexing === 'noindex, nofollow'} onChange={() => {}} className="text-indigo-600" />
+                      </div>
+                      <span className="text-[10.5px] text-slate-500 mt-1">Block all search engine indexing (Staging / Maintenance).</span>
+                    </label>
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Default Global Meta Description</label>
-                  <textarea
-                    rows={3}
-                    value={data.default_meta_description}
-                    onChange={(e) => setData('default_meta_description', e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden leading-relaxed"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* 2. Global Meta Title, Description & Keywords */}
+                <div className="space-y-4">
                   <div className="space-y-1">
-                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">GA4 Measurement ID</label>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Default Global Meta Title</label>
+                      <span className="text-[11px] text-slate-400 font-mono">{data.default_meta_title?.length || 0} / 60 chars</span>
+                    </div>
                     <input
                       type="text"
-                      value={data.ga_measurement_id}
-                      onChange={(e) => setData('ga_measurement_id', e.target.value)}
-                      placeholder="G-XXXXXXXXXX"
-                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                      value={data.default_meta_title}
+                      onChange={(e) => setData('default_meta_title', e.target.value)}
+                      placeholder="TechMarket BD | Best Computer & Laptop Shop in Bangladesh"
+                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-medium"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Google Tag Manager ID</label>
-                    <input
-                      type="text"
-                      value={data.gtm_container_id}
-                      onChange={(e) => setData('gtm_container_id', e.target.value)}
-                      placeholder="GTM-XXXXXXX"
-                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                    <div className="flex items-center justify-between">
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Default Global Meta Description</label>
+                      <span className={`text-[11px] font-mono ${data.default_meta_description?.length > 160 ? 'text-amber-500' : 'text-slate-400'}`}>
+                        {data.default_meta_description?.length || 0} / 160 chars (Recommended 150-160)
+                      </span>
+                    </div>
+                    <textarea
+                      rows={3}
+                      value={data.default_meta_description}
+                      onChange={(e) => setData('default_meta_description', e.target.value)}
+                      placeholder="Buy authentic Laptops, Desktop PC, Graphics Cards, Processors, and Gaming Accessories at the best price in Bangladesh with official manufacturer warranty from TechMarket BD."
+                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden leading-relaxed"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Meta Pixel ID</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Default Global Meta Keywords</label>
                     <input
                       type="text"
-                      value={data.fb_pixel_id}
-                      onChange={(e) => setData('fb_pixel_id', e.target.value)}
-                      placeholder="123456789012345"
+                      value={data.default_meta_keywords}
+                      onChange={(e) => setData('default_meta_keywords', e.target.value)}
+                      placeholder="computer shop bd, pc builder bangladesh, laptop price in bd, graphics card price, cctv package bangladesh"
+                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
+                    />
+                    <p className="text-[10.5px] text-slate-500">Separate keywords with commas (e.g. <code className="text-[#0084ff]">computer shop bd, laptop price in bd, cctv camera bd</code>).</p>
+                  </div>
+                </div>
+
+                {/* 3. Social Share / Open Graph (OG) Graph Image */}
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-3">
+                  <div>
+                    <label className="block text-slate-800 dark:text-slate-200 font-bold text-xs">Site SEO Social Graph Image (OG Image / Social Share Banner)</label>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      This image will appear in rich link previews when your website URL is shared on <strong>Facebook, WhatsApp, Messenger, Telegram, LinkedIn & Twitter</strong>.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
+                    <div className="w-56 h-28 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-900 flex items-center justify-center p-2 overflow-hidden shrink-0 shadow-2xs">
+                      {data.default_og_image ? (
+                        <img 
+                          src={data.default_og_image} 
+                          alt="SEO Graph Banner" 
+                          className="max-h-full max-w-full object-contain rounded-lg"
+                        />
+                      ) : (
+                        <div className="text-center p-2">
+                          <ImageIcon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
+                          <span className="text-[10.5px] text-slate-500 font-medium">Using Site Logo</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <MediaPicker
+                        value={data.default_og_image}
+                        onChange={(url) => setData('default_og_image', url)}
+                        folder="seo"
+                        buttonText="Choose OG Graph Image"
+                      />
+                      {data.default_og_image && (
+                        <button
+                          type="button"
+                          onClick={() => setData('default_og_image', '')}
+                          className="text-xs text-rose-600 hover:text-rose-700 font-bold block cursor-pointer"
+                        >
+                          Remove Custom Graph Image
+                        </button>
+                      )}
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-lg text-[10.5px] font-bold text-amber-700 dark:text-amber-300">
+                        <span>📐 Recommended Resolution: 1200 × 630 px (1.91:1 ratio, JPG / PNG / WebP)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Google & Bing Webmaster Verification */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Google Search Console Verification Code</label>
+                    <input
+                      type="text"
+                      value={data.google_search_console_code}
+                      onChange={(e) => setData('google_search_console_code', e.target.value)}
+                      placeholder="e.g. google-site-verification token or HTML meta content"
                       className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
                     />
+                    <p className="text-[10.5px] text-slate-500">Injects <code className="text-slate-700 dark:text-slate-300">&lt;meta name="google-site-verification" content="..."&gt;</code> in header.</p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Bing Webmaster Verification Code</label>
+                    <input
+                      type="text"
+                      value={data.bing_webmaster_code}
+                      onChange={(e) => setData('bing_webmaster_code', e.target.value)}
+                      placeholder="e.g. msvalidate.01 token"
+                      className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                    />
+                    <p className="text-[10.5px] text-slate-500">Injects <code className="text-slate-700 dark:text-slate-300">&lt;meta name="msvalidate.01" content="..."&gt;</code> in header.</p>
+                  </div>
+                </div>
+
+                {/* 5. Marketing & Tracking IDs */}
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <h4 className="font-bold text-slate-800 dark:text-slate-200 text-xs mb-3 flex items-center gap-1.5">
+                    <Activity className="w-3.5 h-3.5 text-[#0084ff]" />
+                    <span>Analytics, Tag Manager & Conversion Pixel Identifiers</span>
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">GA4 Measurement ID</label>
+                      <input
+                        type="text"
+                        value={data.ga_measurement_id}
+                        onChange={(e) => setData('ga_measurement_id', e.target.value)}
+                        placeholder="G-XXXXXXXXXX"
+                        className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Google Tag Manager ID</label>
+                      <input
+                        type="text"
+                        value={data.gtm_container_id}
+                        onChange={(e) => setData('gtm_container_id', e.target.value)}
+                        placeholder="GTM-XXXXXXX"
+                        className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Meta Pixel ID</label>
+                      <input
+                        type="text"
+                        value={data.fb_pixel_id}
+                        onChange={(e) => setData('fb_pixel_id', e.target.value)}
+                        placeholder="123456789012345"
+                        className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                      />
+                    </div>
                   </div>
                 </div>
 

@@ -166,7 +166,7 @@ class SettingController extends Controller
                 $group = 'branding';
             } elseif (str_starts_with($key, 'store_') || str_starts_with($key, 'order_') || str_starts_with($key, 'min_order') || str_starts_with($key, 'low_stock') || str_starts_with($key, 'out_of_stock')) {
                 $group = 'store';
-            } elseif (str_starts_with($key, 'default_meta') || str_starts_with($key, 'ga_') || str_starts_with($key, 'gtm_') || str_starts_with($key, 'fb_')) {
+            } elseif (str_starts_with($key, 'default_meta') || str_starts_with($key, 'default_og') || str_starts_with($key, 'seo_') || str_starts_with($key, 'google_') || str_starts_with($key, 'bing_') || str_starts_with($key, 'ga_') || str_starts_with($key, 'gtm_') || str_starts_with($key, 'fb_')) {
                 $group = 'seo';
             } elseif (str_starts_with($key, 'bkash_') || str_starts_with($key, 'nagad_') || str_starts_with($key, 'cod_')) {
                 $group = 'payment';
