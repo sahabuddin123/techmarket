@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InternalEvent;
 use App\Services\MetaConversionsApiService;
 use Illuminate\Http\Request;
 
 class TrackingEventController extends Controller
 {
     /**
-     * Ingest client-side tracking event for internal funnel analytics and optional CAPI forwarding.
+     * Ingest client-side tracking event for optional server-side CAPI forwarding.
+     * Database table insertions are permanently disabled to prevent MySQL bloat.
      */
     public function logEvent(Request $request)
     {
@@ -28,23 +28,7 @@ class TrackingEventController extends Controller
         $value = $validated['value'] ?? 0.00;
         $currency = $validated['currency'] ?? 'BDT';
 
-        // 1. Record internal database event
-        $event = InternalEvent::create([
-            'event_name' => $validated['event_name'],
-            'event_id' => $eventId,
-            'content_id' => $validated['content_id'] ?? null,
-            'product_id' => $validated['product_id'] ?? null,
-            'category_id' => $validated['category_id'] ?? null,
-            'user_id' => auth()->id(),
-            'session_id' => session()->getId(),
-            'value' => $value,
-            'currency' => $currency,
-            'metadata' => $validated['metadata'] ?? [],
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-        ]);
-
-        // 2. Dispatch non-blocking Meta Conversions API if applicable (e.g. ViewContent, AddToCart, InitiateCheckout)
+        // Dispatch non-blocking Meta Conversions API if applicable (e.g. ViewContent, AddToCart, InitiateCheckout)
         $metaEventMap = [
             'view_content' => 'ViewContent',
             'add_to_cart' => 'AddToCart',

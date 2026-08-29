@@ -75,23 +75,9 @@ export const initTracking = (trackingConfig = {}) => {
   trackingInitialized = true;
 };
 
-// Dispatch non-blocking internal logging request
-const logInternalEvent = async (payload) => {
-  try {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-    fetch('/api/tracking/event', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': csrfToken || '',
-      },
-      body: JSON.stringify(payload),
-    }).catch(() => {});
-  } catch (e) {
-    // Fail silently so storefront interaction is never interrupted
-  }
-};
+// Internal database logging disabled to keep local MySQL database lightweight & ultra fast.
+// All events are streamed directly to Google Analytics 4, GTM dataLayer & Meta Pixel in the cloud.
+const logInternalEvent = () => {};
 
 /**
  * 1. Track Page View
