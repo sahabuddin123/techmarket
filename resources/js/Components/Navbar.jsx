@@ -173,60 +173,60 @@ export default function Navbar({ onOpenCart }) {
           {/* CCTV Estimator Button */}
           <Link
             href="/cctv-estimator"
-            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-[#0084ff] font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
+            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-extrabold border border-slate-700 hover:border-slate-600 transition-colors uppercase tracking-wider text-xs shadow-xs"
             title="CCTV System Builder & Quotation Estimator"
           >
             <Video className="w-4 h-4 text-[#0084ff]" />
-            <span>CCTV EST</span>
+            <span className="text-white">CCTV EST</span>
           </Link>
 
           {/* TOOLS Button */}
           <Link
             href="/tools"
-            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
+            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-extrabold border border-slate-700 hover:border-slate-600 transition-colors uppercase tracking-wider text-xs shadow-xs"
             title="Customer Useful Tools & Calculators"
           >
-            <Wrench className="w-4 h-4 text-emerald-400" />
-            <span>TOOLS</span>
+            <Wrench className="w-4 h-4 text-[#0084ff]" />
+            <span className="text-white">TOOLS</span>
           </Link>
 
           {/* PC BUILDER Button */}
           {showPcBuilder && (
             <Link
               href="/pc-builder"
-              className="hidden lg:flex items-center space-x-1.5 px-3.5 py-2 rounded bg-slate-800 hover:bg-slate-700 text-[#0084ff] font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
+              className="hidden lg:flex items-center space-x-1.5 px-3.5 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-extrabold border border-slate-700 hover:border-slate-600 transition-colors uppercase tracking-wider text-xs shadow-xs"
             >
               <Cpu className="w-4 h-4 text-[#0084ff]" />
-              <span>PC BUILDER</span>
+              <span className="text-white">PC BUILDER</span>
             </Link>
           )}
 
-          {/* Compare Icon */}
+          {/* Compare Button (Boxed like PC Builder & CCTV) */}
           {showCompare && (
             <Link 
               href="/compare" 
-              className="hidden sm:flex p-2.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition-colors relative"
+              className="hidden sm:flex items-center justify-center px-2.5 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600 transition-colors relative shadow-xs"
               title="Compare Products"
             >
-              <GitCompare className="w-4 h-4" />
+              <GitCompare className="w-4 h-4 text-[#0084ff]" />
               {compareCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-[#0084ff] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-scale-in">
+                <span className="absolute -top-1 -right-1 bg-[#0084ff] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-slate-900 shadow-xs animate-scale-in">
                   {compareCount}
                 </span>
               )}
             </Link>
           )}
 
-          {/* Wishlist Icon */}
+          {/* Wishlist Button (Boxed like PC Builder & CCTV) */}
           {showWishlist && (
             <Link 
               href="/wishlist" 
-              className="hidden sm:flex p-2.5 rounded hover:bg-slate-800 text-slate-300 hover:text-rose-400 transition-colors relative"
+              className="hidden sm:flex items-center justify-center px-2.5 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600 transition-colors relative shadow-xs"
               title="Wishlist"
             >
-              <Heart className="w-4 h-4" />
+              <Heart className="w-4 h-4 text-rose-400" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-scale-in">
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-slate-900 shadow-xs animate-scale-in">
                   {wishlistCount}
                 </span>
               )}
