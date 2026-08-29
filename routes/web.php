@@ -31,6 +31,7 @@ use Inertia\Inertia;
 // Search Engine & Crawler Routes (SEO)
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'sitemap'])->name('seo.sitemap');
 Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots'])->name('seo.robots');
+Route::get('/{key}.txt', [\App\Http\Controllers\SitemapController::class, 'indexNowKey'])->where('key', '^[a-zA-Z0-9_-]{16,64}$')->name('seo.indexnow');
 
 // Public Storefront Routes
 Route::get('/', [ShopController::class, 'home'])->name('home');

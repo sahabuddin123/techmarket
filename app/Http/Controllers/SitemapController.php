@@ -65,4 +65,27 @@ class SitemapController extends Controller
             'Cache-Control' => 'public, max-age=86400',
         ]);
     }
+
+    /**
+     * Handle IndexNow API key verification file ({key}.txt).
+     */
+    public function indexNowKey(string $key): Response
+    {
+        $configuredKey = \App\Models\Setting::get('indexnow_key');
+        
+        // If matches configured key or if valid format, return key content
+        if ($configuredKey && $configuredKey === $key) {
+            return response($configuredKey, 200, [
+                'Content-Type' => 'text/plain; charset=utf-8',
+            ]);
+        }
+
+        if (strlen($key) >= 16 && strlen($key) <= 64 && ctype_alnum(str_replace(['-', '_'], '', $key))) {
+            return response($key, 200, [
+                'Content-Type' => 'text/plain; charset=utf-8',
+            ]);
+        }
+
+        abort(404);
+    }
 }
