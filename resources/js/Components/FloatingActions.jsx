@@ -19,7 +19,7 @@ export default function FloatingActions() {
       {/* 1. Phone Call Action */}
       <a
         href={`tel:${rawPhone}`}
-        className="w-12 h-12 rounded-full bg-[#0f2b48] hover:bg-[#0084ff] text-white flex items-center justify-center shadow-xl hover:scale-108 transition-all duration-200 group relative"
+        className="w-12 h-12 rounded-full bg-[#0084ff] hover:bg-[#0070d6] text-white flex items-center justify-center shadow-xl hover:scale-108 transition-all duration-200 group relative cursor-pointer"
         title={`Call Hotline: ${phoneNumber}`}
         aria-label={`Call Hotline: ${phoneNumber}`}
       >
@@ -34,7 +34,7 @@ export default function FloatingActions() {
         href={`https://wa.me/${cleanWhatsapp}?text=${whatsappMessage}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-12 h-12 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-xl hover:scale-108 transition-all duration-200 group relative"
+        className="w-12 h-12 rounded-full bg-[#0c1424] hover:bg-[#0084ff] text-white border border-slate-700 flex items-center justify-center shadow-xl hover:scale-108 transition-all duration-200 group relative cursor-pointer"
         title="Chat on WhatsApp"
         aria-label="Chat on WhatsApp"
       >
