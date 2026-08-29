@@ -9,6 +9,7 @@ import {
   Heart, Check, Tag, HelpCircle, Table as TableIcon,
   ShieldCheck, Eye, Filter, ArrowRightLeft, FolderTree, X, Plus, Minus
 } from 'lucide-react';
+import { trackAddToCart } from '@/lib/tracking';
 
 export default function CatalogV1(props) {
   // Normalize incoming props with complete null-safety
@@ -185,6 +186,8 @@ export default function CatalogV1(props) {
     e.preventDefault();
     e.stopPropagation();
 
+    trackAddToCart(product, 1);
+
     router.post('/cart/add', { product_id: product.id, quantity: 1 }, {
       preserveScroll: true,
       onSuccess: () => {
@@ -210,6 +213,8 @@ export default function CatalogV1(props) {
     e.preventDefault();
     e.stopPropagation();
     if (product.stock <= 0 && !product.is_deal_of_day) return;
+
+    trackAddToCart(product, 1);
 
     router.post('/cart/add', { product_id: product.id, quantity: 1 }, {
       preserveScroll: true,
