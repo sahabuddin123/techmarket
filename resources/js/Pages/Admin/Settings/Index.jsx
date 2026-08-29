@@ -96,17 +96,21 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
     linkedin_url: settings.linkedin_url || 'https://linkedin.com/company/techmarketbd',
 
     // 6. Payments
-    cod_enabled: settings.cod_enabled !== undefined ? (settings.cod_enabled === '1' || settings.cod_enabled === true) : true,
-    cod_title: settings.cod_title || 'Cash on Delivery (COD)',
-    cod_instruction: settings.cod_instruction || 'Pay with cash upon delivery to your doorstep across Bangladesh.',
-    bkash_enabled: settings.bkash_enabled !== undefined ? (settings.bkash_enabled === '1' || settings.bkash_enabled === true) : true,
-    bkash_number: settings.bkash_number || '01700-000000',
-    bkash_charge_percent: settings.bkash_charge_percent || '0',
-    bkash_instruction: settings.bkash_instruction || 'Send payment via bKash Payment or Checkout Gateway.',
-    nagad_enabled: settings.nagad_enabled !== undefined ? (settings.nagad_enabled === '1' || settings.nagad_enabled === true) : true,
-    nagad_number: settings.nagad_number || '01800-000000',
-    nagad_charge_percent: settings.nagad_charge_percent || '0',
-    nagad_instruction: settings.nagad_instruction || 'Send payment via Nagad Merchant Gateway.',
+    payment_cod_enabled: settings.payment_cod_enabled !== undefined ? (settings.payment_cod_enabled === '1' || settings.payment_cod_enabled === true) : true,
+    payment_cod_title: settings.payment_cod_title || 'Cash on Delivery',
+    payment_cod_description: settings.payment_cod_description || 'Pay cash when your order is delivered.',
+    payment_cod_sort: settings.payment_cod_sort || 1,
+
+    payment_bkash_enabled: settings.payment_bkash_enabled !== undefined ? (settings.payment_bkash_enabled === '1' || settings.payment_bkash_enabled === true) : false,
+    payment_bkash_title: settings.payment_bkash_title || 'bKash',
+    payment_bkash_description: settings.payment_bkash_description || 'Pay securely using bKash.',
+    payment_bkash_sort: settings.payment_bkash_sort || 2,
+
+    payment_nagad_enabled: settings.payment_nagad_enabled !== undefined ? (settings.payment_nagad_enabled === '1' || settings.payment_nagad_enabled === true) : false,
+    payment_nagad_title: settings.payment_nagad_title || 'Nagad',
+    payment_nagad_description: settings.payment_nagad_description || 'Pay securely using Nagad.',
+    payment_nagad_sort: settings.payment_nagad_sort || 3,
+
     footer_payment_methods_image: settings.footer_payment_methods_image || '',
 
     // 7. Shipping
@@ -1062,32 +1066,89 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
 
           {/* TAB 7: PAYMENT GATEWAYS */}
           {activeTab === 'payment' && (
-            <SectionCard title="Payment Gateway Provider Settings" subtitle="Cash on Delivery, bKash, and Nagad provider credentials" icon={CreditCard}>
+            <SectionCard title="Payment Gateway Provider Settings" subtitle="Enable or disable payment options on the checkout page" icon={CreditCard}>
               <div className="space-y-4">
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">Cash on Delivery (COD)</div>
-                    <div className="text-[11px] text-slate-400">Accept payment upon physical doorstep delivery</div>
+                {/* Notice */}
+                <div className="p-3.5 bg-blue-50 dark:bg-slate-800/80 rounded-xl border border-blue-200 dark:border-slate-700 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Info className="w-4 h-4 text-[#0084ff] shrink-0" />
+                    <span className="text-[11.5px] text-slate-700 dark:text-slate-300">
+                      এখানে যে পেমেন্ট মেথডগুলো <strong>Active (টিক দেওয়া)</strong> থাকবে, শুধুমাত্র সেগুলোই গ্রাহক চেকআউট পেজে দেখতে পাবেন।
+                    </span>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={data.cod_enabled}
-                    onChange={(e) => setData('cod_enabled', e.target.checked)}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
-                  />
+                  <Link
+                    href="/admin/settings/payment-methods"
+                    className="text-[#0084ff] font-bold text-xs hover:underline flex items-center gap-1 shrink-0 ml-2"
+                  >
+                    <span>Advanced Gateway Credentials</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
                 </div>
 
+                {/* 1. Cash on Delivery */}
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">bKash Merchant Gateway</div>
-                    <div className="text-[11px] text-slate-400">Direct mobile financial services checkout</div>
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">Cash on Delivery (ক্যাশ অন ডেলিভারি)</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                        {data.payment_cod_enabled ? 'Active' : 'Disabled'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500">হোম ডেলিভারির সময় পণ্য হাতে পেয়ে নগদ টাকা পরিশোধ।</div>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={data.bkash_enabled}
-                    onChange={(e) => setData('bkash_enabled', e.target.checked)}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
-                  />
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={data.payment_cod_enabled}
+                      onChange={(e) => setData('payment_cod_enabled', e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                {/* 2. bKash Payment */}
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">bKash Payment Gateway (বিকাশ)</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${data.payment_bkash_enabled ? 'bg-pink-100 text-pink-800 dark:bg-pink-950 dark:text-pink-300' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}`}>
+                        {data.payment_bkash_enabled ? 'Active' : 'Inactive (Off)'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500">বিকাশ অনলাইন পেমেন্ট গেটওয়ে। (API না থাকলে এটি বন্ধ রাখুন)</div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={data.payment_bkash_enabled}
+                      onChange={(e) => setData('payment_bkash_enabled', e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-pink-600"></div>
+                  </label>
+                </div>
+
+                {/* 3. Nagad Payment */}
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 text-xs">Nagad Payment Gateway (নগদ)</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${data.payment_nagad_enabled ? 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}`}>
+                        {data.payment_nagad_enabled ? 'Active' : 'Inactive (Off)'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500">নগদ অনলাইন পেমেন্ট গেটওয়ে। (API না থাকলে এটি বন্ধ রাখুন)</div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={data.payment_nagad_enabled}
+                      onChange={(e) => setData('payment_nagad_enabled', e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-orange-600"></div>
+                  </label>
                 </div>
 
                 {/* Accepted Payment Methods Image Banner */}

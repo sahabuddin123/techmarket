@@ -106,7 +106,7 @@ class CheckoutController extends Controller
                 'title' => Setting::get('payment_bkash_title', 'bKash'),
                 'description' => Setting::get('payment_bkash_description', 'Pay securely using bKash.'),
                 'badge' => ['text' => 'bKash', 'bg' => '#e2136e'],
-                'enabled' => Setting::getBool('payment_bkash_enabled', true),
+                'enabled' => Setting::getBool('payment_bkash_enabled', false),
                 'sort_order' => (int)Setting::get('payment_bkash_sort', 2),
             ],
             [
@@ -114,12 +114,24 @@ class CheckoutController extends Controller
                 'title' => Setting::get('payment_nagad_title', 'Nagad'),
                 'description' => Setting::get('payment_nagad_description', 'Pay securely using Nagad.'),
                 'badge' => ['text' => 'Nagad', 'bg' => '#f7941d'],
-                'enabled' => Setting::getBool('payment_nagad_enabled', true),
+                'enabled' => Setting::getBool('payment_nagad_enabled', false),
                 'sort_order' => (int)Setting::get('payment_nagad_sort', 3),
             ],
         ];
 
-        $paymentMethods = array_values(array_filter($allPaymentMethods, fn($m) => $m['enabled']));
+        $paymentMethods = array_values(array_filter($allPaymentMethods, fn($m) => !empty($m['enabled'])));
+        if (empty($paymentMethods)) {
+            $paymentMethods = [
+                [
+                    'id' => 'cod',
+                    'title' => Setting::get('payment_cod_title', 'Cash on Delivery'),
+                    'description' => Setting::get('payment_cod_description', 'Pay cash when your order is delivered.'),
+                    'badge' => null,
+                    'enabled' => true,
+                    'sort_order' => 1,
+                ]
+            ];
+        }
         usort($paymentMethods, fn($a, $b) => $a['sort_order'] <=> $b['sort_order']);
 
         return Inertia::render('Checkout', [
@@ -151,11 +163,14 @@ class CheckoutController extends Controller
         if (Setting::getBool('payment_cod_enabled', true)) {
             $allowedPaymentMethods = array_merge($allowedPaymentMethods, ['cod', 'COD']);
         }
-        if (Setting::getBool('payment_bkash_enabled', true)) {
+        if (Setting::getBool('payment_bkash_enabled', false)) {
             $allowedPaymentMethods = array_merge($allowedPaymentMethods, ['bkash', 'bKash']);
         }
-        if (Setting::getBool('payment_nagad_enabled', true)) {
+        if (Setting::getBool('payment_nagad_enabled', false)) {
             $allowedPaymentMethods = array_merge($allowedPaymentMethods, ['nagad', 'Nagad']);
+        }
+        if (empty($allowedPaymentMethods)) {
+            $allowedPaymentMethods = ['cod', 'COD'];
         }
 
         $validated = $request->validate([

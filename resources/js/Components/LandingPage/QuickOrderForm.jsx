@@ -165,44 +165,48 @@ export default function QuickOrderForm({
             </div>
 
             {/* bKash */}
-            <div
-              onClick={() => handlePaymentMethodSelect('bkash')}
-              className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-                formData.payment_method === 'bkash'
-                  ? 'border-pink-500 bg-pink-50 text-pink-900 font-bold'
-                  : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                  formData.payment_method === 'bkash' ? 'border-pink-600 bg-pink-600' : 'border-slate-400'
-                }`}>
-                  {formData.payment_method === 'bkash' && <Check className="w-3 h-3 text-white" />}
+            {paymentMethods.some(pm => (pm.id === 'bkash' || pm.code === 'bkash')) && (
+              <div
+                onClick={() => handlePaymentMethodSelect('bkash')}
+                className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                  formData.payment_method === 'bkash'
+                    ? 'border-pink-500 bg-pink-50 text-pink-900 font-bold'
+                    : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                    formData.payment_method === 'bkash' ? 'border-pink-600 bg-pink-600' : 'border-slate-400'
+                  }`}>
+                    {formData.payment_method === 'bkash' && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span>বিকাশ</span>
                 </div>
-                <span>বিকাশ</span>
+                <span className="font-bold text-pink-600 text-xs font-mono">bKash</span>
               </div>
-              <span className="font-bold text-pink-600 text-xs font-mono">bKash</span>
-            </div>
+            )}
 
             {/* Nagad */}
-            <div
-              onClick={() => handlePaymentMethodSelect('nagad')}
-              className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-                formData.payment_method === 'nagad'
-                  ? 'border-orange-500 bg-orange-50 text-orange-900 font-bold'
-                  : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                  formData.payment_method === 'nagad' ? 'border-orange-600 bg-orange-600' : 'border-slate-400'
-                }`}>
-                  {formData.payment_method === 'nagad' && <Check className="w-3 h-3 text-white" />}
+            {paymentMethods.some(pm => (pm.id === 'nagad' || pm.code === 'nagad')) && (
+              <div
+                onClick={() => handlePaymentMethodSelect('nagad')}
+                className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                  formData.payment_method === 'nagad'
+                    ? 'border-orange-500 bg-orange-50 text-orange-900 font-bold'
+                    : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                    formData.payment_method === 'nagad' ? 'border-orange-600 bg-orange-600' : 'border-slate-400'
+                  }`}>
+                    {formData.payment_method === 'nagad' && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span>নগদ</span>
                 </div>
-                <span>নগদ</span>
+                <span className="font-bold text-orange-600 text-xs font-mono">Nagad</span>
               </div>
-              <span className="font-bold text-orange-600 text-xs font-mono">Nagad</span>
-            </div>
+            )}
           </div>
         </div>
 

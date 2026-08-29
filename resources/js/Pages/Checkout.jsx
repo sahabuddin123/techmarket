@@ -23,8 +23,6 @@ export default function Checkout(props) {
     ? props.paymentMethods
     : [
         { id: 'cod', title: 'Cash on Delivery', description: 'Pay cash when your order is delivered.', badge: null },
-        { id: 'bkash', title: 'bKash', description: 'Pay securely using bKash.', badge: { text: 'bKash', bg: '#e2136e' } },
-        { id: 'nagad', title: 'Nagad', description: 'Pay securely using Nagad.', badge: { text: 'Nagad', bg: '#f7941d' } },
       ];
 
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
