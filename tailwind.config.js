@@ -24,12 +24,13 @@ export default {
             },
             colors: {
                 brand: {
-                    DEFAULT: '#1c4289',
-                    dark: '#15326b',
-                    light: '#2a55a8',
+                    DEFAULT: '#0084ff',
+                    dark: '#006edc',
+                    light: '#e0f2fe',
+                    navy: '#0b1320',
                     price: '#dc2626',
-                    buy: '#22c55e',
-                    'buy-hover': '#16a34a',
+                    buy: '#0084ff',
+                    'buy-hover': '#0070d6',
                 },
                 admin: {
                     bg: 'var(--admin-bg, #f8fafc)',

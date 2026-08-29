@@ -117,15 +117,12 @@ export default function Navbar({ onOpenCart }) {
 
         {/* Brand Logo Area */}
         <Link href="/" className="flex items-center space-x-2 shrink-0 group">
-          <div className="flex items-center">
+          <div className="flex items-center bg-white/95 px-3 py-1.5 rounded-xl shadow-xs border border-white/20">
             {settings.site_logo ? (
               <img
                 src={settings.site_logo_dark || settings.site_logo}
                 alt={settings.site_name || 'TechMarket BD'}
-                className="h-8 sm:h-10 w-auto object-contain max-w-[220px] transition-transform group-hover:scale-105"
-                style={{
-                  filter: 'drop-shadow(0 1px 2px rgba(255, 255, 255, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))',
-                }}
+                className="h-7 sm:h-8 w-auto object-contain max-w-[210px] transition-transform group-hover:scale-105"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   const fallback = e.currentTarget.nextElementSibling;
@@ -133,7 +130,7 @@ export default function Navbar({ onOpenCart }) {
                 }}
               />
             ) : null}
-            <span className={`text-2xl sm:text-[28px] font-black tracking-tight text-white font-sans ${settings.site_logo ? 'hidden' : ''}`}>
+            <span className={`text-2xl sm:text-[28px] font-black tracking-tight text-slate-900 font-sans ${settings.site_logo ? 'hidden' : ''}`}>
               {settings.site_name || 'TechMarket BD'}
             </span>
           </div>
@@ -147,11 +144,11 @@ export default function Navbar({ onOpenCart }) {
               placeholder={settings.search_placeholder || "Type a product, brand or model..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white text-slate-900 placeholder-slate-400 text-sm rounded-l pl-4 pr-10 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1c4289] transition-all font-medium"
+              className="w-full bg-white text-slate-900 placeholder-slate-400 text-sm rounded-l pl-4 pr-10 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0084ff] transition-all font-medium"
             />
             <button
               type="submit"
-              className="bg-[#1c4289] hover:bg-[#15326b] text-white px-6 py-2.5 rounded-r font-bold text-sm flex items-center transition-colors shrink-0 shadow"
+              className="bg-[#0084ff] hover:bg-[#0070d6] text-white px-6 py-2.5 rounded-r font-bold text-sm flex items-center transition-colors shrink-0 shadow cursor-pointer"
             >
               <Search className="w-4 h-4 mr-1.5" />
               <span>Search</span>
@@ -176,10 +173,10 @@ export default function Navbar({ onOpenCart }) {
           {/* CCTV Estimator Button */}
           <Link
             href="/cctv-estimator"
-            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
+            className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-[#0084ff] font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
             title="CCTV System Builder & Quotation Estimator"
           >
-            <Video className="w-4 h-4 text-sky-400" />
+            <Video className="w-4 h-4 text-[#0084ff]" />
             <span>CCTV EST</span>
           </Link>
 
@@ -197,9 +194,9 @@ export default function Navbar({ onOpenCart }) {
           {showPcBuilder && (
             <Link
               href="/pc-builder"
-              className="hidden lg:flex items-center space-x-1.5 px-3.5 py-2 rounded bg-slate-800 hover:bg-slate-700 text-[#3b82f6] font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
+              className="hidden lg:flex items-center space-x-1.5 px-3.5 py-2 rounded bg-slate-800 hover:bg-slate-700 text-[#0084ff] font-extrabold border border-slate-700 transition-colors uppercase tracking-wider text-xs shadow-xs"
             >
-              <Cpu className="w-4 h-4 text-[#3b82f6]" />
+              <Cpu className="w-4 h-4 text-[#0084ff]" />
               <span>PC BUILDER</span>
             </Link>
           )}
@@ -213,7 +210,7 @@ export default function Navbar({ onOpenCart }) {
             >
               <GitCompare className="w-4 h-4" />
               {compareCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-[#0088cc] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-scale-in">
+                <span className="absolute -top-0.5 -right-0.5 bg-[#0084ff] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-scale-in">
                   {compareCount}
                 </span>
               )}
@@ -250,7 +247,7 @@ export default function Navbar({ onOpenCart }) {
           {/* Cart Icon & Badge */}
           <button
             onClick={onOpenCart}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded bg-[#1c4289] hover:bg-[#15326b] text-white font-bold transition-colors shadow"
+            className="flex items-center space-x-1.5 px-3 py-2 rounded bg-[#0084ff] hover:bg-[#0070d6] text-white font-bold transition-colors shadow cursor-pointer"
           >
             <div className="relative">
               <ShoppingCart className="w-4 h-4" />

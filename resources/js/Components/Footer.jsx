@@ -98,11 +98,11 @@ export default function Footer({ onOpenCart }) {
       <div className="border-b border-slate-800/80 bg-gradient-to-r from-slate-950 via-[#0d1527] to-slate-950">
         <div className="max-w-[1640px] mx-auto px-4 py-7 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex items-center space-x-3.5 text-center lg:text-left">
-            <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-[#0084ff]/15 border border-[#0084ff]/30 text-[#0084ff] flex items-center justify-center shrink-0">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-white font-extrabold text-sm sm:text-base tracking-tight">
+              <h4 className="text-white font-extrabold text-sm sm:text-base tracking-tight font-heading">
                 Stay Ahead in Tech — Join {settings.site_name || 'TechMarket BD'} Insider
               </h4>
               <p className="text-slate-400 text-xs sm:text-[13px] mt-0.5">
@@ -119,12 +119,12 @@ export default function Footer({ onOpenCart }) {
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder="Enter your email address..."
-                className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 text-xs sm:text-sm rounded-xl px-4 py-3 border border-slate-800 focus:outline-none focus:border-amber-500 font-medium"
+                className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 text-xs sm:text-sm rounded-xl px-4 py-3 border border-slate-800 focus:outline-none focus:border-[#0084ff] font-medium"
               />
             </div>
             <button
               type="submit"
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3 rounded-xl font-black text-xs sm:text-sm flex items-center space-x-1.5 transition-all shrink-0 cursor-pointer shadow-sm"
+              className="bg-[#0084ff] hover:bg-[#0070d6] text-white px-6 py-3 rounded-xl font-black text-xs sm:text-sm flex items-center space-x-1.5 transition-all shrink-0 cursor-pointer shadow-sm"
             >
               <span>{subscribed ? 'Joined! ✓' : 'Subscribe'}</span>
               {!subscribed && <Send className="w-4 h-4" />}
@@ -140,25 +140,24 @@ export default function Footer({ onOpenCart }) {
         <div className="lg:col-span-4 space-y-4">
           <div className="space-y-2">
             <Link href="/" className="inline-flex items-center space-x-2.5 group">
-              {settings.site_logo ? (
-                <img
-                  src={settings.site_logo_dark || settings.site_logo}
-                  alt={settings.site_name || 'TechMarket BD'}
-                  className="h-8 sm:h-9 w-auto object-contain max-w-[210px] transition-transform group-hover:scale-105"
-                  style={{
-                    filter: 'drop-shadow(0 1px 2px rgba(255, 255, 255, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))',
-                  }}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    const fallback = e.currentTarget.nextElementSibling;
-                    if (fallback) fallback.style.display = 'inline';
-                  }}
-                />
-              ) : null}
-              <span className={`text-xl font-black tracking-tight text-white font-heading ${settings.site_logo ? 'hidden' : ''}`}>
-                {settings.site_name || 'TechMarket BD'}
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">
+              <div className="bg-white/95 px-3 py-1.5 rounded-xl shadow-xs border border-white/20 inline-flex items-center">
+                {settings.site_logo ? (
+                  <img
+                    src={settings.site_logo_dark || settings.site_logo}
+                    alt={settings.site_name || 'TechMarket BD'}
+                    className="h-7 sm:h-8 w-auto object-contain max-w-[200px] transition-transform group-hover:scale-105"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const fallback = e.currentTarget.nextElementSibling;
+                      if (fallback) fallback.style.display = 'inline';
+                    }}
+                  />
+                ) : null}
+                <span className={`text-xl font-black tracking-tight text-slate-900 font-heading ${settings.site_logo ? 'hidden' : ''}`}>
+                  {settings.site_name || 'TechMarket BD'}
+                </span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-[#0084ff]/15 text-[#0084ff] border border-[#0084ff]/30 text-[10px] font-bold">
                 Official Store
               </span>
             </Link>
@@ -170,14 +169,14 @@ export default function Footer({ onOpenCart }) {
           <div className="space-y-2.5 text-slate-300 pt-1">
             <a 
               href={`tel:${settings.hotline || '+8809613562601'}`}
-              className="flex items-center space-x-2.5 group cursor-pointer hover:text-amber-400 transition-colors"
+              className="flex items-center space-x-2.5 group cursor-pointer hover:text-[#0084ff] transition-colors"
             >
-              <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-[#0084ff] group-hover:bg-[#0084ff] group-hover:text-white transition-colors shrink-0">
                 <Phone className="w-4 h-4" />
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">Direct Hotline (9 AM - 9 PM)</span>
-                <span className="font-extrabold text-white text-xs font-mono group-hover:text-amber-400 transition-colors">
+                <span className="font-extrabold text-white text-xs font-mono group-hover:text-[#0084ff] transition-colors">
                   {settings.hotline || '(+880) 09613-562601'}
                 </span>
               </div>
