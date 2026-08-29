@@ -70,14 +70,18 @@ class PublicBrandController extends Controller
             $productQuery->latest();
         }
 
-        $products = $productQuery->paginate(12)->withQueryString();
-        $categories = Category::all();
+        $products = $productQuery->paginate(16)->withQueryString();
+        $filterCategories = Category::whereNull('parent_id')->orderBy('name')->get();
 
         return Inertia::render('Brands/Show', [
             'brand' => $brand,
             'products' => $products,
-            'categories' => $categories,
-            'filters' => $request->only(['search', 'category', 'sort']),
+            'filterCategories' => $filterCategories,
+            'filters' => [
+                'search' => $request->input('search', ''),
+                'category' => $request->input('category', ''),
+                'sort' => $request->input('sort', 'latest'),
+            ],
         ]);
     }
 }
