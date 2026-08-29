@@ -69,6 +69,38 @@ export default function AdminBanners({ banners = [] }) {
       ),
     },
     {
+      header: 'Placement & Size',
+      accessor: 'placement',
+      render: (b) => {
+        let label = 'Hero Slide';
+        let size = '980 × 480 px';
+        let badgeColor = 'bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 border-blue-200/60';
+
+        if (b.placement === 'side_banner_top') {
+          label = 'Side Top (30%)';
+          size = '420 × 225 px';
+          badgeColor = 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border-indigo-200/60';
+        } else if (b.placement === 'side_banner_bottom') {
+          label = 'Side Bottom (30%)';
+          size = '420 × 225 px';
+          badgeColor = 'bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 border-amber-200/60';
+        } else if (b.placement === 'promo_banner') {
+          label = 'Strip Promo';
+          size = '1400 × 280 px';
+          badgeColor = 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 border-emerald-200/60';
+        }
+
+        return (
+          <div className="space-y-1">
+            <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase font-mono border ${badgeColor}`}>
+              {label}
+            </span>
+            <div className="text-[10px] text-slate-400 font-mono">📐 {size}</div>
+          </div>
+        );
+      },
+    },
+    {
       header: 'Status',
       accessor: 'is_active',
       render: (b) => (

@@ -326,22 +326,45 @@ export default function HomepageIndex({
         {activeTab === 'banners' && (
           <div className="space-y-6">
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Hero Slider Slides (70% Width)</h3>
-                <Link href="/admin/banners/create" className="text-xs text-indigo-600 hover:underline font-bold">+ Create Slide</Link>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-heading">
+                    Hero Slider Slides (70% Width)
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-mono text-[10.5px] font-bold border border-blue-200/60 dark:border-blue-800/60">
+                    📐 Size: 980 × 480 px (Desktop) | 600 × 400 px (Mobile)
+                  </span>
+                </div>
+                <Link href="/admin/banners/create" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-bold">
+                  + Create Slide
+                </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {heroBanners.map((b) => (
                   <div key={b.id} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden flex gap-4 p-4 shadow-2xs">
-                    <img src={b.image} alt={b.title} className="w-32 h-20 object-cover rounded-xl bg-slate-100 shrink-0" />
+                    <img src={b.image} alt={b.title} className="w-32 h-20 object-cover rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0" />
                     <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div>
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="text-[9px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase bg-blue-50 dark:bg-blue-950/80 px-1.5 py-0.2 rounded">
+                            980 × 480 px
+                          </span>
+                          {b.badge && (
+                            <span className="text-[9px] font-mono font-bold text-amber-600 uppercase bg-amber-50 dark:bg-amber-950/80 px-1.5 py-0.2 rounded">
+                              {b.badge}
+                            </span>
+                          )}
+                        </div>
                         <h4 className="font-bold text-slate-900 dark:text-slate-100 text-xs truncate font-heading">{b.title}</h4>
-                        <p className="text-[11px] text-slate-500 truncate">{b.subtitle}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{b.subtitle || 'No subtitle'}</p>
                       </div>
                       <div className="flex justify-between items-center text-[11px] pt-2 border-t border-slate-100 dark:border-slate-800">
-                        <span className="text-emerald-600 font-bold">{b.is_active ? 'Active' : 'Inactive'}</span>
-                        <Link href={`/admin/banners/${b.id}/edit`} className="text-indigo-600 hover:underline font-bold">Edit Banner</Link>
+                        <span className={`font-bold ${b.is_active ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                          {b.is_active ? '● Active' : '○ Inactive'}
+                        </span>
+                        <Link href={`/admin/banners/${b.id}/edit`} className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold">
+                          Edit Banner
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -350,22 +373,37 @@ export default function HomepageIndex({
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Side Promotional Banners (30% Stacked)</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-heading">
+                    Side Promotional Banners (30% Stacked)
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-mono text-[10.5px] font-bold border border-indigo-200/60 dark:border-indigo-800/60">
+                    📐 Size: 420 × 225 px (Top & Bottom)
+                  </span>
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {sideBanners.map((b) => (
                   <div key={b.id} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden flex gap-4 p-4 shadow-2xs">
-                    <img src={b.image} alt={b.title} className="w-24 h-20 object-cover rounded-xl bg-slate-100 shrink-0" />
+                    <img src={b.image} alt={b.title} className="w-24 h-20 object-cover rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0" />
                     <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div>
-                        <span className="text-[9px] font-bold text-indigo-600 uppercase bg-indigo-50 px-1.5 py-0.5 rounded">{b.placement}</span>
-                        <h4 className="font-bold text-slate-900 dark:text-slate-100 text-xs truncate mt-1 font-heading">{b.title}</h4>
-                        <p className="text-[11px] text-slate-500 truncate">{b.subtitle}</p>
+                        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                          <span className="text-[9px] font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase bg-indigo-50 dark:bg-indigo-950/80 px-1.5 py-0.2 rounded">
+                            {b.placement === 'side_banner_top' ? 'Top (420×225)' : 'Bottom (420×225)'}
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-slate-900 dark:text-slate-100 text-xs truncate mt-0.5 font-heading">{b.title}</h4>
+                        <p className="text-[11px] text-slate-500 truncate">{b.subtitle || 'No subtitle'}</p>
                       </div>
                       <div className="flex justify-between items-center text-[11px] pt-2 border-t border-slate-100 dark:border-slate-800">
-                        <span className="text-emerald-600 font-bold">{b.is_active ? 'Active' : 'Inactive'}</span>
-                        <Link href={`/admin/banners/${b.id}/edit`} className="text-indigo-600 hover:underline font-bold">Edit Banner</Link>
+                        <span className={`font-bold ${b.is_active ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                          {b.is_active ? '● Active' : '○ Inactive'}
+                        </span>
+                        <Link href={`/admin/banners/${b.id}/edit`} className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold">
+                          Edit Banner
+                        </Link>
                       </div>
                     </div>
                   </div>
