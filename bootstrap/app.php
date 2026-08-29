@@ -1,5 +1,16 @@
 <?php
 
+// Universal polyfills for servers with incomplete mbstring regex extensions
+if (!function_exists('mb_split')) {
+    function mb_split(string $pattern, string $string, int $limit = -1): array|false {
+        $result = @preg_split('/' . $pattern . '/u', $string, $limit);
+        if ($result === false) {
+            $result = @preg_split('/' . $pattern . '/', $string, $limit);
+        }
+        return $result;
+    }
+}
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
