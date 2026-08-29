@@ -855,3 +855,52 @@ Route::post('/l/{slug}/order', [\App\Http\Controllers\LandingPageController::cla
 Route::post('/l/{slug}/track', [\App\Http\Controllers\LandingPageController::class, 'trackEvent'])->middleware('throttle:60,1')->name('landingPage.track');
 
 require __DIR__.'/auth.php';
+
+// Universal Smart 404 Fallback Route
+Route::fallback(function (\Illuminate\Http\Request $request) {
+    $path = trim($request->path(), '/');
+
+    // Smart typo autocorrect / canonical redirects
+    if ($path === 'sitem' || $path === 'sitemap' || $path === 'sitemaps') {
+        return redirect()->to('/sitemap.xml', 301);
+    }
+    if ($path === 'robot' || $path === 'robots') {
+        return redirect()->to('/robots.txt', 301);
+    }
+
+    // Smart 404 Recovery Data
+    $recommendedProducts = \App\Models\Product::where(function ($q) {
+        $q->where('is_active', true)->orWhereNull('is_active');
+    })
+    ->where('is_featured', true)
+    ->latest()
+    ->take(8)
+    ->get();
+
+    if ($recommendedProducts->count() < 4) {
+        $recommendedProducts = \App\Models\Product::where(function ($q) {
+            $q->where('is_active', true)->orWhereNull('is_active');
+        })
+        ->latest()
+        ->take(8)
+        ->get();
+    }
+
+    $topCategories = \App\Models\Category::whereNull('parent_id')
+        ->where('is_nav_visible', true)
+        ->orderBy('sort_order')
+        ->take(8)
+        ->get();
+
+    return \Inertia\Inertia::render('Errors/NotFound', [
+        'status' => 404,
+        'requestedPath' => $request->path(),
+        'recommendedProducts' => $recommendedProducts,
+        'topCategories' => $topCategories,
+        'seo' => [
+            'title' => '404 - Page Not Found | TechMarket BD',
+            'description' => 'Sorry, the page or product you are looking for could not be found. Explore TechMarket BD for latest laptops, gaming computers and accessories.',
+            'meta_robots' => 'noindex, nofollow',
+        ],
+    ])->toResponse($request)->setStatusCode(404);
+});
