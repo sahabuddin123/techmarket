@@ -64,9 +64,11 @@ export default function HomeV2({
   const showPromoBanner = settings.storefront_v2_show_promo_banner !== '0';
   const showStats = settings.storefront_v2_show_stats !== '0';
 
+  const homeTitle = settings.default_meta_title || `${settings.site_name || 'TechMarket BD'} | Best Computer, Laptop, Component & CCTV Shop in Bangladesh`;
+
   return (
     <div className="storefront-v2 min-h-screen bg-[#f3f6fa] text-slate-900 font-sans flex flex-col selection:bg-blue-600 selection:text-white">
-      <Head title={`${settings.site_name || 'TechMarket BD'} - Modern Tech Storefront`} />
+      <Head title={homeTitle} />
 
       {/* 1. Header (Restyled for Version 2) */}
       <NavbarV2 onOpenCart={() => setCartOpen(true)} />
@@ -88,6 +90,9 @@ export default function HomeV2({
 
       {/* Main Content Area */}
       <main className="flex-1 w-full space-y-12 sm:space-y-14 mt-8 sm:mt-10">
+        <h1 className="sr-only">
+          {homeTitle}
+        </h1>
 
         {/* ========================================================================= */}
         {/* 4 & 5. MAIN TOP GRID: TRUST STRIP + FEATURED PRODUCTS + DEAL OF THE DAY */}

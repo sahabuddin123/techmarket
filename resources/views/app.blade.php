@@ -5,63 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title inertia>{{ config('app.name', 'TechMarket BD') }}</title>
         @php
             $siteFavicon = \App\Models\Setting::get('site_favicon');
             $gtmId = \App\Models\Setting::get('gtm_container_id') ?: \App\Models\Setting::get('gtm_id');
             $ga4Id = \App\Models\Setting::get('ga_measurement_id') ?: \App\Models\Setting::get('ga4_measurement_id');
             $fbPixelId = \App\Models\Setting::get('fb_pixel_id') ?: \App\Models\Setting::get('meta_pixel_id');
-        @endphp
 
-        @if ($gtmId)
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
-        <!-- End Google Tag Manager -->
-        @endif
-
-        @if ($ga4Id)
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '{{ $ga4Id }}');
-        </script>
-        @endif
-
-        @if ($fbPixelId)
-        <!-- Meta Pixel Code -->
-        <script>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '{{ $fbPixelId }}');
-        fbq('track', 'PageView');
-        </script>
-        <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id={{ $fbPixelId }}&ev=PageView&noscript=1"
-        /></noscript>
-        <!-- End Meta Pixel Code -->
-        @endif
-
-        @if ($siteFavicon)
-            <link rel="icon" href="{{ $siteFavicon }}">
-        @else
-            <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-            <link rel="alternate icon" href="/favicon.ico">
-        @endif
-
-        @php
             $googleVerification = \App\Models\Setting::get('google_search_console_code') ?: \App\Models\Setting::get('google_site_verification');
             $bingVerification = \App\Models\Setting::get('bing_webmaster_code') ?: \App\Models\Setting::get('bing_site_verification');
             $seoRobots = \App\Models\Setting::get('seo_robots_indexing', 'index, follow');
@@ -116,6 +65,56 @@
 
             $currentCanonical = $seo['canonical_url'] ?? url()->current();
         @endphp
+
+        <title inertia>{{ $metaTitle }}</title>
+
+        @if ($gtmId)
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
+        <!-- End Google Tag Manager -->
+        @endif
+
+        @if ($ga4Id)
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '{{ $ga4Id }}');
+        </script>
+        @endif
+
+        @if ($fbPixelId)
+        <!-- Meta Pixel Code -->
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ $fbPixelId }}');
+        fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id={{ $fbPixelId }}&ev=PageView&noscript=1"
+        /></noscript>
+        <!-- End Meta Pixel Code -->
+        @endif
+
+        @if ($siteFavicon)
+            <link rel="icon" href="{{ $siteFavicon }}">
+        @else
+            <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+            <link rel="alternate icon" href="/favicon.ico">
+        @endif
 
         <!-- Search Engine Robots Indexing -->
         <meta name="robots" content="{{ $seoRobots }}">
@@ -177,6 +176,10 @@
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- End Google Tag Manager (noscript) -->
         @endif
+
+        <h1 class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+            {{ $metaTitle }}
+        </h1>
 
         @inertia
         @if ($customFooterScripts)

@@ -141,9 +141,11 @@ export default function HomeV1({
     return sections[key]?.subtitle !== undefined ? sections[key].subtitle : defaultSubtitle;
   };
 
+  const homeTitle = settings.default_meta_title || `${settings.site_name || 'TechMarket BD'} | Best Computer, Laptop, Component & CCTV Shop in Bangladesh`;
+
   return (
     <div className="min-h-screen bg-[#f4f7f9] text-slate-900 font-sans flex flex-col selection:bg-[#0084ff] selection:text-white">
-      <Head title={`${settings.site_name || 'TechMarket BD'} - Trusted Retail Computer Shop in Bangladesh`} />
+      <Head title={homeTitle} />
 
       {/* 1. Header & Mega Navigation */}
       <Navbar onOpenCart={() => setCartOpen(true)} />
@@ -151,6 +153,9 @@ export default function HomeV1({
 
       {/* Main Storefront Body Container */}
       <main className="flex-1 max-w-[1640px] w-full mx-auto px-4 py-5 space-y-7">
+        <h1 className="sr-only">
+          {homeTitle}
+        </h1>
         
         {/* ========================================================================= */}
         {/* 1. HERO SECTION: 68% Hero Carousel Slider + 32% Stacked Promo Banner Images */}
