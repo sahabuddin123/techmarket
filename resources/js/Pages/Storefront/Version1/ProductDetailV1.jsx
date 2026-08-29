@@ -10,7 +10,7 @@ import {
   Check, Star, ChevronLeft, ChevronRight, Share2, 
   HelpCircle, MessageSquare, Plus, Minus, Tag, CheckCircle2, User,
   X, Building2, Calculator, CreditCard, Info, ShieldAlert, FileText,
-  ZoomIn, Bookmark
+  ZoomIn, Bookmark, Zap
 } from 'lucide-react';
 
 export default function ProductDetailV1(props) {
@@ -474,12 +474,12 @@ export default function ProductDetailV1(props) {
                         </button>
                       </div>
 
-                      {/* Add to Cart / Buy Now Button */}
+                      {/* Add to Cart Button */}
                       <button
                         type="button"
                         onClick={() => handleAddToCart(false)}
                         disabled={isOutOfStock}
-                        className={`h-10 px-6 sm:px-8 rounded text-white text-[13px] font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
+                        className={`h-10 px-5 sm:px-6 rounded text-white text-[13px] font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
                           isOutOfStock
                             ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
                             : added
@@ -490,7 +490,7 @@ export default function ProductDetailV1(props) {
                         {added ? (
                           <>
                             <Check className="w-4 h-4" />
-                            <span>Added to Cart!</span>
+                            <span>Added!</span>
                           </>
                         ) : (
                           <>
@@ -498,6 +498,18 @@ export default function ProductDetailV1(props) {
                             <span>Add to Cart</span>
                           </>
                         )}
+                      </button>
+
+                      {/* Buy Now Button (Direct Checkout) */}
+                      <button
+                        type="button"
+                        onClick={() => handleAddToCart(true)}
+                        disabled={isOutOfStock}
+                        className="h-10 px-5 sm:px-6 rounded text-white text-[13px] font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all bg-[#ea580c] hover:bg-[#c2410c] active:scale-[0.98] cursor-pointer disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                        title="Proceed immediately to checkout"
+                      >
+                        <Zap className="w-4 h-4 fill-white text-white" />
+                        <span>Buy Now</span>
                       </button>
 
                       {/* Add to Wishlist */}
