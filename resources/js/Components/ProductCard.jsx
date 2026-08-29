@@ -158,7 +158,7 @@ export default function ProductCard({ product, variant = 'standard' }) {
           <div className="pt-1">
             {variant === 'flash' ? (
               <Link
-                href={`/offers/flash-sale/${product.slug}`}
+                href={`/product/${product.slug}`}
                 className="w-full py-2.5 px-3 rounded-md bg-[#ea580c] hover:bg-[#c2410c] text-white text-xs sm:text-[13px] font-bold flex items-center justify-center gap-1.5 shadow-xs transition-colors text-center cursor-pointer"
               >
                 <Zap className="w-4 h-4 fill-current" />

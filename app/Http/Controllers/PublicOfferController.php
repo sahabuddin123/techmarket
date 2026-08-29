@@ -96,7 +96,11 @@ class PublicOfferController extends Controller
         $offer = Offer::where('slug', $slug)
             ->where('is_active', true)
             ->where('status', '!=', 'draft')
-            ->firstOrFail();
+            ->first();
+
+        if (!$offer) {
+            return redirect()->route('offers.index');
+        }
 
         // Load associated campaign products with categories, brands, and pivot badges
         $productsQuery = $offer->products()->with(['category', 'brand']);
@@ -143,20 +147,6 @@ class PublicOfferController extends Controller
      */
     public function showProduct(Request $request, $offerSlug, $productSlug)
     {
-        $offer = Offer::where('slug', $offerSlug)
-            ->where('is_active', true)
-            ->first();
-
-        $shopController = app(\App\Http\Controllers\ShopController::class);
-        $response = $shopController->product($productSlug);
-
-        if ($response instanceof \Inertia\Response) {
-            $props = $response->toResponse($request)->getOriginalContent()['page']['props'] ?? [];
-            $props['offer'] = $offer;
-            $props['isFlashSale'] = true;
-            return Inertia::render('ProductDetail', $props);
-        }
-
-        return $response;
+        return redirect()->to('/product/' . $productSlug, 301);
     }
 }
