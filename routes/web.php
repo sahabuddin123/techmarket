@@ -34,6 +34,7 @@ Route::get('/shop', [ShopController::class, 'catalog'])->name('shop');
 Route::get('/catalog', [ShopController::class, 'catalog'])->name('catalog');
 Route::get('/category/{slug}', [ShopController::class, 'category'])->name('category.show');
 Route::get('/product/{slug}', [ShopController::class, 'product'])->name('product.show');
+Route::get('/products/{slug}', [ShopController::class, 'product'])->name('products.show.alias');
 Route::get('/compare', [\App\Http\Controllers\CompareController::class, 'index'])->name('compare');
 Route::get('/compare/search', [\App\Http\Controllers\CompareController::class, 'search'])->name('compare.search');
 Route::post('/compare/add', [\App\Http\Controllers\CompareController::class, 'add'])->name('compare.add');

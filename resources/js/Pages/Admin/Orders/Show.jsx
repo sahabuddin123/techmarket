@@ -8,7 +8,8 @@ import AdminModal from '../../../Components/Admin/AdminModal';
 import { 
   Package, User, MapPin, CreditCard, Truck, History, CheckCircle, 
   Clock, ShieldAlert, ShieldCheck, AlertTriangle, RefreshCw, XCircle, 
-  Send, ExternalLink, ArrowUpRight, DollarSign, Boxes, FileText
+  Send, ExternalLink, ArrowUpRight, DollarSign, Boxes, FileText,
+  Eye, ZoomIn, Image as ImageIcon
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -25,6 +26,7 @@ export default function AdminOrderShow({
 }) {
   const [orderStatus, setOrderStatus] = useState(order.status || 'Pending');
   const [statusNotes, setStatusNotes] = useState('');
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Courier Booking State
   const [selectedCourier, setSelectedCourier] = useState(
@@ -250,22 +252,41 @@ export default function AdminOrderShow({
                         <tr key={item.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                           <td className="p-3">
                             <div className="flex items-center gap-3">
-                              {/* Product Thumbnail */}
-                              <div className="w-12 h-12 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800 p-1 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-2xs group relative">
+                              {/* Product Thumbnail with Lightbox Trigger */}
+                              <button
+                                type="button"
+                                onClick={() => setPreviewImage({
+                                  url: itemImage,
+                                  title: item.product_name,
+                                  brand: brandName,
+                                  sku: item.sku_snapshot || item.product?.sku || 'N/A',
+                                  price: item.price,
+                                  slug: productSlug,
+                                  category: categoryName,
+                                  warranty: item.product?.warranty,
+                                })}
+                                className="w-12 h-12 rounded-xl border border-slate-200/90 dark:border-slate-700/90 bg-white dark:bg-slate-800 p-1 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-2xs group relative cursor-pointer hover:border-indigo-500 hover:ring-2 hover:ring-indigo-500/20 transition-all text-left"
+                                title="Click to view product image"
+                              >
                                 {itemImage ? (
-                                  <img
-                                    src={itemImage}
-                                    alt={item.product_name}
-                                    className="w-full h-full object-contain transition-transform group-hover:scale-105"
-                                    onError={(e) => {
-                                      e.target.onerror = null;
-                                      e.target.style.display = 'none';
-                                    }}
-                                  />
+                                  <>
+                                    <img
+                                      src={itemImage}
+                                      alt={item.product_name}
+                                      className="w-full h-full object-contain transition-transform group-hover:scale-110"
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.style.display = 'none';
+                                      }}
+                                    />
+                                    <div className="absolute inset-0 bg-indigo-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                                      <Eye className="w-4 h-4 text-white drop-shadow" />
+                                    </div>
+                                  </>
                                 ) : (
                                   <Package className="w-5 h-5 text-slate-400" />
                                 )}
-                              </div>
+                              </button>
 
                               {/* Product Details & Brand */}
                               <div className="min-w-0 max-w-sm space-y-1">
@@ -285,7 +306,7 @@ export default function AdminOrderShow({
                                 <div>
                                   {productSlug ? (
                                     <a
-                                      href={`/products/${productSlug}`}
+                                      href={`/product/${productSlug}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-2 inline-flex items-center gap-1 group"
@@ -665,6 +686,95 @@ export default function AdminOrderShow({
               placeholder="Explain reason for decision (e.g. Verified customer identity via phone call)..."
               className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-3 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden"
             />
+          </div>
+        </div>
+      </AdminModal>
+
+      {/* Product Image Lightbox Modal */}
+      <AdminModal
+        isOpen={!!previewImage}
+        onClose={() => setPreviewImage(null)}
+        title={previewImage?.title || 'Product Image Preview'}
+        subtitle={`SKU: ${previewImage?.sku || 'N/A'} • Unit Price: ৳${Number(previewImage?.price || 0).toLocaleString()}`}
+        icon={ImageIcon}
+        size="md"
+        footer={
+          <div className="flex items-center justify-between w-full">
+            <div>
+              {previewImage?.slug && (
+                <a
+                  href={`/product/${previewImage.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open in Storefront</span>
+                </a>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              {previewImage?.url && (
+                <a
+                  href={previewImage.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs transition-colors inline-flex items-center gap-1.5"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                  <span>Full Resolution</span>
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          {/* High Resolution Image Container */}
+          <div className="w-full h-80 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800 p-4 flex items-center justify-center overflow-hidden">
+            {previewImage?.url ? (
+              <img
+                src={previewImage.url}
+                alt={previewImage.title}
+                className="max-h-full max-w-full object-contain drop-shadow-md transition-transform hover:scale-105 duration-200"
+              />
+            ) : (
+              <div className="text-center text-slate-400 space-y-2">
+                <Package className="w-12 h-12 mx-auto stroke-1" />
+                <p className="font-medium">No image available for this product</p>
+              </div>
+            )}
+          </div>
+
+          {/* Meta Details */}
+          <div className="p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 flex-wrap">
+              {previewImage?.brand && (
+                <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 font-black uppercase text-[10px] font-mono border border-indigo-200/60 dark:border-indigo-800/60">
+                  {previewImage.brand}
+                </span>
+              )}
+              {previewImage?.category && (
+                <span className="text-slate-500 dark:text-slate-400 font-medium">
+                  {previewImage.category}
+                </span>
+              )}
+              {previewImage?.warranty && (
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
+                  🛡️ {previewImage.warranty}
+                </span>
+              )}
+            </div>
+            <div className="font-mono font-black text-slate-900 dark:text-slate-100 text-sm">
+              ৳ {Number(previewImage?.price || 0).toLocaleString()}
+            </div>
           </div>
         </div>
       </AdminModal>
