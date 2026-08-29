@@ -252,9 +252,9 @@ export default function ProductCard({ product, variant = 'standard' }) {
                 <button
                   type="button"
                   onClick={handleBuyNow}
-                  className="w-full py-2 px-2.5 rounded-md bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                  className="w-full py-2 px-2.5 rounded-md bg-[#0c1424] hover:bg-[#0084ff] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                 >
-                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  <Zap className="w-3.5 h-3.5 fill-current text-white" />
                   <span>Buy Now</span>
                 </button>
               </div>

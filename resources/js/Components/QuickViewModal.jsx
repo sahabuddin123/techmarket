@@ -233,7 +233,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                     className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs ${
                       isOutOfStock
                         ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-                        : 'bg-[#ff6a00] hover:bg-[#e55f00] text-white'
+                        : 'bg-[#0c1424] hover:bg-[#0084ff] text-white'
                     }`}
                   >
                     <Zap className="w-4 h-4 fill-current" />

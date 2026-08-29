@@ -515,7 +515,7 @@ export default function ProductDetailV1(props) {
                         type="button"
                         onClick={() => handleAddToCart(true)}
                         disabled={isOutOfStock}
-                        className="h-10 px-5 sm:px-6 rounded text-white text-[13px] font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all bg-[#ea580c] hover:bg-[#c2410c] active:scale-[0.98] cursor-pointer disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                        className="h-10 px-5 sm:px-6 rounded text-white text-[13px] font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all bg-[#0c1424] hover:bg-[#0084ff] active:scale-[0.98] cursor-pointer disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                         title="Proceed immediately to checkout"
                       >
                         <Zap className="w-4 h-4 fill-white text-white" />

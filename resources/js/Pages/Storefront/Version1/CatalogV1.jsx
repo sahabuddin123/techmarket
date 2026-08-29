@@ -822,9 +822,9 @@ export default function CatalogV1(props) {
                               <button
                                 type="button"
                                 onClick={(e) => handleBuyNow(e, product)}
-                                className="w-full py-1.5 px-2 rounded-[3px] bg-[#ff6a00] hover:bg-[#e55f00] text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                                className="w-full py-1.5 px-2 rounded-[3px] bg-[#0c1424] hover:bg-[#0084ff] text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                               >
-                                <Zap className="w-3.5 h-3.5 fill-current" />
+                                <Zap className="w-3.5 h-3.5 fill-current text-white" />
                                 <span>Buy Now</span>
                               </button>
                             </>
