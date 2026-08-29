@@ -8,7 +8,7 @@ import {
   Sliders, Save, Globe, Image as ImageIcon, Store, Search, 
   Phone, CreditCard, Truck, Activity, RefreshCw, CheckCircle2,
   AlertTriangle, ShieldCheck, Database, Server, HardDrive, Sparkles,
-  Palette
+  Palette, Info, ExternalLink, HelpCircle, Check
 } from 'lucide-react';
 
 export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) {
@@ -588,6 +588,100 @@ export default function AdminGlobalSettings({ settings = {}, systemInfo = {} }) 
                       placeholder="123456789012345"
                       className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
                     />
+                  </div>
+                </div>
+
+                {/* Setup Guidelines Card */}
+                <div className="mt-4 p-4.5 rounded-xl bg-blue-50/80 dark:bg-slate-800/80 border border-blue-200/80 dark:border-slate-700 space-y-3.5">
+                  <div className="flex items-center space-x-2 text-slate-900 dark:text-slate-100 font-extrabold text-sm">
+                    <Info className="w-4 h-4 text-[#0084ff]" />
+                    <span>Tracking Setup Guidelines & Instructions</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                    {/* GA4 Guide */}
+                    <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-2xs">
+                      <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-100">
+                        <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                          <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                          Google Analytics 4 (GA4)
+                        </span>
+                        <a 
+                          href="https://analytics.google.com" 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-[#0084ff] hover:underline flex items-center gap-0.5 text-[11px]"
+                        >
+                          <span>Open</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <ol className="text-slate-600 dark:text-slate-400 text-[11.5px] space-y-1 list-decimal list-inside leading-relaxed">
+                        <li>Go to <strong>Admin (⚙️)</strong> in Google Analytics.</li>
+                        <li>Click <strong>Data Streams</strong> &rarr; Select your Web stream.</li>
+                        <li>Copy the <strong>Measurement ID</strong> (e.g. <code className="bg-slate-100 dark:bg-slate-800 text-[#0084ff] px-1 py-0.5 rounded font-mono font-bold">G-XXXXXXXXXX</code>).</li>
+                      </ol>
+                      <div className="pt-1 border-t border-slate-100 dark:border-slate-800 text-[10.5px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                        <Check className="w-3 h-3 shrink-0" />
+                        <span>Auto-tracks page views, add to cart & checkout in BDT</span>
+                      </div>
+                    </div>
+
+                    {/* GTM Guide */}
+                    <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-2xs">
+                      <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-100">
+                        <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+                          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                          Google Tag Manager (GTM)
+                        </span>
+                        <a 
+                          href="https://tagmanager.google.com" 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-[#0084ff] hover:underline flex items-center gap-0.5 text-[11px]"
+                        >
+                          <span>Open</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <ol className="text-slate-600 dark:text-slate-400 text-[11.5px] space-y-1 list-decimal list-inside leading-relaxed">
+                        <li>Log in to <strong>Google Tag Manager</strong>.</li>
+                        <li>Select your website container.</li>
+                        <li>Copy the <strong>Container ID</strong> in the header (e.g. <code className="bg-slate-100 dark:bg-slate-800 text-[#0084ff] px-1 py-0.5 rounded font-mono font-bold">GTM-XXXXXXX</code>).</li>
+                      </ol>
+                      <div className="pt-1 border-t border-slate-100 dark:border-slate-800 text-[10.5px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                        <Check className="w-3 h-3 shrink-0" />
+                        <span>Injects scripts & populates eCommerce dataLayer</span>
+                      </div>
+                    </div>
+
+                    {/* Meta Pixel Guide */}
+                    <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-2xs">
+                      <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-100">
+                        <span className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+                          <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                          Meta (Facebook) Pixel
+                        </span>
+                        <a 
+                          href="https://business.facebook.com/events_manager" 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-[#0084ff] hover:underline flex items-center gap-0.5 text-[11px]"
+                        >
+                          <span>Open</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <ol className="text-slate-600 dark:text-slate-400 text-[11.5px] space-y-1 list-decimal list-inside leading-relaxed">
+                        <li>Open <strong>Meta Events Manager</strong>.</li>
+                        <li>Click <strong>Data Sources</strong> &rarr; Select your Pixel / Dataset.</li>
+                        <li>Go to <strong>Settings</strong> and copy the <strong>Dataset ID</strong> (15-16 digits).</li>
+                      </ol>
+                      <div className="pt-1 border-t border-slate-100 dark:border-slate-800 text-[10.5px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                        <Check className="w-3 h-3 shrink-0" />
+                        <span>Fires PageView, ViewContent, AddToCart & Purchases</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
