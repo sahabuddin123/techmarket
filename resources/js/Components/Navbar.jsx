@@ -119,18 +119,19 @@ export default function Navbar({ onOpenCart }) {
         <Link href="/" className="flex items-center space-x-2 shrink-0 group">
           <div className="flex items-center">
             {settings.site_logo ? (
-              <div className="bg-white px-3 py-1.5 rounded-xl shadow-xs border border-white/20 transition-all flex items-center shrink-0 hover:shadow-md">
-                <img
-                  src={settings.site_logo_dark || settings.site_logo}
-                  alt={settings.site_name || 'TechMarket BD'}
-                  className="h-7 sm:h-8 w-auto object-contain max-w-[200px]"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    const fallback = e.currentTarget.parentElement.nextElementSibling;
-                    if (fallback) fallback.style.display = 'inline';
-                  }}
-                />
-              </div>
+              <img
+                src={settings.site_logo_dark || settings.site_logo}
+                alt={settings.site_name || 'TechMarket BD'}
+                className="h-8 sm:h-10 w-auto object-contain max-w-[220px] transition-transform group-hover:scale-105"
+                style={{
+                  filter: 'drop-shadow(0 1px 2px rgba(255, 255, 255, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))',
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling;
+                  if (fallback) fallback.style.display = 'inline';
+                }}
+              />
             ) : null}
             <span className={`text-2xl sm:text-[28px] font-black tracking-tight text-white font-sans ${settings.site_logo ? 'hidden' : ''}`}>
               {settings.site_name || 'TechMarket BD'}
