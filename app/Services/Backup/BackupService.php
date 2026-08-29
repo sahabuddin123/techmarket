@@ -365,27 +365,38 @@ class BackupService
 
                 // Map types to clean standard MySQL types
                 $mysqlType = 'varchar(255)';
+                $isNumericType = false;
+                $isDateTimeType = false;
+
                 if ($autoInc || ($name === 'id' && in_array($typeName, ['integer', 'bigint', 'int']))) {
                     $mysqlType = 'bigint(20) UNSIGNED';
                     $autoInc = true;
+                    $isNumericType = true;
                 } elseif (in_array($typeName, ['integer', 'bigint', 'int'])) {
                     $mysqlType = str_ends_with($name, '_id') ? 'bigint(20) UNSIGNED' : 'bigint(20)';
+                    $isNumericType = true;
                 } elseif ($typeName === 'tinyint' || $typeName === 'boolean') {
                     $mysqlType = 'tinyint(1)';
+                    $isNumericType = true;
                 } elseif ($typeName === 'numeric' || $typeName === 'decimal') {
                     $mysqlType = 'decimal(12,2)';
+                    $isNumericType = true;
                 } elseif ($typeName === 'float' || $typeName === 'double' || $typeName === 'real') {
                     $mysqlType = 'double';
+                    $isNumericType = true;
                 } elseif ($typeName === 'text' || $typeName === 'json' || $typeName === 'longtext') {
                     $mysqlType = 'longtext';
                 } elseif ($typeName === 'mediumtext') {
                     $mysqlType = 'mediumtext';
                 } elseif ($typeName === 'datetime' || $typeName === 'timestamp') {
-                    $mysqlType = 'datetime';
+                    $mysqlType = 'timestamp';
+                    $isDateTimeType = true;
                 } elseif ($typeName === 'date') {
                     $mysqlType = 'date';
+                    $isDateTimeType = true;
                 } elseif ($typeName === 'time') {
                     $mysqlType = 'time';
+                    $isDateTimeType = true;
                 } elseif (str_contains($typeName, 'varchar') || str_contains($typeName, 'string')) {
                     $mysqlType = 'varchar(255)';
                 }
@@ -395,12 +406,17 @@ class BackupService
                 if (!$autoInc) {
                     if ($default !== null) {
                         $cleanDefault = trim($default, "'\"");
-                        if (strtoupper($cleanDefault) === 'NULL') {
+                        $upperDefault = strtoupper($cleanDefault);
+
+                        if ($upperDefault === 'NULL') {
                             $defaultClause = ' DEFAULT NULL';
-                        } elseif (is_numeric($cleanDefault)) {
+                        } elseif (in_array($upperDefault, ['CURRENT_TIMESTAMP', 'CURRENT_TIMESTAMP()', 'NOW()'])) {
+                            $defaultClause = ' DEFAULT CURRENT_TIMESTAMP';
+                        } elseif ($isNumericType && is_numeric($cleanDefault)) {
                             $defaultClause = " DEFAULT {$cleanDefault}";
                         } else {
-                            $defaultClause = " DEFAULT '{$cleanDefault}'";
+                            $escapedDefault = str_replace(["\\", "'"], ["\\\\", "\\'"], $cleanDefault);
+                            $defaultClause = " DEFAULT '{$escapedDefault}'";
                         }
                     } elseif (!empty($col['nullable'])) {
                         $defaultClause = ' DEFAULT NULL';
