@@ -28,6 +28,10 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// Search Engine & Crawler Routes (SEO)
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots'])->name('seo.robots');
+
 // Public Storefront Routes
 Route::get('/', [ShopController::class, 'home'])->name('home');
 Route::get('/shop', [ShopController::class, 'catalog'])->name('shop');

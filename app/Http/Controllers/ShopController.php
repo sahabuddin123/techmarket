@@ -20,6 +20,33 @@ class ShopController extends Controller
     {
         $data = HomepageService::getHomepageData();
 
+        $siteName = \App\Models\Setting::get('site_name', config('app.name', 'TechMarket BD'));
+        $siteDescription = \App\Models\Setting::get('site_description', 'Best Computer, Laptop, Gaming PC & CCTV surveillance shop in Bangladesh. Buy authentic tech accessories at official price.');
+        $siteLogo = \App\Models\Setting::get('site_logo', url('/storage/logo.png'));
+        
+        $data['seo'] = [
+            'title' => "{$siteName} | Leading Computer, Laptop & Tech Shop in Bangladesh",
+            'description' => $siteDescription,
+            'canonical_url' => url('/'),
+            'og' => [
+                'title' => "{$siteName} | Leading Computer & Tech Shop in Bangladesh",
+                'description' => $siteDescription,
+                'image' => $siteLogo,
+                'url' => url('/'),
+                'type' => 'website',
+            ],
+            'twitter' => [
+                'card' => 'summary_large_image',
+                'title' => "{$siteName} | Best Tech Shop in Bangladesh",
+                'description' => $siteDescription,
+                'image' => $siteLogo,
+            ],
+            'json_ld' => [
+                \App\Services\SeoService::getOrganizationSchema(),
+                \App\Services\SeoService::getWebSiteSchema(),
+            ],
+        ];
+
         return Inertia::render('Home', $data);
     }
 
@@ -347,7 +374,34 @@ class ShopController extends Controller
                 });
         }
 
+        $siteName = \App\Models\Setting::get('site_name', 'TechMarket BD');
+        $catalogTitle = $category ? "{$category->name} Price in Bangladesh | {$siteName}" : "Buy Electronics, Laptop & Gaming PC at Best Price in BD | {$siteName}";
+        $catalogDesc = $category && !empty($category->meta_description)
+            ? $category->meta_description
+            : ($category ? "Buy {$category->name} at the best price in Bangladesh from {$siteName}. Browse latest models, official warranty and fast home delivery." : "Explore wide range of Computers, Laptops, Components, CCTV and Accessories at unbeatable prices in Bangladesh from {$siteName}.");
+        $canonicalUrl = $category ? url("/category/{$category->slug}") : url('/catalog');
+
+        $seo = [
+            'title' => $catalogTitle,
+            'description' => $catalogDesc,
+            'canonical_url' => $canonicalUrl,
+            'og' => [
+                'title' => $catalogTitle,
+                'description' => $catalogDesc,
+                'image' => $category && $category->image ? url($category->image) : url('/storage/logo.png'),
+                'url' => $canonicalUrl,
+                'type' => 'website',
+            ],
+            'twitter' => [
+                'card' => 'summary_large_image',
+                'title' => $catalogTitle,
+                'description' => $catalogDesc,
+                'image' => $category && $category->image ? url($category->image) : url('/storage/logo.png'),
+            ],
+        ];
+
         return Inertia::render('Catalog', [
+            'seo' => $seo,
             'category' => $category,
             'breadcrumbs' => $breadcrumbs,
             'products' => $products,
