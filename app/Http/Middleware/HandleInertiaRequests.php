@@ -98,6 +98,19 @@ class HandleInertiaRequests extends Middleware
                 'meta_pixel_id' => Setting::get('meta_pixel_id', ''),
             ],
             'compareCount' => fn () => count($request->session()->get('compare_items', [])),
+            'compareIds' => fn () => array_values(array_map('intval', $request->session()->get('compare_items', []))),
+            'wishlistCount' => function () use ($request) {
+                if (auth()->check()) {
+                    return \App\Models\Wishlist::where('user_id', auth()->id())->count();
+                }
+                return count($request->session()->get('wishlist_ids', []));
+            },
+            'wishlistIds' => function () use ($request) {
+                if (auth()->check()) {
+                    return \App\Models\Wishlist::where('user_id', auth()->id())->pluck('product_id')->map(fn($id) => (int)$id)->all();
+                }
+                return array_values(array_map('intval', $request->session()->get('wishlist_ids', [])));
+            },
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
                 'success' => fn () => $request->session()->get('success'),

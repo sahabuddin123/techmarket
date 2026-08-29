@@ -37,6 +37,7 @@ class ComparisonService
         $max = self::getMaxItems();
         $clean = array_slice(array_values(array_unique(array_filter(array_map('intval', $ids)))), 0, $max);
         session()->put('compare_items', $clean);
+        session()->save();
     }
 
     /**

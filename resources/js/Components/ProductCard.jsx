@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { ShoppingCart, Eye, Check, Heart, Zap, ArrowRightLeft, ShieldCheck } from 'lucide-react';
 import QuickViewModal from './QuickViewModal';
 import { trackAddToCart } from '@/lib/tracking';
@@ -7,6 +7,14 @@ import { trackAddToCart } from '@/lib/tracking';
 export default function ProductCard({ product, variant = 'standard' }) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [added, setAdded] = useState(false);
+  const [actionToast, setActionToast] = useState('');
+
+  const { wishlistIds = [], compareIds = [] } = usePage().props;
+  const isWishlisted = (wishlistIds || []).includes(Number(product?.id));
+  const isCompared = (compareIds || []).includes(Number(product?.id));
+
+  const [wishlistActive, setWishlistActive] = useState(isWishlisted);
+  const [compareActive, setCompareActive] = useState(isCompared);
 
   if (!product) return null;
 
@@ -33,13 +41,31 @@ export default function ProductCard({ product, variant = 'standard' }) {
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    router.post('/wishlist/toggle', { product_id: product.id }, { preserveScroll: true });
+
+    const nextState = !wishlistActive;
+    setWishlistActive(nextState);
+    setActionToast(nextState ? '❤️ Added to Wishlist' : 'Removed from Wishlist');
+    setTimeout(() => setActionToast(''), 2000);
+
+    router.post('/wishlist/toggle', { product_id: product.id }, {
+      preserveScroll: true,
+      preserveState: true,
+    });
   };
 
   const handleCompare = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    router.post('/compare/add', { product_id: product.id }, { preserveScroll: true });
+
+    const nextState = !compareActive;
+    setCompareActive(nextState);
+    setActionToast(nextState ? '⚖️ Added to Compare' : 'Removed from Compare');
+    setTimeout(() => setActionToast(''), 2000);
+
+    router.post('/compare/add', { product_id: product.id }, {
+      preserveScroll: true,
+      preserveState: true,
+    });
   };
 
   // Parse key specifications
@@ -52,6 +78,14 @@ export default function ProductCard({ product, variant = 'standard' }) {
   return (
     <>
       <div className="bg-white border border-gray-200 hover:shadow-md rounded-md overflow-hidden flex flex-col justify-between p-3 transition-shadow duration-200 group font-sans relative text-gray-800">
+        
+        {/* Floating Action Toast */}
+        {actionToast && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 px-2.5 py-1 bg-slate-900/95 text-white text-[10px] font-bold rounded-md shadow-md pointer-events-none whitespace-nowrap animate-in fade-in zoom-in-95 duration-150">
+            {actionToast}
+          </div>
+        )}
+
         {/* Top Badges & Actions */}
         <div className="flex items-start justify-between min-h-[22px] mb-1.5">
           {savings > 0 ? (
@@ -66,17 +100,25 @@ export default function ProductCard({ product, variant = 'standard' }) {
           <div className="flex items-center space-x-1 opacity-80 group-hover:opacity-100 transition-opacity">
             <button
               onClick={handleWishlist}
-              className="p-1.5 rounded text-gray-400 hover:text-rose-500 hover:bg-gray-100 transition-colors"
-              title="Add to Wishlist"
+              className={`p-1.5 rounded transition-all cursor-pointer ${
+                wishlistActive 
+                  ? 'text-rose-500 bg-rose-50 hover:bg-rose-100' 
+                  : 'text-gray-400 hover:text-rose-500 hover:bg-gray-100'
+              }`}
+              title={wishlistActive ? "Remove from Wishlist" : "Add to Wishlist"}
             >
-              <Heart className="w-4 h-4" />
+              <Heart className={`w-4 h-4 transition-transform active:scale-125 ${wishlistActive ? 'fill-rose-500 text-rose-500' : ''}`} />
             </button>
             <button
               onClick={handleCompare}
-              className="p-1.5 rounded text-gray-400 hover:text-[#0088cc] hover:bg-gray-100 transition-colors"
-              title="Add to Compare"
+              className={`p-1.5 rounded transition-all cursor-pointer ${
+                compareActive 
+                  ? 'text-[#1c4289] bg-blue-50 hover:bg-blue-100' 
+                  : 'text-gray-400 hover:text-[#1c4289] hover:bg-gray-100'
+              }`}
+              title={compareActive ? "Added to Compare" : "Add to Compare"}
             >
-              <ArrowRightLeft className="w-4 h-4" />
+              <ArrowRightLeft className={`w-4 h-4 transition-transform active:scale-125 ${compareActive ? 'stroke-[2.5] text-[#1c4289]' : ''}`} />
             </button>
             <button
               onClick={(e) => { e.preventDefault(); setQuickViewOpen(true); }}

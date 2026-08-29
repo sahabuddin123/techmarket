@@ -279,12 +279,12 @@ Route::delete('/cart/coupon', [CartController::class, 'removeCoupon'])->name('ca
 Route::post('/cart/points', [CartController::class, 'applyPoints'])->name('cart.points.apply');
 Route::delete('/cart/points', [CartController::class, 'removePoints'])->name('cart.points.remove');
 
-// Wishlist Routes
-Route::middleware('auth')->group(function () {
-    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
-    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-    Route::post('/wishlist/merge', [WishlistController::class, 'merge'])->name('wishlist.merge');
+// Wishlist Routes (Accessible for both guests and logged-in customers)
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::post('/wishlist/merge', [WishlistController::class, 'merge'])->name('wishlist.merge');
 
+Route::middleware('auth')->group(function () {
     Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
