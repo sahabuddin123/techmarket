@@ -297,6 +297,7 @@ Route::post('/questions', [\App\Http\Controllers\Storefront\ProductInteractionCo
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/invoice/{orderNumber}', [CheckoutController::class, 'invoice'])->name('checkout.invoice');
+Route::get('/checkout/invoice/{orderNumber}', [CheckoutController::class, 'invoice'])->name('checkout.invoice.alias');
 
 // Payment Result Page
 Route::get('/payment/result/{orderNumber}', [\App\Http\Controllers\PaymentController::class, 'result'])->name('payment.result');

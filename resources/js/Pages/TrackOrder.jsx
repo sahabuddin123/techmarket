@@ -198,7 +198,7 @@ export default function TrackOrder(props) {
                   </div>
                 )}
                 <a
-                  href={`/checkout/invoice/${trackedOrder.order_number}`}
+                  href={`/invoice/${trackedOrder.order_number}`}
                   target="_blank"
                   rel="noreferrer"
                   className="px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-colors shadow-2xs"
