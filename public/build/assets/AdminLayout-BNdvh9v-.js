@@ -1,0 +1,1 @@
+import{j as m}from"./vendor-react-Dq2RXA99.js";import{A as i}from"./AdminShell-CsdGAFNE.js";import"./vendor-inertia-CIHpabrm.js";function e({children:t,title:o,breadcrumbs:r=[]}){return m.jsx(i,{title:o,breadcrumbs:r,children:t})}export{e as default};

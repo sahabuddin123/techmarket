@@ -12,19 +12,21 @@ use App\Models\QuickAction;
 use App\Models\OrderItem;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class HomepageService
 {
     /**
-     * Resolve structured, dynamic homepage layout and section data.
+     * Resolve structured, dynamic homepage layout and section data with high-speed caching.
      */
     public static function getHomepageData(): array
     {
-        // 1. Dynamic Sections Configuration
-        $sections = HomepageSection::where('is_enabled', true)
-            ->orderBy('sort_order')
-            ->get()
-            ->keyBy('section_key');
+        return Cache::remember('storefront.homepage_data', 180, function () {
+            // 1. Dynamic Sections Configuration
+            $sections = HomepageSection::where('is_enabled', true)
+                ->orderBy('sort_order')
+                ->get()
+                ->keyBy('section_key');
 
         // 2. Banners Resolution
         $allBanners = Banner::where('is_active', true)
@@ -163,5 +165,6 @@ class HomepageService
             'dealsOfDay' => $flashSaleData ? $flashSaleData['products'] : [],
             'categories' => $navCategories,
         ];
+        });
     }
 }

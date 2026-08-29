@@ -1,0 +1,1 @@
+import{j as t}from"./vendor-react-Dq2RXA99.js";import o from"./Form-DSj1dkNU.js";import"./vendor-inertia-CIHpabrm.js";import"./AdminShell-CsdGAFNE.js";import"./MediaPicker-Bx2d0GE2.js";function s(r){return t.jsx(o,{...r})}export{s as default};
