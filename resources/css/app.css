@@ -3,6 +3,39 @@
 @tailwind utilities;
 
 /* =========================================================================
+   GLOBAL TYPOGRAPHY & FLUID FONT-SIZE SCALING FOR STOREFRONT & ADMIN
+   ========================================================================= */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 16.5px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 1440px) {
+  html {
+    font-size: 17.5px;
+  }
+}
+
+body {
+  font-size: 0.9375rem; /* Base 15px-16.5px body font for optimal readability */
+  line-height: 1.55;
+}
+
+/* =========================================================================
    DYNAMIC ENTERPRISE ADMIN DESIGN SYSTEM TOKENS (LIGHT THEME & BRANDING)
    ========================================================================= */
 
