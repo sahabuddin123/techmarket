@@ -206,6 +206,9 @@ class SeoService
             'address' => [
                 '@type' => 'PostalAddress',
                 'streetAddress' => $address,
+                'addressLocality' => Setting::get('contact_city', 'Dhaka'),
+                'addressRegion' => 'Dhaka Division',
+                'postalCode' => Setting::get('contact_postal_code', '1200'),
                 'addressCountry' => 'BD',
             ],
         ];
