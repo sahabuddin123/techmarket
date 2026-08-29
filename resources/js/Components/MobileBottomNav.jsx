@@ -34,8 +34,8 @@ export default function MobileBottomNav({ onOpenCart }) {
 
   return (
     <>
-      {/* FIXED MOBILE BOTTOM NAVIGATION BAR (Exact TechLand UI) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0084ff] border-t border-blue-950/80 shadow-2xl select-none">
+      {/* FIXED MOBILE BOTTOM NAVIGATION BAR (Black & White / Midnight Theme) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0c1424] text-white border-t border-slate-800/90 shadow-2xl select-none backdrop-blur-md">
         <div className="grid grid-cols-5 h-14 text-center items-center">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -51,11 +51,11 @@ export default function MobileBottomNav({ onOpenCart }) {
                   }
                 }}
                 className={`flex flex-col items-center justify-center py-1 transition-colors ${
-                  isActive ? 'text-[#3b82f6]' : 'text-white/80 hover:text-white'
+                  isActive ? 'text-white font-extrabold' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-2'}`} />
-                <span className={`text-[10px] tracking-tight mt-0.5 ${isActive ? 'font-bold' : 'font-medium'}`}>
+                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5] text-white' : 'stroke-2'}`} />
+                <span className={`text-[10px] tracking-tight mt-0.5 ${isActive ? 'font-bold text-white' : 'font-medium'}`}>
                   {item.label}
                 </span>
               </Link>
@@ -67,7 +67,7 @@ export default function MobileBottomNav({ onOpenCart }) {
             type="button"
             onClick={() => setIsMenuOpen(true)}
             className={`flex flex-col items-center justify-center py-1 transition-colors ${
-              isMenuOpen ? 'text-[#3b82f6]' : 'text-white/80 hover:text-white'
+              isMenuOpen ? 'text-white font-extrabold' : 'text-slate-400 hover:text-white'
             }`}
             aria-label="Open Mobile Menu"
           >
@@ -77,7 +77,7 @@ export default function MobileBottomNav({ onOpenCart }) {
         </div>
       </div>
 
-      {/* QUICK MENU DRAWER (Exact TechLand Screenshot 5) */}
+      {/* QUICK MENU DRAWER */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden overflow-hidden select-none">
           {/* Backdrop */}
@@ -87,13 +87,13 @@ export default function MobileBottomNav({ onOpenCart }) {
           />
 
           {/* Right Slide-in Panel */}
-          <div className="fixed inset-y-0 right-0 max-w-[280px] w-full bg-[#0f172a] text-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-250 border-l border-slate-800">
+          <div className="fixed inset-y-0 right-0 max-w-[280px] w-full bg-[#0c1424] text-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-250 border-l border-slate-800">
             {/* Header */}
-            <div className="p-4 bg-[#0084ff] flex items-center justify-between border-b border-blue-900 shadow-sm">
+            <div className="p-4 bg-[#090e1a] flex items-center justify-between border-b border-slate-800 shadow-sm">
               <h3 className="font-extrabold text-base tracking-tight text-white">Menu</h3>
               <button 
                 onClick={() => setIsMenuOpen(false)}
-                className="p-1 rounded text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />

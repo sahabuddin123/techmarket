@@ -105,24 +105,24 @@ export default function Navbar({ onOpenCart }) {
       )}
 
       {/* 1. TOP MAIN HEADER */}
-      <div className="max-w-[1640px] mx-auto px-4 py-3 flex items-center justify-between gap-3 lg:gap-8">
+      <div className="max-w-[1640px] mx-auto px-4 py-3 flex items-center justify-between gap-2 sm:gap-3 lg:gap-8">
         {/* Mobile Left: Hamburger Menu Toggle Button */}
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="md:hidden p-1.5 -ml-1.5 rounded text-white hover:bg-slate-800 transition-colors"
+          className="md:hidden p-1.5 -ml-1 rounded text-white hover:bg-slate-800 transition-colors shrink-0"
           aria-label="Open Navigation Menu"
         >
           <Menu className="w-6 h-6" />
         </button>
 
-        {/* Brand Logo Area */}
-        <Link href="/" className="flex items-center space-x-2 shrink-0 group">
-          <div className="flex items-center">
+        {/* Brand Logo Area (Centered on mobile, left on desktop) */}
+        <Link href="/" className="flex-1 md:flex-initial flex items-center justify-center md:justify-start group shrink-0 px-2">
+          <div className="flex items-center justify-center">
             {settings.site_logo ? (
               <img
                 src={settings.site_logo_dark || settings.site_logo}
                 alt={settings.site_name || 'TechMarket BD'}
-                className="h-8 sm:h-9 md:h-10 w-auto object-contain max-w-[220px] transition-transform group-hover:scale-105"
+                className="h-7 sm:h-8 md:h-10 w-auto object-contain max-w-[175px] sm:max-w-[220px] transition-transform group-hover:scale-105"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   const fallback = e.currentTarget.nextElementSibling;
@@ -130,7 +130,7 @@ export default function Navbar({ onOpenCart }) {
                 }}
               />
             ) : null}
-            <span className={`text-2xl sm:text-[28px] font-black tracking-tight text-white font-sans ${settings.site_logo ? 'hidden' : ''}`}>
+            <span className={`text-xl sm:text-2xl md:text-[28px] font-black tracking-tight text-white font-sans ${settings.site_logo ? 'hidden' : ''}`}>
               {settings.site_name || 'TechMarket BD'}
             </span>
           </div>
