@@ -383,14 +383,28 @@ export default function Footer({ onOpenCart }) {
             </span>
           </div>
 
-          {/* Secure Payment Badges */}
-          <div className="flex items-center flex-wrap gap-1.5 font-mono text-[10px] font-bold">
-            <span className="bg-slate-900 border border-slate-800 text-slate-200 px-2 py-1 rounded-lg">VISA</span>
-            <span className="bg-slate-900 border border-slate-800 text-slate-200 px-2 py-1 rounded-lg">MasterCard</span>
-            <span className="bg-[#E2136E]/20 border border-[#E2136E]/40 text-[#E2136E] px-2 py-1 rounded-lg">bKash</span>
-            <span className="bg-[#F7941D]/20 border border-[#F7941D]/40 text-[#F7941D] px-2 py-1 rounded-lg">Nagad</span>
-            <span className="bg-[#8C3494]/20 border border-[#8C3494]/40 text-[#8C3494] px-2 py-1 rounded-lg">Rocket</span>
-            <span className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 px-2 py-1 rounded-lg">COD</span>
+          {/* Secure Payment Badges / Banner Image */}
+          <div className="flex items-center">
+            {settings.footer_payment_methods_image ? (
+              <img
+                src={settings.footer_payment_methods_image}
+                alt="Accepted Payment Methods (bKash, Nagad, Rocket, VISA, MasterCard, COD)"
+                className="h-7 sm:h-8 w-auto object-contain max-w-[340px] transition-all"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div className={`flex items-center flex-wrap gap-1.5 font-mono text-[10px] font-bold ${settings.footer_payment_methods_image ? 'hidden' : 'flex'}`}>
+              <span className="bg-slate-900 border border-slate-800 text-slate-200 px-2 py-1 rounded-lg">VISA</span>
+              <span className="bg-slate-900 border border-slate-800 text-slate-200 px-2 py-1 rounded-lg">MasterCard</span>
+              <span className="bg-[#E2136E]/20 border border-[#E2136E]/40 text-[#E2136E] px-2 py-1 rounded-lg">bKash</span>
+              <span className="bg-[#F7941D]/20 border border-[#F7941D]/40 text-[#F7941D] px-2 py-1 rounded-lg">Nagad</span>
+              <span className="bg-[#8C3494]/20 border border-[#8C3494]/40 text-[#8C3494] px-2 py-1 rounded-lg">Rocket</span>
+              <span className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 px-2 py-1 rounded-lg">COD</span>
+            </div>
           </div>
         </div>
       </div>

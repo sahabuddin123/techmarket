@@ -68,6 +68,7 @@ export default function HeaderFooterBuilder({
       footer_bcs_enabled: settings.footer_bcs_enabled ?? '1',
       footer_ecab_enabled: settings.footer_ecab_enabled ?? '1',
       copyright_text: settings.copyright_text || 'Copyright © 2026, Tech Market BD. All Rights Reserved.',
+      footer_payment_methods_image: settings.footer_payment_methods_image || '',
 
       // Floating Action Widgets
       floating_whatsapp_enabled: settings.floating_whatsapp_enabled ?? '1',
@@ -935,6 +936,52 @@ export default function HeaderFooterBuilder({
                 placeholder="Copyright © 2026, Tech Market BD. All Rights Reserved."
                 className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 focus:outline-hidden"
               />
+            </div>
+
+            {/* Accepted Payment Methods Image Banner */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+              <div>
+                <label className="block text-slate-800 dark:text-slate-200 font-bold text-xs">
+                  Footer Payment Gateways & Cards Banner Image
+                </label>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Upload an image banner showing accepted payment options (bKash, Nagad, Rocket, VISA, MasterCard, COD).
+                </p>
+                <div className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl text-[11px] font-bold text-amber-700 dark:text-amber-300 shadow-2xs">
+                  <span>📐 Recommended Size: 450 × 35 px or 500 × 40 px (Transparent PNG / WebP, Max Height 40px)</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="w-64 h-14 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-900 flex items-center justify-center p-2 overflow-hidden shrink-0">
+                  {data.settings.footer_payment_methods_image ? (
+                    <img
+                      src={data.settings.footer_payment_methods_image}
+                      alt="Payment Methods"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[11px] text-slate-500 font-medium">Default Text Badges Active</span>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <MediaPicker
+                    value={data.settings.footer_payment_methods_image}
+                    onChange={(url) => handleSettingChange('footer_payment_methods_image', url)}
+                    buttonText="Choose Payment Banner Image"
+                  />
+                  {data.settings.footer_payment_methods_image && (
+                    <button
+                      type="button"
+                      onClick={() => handleSettingChange('footer_payment_methods_image', '')}
+                      className="text-xs text-rose-600 hover:text-rose-700 font-bold block cursor-pointer"
+                    >
+                      Reset to Default Badges
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Floating Action Controls */}
