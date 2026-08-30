@@ -328,6 +328,17 @@ class CheckoutController extends Controller
             \App\Services\Sms\SmsNotificationService::sendEvent('order.placed', [], $order->customer_phone, $order->id, $order->user_id);
             \App\Services\Sms\SmsNotificationService::sendEvent('admin.new_order', [], null, $order->id, $order->user_id);
 
+            // Dispatch in-app and browser notifications to Admin Notification Center
+            try {
+                $notifManager = app(\App\Services\Notification\NotificationManager::class);
+                $notifManager->dispatch('order.created', ['order' => $order]);
+                if ((float)$order->total >= 50000) {
+                    $notifManager->dispatch('order.high_value', ['order' => $order]);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to dispatch order notification: ' . $e->getMessage());
+            }
+
             // Clear session cart and coupons
             session()->forget(['cart', 'cart_coupon', 'cart_points']);
 

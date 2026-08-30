@@ -81,10 +81,17 @@ echo ""
 echo "🗄 Running database migrations safely (preserving existing data)..."
 $PHP_RUN artisan migrate --force
 
+# 5b. SEED DEFAULT NOTIFICATION RULES IF NOT PRESENT
+echo "🔔 Ensuring Notification Rules are active in database..."
+$PHP_RUN artisan db:seed --class=NotificationRulesSeeder --force || true
+
 # 6. STORAGE LINK
 echo ""
 echo "🔗 Verifying storage symlink..."
 $PHP_RUN artisan storage:link || true
+
+# 6b. RESTART BACKGROUND QUEUE WORKERS
+$PHP_RUN artisan queue:restart || true
 
 # 7. OPTIMIZE & CLEAR APPLICATION CACHES (Redis Cache & Config)
 echo ""

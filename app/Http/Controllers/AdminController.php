@@ -727,6 +727,14 @@ class AdminController extends Controller
                 );
             }
 
+            if ($newStatus === 'Cancelled') {
+                try {
+                    app(\App\Services\Notification\NotificationManager::class)->dispatch('order.cancelled', ['order' => $order]);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to dispatch order cancelled notification: ' . $e->getMessage());
+                }
+            }
+
             return back()->with('success', 'Order status updated to ' . $newStatus);
         });
     }

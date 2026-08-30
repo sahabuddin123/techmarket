@@ -33,8 +33,8 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $cart = session()->get('cart', []);
-        $cartCount = array_reduce($cart, fn($carry, $item) => $carry + $item['quantity'], 0);
-        $cartTotal = array_reduce($cart, fn($carry, $item) => $carry + $item['total'], 0);
+        $cartCount = array_reduce($cart, fn($carry, $item) => $carry + ($item['quantity'] ?? 1), 0);
+        $cartTotal = array_reduce($cart, fn($carry, $item) => $carry + ($item['total'] ?? (($item['price'] ?? 0) * ($item['quantity'] ?? 1))), 0);
 
         $settings = Setting::all()->mapWithKeys(function ($s) {
             return [$s->key => Setting::normalizeValue($s->value)];

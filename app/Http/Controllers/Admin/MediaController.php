@@ -154,128 +154,199 @@ class MediaController extends Controller
      */
     public function upload(Request $request)
     {
-        $request->validate([
-            'files' => 'nullable|array',
-            'files.*' => 'file|mimes:jpeg,jpg,png,webp,svg,gif,jfif,avif|max:20480', // Max 20MB
-            'file' => 'nullable|file|mimes:jpeg,jpg,png,webp,svg,gif,jfif,avif|max:20480',
-            'folder' => 'nullable|string|in:products,categories,brands,banners,blog,cms,general',
-            'alt_text' => 'nullable|string|max:255',
-            'title' => 'nullable|string|max:255',
-        ]);
+        $isJson = ($request->expectsJson() || $request->wantsJson() || $request->ajax()) && !$request->header('X-Inertia');
 
-        $uploadedFiles = [];
-        if ($request->hasFile('files')) {
-            $files = $request->file('files');
-            $uploadedFiles = is_array($files) ? $files : [$files];
-        } elseif ($request->hasFile('file')) {
-            $uploadedFiles = [$request->file('file')];
-        }
+        try {
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'files' => 'nullable|array',
+                'files.*' => 'file|max:30720', // Max 30MB
+                'file' => 'nullable|file|max:30720',
+                'folder' => 'nullable|string|max:100',
+                'alt_text' => 'nullable|string|max:255',
+                'title' => 'nullable|string|max:255',
+            ]);
 
-        if (empty($uploadedFiles)) {
-            if (!$request->header('X-Inertia') && $request->wantsJson()) {
-                return response()->json(['error' => 'No files were provided for upload or the files exceeded the server limit.'], 422);
-            }
-            return back()->withErrors(['file' => 'No files were provided for upload or the files exceeded the server limit.']);
-        }
-
-        $folder = $request->input('folder', 'general');
-        $createdRecords = [];
-        $disk = 'public';
-
-        foreach ($uploadedFiles as $file) {
-            $originalName = $file->getClientOriginalName();
-            $extension = strtolower($file->getClientOriginalExtension());
-            $safeName = date('Ymd_His') . '_' . Str::random(8) . '.' . $extension;
-            $subPath = "media/{$folder}/" . date('Y/m');
-
-            $storedPath = $file->storeAs($subPath, $safeName, $disk);
-            $fileSize = $file->getSize();
-            $mimeType = $file->getMimeType();
-
-            $fullLocalPath = Storage::disk($disk)->path($storedPath);
-
-            // If file is SVG, sanitize to neutralize any potential XSS vectors
-            if ($extension === 'svg' || str_contains($mimeType, 'svg')) {
-                if (file_exists($fullLocalPath)) {
-                    $svgContent = file_get_contents($fullLocalPath);
-                    $cleanedSvg = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $svgContent);
-                    $cleanedSvg = preg_replace('/on\w+\s*=\s*(["\']).*?\1/is', '', $cleanedSvg);
-                    $cleanedSvg = preg_replace('/javascript\s*:/is', '', $cleanedSvg);
-                    $cleanedSvg = preg_replace('/<\/?(iframe|object|embed)\b[^>]*>/is', '', $cleanedSvg);
-                    file_put_contents($fullLocalPath, $cleanedSvg);
-                    $fileSize = filesize($fullLocalPath);
+            if ($validator->fails()) {
+                if ($isJson) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => $validator->errors()->first(),
+                        'errors' => $validator->errors()->toArray(),
+                    ], 422);
                 }
+                return back()->withErrors($validator);
             }
 
-            // Attempt to determine image dimensions
-            $width = null;
-            $height = null;
-            if (file_exists($fullLocalPath) && @getimagesize($fullLocalPath)) {
-                [$w, $h] = getimagesize($fullLocalPath);
-                $width = $w;
-                $height = $h;
+            $uploadedFiles = [];
+            if ($request->hasFile('files')) {
+                $files = $request->file('files');
+                $uploadedFiles = is_array($files) ? $files : [$files];
+            } elseif ($request->hasFile('file')) {
+                $uploadedFiles = [$request->file('file')];
             }
 
-            // Auto-convert to WebP if image and setting enabled
-            $autoWebp = \App\Models\Setting::get('image_optimizer_auto_webp', '1') === '1';
-            $isConvertible = in_array($extension, ['jpeg', 'jpg', 'png', 'bmp', 'gif', 'jfif', 'webp']);
+            if (empty($uploadedFiles)) {
+                if ($isJson) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'No valid files were received. Please ensure the file size does not exceed the server upload limit.',
+                    ], 422);
+                }
+                return back()->withErrors(['file' => 'No files were received.']);
+            }
 
-            if ($autoWebp && $isConvertible && \App\Services\ImageOptimizerService::isWebPSupported()) {
-                $webpSafeName = date('Ymd_His') . '_' . Str::random(8) . '.webp';
-                $webpSubPath = "media/{$folder}/" . date('Y/m');
-                $webpStoredPath = "{$webpSubPath}/{$webpSafeName}";
-                $webpLocalPath = Storage::disk($disk)->path($webpStoredPath);
+            $validFolders = ['products', 'categories', 'brands', 'banners', 'blog', 'cms', 'general'];
+            $folder = $request->input('folder', 'general');
+            if (!in_array($folder, $validFolders)) {
+                $folder = 'general';
+            }
 
-                $optResult = \App\Services\ImageOptimizerService::optimizeAndConvertToWebP($fullLocalPath, $webpLocalPath);
+            $allowedExtensions = ['jpeg', 'jpg', 'png', 'webp', 'svg', 'gif', 'jfif', 'avif', 'bmp', 'ico', 'tif', 'tiff', 'pjpeg', 'pjp'];
+            $createdRecords = [];
+            $disk = 'public';
 
-                if ($optResult['success']) {
-                    // Remove original raw file if different
-                    if ($fullLocalPath !== $webpLocalPath && file_exists($fullLocalPath)) {
-                        @unlink($fullLocalPath);
+            foreach ($uploadedFiles as $file) {
+                if (!$file->isValid()) {
+                    $errorMsg = 'File upload failed: ' . $file->getErrorMessage();
+                    if ($isJson) {
+                        return response()->json(['success' => false, 'error' => $errorMsg], 422);
                     }
-
-                    $safeName = $webpSafeName;
-                    $storedPath = $webpStoredPath;
-                    $fileSize = $optResult['optimized_size'];
-                    $mimeType = 'image/webp';
-                    $width = $optResult['width'];
-                    $height = $optResult['height'];
+                    return back()->withErrors(['file' => $errorMsg]);
                 }
+
+                $originalName = $file->getClientOriginalName();
+                $extension = strtolower($file->getClientOriginalExtension() ?: pathinfo($originalName, PATHINFO_EXTENSION));
+
+                if (!in_array($extension, $allowedExtensions)) {
+                    $errorMsg = "File '{$originalName}' has an unsupported file format ({$extension}). Supported formats: JPG, PNG, WEBP, SVG, GIF, AVIF, BMP, ICO.";
+                    if ($isJson) {
+                        return response()->json(['success' => false, 'error' => $errorMsg], 422);
+                    }
+                    return back()->withErrors(['file' => $errorMsg]);
+                }
+
+                $safeName = date('Ymd_His') . '_' . Str::random(8) . '.' . $extension;
+                $subPath = "media/{$folder}/" . date('Y/m');
+
+                // Ensure disk directory exists
+                Storage::disk($disk)->makeDirectory($subPath);
+
+                $storedPath = $file->storeAs($subPath, $safeName, $disk);
+                $fileSize = $file->getSize() ?: 0;
+                $mimeType = $file->getMimeType() ?: 'image/' . $extension;
+
+                $fullLocalPath = Storage::disk($disk)->path($storedPath);
+
+                // If file is SVG, sanitize to neutralize any potential XSS vectors
+                if ($extension === 'svg' || str_contains($mimeType, 'svg')) {
+                    if (file_exists($fullLocalPath)) {
+                        $svgContent = @file_get_contents($fullLocalPath);
+                        if ($svgContent !== false) {
+                            $cleanedSvg = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $svgContent);
+                            $cleanedSvg = preg_replace('/on\w+\s*=\s*(["\']).*?\1/is', '', $cleanedSvg);
+                            $cleanedSvg = preg_replace('/javascript\s*:/is', '', $cleanedSvg);
+                            $cleanedSvg = preg_replace('/<\/?(iframe|object|embed)\b[^>]*>/is', '', $cleanedSvg);
+                            @file_put_contents($fullLocalPath, $cleanedSvg);
+                            $fileSize = filesize($fullLocalPath);
+                        }
+                    }
+                }
+
+                // Attempt to determine image dimensions
+                $width = null;
+                $height = null;
+                if (file_exists($fullLocalPath) && @getimagesize($fullLocalPath)) {
+                    $imgSize = @getimagesize($fullLocalPath);
+                    if ($imgSize) {
+                        [$w, $h] = $imgSize;
+                        $width = $w;
+                        $height = $h;
+                    }
+                }
+
+                // Auto-convert to WebP if image and setting enabled
+                $autoWebp = \App\Models\Setting::get('image_optimizer_auto_webp', '1') === '1';
+                $isConvertible = in_array($extension, ['jpeg', 'jpg', 'png', 'bmp', 'gif', 'jfif', 'webp']);
+
+                if ($autoWebp && $isConvertible && \App\Services\ImageOptimizerService::isWebPSupported()) {
+                    try {
+                        $webpSafeName = date('Ymd_His') . '_' . Str::random(8) . '.webp';
+                        $webpSubPath = "media/{$folder}/" . date('Y/m');
+                        $webpStoredPath = "{$webpSubPath}/{$webpSafeName}";
+                        $webpLocalPath = Storage::disk($disk)->path($webpStoredPath);
+
+                        $optResult = \App\Services\ImageOptimizerService::optimizeAndConvertToWebP($fullLocalPath, $webpLocalPath);
+
+                        if (!empty($optResult['success'])) {
+                            // Remove original raw file if different
+                            if ($fullLocalPath !== $webpLocalPath && file_exists($fullLocalPath)) {
+                                @unlink($fullLocalPath);
+                            }
+
+                            $safeName = $webpSafeName;
+                            $storedPath = $webpStoredPath;
+                            $fileSize = $optResult['optimized_size'] ?? filesize($webpLocalPath);
+                            $mimeType = 'image/webp';
+                            $width = $optResult['width'] ?? $width;
+                            $height = $optResult['height'] ?? $height;
+                        }
+                    } catch (\Throwable $optErr) {
+                        \Illuminate\Support\Facades\Log::warning('WebP optimization non-fatal bypass: ' . $optErr->getMessage());
+                    }
+                }
+
+                $media = Media::create([
+                    'filename' => $safeName,
+                    'original_name' => $originalName,
+                    'path' => $storedPath,
+                    'disk' => $disk,
+                    'mime_type' => $mimeType,
+                    'size' => $fileSize,
+                    'width' => $width,
+                    'height' => $height,
+                    'folder' => $folder,
+                    'title' => $request->input('title', pathinfo($originalName, PATHINFO_FILENAME)),
+                    'alt_text' => $request->input('alt_text', pathinfo($originalName, PATHINFO_FILENAME)),
+                    'user_id' => auth()->id(),
+                ]);
+
+                try {
+                    AuditLogger::log('media.uploaded', $media, null, [
+                        'filename' => $safeName,
+                        'size' => $fileSize,
+                        'folder' => $folder,
+                    ]);
+                } catch (\Throwable $auditErr) {
+                    // Non-blocking audit log
+                }
+
+                $createdRecords[] = $media;
             }
 
-            $media = Media::create([
-                'filename' => $safeName,
-                'original_name' => $originalName,
-                'path' => $storedPath,
-                'disk' => $disk,
-                'mime_type' => $mimeType,
-                'size' => $fileSize,
-                'width' => $width,
-                'height' => $height,
-                'folder' => $folder,
-                'title' => $request->input('title', pathinfo($originalName, PATHINFO_FILENAME)),
-                'alt_text' => $request->input('alt_text', pathinfo($originalName, PATHINFO_FILENAME)),
-                'user_id' => auth()->id(),
+            if ($isJson) {
+                return response()->json([
+                    'success' => true,
+                    'message' => count($createdRecords) . ' media item(s) uploaded successfully.',
+                    'media' => count($createdRecords) === 1 ? $createdRecords[0] : $createdRecords,
+                ]);
+            }
+
+            return back()->with('success', count($createdRecords) . ' media file(s) uploaded and optimized successfully!');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Media upload failure: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
 
-            AuditLogger::log('media.uploaded', $media, null, [
-                'filename' => $safeName,
-                'size' => $fileSize,
-                'folder' => $folder,
-            ]);
+            if ($isJson) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Upload failed: ' . $e->getMessage(),
+                ], 500);
+            }
 
-            $createdRecords[] = $media;
+            return back()->withErrors(['file' => 'Upload failed: ' . $e->getMessage()]);
         }
-
-        if (!$request->header('X-Inertia') && ($request->wantsJson() || $request->ajax())) {
-            return response()->json([
-                'success' => true,
-                'message' => count($createdRecords) . ' media item(s) uploaded and optimized successfully.',
-                'media' => count($createdRecords) === 1 ? $createdRecords[0] : $createdRecords,
-            ]);
-        }
-
-        return back()->with('success', count($createdRecords) . ' media file(s) uploaded and optimized successfully!');
     }
 
     /**

@@ -17,7 +17,7 @@ class NotificationService
         $query = Notification::query();
 
         // Scope to recipient
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $query->forRecipient($user->id, $user->role);
         }
 
@@ -60,7 +60,7 @@ class NotificationService
     {
         $query = Notification::query();
 
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $query->forRecipient($user->id, $user->role);
         }
 
@@ -83,7 +83,7 @@ class NotificationService
     public function getUnreadCount(User $user): int
     {
         $query = Notification::unread();
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $query->forRecipient($user->id, $user->role);
         }
         return $query->count();
@@ -108,7 +108,7 @@ class NotificationService
     public function markAllAsRead(User $user, ?string $category = null): int
     {
         $query = Notification::unread();
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $query->forRecipient($user->id, $user->role);
         }
         if ($category && $category !== 'ALL') {
@@ -124,7 +124,7 @@ class NotificationService
     public function delete(string $id, User $user): bool
     {
         $query = Notification::where('id', $id);
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $query->forRecipient($user->id, $user->role);
         }
         return (bool) $query->delete();
@@ -136,7 +136,7 @@ class NotificationService
     public function bulkAction(array $ids, string $action, User $user): int
     {
         $query = Notification::whereIn('id', $ids);
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $query->forRecipient($user->id, $user->role);
         }
 
@@ -153,7 +153,7 @@ class NotificationService
     public function getStats(User $user): array
     {
         $baseQuery = Notification::query();
-        if (!$user->hasRole('Super Admin')) {
+        if (!$user->isAdmin()) {
             $baseQuery->forRecipient($user->id, $user->role);
         }
 

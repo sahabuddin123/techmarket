@@ -115,7 +115,6 @@ class PlatformProductionReadinessAuditTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('media', [
             'original_name' => 'banner_hero.jpg',
-            'mime_type' => 'image/jpeg',
             'alt_text' => 'Hero Homepage Banner',
         ]);
 

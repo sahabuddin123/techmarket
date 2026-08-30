@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   Bold, Italic, Underline, Strikethrough, Code, List, ListOrdered, 
   Heading1, Heading2, Heading3, Quote, Link as LinkIcon, Unlink,
@@ -184,46 +185,33 @@ export default function RichTextEditor({
     formData.append('folder', 'products');
 
     try {
-      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      const cookieMatch = document.cookie.match(/(^|;\s*)XSRF-TOKEN=([^;]*)/);
-      const token = metaToken || (cookieMatch ? decodeURIComponent(cookieMatch[2]) : '');
-
-      if (token) {
-        formData.append('_token', token);
-      }
-
-      const res = await fetch('/admin/media/upload', {
-        method: 'POST',
+      const res = await (window.axios || axios).post('/admin/media/upload', formData, {
         headers: {
-          'X-CSRF-TOKEN': token || '',
-          'X-XSRF-TOKEN': token || '',
+          'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
         },
-        body: formData,
       });
 
-      let data = {};
-      try {
-        data = await res.json();
-      } catch (e) {
-        data = { error: `Server returned an unreadable response (Status ${res.status}).` };
-      }
+      const data = res.data;
+      const newMedia = data?.media || data;
 
-      const newMedia = data.media || data;
-
-      if (res.ok && (data.success || newMedia?.url)) {
+      if (data?.success || newMedia?.url) {
         await fetchMediaLibrary('', 'all');
         setSelectedMedia(newMedia);
         setImageAlt(newMedia.alt_text || newMedia.title || '');
         setImageTab('library');
       } else {
-        const errText = data.error || data.message || (data.errors ? Object.values(data.errors).flat().join('\n') : null) || `Upload failed (${res.status})`;
+        const errText = data?.error || data?.message || 'Upload failed. Please try again.';
         alert(errText);
       }
     } catch (err) {
       console.error('Upload failed', err);
-      alert(err.message || 'Upload failed');
+      const errText = err.response?.data?.error 
+        || err.response?.data?.message 
+        || (err.response?.data?.errors ? Object.values(err.response.data.errors).flat().join('\n') : null)
+        || err.message 
+        || 'Upload failed';
+      alert(errText);
     } finally {
       setUploading(false);
     }

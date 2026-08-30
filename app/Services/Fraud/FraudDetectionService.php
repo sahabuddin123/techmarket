@@ -272,6 +272,17 @@ class FraudDetectionService
                     'customer_name' => $order->customer_name,
                     'customer_phone' => $order->customer_phone,
                 ], null, $order->id, $order->user_id);
+
+                try {
+                    $notifManager = app(\App\Services\Notification\NotificationManager::class);
+                    if ($riskLevel === 'critical') {
+                        $notifManager->dispatch('fraud.critical_risk', ['order' => $order, 'fraud_check' => $fraudCheck]);
+                    } else {
+                        $notifManager->dispatch('fraud.review_required', ['order' => $order, 'fraud_check' => $fraudCheck]);
+                    }
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to dispatch fraud alert notification: ' . $e->getMessage());
+                }
             }
 
             return $fraudCheck;

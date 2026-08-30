@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { 
   Image as ImageIcon, Upload, Search, X, Check, 
   Folder, Plus, Trash2, CheckCircle2, ArrowRight
@@ -106,34 +107,16 @@ export default function MediaPicker({
     formData.append('folder', uploadFolder);
 
     try {
-      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      const cookieMatch = document.cookie.match(/(^|;\s*)XSRF-TOKEN=([^;]*)/);
-      const csrfToken = metaToken || (cookieMatch ? decodeURIComponent(cookieMatch[2]) : '');
-
-      if (csrfToken) {
-        formData.append('_token', csrfToken);
-      }
-
-      const res = await fetch('/admin/media/upload', {
-        method: 'POST',
+      const res = await (window.axios || axios).post('/admin/media/upload', formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
-          'X-CSRF-TOKEN': csrfToken || '',
-          'X-XSRF-TOKEN': csrfToken || '',
-          'X-Requested-With': 'XMLHttpRequest',
         },
-        body: formData,
       });
 
-      let json = {};
-      try {
-        json = await res.json();
-      } catch (parseErr) {
-        json = { error: `Server returned an unreadable response (Status ${res.status}).` };
-      }
-
-      if (res.ok && json.success) {
-        const uploaded = Array.isArray(json.media) ? json.media : [json.media];
+      const data = res.data;
+      if (data && data.success) {
+        const uploaded = Array.isArray(data.media) ? data.media : [data.media];
         const newUrls = uploaded.map(m => m.url);
 
         if (multiple) {
@@ -146,12 +129,17 @@ export default function MediaPicker({
         setActiveTab('browse');
         fetchMedia(1, '', uploadFolder);
       } else {
-        const errorMsg = json.error || json.message || (json.errors ? Object.values(json.errors).flat().join('\n') : null) || `Upload failed (Status ${res.status})`;
+        const errorMsg = data?.error || data?.message || 'Upload failed. Please try again.';
         alert(errorMsg);
       }
     } catch (err) {
-      console.error(err);
-      alert(err.message || 'Upload request failed.');
+      console.error('Media upload error:', err);
+      const errorMsg = err.response?.data?.error 
+        || err.response?.data?.message 
+        || (err.response?.data?.errors ? Object.values(err.response.data.errors).flat().join('\n') : null)
+        || err.message 
+        || 'Upload request failed. Please verify file format and size.';
+      alert(errorMsg);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';

@@ -39,8 +39,9 @@ class NotificationRuleEngine
             $userIds = $userIds->merge($usersFromRoles);
 
             // Also include legacy direct role column if exists
-            if (in_array('admin', array_map('strtolower', $roleNames))) {
-                $legacyAdmins = User::where('role', 'admin')->pluck('id');
+            $lowerRoles = array_map('strtolower', $roleNames);
+            if (in_array('admin', $lowerRoles) || in_array('super admin', $lowerRoles) || in_array('superadmin', $lowerRoles)) {
+                $legacyAdmins = User::whereIn('role', ['admin', 'superadmin'])->pluck('id');
                 $userIds = $userIds->merge($legacyAdmins);
             }
         }
@@ -52,7 +53,7 @@ class NotificationRuleEngine
 
         // Fallback: If no users resolved for critical system alerts, send to all super admins / admins
         if ($userIds->isEmpty()) {
-            $userIds = User::where('role', 'admin')
+            $userIds = User::whereIn('role', ['admin', 'superadmin'])
                 ->orWhereHas('roles', function ($q) {
                     $q->whereIn('name', ['Super Admin', 'Admin']);
                 })
