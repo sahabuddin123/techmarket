@@ -1532,6 +1532,9 @@ class DatabaseSeeder extends Seeder
             'linkedin_url' => 'https://linkedin.com',
             'whatsapp_number' => '+8801711223344',
             'copyright_text' => 'Copyright © 2026, Tech Market BD. All Rights Reserved.',
+            'meta_pixel_id' => '1091602526637309',
+            'fb_pixel_id' => '1091602526637309',
+            'meta_pixel_enabled' => '1',
         ];
 
         foreach ($settings as $key => $val) {
