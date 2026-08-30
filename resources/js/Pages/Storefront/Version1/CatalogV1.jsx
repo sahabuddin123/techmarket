@@ -7,7 +7,7 @@ import QuickViewModal from '@/Components/QuickViewModal';
 import {
   Search, RotateCcw, ChevronRight, ChevronDown, ChevronUp, ShoppingCart,
   Heart, Check, Tag, HelpCircle, Table as TableIcon,
-  ShieldCheck, Eye, Filter, ArrowRightLeft, FolderTree, X, Plus, Minus
+  ShieldCheck, Eye, Filter, ArrowRightLeft, FolderTree, X, Plus, Minus, Zap
 } from 'lucide-react';
 import { trackAddToCart } from '@/lib/tracking';
 
