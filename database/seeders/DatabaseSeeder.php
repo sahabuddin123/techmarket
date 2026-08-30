@@ -715,24 +715,26 @@ class DatabaseSeeder extends Seeder
             'sort_order' => 3,
         ]);
 
-        Banner::updateOrCreate(['title' => 'Corporate Sales'], [
-            'subtitle' => 'Exclusive bulk hardware pricing & B2B procurement for enterprises.',
-            'badge' => 'B2B ONLY',
-            'image' => 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop',
+        Banner::updateOrCreate(['placement' => 'side_banner_top'], [
+            'title' => 'Next-Level Gaming Gear',
+            'subtitle' => 'Ultra-performance laptops, RTX graphics cards, and pro peripherals.',
+            'badge' => 'TOP DEALS',
+            'image' => '/images/storefront/v3/side_banner_gaming_laptops.jpg',
             'placement' => 'side_banner_top',
-            'button_text' => 'Click Here',
-            'button_url' => '/page/corporate-sales',
+            'button_text' => 'Shop Gaming Gear',
+            'button_url' => '/category/laptop',
             'is_active' => true,
             'sort_order' => 1,
         ]);
 
-        Banner::updateOrCreate(['title' => 'Book a Service'], [
-            'subtitle' => 'Fast & reliable hardware repairs and on-site service at your doorstep.',
-            'badge' => 'EXPERT CARE',
-            'image' => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop',
+        Banner::updateOrCreate(['placement' => 'side_banner_bottom'], [
+            'title' => 'Revolutionize Your Security',
+            'subtitle' => 'Advanced AI-powered 4K CCTV surveillance and smart home monitoring.',
+            'badge' => 'CCTV & SECURITY',
+            'image' => '/images/storefront/v3/side_banner_smart_cctv.jpg',
             'placement' => 'side_banner_bottom',
-            'button_text' => 'Book Now',
-            'button_url' => '/servicing',
+            'button_text' => 'Explore CCTV',
+            'button_url' => '/cctv-estimator',
             'is_active' => true,
             'sort_order' => 2,
         ]);

@@ -237,12 +237,12 @@ export default function HomeV1({
             <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-2.5 sm:gap-3.5 h-auto lg:h-[400px]">
               {/* Top Side Banner */}
               <Link
-                href={sideBannerTop?.button_url || '/page/corporate-sales'}
+                href={sideBannerTop?.button_url || '/category/laptop'}
                 className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all block group relative aspect-[2/1] lg:aspect-auto"
               >
                 <img
-                  src={sideBannerTop?.image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop'}
-                  alt={sideBannerTop?.title || 'Corporate Sales'}
+                  src={sideBannerTop?.image || '/images/storefront/v3/side_banner_gaming_laptops.jpg'}
+                  alt={sideBannerTop?.title || 'Next-Level Gaming Gear'}
                   className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                   loading="lazy"
                   width="420"
@@ -252,12 +252,12 @@ export default function HomeV1({
 
               {/* Bottom Side Banner */}
               <Link
-                href={sideBannerBottom?.button_url || '/servicing'}
+                href={sideBannerBottom?.button_url || '/cctv-estimator'}
                 className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all block group relative aspect-[2/1] lg:aspect-auto"
               >
                 <img
-                  src={sideBannerBottom?.image || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop'}
-                  alt={sideBannerBottom?.title || 'Book a Service'}
+                  src={sideBannerBottom?.image || '/images/storefront/v3/side_banner_smart_cctv.jpg'}
+                  alt={sideBannerBottom?.title || 'Revolutionize Your Security'}
                   className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                   loading="lazy"
                   width="420"
