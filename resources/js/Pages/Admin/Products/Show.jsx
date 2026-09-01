@@ -185,7 +185,7 @@ export default function ProductDetail({
                 </div>
                 <div className="py-2.5 flex justify-between">
                   <dt className="text-slate-500 font-medium">Warranty</dt>
-                  <dd className="font-bold text-slate-900 dark:text-slate-100">{product.warranty || 'Official Warranty'}</dd>
+                  <dd className="font-bold text-slate-900 dark:text-slate-100">{product.warranty || <span className="text-slate-400 font-normal">None</span>}</dd>
                 </div>
                 <div className="py-2.5 flex justify-between">
                   <dt className="text-slate-500 font-medium">Featured Status</dt>

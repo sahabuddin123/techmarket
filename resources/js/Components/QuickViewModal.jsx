@@ -143,7 +143,9 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                   {product.sku && (
                     <span>SKU: <strong className="text-slate-800 font-mono">{product.sku}</strong></span>
                   )}
-                  <span>Warranty: <strong className="text-slate-800">{product.warranty || 'Official Warranty'}</strong></span>
+                  {product.warranty && (
+                    <span>Warranty: <strong className="text-slate-800">{product.warranty}</strong></span>
+                  )}
                 </div>
 
                 {/* Price Box */}

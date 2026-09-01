@@ -7,7 +7,7 @@
 #   chmod +x deploy.sh
 #   ./deploy.sh
 # ==============================================================================
-#test
+
 set -e
 
 echo ""
@@ -54,7 +54,7 @@ done
 
 echo "✔ Using Composer at: $COMPOSER_PATH"
 
-# Safe PHP Runner (Forces 1GB memory and runs via aaPanel clean PHP 8.3)
+# Safe PHP Runner (Forces 1GB memory and runs via clean PHP)
 PHP_RUN="$PHP_BIN -d memory_limit=1024M"
 
 # 3. GIT PULL LATEST COMMITS
@@ -64,9 +64,9 @@ git fetch --all
 git reset --hard origin/main
 git pull origin main
 
-# 4. COMPOSER DEPENDENCIES (Executed via clean PHP 8.3 to bypass swow CLI bugs)
+# 4. COMPOSER DEPENDENCIES
 echo ""
-echo "📦 Verifying and installing backend PHP dependencies (including Predis)..."
+echo "📦 Verifying and installing backend PHP dependencies..."
 export COMPOSER_ALLOW_SUPERUSER=1
 
 if [ -n "$COMPOSER_PATH" ]; then

@@ -69,7 +69,7 @@ export default function ProductForm({
     is_deal_of_day: Boolean(product?.is_deal_of_day),
     is_active: Boolean(product?.is_active ?? true),
     component_type: product?.component_type || '',
-    warranty: product?.warranty || '2 Years Official Warranty',
+    warranty: product?.warranty ?? '',
     short_description: product?.short_description || '',
     description: product?.description || '',
     image: product?.image || '',
@@ -877,14 +877,17 @@ export default function ProductForm({
                 <div className="space-y-6 text-xs">
                   {/* Warranty Input */}
                   <div className="space-y-1.5">
-                    <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
-                      Warranty Policy Tag
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-slate-700 dark:text-slate-300 font-semibold text-xs">
+                        Warranty Policy Tag
+                      </label>
+                      <span className="text-[10.5px] text-slate-400 font-medium">Optional</span>
+                    </div>
                     <input
                       type="text"
                       value={data.warranty}
                       onChange={(e) => setData('warranty', e.target.value)}
-                      placeholder="e.g. 3 Years Official Brand Warranty (1 Year Full + 2 Years Service)"
+                      placeholder="e.g. 3 Years Official Brand Warranty (or leave blank if no warranty)"
                       className="w-full h-11 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 font-medium text-xs"
                     />
                   </div>

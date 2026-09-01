@@ -47,7 +47,7 @@ class CompareController extends Controller
                 'savings' => max(0, $regPrice - $price),
                 'stock' => (int)$p->stock,
                 'in_stock' => $p->stock > 0,
-                'warranty' => $p->warranty ?: 'Official Warranty',
+                'warranty' => $p->warranty ?: 'No Warranty',
                 'brand' => $p->brand ? ['name' => $p->brand->name, 'slug' => $p->brand->slug] : null,
                 'category' => $p->category ? ['name' => $p->category->name, 'slug' => $p->category->slug] : null,
             ];

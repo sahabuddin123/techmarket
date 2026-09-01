@@ -307,12 +307,14 @@ export default function ProductDetailV3({
             </div>
 
             {/* Warranty Badge */}
-            <div className="flex items-center space-x-3 text-xs">
-              <span className="font-semibold text-slate-600">Warranty :</span>
-              <span className="px-3 py-1 rounded-md bg-[#F4F7FC] border border-slate-200 text-slate-800 font-semibold">
-                {product.warranty || '3 Months Warranty'}
-              </span>
-            </div>
+            {product.warranty && (
+              <div className="flex items-center space-x-3 text-xs">
+                <span className="font-semibold text-slate-600">Warranty :</span>
+                <span className="px-3 py-1 rounded-md bg-[#F4F7FC] border border-slate-200 text-slate-800 font-semibold">
+                  {product.warranty}
+                </span>
+              </div>
+            )}
 
             {/* Interactive Color Swatches Row (Matching Reference Screenshot) */}
             <div className="flex items-center space-x-3 text-xs">
@@ -454,10 +456,12 @@ export default function ProductDetailV3({
                       <div className="font-semibold text-slate-500">SKU / Item Code</div>
                       <div className="font-bold text-slate-800 sm:col-span-2">{product.sku || 'X10-FL-001'}</div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 p-3 bg-slate-50/50">
-                      <div className="font-semibold text-slate-500">Warranty</div>
-                      <div className="font-bold text-slate-800 sm:col-span-2">{product.warranty || '6 Months Official Warranty'}</div>
-                    </div>
+                    {product.warranty && (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 p-3 bg-slate-50/50">
+                        <div className="font-semibold text-slate-500">Warranty</div>
+                        <div className="font-bold text-slate-800 sm:col-span-2">{product.warranty}</div>
+                      </div>
+                    )}
                     {product.key_features && product.key_features.length > 0 && (
                       <div className="grid grid-cols-1 sm:grid-cols-3 p-3">
                         <div className="font-semibold text-slate-500">Key Highlights</div>

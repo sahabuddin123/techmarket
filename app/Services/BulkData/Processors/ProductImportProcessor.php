@@ -237,7 +237,7 @@ class ProductImportProcessor implements ImportProcessorInterface
 
         // 11. Text fields
         $warrantyRaw = trim((string)($row['warranty'] ?? $row['Warranty Policy'] ?? ''));
-        $normalized['warranty'] = $warrantyRaw !== '' ? $warrantyRaw : '1 Year Warranty';
+        $normalized['warranty'] = $warrantyRaw !== '' ? $warrantyRaw : null;
         $normalized['short_description'] = trim((string)($row['short_description'] ?? $row['Short Summary'] ?? ''));
         $normalized['description'] = trim((string)($row['description'] ?? $row['Full Description HTML'] ?? ''));
         $normalized['image'] = trim((string)($row['image'] ?? $row['Primary Image URL'] ?? ''));

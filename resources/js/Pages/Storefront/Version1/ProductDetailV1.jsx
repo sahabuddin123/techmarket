@@ -404,8 +404,12 @@ export default function ProductDetailV1(props) {
                           <span>Brand: <strong className="text-slate-900">{product.brand.name}</strong></span>
                         </>
                       )}
-                      <span className="text-slate-300">|</span>
-                      <span>Warranty: <strong className="text-slate-900">{product.warranty || '2 Years'}</strong></span>
+                      {product.warranty && (
+                        <>
+                          <span className="text-slate-300">|</span>
+                          <span>Warranty: <strong className="text-slate-900">{product.warranty}</strong></span>
+                        </>
+                      )}
                     </div>
 
                     {/* Key Features Bullet List */}
@@ -888,7 +892,7 @@ export default function ProductDetailV1(props) {
               </h3>
               <p>
                 The latest <Link href="#" className="text-[#0084ff] font-semibold hover:underline">{product.title}</Link> price in BD is <strong>৳{currentPrice.toLocaleString()}</strong>. 
-                The {product.title} manufactured by <strong>{product.brand?.name || 'Manufacturer'}</strong> comes with <strong>{product.warranty || '2 Years'} Warranty</strong> in Bangladesh. 
+                The {product.title} manufactured by <strong>{product.brand?.name || 'Manufacturer'}</strong>{product.warranty ? <> comes with <strong>{product.warranty}</strong> in Bangladesh. </> : <> is available in Bangladesh. </>}
                 To buy or order it online, visit <Link href="/" className="text-[#0084ff] font-semibold hover:underline">TechMarket BD Shop</Link> or order online. 
                 Regular price is <strong>৳{(regularPrice || currentPrice).toLocaleString()}</strong> and discounted cash price is <strong>৳{currentPrice.toLocaleString()}</strong> in Bangladesh. 
                 Read our latest Showroom Address or follow us on <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#0084ff] font-semibold hover:underline">Facebook</a> for regular updates & offers. 

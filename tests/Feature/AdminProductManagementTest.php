@@ -220,4 +220,184 @@ class AdminProductManagementTest extends TestCase
         ]);
         $postResponse->assertStatus(403);
     }
+
+    public function test_case_a_existing_product_with_warranty_remains_unchanged_on_save(): void
+    {
+        $this->actingAs($this->admin);
+
+        $product = Product::create([
+            'title' => 'Router With 1 Year Warranty',
+            'slug' => 'router-with-1-year-warranty',
+            'sku' => 'RTR-1YR',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 2500.00,
+            'stock' => 10,
+            'warranty' => '1 Year Warranty',
+            'is_active' => true,
+        ]);
+
+        $editView = $this->get("/admin/products/{$product->id}/edit");
+        $editView->assertOk();
+        $editView->assertInertia(fn ($page) => $page
+            ->component('Admin/Products/Form')
+            ->where('product.warranty', '1 Year Warranty')
+        );
+
+        $response = $this->put("/admin/products/{$product->id}", [
+            'title' => 'Router With 1 Year Warranty',
+            'sku' => 'RTR-1YR',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 2500.00,
+            'stock' => 10,
+            'warranty' => '1 Year Warranty',
+            'is_active' => true,
+        ]);
+
+        $response->assertRedirect('/admin/products');
+        $product->refresh();
+        $this->assertEquals('1 Year Warranty', $product->warranty);
+    }
+
+    public function test_case_b_clearing_warranty_saves_null_in_database_and_loads_empty(): void
+    {
+        $this->actingAs($this->admin);
+
+        $product = Product::create([
+            'title' => 'Adapter With Previous Warranty',
+            'slug' => 'adapter-with-previous-warranty',
+            'sku' => 'ADP-PREV',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 1200.00,
+            'stock' => 15,
+            'warranty' => '1 Year Warranty',
+            'is_active' => true,
+        ]);
+
+        // Clear warranty by submitting empty string / whitespace
+        $response = $this->put("/admin/products/{$product->id}", [
+            'title' => 'Adapter With Previous Warranty',
+            'sku' => 'ADP-PREV',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 1200.00,
+            'stock' => 15,
+            'warranty' => '',
+            'is_active' => true,
+        ]);
+
+        $response->assertRedirect('/admin/products');
+        $product->refresh();
+        $this->assertNull($product->warranty);
+
+        // Verify reopening edit form shows null/empty
+        $editView = $this->get("/admin/products/{$product->id}/edit");
+        $editView->assertOk();
+        $editView->assertInertia(fn ($page) => $page
+            ->component('Admin/Products/Form')
+            ->where('product.warranty', null)
+        );
+    }
+
+    public function test_case_c_create_product_with_empty_warranty_saves_as_null(): void
+    {
+        $this->actingAs($this->admin);
+
+        $response = $this->post('/admin/products', [
+            'title' => 'Generic Cable No Warranty',
+            'sku' => 'CBL-NO-WAR',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 300.00,
+            'stock' => 50,
+            'warranty' => '',
+            'is_active' => true,
+        ]);
+
+        $response->assertRedirect('/admin/products');
+        $product = Product::where('sku', 'CBL-NO-WAR')->first();
+        $this->assertNotNull($product);
+        $this->assertNull($product->warranty);
+    }
+
+    public function test_case_d_create_and_edit_product_with_custom_warranty_value(): void
+    {
+        $this->actingAs($this->admin);
+
+        $response = $this->post('/admin/products', [
+            'title' => 'Webcam 6 Months',
+            'sku' => 'CAM-6M',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 3500.00,
+            'stock' => 20,
+            'warranty' => '6 Months Warranty',
+            'is_active' => true,
+        ]);
+
+        $response->assertRedirect('/admin/products');
+        $product = Product::where('sku', 'CAM-6M')->first();
+        $this->assertNotNull($product);
+        $this->assertEquals('6 Months Warranty', $product->warranty);
+
+        // Edit to update warranty to another value
+        $updateResponse = $this->put("/admin/products/{$product->id}", [
+            'title' => 'Webcam 6 Months',
+            'sku' => 'CAM-6M',
+            'category_id' => $this->category->id,
+            'brand_id' => $this->brand->id,
+            'price' => 3500.00,
+            'stock' => 20,
+            'warranty' => '1 Year Official Warranty',
+            'is_active' => true,
+        ]);
+
+        $updateResponse->assertRedirect('/admin/products');
+        $product->refresh();
+        $this->assertEquals('1 Year Official Warranty', $product->warranty);
+    }
+
+    public function test_case_e_save_as_draft_with_empty_warranty_saves_as_null_and_draft(): void
+    {
+        $this->actingAs($this->admin);
+
+        $response = $this->post('/admin/products', [
+            'title' => 'Draft Product Without Warranty',
+            'sku' => 'DFT-NO-WAR',
+            'category_id' => $this->category->id,
+            'price' => 1500.00,
+            'stock' => 5,
+            'warranty' => '',
+            'is_active' => false,
+        ]);
+
+        $response->assertRedirect('/admin/products');
+        $product = Product::where('sku', 'DFT-NO-WAR')->first();
+        $this->assertNotNull($product);
+        $this->assertNull($product->warranty);
+        $this->assertFalse($product->is_active);
+    }
+
+    public function test_case_f_publish_product_with_empty_warranty_saves_as_null_and_active(): void
+    {
+        $this->actingAs($this->admin);
+
+        $response = $this->post('/admin/products', [
+            'title' => 'Published Product Without Warranty',
+            'sku' => 'PUB-NO-WAR',
+            'category_id' => $this->category->id,
+            'price' => 4500.00,
+            'stock' => 12,
+            'warranty' => '',
+            'is_active' => true,
+        ]);
+
+        $response->assertRedirect('/admin/products');
+        $product = Product::where('sku', 'PUB-NO-WAR')->first();
+        $this->assertNotNull($product);
+        $this->assertNull($product->warranty);
+        $this->assertTrue($product->is_active);
+    }
 }

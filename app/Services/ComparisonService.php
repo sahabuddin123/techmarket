@@ -140,7 +140,7 @@ class ComparisonService
             'Brand' => $products->map(fn($p) => $p->brand?->name ?: 'N/A')->all(),
             'Model / SKU' => $products->map(fn($p) => $p->sku ?: 'N/A')->all(),
             'Category' => $products->map(fn($p) => $p->category?->name ?: 'N/A')->all(),
-            'Warranty' => $products->map(fn($p) => $p->warranty ?: 'Official Manufacturer Warranty')->all(),
+            'Warranty' => $products->map(fn($p) => $p->warranty ?: 'No Warranty')->all(),
             'Availability' => $products->map(fn($p) => $p->stock > 0 ? 'In Stock' : 'Out of Stock / Pre-Order')->all(),
         ];
 

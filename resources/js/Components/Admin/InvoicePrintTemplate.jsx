@@ -492,7 +492,7 @@ export default function InvoicePrintTemplate({
                           )}
                         </td>
                         <td className="p-3 text-center font-semibold text-slate-600">
-                          {item.product?.warranty || '1 Year'}
+                          {item.product?.warranty || 'N/A'}
                         </td>
                         <td className="p-3 text-center font-bold text-slate-900">{item.quantity}</td>
                         <td className="p-3 text-right font-mono text-slate-800">৳{Number(item.unit_price).toLocaleString()}</td>
