@@ -97,6 +97,40 @@ $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('meta_pixel_id', '10
 echo "🚚 Syncing Steadfast Courier API Gateway and credentials..."
 $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('steadfast_base_url', 'https://portal.packzy.com/api/v1', 'courier'); \App\Models\Setting::set('steadfast_api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a', 'courier'); \App\Models\Setting::set('steadfast_secret_key', 'm6ix2y3fambxbu0o6aguvkox', 'courier'); \App\Models\Setting::set('steadfast_enabled', '1', 'courier');" || true
 
+# 5f. CONFIGURE OPENSSL 3.0 LEGACY RENEGOTIATION ON LINUX VPS
+echo "🔐 Configuring OpenSSL 3.0 legacy renegotiation compatibility..."
+CURRENT_DIR="$(pwd)"
+OPENSSL_LEGACY_CNF="$CURRENT_DIR/config/openssl_legacy.cnf"
+export OPENSSL_CONF="$OPENSSL_LEGACY_CNF"
+
+if [ -f "/etc/ssl/openssl.cnf" ] && ! grep -q "UnsafeLegacyRenegotiation" /etc/ssl/openssl.cnf; then
+    echo "🔧 Appending UnsafeLegacyRenegotiation to /etc/ssl/openssl.cnf..."
+    cp /etc/ssl/openssl.cnf "/etc/ssl/openssl.cnf.bak.$(date +%s)" 2>/dev/null || true
+    if grep -q "\[system_default_sect\]" /etc/ssl/openssl.cnf; then
+        sed -i '/\[system_default_sect\]/a Options = UnsafeLegacyRenegotiation\nOptions = UnsafeLegacyServerConnect' /etc/ssl/openssl.cnf 2>/dev/null || true
+    else
+        cat << 'EOF' >> /etc/ssl/openssl.cnf
+
+[openssl_init]
+ssl_conf = ssl_sect
+
+[ssl_sect]
+system_default = system_default_sect
+
+[system_default_sect]
+Options = UnsafeLegacyRenegotiation
+Options = UnsafeLegacyServerConnect
+EOF
+    fi
+fi
+
+# Ensure aaPanel / Ubuntu PHP-FPM pools pass OPENSSL_CONF
+for pool_conf in /www/server/php/*/etc/php-fpm.d/www.conf /etc/php/*/fpm/pool.d/www.conf; do
+    if [ -f "$pool_conf" ] && ! grep -q "OPENSSL_CONF" "$pool_conf"; then
+        echo "env[OPENSSL_CONF] = $OPENSSL_LEGACY_CNF" >> "$pool_conf" 2>/dev/null || true
+    fi
+done
+
 
 # 6. STORAGE LINK
 echo ""

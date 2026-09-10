@@ -5,6 +5,13 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Configure OpenSSL legacy renegotiation support for external API gateways
+if (file_exists($sslCnf = __DIR__.'/../config/openssl_legacy.cnf')) {
+    putenv("OPENSSL_CONF={$sslCnf}");
+    $_ENV['OPENSSL_CONF'] = $sslCnf;
+    $_SERVER['OPENSSL_CONF'] = $sslCnf;
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;

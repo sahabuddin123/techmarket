@@ -325,12 +325,19 @@ class SteadfastCourierService implements CourierServiceInterface
     }
 
     /**
-     * Send HTTP request to Steadfast API with native cURL + Guzzle fallback.
+     * Send HTTP request to Steadfast API with native cURL + Stream Context + Guzzle fallback.
      */
     protected function sendRequest(string $method, string $url, array $payload = [], ?string $apiKey = null, ?string $secretKey = null): array
     {
         $apiKey = $apiKey ?: ($this->apiKey ?: config('services.steadfast.api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a'));
         $secretKey = $secretKey ?: ($this->secretKey ?: config('services.steadfast.secret_key', 'm6ix2y3fambxbu0o6aguvkox'));
+
+        // Ensure OPENSSL_CONF points to legacy renegotiation config if available
+        $sslCnf = base_path('config/openssl_legacy.cnf');
+        if (file_exists($sslCnf)) {
+            putenv("OPENSSL_CONF={$sslCnf}");
+            $_ENV['OPENSSL_CONF'] = $sslCnf;
+        }
 
         $headers = [
             "Api-Key: {$apiKey}",
@@ -382,7 +389,13 @@ class SteadfastCourierService implements CourierServiceInterface
             }
         }
 
-        // 2. Secondary Fallback: Laravel Http client with identical cURL options
+        // 2. Secondary Fallback: PHP Native SSL Stream (Bypasses libcurl OpenSSL renegotiation failure)
+        $streamResult = $this->sendViaStream($method, $url, $payload, $apiKey, $secretKey);
+        if ($streamResult['ok'] || (!empty($streamResult['data']) && ($streamResult['data']['status'] ?? 0) === 200)) {
+            return $streamResult;
+        }
+
+        // 3. Tertiary Fallback: Laravel Http client with identical cURL options
         try {
             $http = Http::withoutVerifying()
                 ->withOptions([
@@ -422,5 +435,73 @@ class SteadfastCourierService implements CourierServiceInterface
                 'error' => !empty($curlErr) ? $curlErr : $e->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Send request via PHP SSL Stream context (bypasses libcurl / OpenSSL renegotiation blocks).
+     */
+    protected function sendViaStream(string $method, string $url, array $payload = [], ?string $apiKey = null, ?string $secretKey = null): array
+    {
+        $headers = [
+            "Api-Key: {$apiKey}",
+            "Secret-Key: {$secretKey}",
+            "Content-Type: application/json",
+            "Accept: application/json",
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        ];
+
+        $content = strtoupper($method) === 'POST' ? json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : null;
+        if ($content) {
+            $headers[] = "Content-Length: " . strlen($content);
+        }
+
+        $httpOpts = [
+            'method' => strtoupper($method),
+            'header' => implode("\r\n", $headers) . "\r\n",
+            'timeout' => 12,
+            'ignore_errors' => true,
+        ];
+
+        if ($content) {
+            $httpOpts['content'] = $content;
+        }
+
+        $ctx = stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
+            ],
+            'http' => $httpOpts,
+        ]);
+
+        $body = @file_get_contents($url, false, $ctx);
+        $httpCode = 200;
+        if (isset($http_response_header)) {
+            foreach ($http_response_header as $line) {
+                if (preg_match('/^HTTP\/[0-9\.]+\s+([0-9]+)/', $line, $m)) {
+                    $httpCode = (int)$m[1];
+                }
+            }
+        }
+
+        if ($body !== false && !empty($body)) {
+            $decoded = json_decode($body, true);
+            return [
+                'ok' => $httpCode >= 200 && $httpCode < 300,
+                'status' => $httpCode,
+                'data' => is_array($decoded) ? $decoded : [],
+                'raw_body' => $body,
+                'error' => null,
+            ];
+        }
+
+        return [
+            'ok' => false,
+            'status' => $httpCode ?: 500,
+            'data' => [],
+            'raw_body' => '',
+            'error' => 'Stream connection failed to remote gateway',
+        ];
     }
 }
