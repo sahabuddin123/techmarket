@@ -20,9 +20,9 @@ class SteadfastCourierService implements CourierServiceInterface
     public function __construct()
     {
         $this->enabled = Setting::getBool('steadfast_enabled', false);
-        $this->apiKey = Setting::get('steadfast_api_key') ?: config('services.steadfast.api_key');
-        $this->secretKey = Setting::get('steadfast_secret_key') ?: config('services.steadfast.secret_key');
-        $storedUrl = Setting::get('steadfast_base_url', 'https://portal.packzy.com/api/v1');
+        $this->apiKey = Setting::get('steadfast_api_key') ?: config('services.steadfast.api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a');
+        $this->secretKey = Setting::get('steadfast_secret_key') ?: config('services.steadfast.secret_key', 'm6ix2y3fambxbu0o6aguvkox');
+        $storedUrl = Setting::get('steadfast_base_url') ?: config('services.steadfast.base_url', 'https://portal.packzy.com/api/v1');
         // Steadfast official API gateway is portal.packzy.com. Auto-alias dead domain portal.steadfast.com.bd
         if (str_contains($storedUrl, 'portal.steadfast.com.bd')) {
             $storedUrl = str_replace('portal.steadfast.com.bd', 'portal.packzy.com', $storedUrl);
@@ -64,8 +64,8 @@ class SteadfastCourierService implements CourierServiceInterface
      */
     public function testWithCredentials(array $credentials = []): array
     {
-        $apiKey = !empty($credentials['api_key']) ? trim((string)$credentials['api_key']) : $this->apiKey;
-        $secretKey = !empty($credentials['secret_key']) ? trim((string)$credentials['secret_key']) : $this->secretKey;
+        $apiKey = !empty($credentials['api_key']) ? trim((string)$credentials['api_key']) : ($this->apiKey ?: config('services.steadfast.api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a'));
+        $secretKey = !empty($credentials['secret_key']) ? trim((string)$credentials['secret_key']) : ($this->secretKey ?: config('services.steadfast.secret_key', 'm6ix2y3fambxbu0o6aguvkox'));
         $baseUrl = !empty($credentials['base_url']) ? trim((string)$credentials['base_url']) : $this->baseUrl;
 
         if (str_contains($baseUrl, 'portal.steadfast.com.bd')) {
@@ -82,14 +82,10 @@ class SteadfastCourierService implements CourierServiceInterface
         }
 
         try {
-            $response = Http::withoutVerifying()->withHeaders([
-                'Api-Key' => $apiKey,
-                'Secret-Key' => $secretKey,
-                'Content-Type' => 'application/json',
-            ])->timeout(12)->get("{$baseUrl}/get_balance");
+            $result = $this->sendRequest('GET', "{$baseUrl}/get_balance", [], $apiKey, $secretKey);
 
-            if ($response->successful()) {
-                $data = $response->json();
+            if ($result['ok']) {
+                $data = $result['data'];
                 $currentBalance = $data['current_balance'] ?? 0;
 
                 return [
@@ -99,12 +95,12 @@ class SteadfastCourierService implements CourierServiceInterface
                 ];
             }
 
-            $errorMsg = $response->json('message') ?: "HTTP Error {$response->status()}: " . $response->body();
+            $errorMsg = $result['error'] ?: ($result['data']['message'] ?? "HTTP Error {$result['status']}");
 
             return [
                 'success' => false,
                 'message' => "Connection Failed: {$errorMsg}",
-                'details' => ['status_code' => $response->status(), 'response' => $response->json()],
+                'details' => ['status_code' => $result['status'], 'response' => $result['data']],
             ];
         } catch (\Throwable $e) {
             return [
@@ -170,15 +166,10 @@ class SteadfastCourierService implements CourierServiceInterface
         }
 
         try {
-            $response = Http::withoutVerifying()->withHeaders([
-                'Api-Key' => $this->apiKey,
-                'Secret-Key' => $this->secretKey,
-                'Content-Type' => 'application/json',
-            ])->timeout(15)->post("{$this->baseUrl}/create_order", $payload);
+            $result = $this->sendRequest('POST', "{$this->baseUrl}/create_order", $payload, $this->apiKey, $this->secretKey);
+            $data = $result['data'];
 
-            $data = $response->json();
-
-            if ($response->successful() && ($data['status'] ?? 0) === 200) {
+            if ($result['ok'] && ($data['status'] ?? 0) === 200) {
                 $consignment = $data['consignment'] ?? [];
                 $consignmentId = (string)($consignment['consignment_id'] ?? $consignment['id'] ?? '');
                 $trackingCode = (string)($consignment['tracking_code'] ?? $consignment['tracking_id'] ?? $consignmentId);
@@ -196,7 +187,7 @@ class SteadfastCourierService implements CourierServiceInterface
                 ];
             }
 
-            $errMsg = $data['message'] ?? $data['errors'] ?? "Steadfast error HTTP {$response->status()}";
+            $errMsg = $result['error'] ?: ($data['message'] ?? $data['errors'] ?? "Steadfast error HTTP {$result['status']}");
             if (is_array($errMsg)) {
                 $errMsg = implode(', ', array_map(fn($v) => is_array($v) ? implode(' ', $v) : $v, $errMsg));
             }
@@ -247,14 +238,10 @@ class SteadfastCourierService implements CourierServiceInterface
                 ? "{$this->baseUrl}/status_by_cid/{$consignmentId}"
                 : "{$this->baseUrl}/status_by_trackingcode/{$trackingCode}";
 
-            $response = Http::withoutVerifying()->withHeaders([
-                'Api-Key' => $this->apiKey,
-                'Secret-Key' => $this->secretKey,
-            ])->timeout(10)->get($endpoint);
+            $result = $this->sendRequest('GET', $endpoint, [], $this->apiKey, $this->secretKey);
+            $data = $result['data'];
 
-            $data = $response->json();
-
-            if ($response->successful()) {
+            if ($result['ok']) {
                 $rawStatus = $data['delivery_status'] ?? $data['status'] ?? 'unknown';
 
                 return [
@@ -272,7 +259,7 @@ class SteadfastCourierService implements CourierServiceInterface
             return [
                 'success' => false,
                 'provider' => 'steadfast',
-                'message' => $data['message'] ?? 'Failed to fetch tracking status from Steadfast.',
+                'message' => $result['error'] ?: ($data['message'] ?? 'Failed to fetch tracking status from Steadfast.'),
                 'raw' => $data,
             ];
         } catch (\Throwable $e) {
@@ -335,5 +322,105 @@ class SteadfastCourierService implements CourierServiceInterface
             str_contains($statusLower, 'review') || str_contains($statusLower, 'pending') => 'booked',
             default => 'booked',
         };
+    }
+
+    /**
+     * Send HTTP request to Steadfast API with native cURL + Guzzle fallback.
+     */
+    protected function sendRequest(string $method, string $url, array $payload = [], ?string $apiKey = null, ?string $secretKey = null): array
+    {
+        $apiKey = $apiKey ?: ($this->apiKey ?: config('services.steadfast.api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a'));
+        $secretKey = $secretKey ?: ($this->secretKey ?: config('services.steadfast.secret_key', 'm6ix2y3fambxbu0o6aguvkox'));
+
+        $headers = [
+            "Api-Key: {$apiKey}",
+            "Secret-Key: {$secretKey}",
+            "Content-Type: application/json",
+            "Accept: application/json",
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        ];
+
+        // 1. Primary: Native PHP cURL with explicit options for OpenSSL compatibility & fast execution
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            $opts = [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2,
+                CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1',
+                CURLOPT_TCP_NODELAY => 1,
+                CURLOPT_TIMEOUT => 12,
+                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_HTTPHEADER => $headers,
+            ];
+
+            if (strtoupper($method) === 'POST') {
+                $opts[CURLOPT_POST] = true;
+                $opts[CURLOPT_POSTFIELDS] = !empty($payload) ? json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}';
+            }
+
+            curl_setopt_array($ch, $opts);
+            $body = curl_exec($ch);
+            $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlErr = curl_error($ch);
+            $curlErrNo = curl_errno($ch);
+            curl_close($ch);
+
+            if ($curlErrNo === 0 && !empty($body)) {
+                $decoded = json_decode($body, true);
+                return [
+                    'ok' => $httpCode >= 200 && $httpCode < 300,
+                    'status' => $httpCode,
+                    'data' => is_array($decoded) ? $decoded : [],
+                    'raw_body' => $body,
+                    'error' => null,
+                ];
+            }
+        }
+
+        // 2. Secondary Fallback: Laravel Http client with identical cURL options
+        try {
+            $http = Http::withoutVerifying()
+                ->withOptions([
+                    'curl' => [
+                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1',
+                        CURLOPT_TCP_NODELAY => 1,
+                    ],
+                ])
+                ->withHeaders([
+                    'Api-Key' => $apiKey,
+                    'Secret-Key' => $secretKey,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                ])
+                ->timeout(10);
+
+            $response = strtoupper($method) === 'POST'
+                ? $http->post($url, $payload)
+                : $http->get($url);
+
+            return [
+                'ok' => $response->successful(),
+                'status' => $response->status(),
+                'data' => $response->json() ?: [],
+                'raw_body' => $response->body(),
+                'error' => null,
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'ok' => false,
+                'status' => isset($httpCode) && $httpCode ? $httpCode : 500,
+                'data' => [],
+                'raw_body' => isset($body) ? (string)$body : '',
+                'error' => !empty($curlErr) ? $curlErr : $e->getMessage(),
+            ];
+        }
     }
 }

@@ -65,4 +65,10 @@ return [
         'redirect' => env('FACEBOOK_REDIRECT_URI', '/auth/facebook/callback'),
     ],
 
+    'steadfast' => [
+        'base_url' => env('STEADFAST_BASE_URL', 'https://portal.packzy.com/api/v1'),
+        'api_key' => env('STEADFAST_API_KEY', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a'),
+        'secret_key' => env('STEADFAST_SECRET_KEY', 'm6ix2y3fambxbu0o6aguvkox'),
+    ],
+
 ];
