@@ -148,8 +148,14 @@ class CourierController extends Controller
             $validated['steadfast_base_url'] = str_replace('portal.steadfast.com.bd', 'portal.packzy.com', $validated['steadfast_base_url']);
         }
 
+        $sensitiveKeys = ['steadfast_secret_key', 'pathao_client_secret', 'pathao_password'];
+
         foreach ($validated as $key => $val) {
             if (in_array($key, $booleanKeys)) {
+                continue;
+            }
+            // Protect existing secrets from being overwritten by empty/blank submissions
+            if (in_array($key, $sensitiveKeys) && empty($val)) {
                 continue;
             }
             if ($val !== null) {
@@ -167,10 +173,27 @@ class CourierController extends Controller
     {
         $request->validate([
             'provider' => 'required|string|in:steadfast,pathao,redx',
+            'api_key' => 'nullable|string',
+            'secret_key' => 'nullable|string',
+            'base_url' => 'nullable|string',
+            'client_id' => 'nullable|string',
+            'client_secret' => 'nullable|string',
+            'username' => 'nullable|string',
+            'password' => 'nullable|string',
         ]);
 
         $provider = strtolower($request->input('provider'));
-        $result = $this->courierManager->testProvider($provider);
+        $credentials = array_filter([
+            'api_key' => $request->input('api_key'),
+            'secret_key' => $request->input('secret_key'),
+            'base_url' => $request->input('base_url'),
+            'client_id' => $request->input('client_id'),
+            'client_secret' => $request->input('client_secret'),
+            'username' => $request->input('username'),
+            'password' => $request->input('password'),
+        ], fn($v) => !is_null($v) && $v !== '');
+
+        $result = $this->courierManager->testProvider($provider, $credentials);
 
         return response()->json($result);
     }

@@ -58,7 +58,25 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
     setTestingProvider(provider);
     setTestResult(null);
     try {
-      const res = await axios.post('/admin/settings/courier/test', { provider });
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const payload = {
+        provider,
+        api_key: provider === 'steadfast' ? data.steadfast_api_key : undefined,
+        secret_key: provider === 'steadfast' ? data.steadfast_secret_key : undefined,
+        base_url: provider === 'steadfast' ? data.steadfast_base_url : data.pathao_base_url,
+        client_id: provider === 'pathao' ? data.pathao_client_id : undefined,
+        client_secret: provider === 'pathao' ? data.pathao_client_secret : undefined,
+        username: provider === 'pathao' ? data.pathao_username : undefined,
+        password: provider === 'pathao' ? data.pathao_password : undefined,
+      };
+
+      const res = await axios.post('/admin/settings/courier/test', payload, {
+        headers: {
+          'Accept': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+        }
+      });
+
       setTestResult({
         provider,
         success: res.data.success,
@@ -66,11 +84,13 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
         details: res.data.details,
       });
     } catch (err) {
+      console.error('Courier connection test error:', err);
+      const serverMsg = err.response?.data?.message || err.response?.data?.error || (err.response?.status === 419 ? 'CSRF Token Expired - Please refresh the page' : null);
       setTestResult({
         provider,
         success: false,
-        message: err.response?.data?.message || 'Connection test failed.',
-        details: err.response?.data?.error || err.message,
+        message: serverMsg || err.message || 'Connection test failed.',
+        details: err.response?.data || err.message,
       });
     } finally {
       setTestingProvider(null);

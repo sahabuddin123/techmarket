@@ -77,9 +77,14 @@ class CourierManager
     /**
      * Test provider connection.
      */
-    public function testProvider(string $provider): array
+    public function testProvider(string $provider, array $credentials = []): array
     {
-        return $this->driver($provider)->testConnection();
+        $driver = $this->driver($provider);
+        if (!empty($credentials) && method_exists($driver, 'testWithCredentials')) {
+            return $driver->testWithCredentials($credentials);
+        }
+
+        return $driver->testConnection();
     }
 
     /**

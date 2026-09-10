@@ -52,24 +52,41 @@ class SteadfastCourierService implements CourierServiceInterface
     }
 
     /**
-     * Test connection to Steadfast API.
+     * Test connection to Steadfast API using configured credentials.
      */
     public function testConnection(): array
     {
-        if (!$this->isConfigured()) {
+        return $this->testWithCredentials([]);
+    }
+
+    /**
+     * Test connection to Steadfast API with custom or fallback credentials.
+     */
+    public function testWithCredentials(array $credentials = []): array
+    {
+        $apiKey = !empty($credentials['api_key']) ? trim((string)$credentials['api_key']) : $this->apiKey;
+        $secretKey = !empty($credentials['secret_key']) ? trim((string)$credentials['secret_key']) : $this->secretKey;
+        $baseUrl = !empty($credentials['base_url']) ? trim((string)$credentials['base_url']) : $this->baseUrl;
+
+        if (str_contains($baseUrl, 'portal.steadfast.com.bd')) {
+            $baseUrl = str_replace('portal.steadfast.com.bd', 'portal.packzy.com', $baseUrl);
+        }
+        $baseUrl = rtrim($baseUrl, '/');
+
+        if (empty($apiKey) || empty($secretKey)) {
             return [
                 'success' => false,
-                'message' => 'Steadfast API Key or Secret Key is missing. Please configure credentials in Courier Settings.',
+                'message' => 'Steadfast API Key or Secret Key is missing. Please enter your credentials and save.',
                 'details' => ['status' => 'missing_credentials'],
             ];
         }
 
         try {
             $response = Http::withoutVerifying()->withHeaders([
-                'Api-Key' => $this->apiKey,
-                'Secret-Key' => $this->secretKey,
+                'Api-Key' => $apiKey,
+                'Secret-Key' => $secretKey,
                 'Content-Type' => 'application/json',
-            ])->timeout(10)->get("{$this->baseUrl}/get_balance");
+            ])->timeout(12)->get("{$baseUrl}/get_balance");
 
             if ($response->successful()) {
                 $data = $response->json();

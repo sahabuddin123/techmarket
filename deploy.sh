@@ -93,9 +93,9 @@ $PHP_RUN artisan tinker --execute="\App\Models\Banner::updateOrCreate(['placemen
 echo "📊 Syncing Meta (Facebook) Pixel Configuration..."
 $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('meta_pixel_id', '1091602526637309'); \App\Models\Setting::set('fb_pixel_id', '1091602526637309'); \App\Models\Setting::set('meta_pixel_enabled', '1');" || true
 
-# 5e. SYNC STEADFAST COURIER API GATEWAY
-echo "🚚 Syncing Steadfast Courier API Gateway to official portal.packzy.com..."
-$PHP_RUN artisan tinker --execute="\$url = \App\Models\Setting::get('steadfast_base_url'); if (!\$url || str_contains(\$url, 'portal.steadfast.com.bd')) { \App\Models\Setting::set('steadfast_base_url', 'https://portal.packzy.com/api/v1', 'courier'); }" || true
+# 5e. SYNC STEADFAST COURIER API GATEWAY & CREDENTIALS
+echo "🚚 Syncing Steadfast Courier API Gateway and credentials..."
+$PHP_RUN artisan tinker --execute="\$url = \App\Models\Setting::get('steadfast_base_url'); if (!\$url || str_contains(\$url, 'portal.steadfast.com.bd')) { \App\Models\Setting::set('steadfast_base_url', 'https://portal.packzy.com/api/v1', 'courier'); } if (!\App\Models\Setting::get('steadfast_api_key')) { \App\Models\Setting::set('steadfast_api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a', 'courier'); } if (!\App\Models\Setting::get('steadfast_secret_key')) { \App\Models\Setting::set('steadfast_secret_key', 'm6ix2y3fambxbu0o6aguvkox', 'courier'); }" || true
 
 
 # 6. STORAGE LINK
