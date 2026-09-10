@@ -4,7 +4,8 @@ import AdminShell from '../../../Components/Admin/AdminShell';
 import AdminPageHeader from '../../../Components/Admin/AdminPageHeader';
 import { 
   Truck, ShieldCheck, CheckCircle2, AlertCircle, RefreshCw, 
-  ExternalLink, Key, Eye, EyeOff, Save, Sparkles, Building2, MapPin
+  ExternalLink, Key, Eye, EyeOff, Save, Sparkles, Building2, MapPin,
+  Copy, Check, Link2, Radio, Info, Shield
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -14,16 +15,22 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
   const [showPathaoSecret, setShowPathaoSecret] = useState(false);
   const [showPathaoPassword, setShowPathaoPassword] = useState(false);
 
+  // Webhook integration state
+  const [copiedWebhookUrl, setCopiedWebhookUrl] = useState(false);
+  const [copiedWebhookToken, setCopiedWebhookToken] = useState(false);
+  const [showWebhookToken, setShowWebhookToken] = useState(false);
+
   const [testingProvider, setTestingProvider] = useState(null);
   const [testResult, setTestResult] = useState(null);
 
   const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
     // Steadfast
     steadfast_enabled: Boolean(settings.steadfast_enabled),
-    steadfast_base_url: settings.steadfast_base_url || 'https://portal.steadfast.com.bd/api/v1',
+    steadfast_base_url: settings.steadfast_base_url || 'https://portal.packzy.com/api/v1',
     steadfast_api_key: settings.steadfast_api_key || '',
     steadfast_secret_key: '',
     steadfast_default_pickup: settings.steadfast_default_pickup || 'TechMarket BD Showroom Hub, Multiplan Center, Elephant Road, Dhaka',
+    steadfast_webhook_token: settings.steadfast_webhook_token || '',
 
     // Pathao
     pathao_enabled: Boolean(settings.pathao_enabled),
@@ -69,6 +76,28 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
       setTestingProvider(null);
     }
   };
+
+  const handleGenerateWebhookToken = () => {
+    const array = new Uint8Array(20);
+    window.crypto.getRandomValues(array);
+    const token = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    setData('steadfast_webhook_token', token);
+  };
+
+  const copyToClipboard = (text, type) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      if (type === 'url') {
+        setCopiedWebhookUrl(true);
+        setTimeout(() => setCopiedWebhookUrl(false), 2000);
+      } else if (type === 'token') {
+        setCopiedWebhookToken(true);
+        setTimeout(() => setCopiedWebhookToken(false), 2000);
+      }
+    });
+  };
+
+  const webhookCallbackUrl = settings.steadfast_webhook_url || (typeof window !== 'undefined' ? `${window.location.origin}/api/v1/courier/webhook/steadfast` : 'https://techmarket.com.bd/api/v1/courier/webhook/steadfast');
 
   return (
     <AdminShell title="Courier Logistics Settings">
@@ -146,15 +175,36 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
                 {/* Base API URL */}
                 <div className="md:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5">API Base Endpoint</label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold">API Base Endpoint</label>
+                    <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono font-bold bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                      Official Gateway: portal.packzy.com
+                    </span>
+                  </div>
                   <input
                     type="text"
                     value={data.steadfast_base_url}
                     onChange={(e) => setData('steadfast_base_url', e.target.value)}
                     className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-3 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs focus:outline-hidden"
-                    placeholder="https://portal.steadfast.com.bd/api/v1"
+                    placeholder="https://portal.packzy.com/api/v1"
                   />
                   {errors.steadfast_base_url && <p className="text-rose-500 mt-1 font-semibold">{errors.steadfast_base_url}</p>}
+
+                  {data.steadfast_base_url && data.steadfast_base_url.includes('portal.steadfast.com.bd') && (
+                    <div className="mt-2 p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl flex items-center justify-between text-[11px] text-amber-800 dark:text-amber-300">
+                      <span className="flex items-center space-x-1.5">
+                        <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+                        <span>Notice: Steadfast's official live API Gateway is <strong>https://portal.packzy.com/api/v1</strong>. (portal.steadfast.com.bd domain has unresolvable DNS).</span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setData('steadfast_base_url', 'https://portal.packzy.com/api/v1')}
+                        className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg shrink-0 ml-2 cursor-pointer"
+                      >
+                        Use Official Gateway
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* API Key */}
@@ -215,6 +265,145 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
                     className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-3 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden text-xs"
                     placeholder="TechMarket Showroom Hub, Multiplan Center, Elephant Road, Dhaka"
                   />
+                </div>
+
+                {/* Steadfast Webhook Integration Section */}
+                <div className="md:col-span-2 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center space-x-2">
+                        <Radio className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+                        <span>Steadfast Webhook Integration</span>
+                        <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded text-[10px] font-mono font-bold">
+                          Auto Status Sync
+                        </span>
+                      </h3>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Receive real-time delivery status updates and transit tracking pings directly from Steadfast Courier.
+                      </p>
+                    </div>
+                    <a
+                      href="https://steadfast.com.bd/user/webhook/add"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition cursor-pointer self-start sm:self-auto shrink-0"
+                    >
+                      <span>Open Steadfast Portal</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-4 text-xs">
+                    {/* Callback URL */}
+                    <div>
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1 flex items-center justify-between">
+                        <span className="flex items-center space-x-1.5">
+                          <Link2 className="w-3.5 h-3.5 text-indigo-500" />
+                          <span>Callback URL (Paste into Steadfast "Callback Url")</span>
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">POST Endpoint</span>
+                      </label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          readOnly
+                          value={webhookCallbackUrl}
+                          className="flex-1 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs select-all focus:outline-hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(webhookCallbackUrl, 'url')}
+                          className="px-3 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold text-xs flex items-center space-x-1.5 shadow-2xs transition cursor-pointer shrink-0"
+                        >
+                          {copiedWebhookUrl ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-300" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>Copy URL</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Auth Token (Bearer) */}
+                    <div>
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1 flex items-center justify-between">
+                        <span className="flex items-center space-x-1.5">
+                          <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Auth Token (Bearer) (Paste into Steadfast "Auth Token(Bearer)")</span>
+                        </span>
+                        {data.steadfast_webhook_token && (
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                            Token Set
+                          </span>
+                        )}
+                      </label>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <div className="relative flex-1">
+                          <input
+                            type={showWebhookToken ? "text" : "password"}
+                            value={data.steadfast_webhook_token}
+                            onChange={(e) => setData('steadfast_webhook_token', e.target.value)}
+                            className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-2.5 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-xs focus:outline-hidden"
+                            placeholder="Click 'Generate Token' or enter your secret token"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowWebhookToken(!showWebhookToken)}
+                            className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                          >
+                            {showWebhookToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+
+                        <div className="flex items-center space-x-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={handleGenerateWebhookToken}
+                            className="px-3 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-xl font-bold text-xs transition cursor-pointer"
+                            title="Generate secure random Bearer token"
+                          >
+                            Generate Token
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard(data.steadfast_webhook_token, 'token')}
+                            disabled={!data.steadfast_webhook_token}
+                            className="px-3 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-xl font-bold text-xs flex items-center space-x-1.5 transition cursor-pointer disabled:opacity-50"
+                          >
+                            {copiedWebhookToken ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5" />
+                                <span>Copy Token</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-1.5">
+                        Steadfast will send this as <code className="font-mono bg-slate-200/60 dark:bg-slate-900 px-1 py-0.5 rounded text-[10px]">Authorization: Bearer &#123;token&#125;</code> to secure all incoming webhook calls.
+                      </p>
+                    </div>
+
+                    {/* Step-by-step instructions */}
+                    <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 gap-2">
+                      <div className="flex items-center space-x-1.5">
+                        <Info className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                        <span>Setup in 3 steps: 1) Copy Callback URL ➔ 2) Generate & Copy Token ➔ 3) Paste & Save in Steadfast Portal.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 

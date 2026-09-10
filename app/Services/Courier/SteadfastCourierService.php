@@ -22,7 +22,12 @@ class SteadfastCourierService implements CourierServiceInterface
         $this->enabled = Setting::getBool('steadfast_enabled', false);
         $this->apiKey = Setting::get('steadfast_api_key') ?: config('services.steadfast.api_key');
         $this->secretKey = Setting::get('steadfast_secret_key') ?: config('services.steadfast.secret_key');
-        $this->baseUrl = rtrim(Setting::get('steadfast_base_url', 'https://portal.steadfast.com.bd/api/v1'), '/');
+        $storedUrl = Setting::get('steadfast_base_url', 'https://portal.packzy.com/api/v1');
+        // Steadfast official API gateway is portal.packzy.com. Auto-alias dead domain portal.steadfast.com.bd
+        if (str_contains($storedUrl, 'portal.steadfast.com.bd')) {
+            $storedUrl = str_replace('portal.steadfast.com.bd', 'portal.packzy.com', $storedUrl);
+        }
+        $this->baseUrl = rtrim($storedUrl, '/');
         $this->defaultPickup = Setting::get('steadfast_default_pickup', 'TechMarket BD Showroom Hub, Multiplan Center, Elephant Road, Dhaka');
     }
 
@@ -60,7 +65,7 @@ class SteadfastCourierService implements CourierServiceInterface
         }
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Api-Key' => $this->apiKey,
                 'Secret-Key' => $this->secretKey,
                 'Content-Type' => 'application/json',
@@ -148,7 +153,7 @@ class SteadfastCourierService implements CourierServiceInterface
         }
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Api-Key' => $this->apiKey,
                 'Secret-Key' => $this->secretKey,
                 'Content-Type' => 'application/json',
@@ -225,7 +230,7 @@ class SteadfastCourierService implements CourierServiceInterface
                 ? "{$this->baseUrl}/status_by_cid/{$consignmentId}"
                 : "{$this->baseUrl}/status_by_trackingcode/{$trackingCode}";
 
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Api-Key' => $this->apiKey,
                 'Secret-Key' => $this->secretKey,
             ])->timeout(10)->get($endpoint);
@@ -305,11 +310,12 @@ class SteadfastCourierService implements CourierServiceInterface
         $statusLower = strtolower(trim($rawStatus));
 
         return match (true) {
-            str_contains($statusLower, 'deliver') || str_contains($statusLower, 'complete') => 'delivered',
             str_contains($statusLower, 'partial') => 'partial_delivery',
-            str_contains($statusLower, 'transit') || str_contains($statusLower, 'dispatch') || str_contains($statusLower, 'pickup') || str_contains($statusLower, 'holding') => 'in_transit',
+            str_contains($statusLower, 'deliver') || str_contains($statusLower, 'complete') => 'delivered',
+            str_contains($statusLower, 'transit') || str_contains($statusLower, 'dispatch') || str_contains($statusLower, 'pickup') || str_contains($statusLower, 'holding') || str_contains($statusLower, 'hold') => 'in_transit',
             str_contains($statusLower, 'cancel') || str_contains($statusLower, 'reject') => 'cancelled',
             str_contains($statusLower, 'return') => 'returned',
+            str_contains($statusLower, 'review') || str_contains($statusLower, 'pending') => 'booked',
             default => 'booked',
         };
     }

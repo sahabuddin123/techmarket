@@ -85,10 +85,12 @@ class CourierController extends Controller
         $settings = [
             // Steadfast Settings
             'steadfast_enabled' => Setting::getBool('steadfast_enabled', false),
-            'steadfast_base_url' => Setting::get('steadfast_base_url', 'https://portal.steadfast.com.bd/api/v1'),
+            'steadfast_base_url' => str_replace('portal.steadfast.com.bd', 'portal.packzy.com', Setting::get('steadfast_base_url', 'https://portal.packzy.com/api/v1')),
             'steadfast_api_key' => Setting::get('steadfast_api_key', ''),
             'steadfast_secret_key_configured' => !empty(Setting::get('steadfast_secret_key') ?: config('services.steadfast.secret_key')),
             'steadfast_default_pickup' => Setting::get('steadfast_default_pickup', 'TechMarket BD Showroom Hub, Multiplan Center, Elephant Road, Dhaka'),
+            'steadfast_webhook_url' => url('/api/v1/courier/webhook/steadfast'),
+            'steadfast_webhook_token' => Setting::get('steadfast_webhook_token', ''),
 
             // Pathao Settings
             'pathao_enabled' => Setting::getBool('pathao_enabled', false),
@@ -120,6 +122,7 @@ class CourierController extends Controller
             'steadfast_api_key' => 'nullable|string',
             'steadfast_secret_key' => 'nullable|string',
             'steadfast_default_pickup' => 'nullable|string',
+            'steadfast_webhook_token' => 'nullable|string',
 
             // Pathao
             'pathao_enabled' => 'boolean',
@@ -140,12 +143,17 @@ class CourierController extends Controller
             }
         }
 
+        // Auto-fix dead portal.steadfast.com.bd domain to official portal.packzy.com
+        if (!empty($validated['steadfast_base_url']) && str_contains($validated['steadfast_base_url'], 'portal.steadfast.com.bd')) {
+            $validated['steadfast_base_url'] = str_replace('portal.steadfast.com.bd', 'portal.packzy.com', $validated['steadfast_base_url']);
+        }
+
         foreach ($validated as $key => $val) {
             if (in_array($key, $booleanKeys)) {
                 continue;
             }
-            if ($val !== null && $val !== '') {
-                Setting::set($key, $val, 'courier');
+            if ($val !== null) {
+                Setting::set($key, (string)$val, 'courier');
             }
         }
 
