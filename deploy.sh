@@ -117,7 +117,7 @@ $PHP_RUN artisan view:cache
 # 8. RUN IMAGE OPTIMIZER
 echo ""
 echo "🖼 Running Enterprise Image Optimizer..."
-$PHP_RUN artisan media:optimize || true
+$PHP_RUN artisan media:optimize --limit=20 || true
 
 # 9. PERMISSIONS HARDENING
 echo ""
@@ -128,6 +128,12 @@ if id "www" &>/dev/null; then
 elif id "www-data" &>/dev/null; then
     chown -R www-data:www-data storage bootstrap/cache || true
 fi
+
+# 10. RELOAD PHP-FPM SERVICE (FLUSH OPCACHE & STALE PROCESSES)
+echo ""
+echo "🔄 Gracefully reloading PHP-FPM service..."
+systemctl reload php-fpm-83 2>/dev/null || /etc/init.d/php-fpm-83 reload 2>/dev/null || systemctl reload php8.3-fpm 2>/dev/null || systemctl reload php-fpm 2>/dev/null || true
+
 
 echo ""
 echo "======================================================================"

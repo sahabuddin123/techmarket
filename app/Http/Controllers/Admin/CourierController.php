@@ -226,40 +226,57 @@ class CourierController extends Controller
             return redirect()->route('admin.orders.show', $order->id);
         }
 
-        $validated = $request->validate([
-            'provider' => 'required|string|in:steadfast,pathao,redx',
-            'parcel_weight' => 'nullable|numeric|min:0.1',
-            'cod_amount' => 'nullable|numeric|min:0',
-            'delivery_charge' => 'nullable|numeric|min:0',
-            'recipient_name' => 'nullable|string|max:255',
-            'recipient_phone' => 'nullable|string|max:20',
-            'recipient_address' => 'nullable|string|max:500',
-            'store_id' => 'nullable|string',
-            'recipient_city_id' => 'nullable|integer',
-            'recipient_zone_id' => 'nullable|integer',
-            'recipient_area_id' => 'nullable|integer',
-            'special_instructions' => 'nullable|string|max:500',
-        ]);
+        try {
+            $validated = $request->validate([
+                'provider' => 'required|string|in:steadfast,pathao,redx',
+                'parcel_weight' => 'nullable|numeric|min:0.1',
+                'cod_amount' => 'nullable|numeric|min:0',
+                'delivery_charge' => 'nullable|numeric|min:0',
+                'recipient_name' => 'nullable|string|max:255',
+                'recipient_phone' => 'nullable|string|max:20',
+                'recipient_address' => 'nullable|string|max:500',
+                'store_id' => 'nullable|string',
+                'recipient_city_id' => 'nullable|integer',
+                'recipient_zone_id' => 'nullable|integer',
+                'recipient_area_id' => 'nullable|integer',
+                'special_instructions' => 'nullable|string|max:500',
+            ]);
 
-        $result = $this->courierManager->bookShipment($order, $validated['provider'], $validated);
+            $result = $this->courierManager->bookShipment($order, $validated['provider'], $validated);
 
-        if (!($result['success'] ?? false)) {
-            // Dispatch Admin Alert for courier booking failure
-            \App\Services\Sms\SmsNotificationService::sendEvent('admin.courier_failure', [
-                'courier_name' => ucfirst($validated['provider']),
-                'error_reason' => $result['message'] ?? 'API connection failure',
-            ], null, $order->id, $order->user_id);
+            if (!($result['success'] ?? false)) {
+                // Dispatch Admin Alert for courier booking failure safely
+                try {
+                    \App\Services\Sms\SmsNotificationService::sendEvent('admin.courier_failure', [
+                        'courier_name' => ucfirst($validated['provider']),
+                        'error_reason' => $result['message'] ?? 'API connection failure',
+                    ], null, $order->id, $order->user_id);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('Admin courier failure SMS dispatch failed: ' . $e->getMessage());
+                }
 
-            return redirect()->route('admin.orders.show', $order->id)->with('error', $result['message'] ?? 'Failed to book parcel with courier.');
+                return redirect()->route('admin.orders.show', $order->id)->with('error', $result['message'] ?? 'Failed to book parcel with courier.');
+            }
+
+            // Dispatch Customer Notification for courier booking & tracking code safely
+            try {
+                \App\Services\Sms\SmsNotificationService::sendEvent('courier.booked', [
+                    'courier_name' => ucfirst($validated['provider']),
+                    'tracking_number' => $result['tracking_code'],
+                ], $order->customer_phone, $order->id, $order->user_id);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Customer courier booked SMS dispatch failed: ' . $e->getMessage());
+            }
+
+            return redirect()->route('admin.orders.show', $order->id)->with('success', "Parcel consignment booked successfully! Tracking Code: {$result['tracking_code']}");
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Courier booking exception: ' . $e->getMessage(), [
+                'order_id' => $order->id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('admin.orders.show', $order->id)->with('error', 'Courier booking error: ' . $e->getMessage());
         }
-
-        // Dispatch Customer Notification for courier booking & tracking code
-        \App\Services\Sms\SmsNotificationService::sendEvent('courier.booked', [
-            'courier_name' => ucfirst($validated['provider']),
-            'tracking_number' => $result['tracking_code'],
-        ], $order->customer_phone, $order->id, $order->user_id);
-
-        return redirect()->route('admin.orders.show', $order->id)->with('success', "Parcel consignment booked successfully! Tracking Code: {$result['tracking_code']}");
     }
 
     /**
@@ -267,17 +284,21 @@ class CourierController extends Controller
      */
     public function track(Shipment $shipment)
     {
-        $result = $this->courierManager->trackShipment($shipment);
-
         $target = $shipment->order_id 
             ? redirect()->route('admin.orders.show', $shipment->order_id)
             : redirect()->route('admin.shipments');
 
-        if (!($result['success'] ?? false)) {
-            return $target->with('error', $result['message'] ?? 'Failed to refresh tracking status.');
-        }
+        try {
+            $result = $this->courierManager->trackShipment($shipment);
 
-        return $target->with('success', "Live tracking updated. Status: {$shipment->fresh()->courier_status}");
+            if (!($result['success'] ?? false)) {
+                return $target->with('error', $result['message'] ?? 'Failed to refresh tracking status.');
+            }
+
+            return $target->with('success', "Live tracking updated. Status: {$shipment->fresh()->courier_status}");
+        } catch (\Throwable $e) {
+            return $target->with('error', 'Tracking sync error: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -285,16 +306,20 @@ class CourierController extends Controller
      */
     public function cancel(Shipment $shipment)
     {
-        $result = $this->courierManager->cancelShipment($shipment);
-
         $target = $shipment->order_id 
             ? redirect()->route('admin.orders.show', $shipment->order_id)
             : redirect()->route('admin.shipments');
 
-        if (!($result['success'] ?? false)) {
-            return $target->with('error', $result['message'] ?? 'Failed to cancel shipment.');
-        }
+        try {
+            $result = $this->courierManager->cancelShipment($shipment);
 
-        return $target->with('success', 'Shipment cancelled successfully.');
+            if (!($result['success'] ?? false)) {
+                return $target->with('error', $result['message'] ?? 'Failed to cancel shipment.');
+            }
+
+            return $target->with('success', 'Shipment cancelled successfully.');
+        } catch (\Throwable $e) {
+            return $target->with('error', 'Shipment cancellation error: ' . $e->getMessage());
+        }
     }
 }
