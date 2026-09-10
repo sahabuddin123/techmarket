@@ -222,6 +222,10 @@ class CourierController extends Controller
      */
     public function book(Request $request, Order $order)
     {
+        if ($request->isMethod('get')) {
+            return redirect()->route('admin.orders.show', $order->id);
+        }
+
         $validated = $request->validate([
             'provider' => 'required|string|in:steadfast,pathao,redx',
             'parcel_weight' => 'nullable|numeric|min:0.1',
@@ -246,7 +250,7 @@ class CourierController extends Controller
                 'error_reason' => $result['message'] ?? 'API connection failure',
             ], null, $order->id, $order->user_id);
 
-            return back()->with('error', $result['message'] ?? 'Failed to book parcel with courier.');
+            return redirect()->route('admin.orders.show', $order->id)->with('error', $result['message'] ?? 'Failed to book parcel with courier.');
         }
 
         // Dispatch Customer Notification for courier booking & tracking code
@@ -255,7 +259,7 @@ class CourierController extends Controller
             'tracking_number' => $result['tracking_code'],
         ], $order->customer_phone, $order->id, $order->user_id);
 
-        return back()->with('success', "Parcel consignment booked successfully! Tracking Code: {$result['tracking_code']}");
+        return redirect()->route('admin.orders.show', $order->id)->with('success', "Parcel consignment booked successfully! Tracking Code: {$result['tracking_code']}");
     }
 
     /**
@@ -265,11 +269,15 @@ class CourierController extends Controller
     {
         $result = $this->courierManager->trackShipment($shipment);
 
+        $target = $shipment->order_id 
+            ? redirect()->route('admin.orders.show', $shipment->order_id)
+            : redirect()->route('admin.shipments');
+
         if (!($result['success'] ?? false)) {
-            return back()->with('error', $result['message'] ?? 'Failed to refresh tracking status.');
+            return $target->with('error', $result['message'] ?? 'Failed to refresh tracking status.');
         }
 
-        return back()->with('success', "Live tracking updated. Status: {$shipment->fresh()->courier_status}");
+        return $target->with('success', "Live tracking updated. Status: {$shipment->fresh()->courier_status}");
     }
 
     /**
@@ -279,10 +287,14 @@ class CourierController extends Controller
     {
         $result = $this->courierManager->cancelShipment($shipment);
 
+        $target = $shipment->order_id 
+            ? redirect()->route('admin.orders.show', $shipment->order_id)
+            : redirect()->route('admin.shipments');
+
         if (!($result['success'] ?? false)) {
-            return back()->with('error', $result['message'] ?? 'Failed to cancel shipment.');
+            return $target->with('error', $result['message'] ?? 'Failed to cancel shipment.');
         }
 
-        return back()->with('success', 'Shipment cancelled successfully.');
+        return $target->with('success', 'Shipment cancelled successfully.');
     }
 }

@@ -705,9 +705,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/settings/courier', [\App\Http\Controllers\Admin\CourierController::class, 'updateSettings'])->name('admin.settings.courier.update');
     Route::match(['get', 'post'], '/settings/courier/test', [\App\Http\Controllers\Admin\CourierController::class, 'testConnection'])->name('admin.settings.courier.test');
     Route::get('/courier/locations', [\App\Http\Controllers\Admin\CourierController::class, 'locations'])->name('admin.courier.locations');
-    Route::post('/orders/{order}/courier-book', [\App\Http\Controllers\Admin\CourierController::class, 'book'])->name('admin.orders.courier.book');
-    Route::post('/shipments/{shipment}/track', [\App\Http\Controllers\Admin\CourierController::class, 'track'])->name('admin.shipments.track');
-    Route::post('/shipments/{shipment}/cancel', [\App\Http\Controllers\Admin\CourierController::class, 'cancel'])->name('admin.shipments.cancel');
+    Route::match(['get', 'post'], '/orders/{order}/courier-book', [\App\Http\Controllers\Admin\CourierController::class, 'book'])->name('admin.orders.courier.book');
+    Route::match(['get', 'post'], '/shipments/{shipment}/track', [\App\Http\Controllers\Admin\CourierController::class, 'track'])->name('admin.shipments.track');
+    Route::match(['get', 'post'], '/shipments/{shipment}/cancel', [\App\Http\Controllers\Admin\CourierController::class, 'cancel'])->name('admin.shipments.cancel');
 
     // Customer Fraud Checker & Review System
     Route::get('/customers/fraud-checker', [\App\Http\Controllers\Admin\FraudController::class, 'checker'])->name('admin.customers.fraudChecker');
