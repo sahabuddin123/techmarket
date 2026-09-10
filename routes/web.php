@@ -703,7 +703,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/shipments', [\App\Http\Controllers\Admin\CourierController::class, 'index'])->name('admin.shipments');
     Route::get('/settings/courier', [\App\Http\Controllers\Admin\CourierController::class, 'settings'])->name('admin.settings.courier');
     Route::post('/settings/courier', [\App\Http\Controllers\Admin\CourierController::class, 'updateSettings'])->name('admin.settings.courier.update');
-    Route::post('/settings/courier/test', [\App\Http\Controllers\Admin\CourierController::class, 'testConnection'])->name('admin.settings.courier.test');
+    Route::match(['get', 'post'], '/settings/courier/test', [\App\Http\Controllers\Admin\CourierController::class, 'testConnection'])->name('admin.settings.courier.test');
     Route::get('/courier/locations', [\App\Http\Controllers\Admin\CourierController::class, 'locations'])->name('admin.courier.locations');
     Route::post('/orders/{order}/courier-book', [\App\Http\Controllers\Admin\CourierController::class, 'book'])->name('admin.orders.courier.book');
     Route::post('/shipments/{shipment}/track', [\App\Http\Controllers\Admin\CourierController::class, 'track'])->name('admin.shipments.track');

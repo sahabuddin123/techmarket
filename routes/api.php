@@ -17,8 +17,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/products/{slug}', [ProductApiController::class, 'show']);
     Route::get('/categories', [ProductApiController::class, 'categories']);
 
-    // Courier Webhook Endpoints
+    // Courier Endpoints
     Route::post('/courier/webhook/steadfast', [\App\Http\Controllers\Api\V1\SteadfastWebhookController::class, 'handle'])->name('api.v1.courier.webhook.steadfast');
+    Route::match(['get', 'post'], '/courier/test', [\App\Http\Controllers\Admin\CourierController::class, 'testConnection'])->name('api.v1.courier.test');
 
     // CCTV Estimator Endpoints
     Route::prefix('cctv')->group(function () {
@@ -43,6 +44,7 @@ Route::prefix('v1')->group(function () {
     });
 });
 
-// Root API Courier Webhook alias
+// Root API Courier Webhook and Test aliases
 Route::post('/courier/webhook/steadfast', [\App\Http\Controllers\Api\V1\SteadfastWebhookController::class, 'handle']);
+Route::match(['get', 'post'], '/courier/test', [\App\Http\Controllers\Admin\CourierController::class, 'testConnection']);
 

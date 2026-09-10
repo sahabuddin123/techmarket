@@ -70,12 +70,19 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
         password: provider === 'pathao' ? data.pathao_password : undefined,
       };
 
-      const res = await axios.post('/admin/settings/courier/test', payload, {
-        headers: {
-          'Accept': 'application/json',
-          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
-        }
-      });
+      let res;
+      try {
+        res = await axios.post('/api/v1/courier/test', payload, {
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (apiErr) {
+        res = await axios.post('/admin/settings/courier/test', payload, {
+          headers: {
+            'Accept': 'application/json',
+            ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+          }
+        });
+      }
 
       setTestResult({
         provider,
