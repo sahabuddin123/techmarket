@@ -66,6 +66,17 @@ class MramSmsProvider implements SmsGatewayInterface
         try {
             $response = Http::withoutVerifying()
                 ->asForm()
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    'Accept' => '*/*',
+                ])
+                ->withOptions([
+                    'curl' => [
+                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                        CURLOPT_TIMEOUT => 10,
+                        CURLOPT_CONNECTTIMEOUT => 4,
+                    ],
+                ])
                 ->timeout(10)
                 ->post($baseUrl, $payload);
 
@@ -142,19 +153,49 @@ class MramSmsProvider implements SmsGatewayInterface
             ];
         }
 
-        $balance = $this->getBalance();
-        if ($balance !== null) {
+        try {
+            $balance = $this->getBalance();
+            if ($balance !== null) {
+                return [
+                    'success' => true,
+                    'message' => "M-RAM SMS Gateway Connected Successfully! Account Balance: ৳{$balance}" . (!empty($senderId) ? " (Sender ID: {$senderId})" : ''),
+                    'balance' => $balance,
+                ];
+            }
+
+            // Fallback check via getPrice endpoint if getBalance format differed
+            $priceRes = Http::withoutVerifying()
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                ])
+                ->withOptions([
+                    'curl' => [
+                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                        CURLOPT_TIMEOUT => 8,
+                        CURLOPT_CONNECTTIMEOUT => 4,
+                    ],
+                ])
+                ->timeout(8)
+                ->get("https://msg.mram.com.bd/miscapi/{$apiKey}/getPrice");
+
+            if ($priceRes->successful() && !empty($priceRes->json())) {
+                return [
+                    'success' => true,
+                    'message' => "M-RAM SMS Gateway Connected Successfully! (Sender ID: {$senderId})",
+                ];
+            }
+
+            $raw = trim($priceRes->body());
             return [
-                'success' => true,
-                'message' => "M-RAM SMS Gateway Connected Successfully! Account Balance: ৳{$balance}" . (!empty($senderId) ? " (Sender ID: {$senderId})" : ''),
-                'balance' => $balance,
+                'success' => false,
+                'message' => 'Unable to verify account with M-RAM SMS Gateway. Response: ' . ($raw ?: 'Connection timeout / No response from msg.mram.com.bd'),
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'success' => false,
+                'message' => 'M-RAM connection error: ' . $e->getMessage(),
             ];
         }
-
-        return [
-            'success' => false,
-            'message' => 'Unable to verify account with M-RAM SMS Gateway. Please verify your API Key and Sender ID.',
-        ];
     }
 
     /**
@@ -169,7 +210,20 @@ class MramSmsProvider implements SmsGatewayInterface
 
         try {
             $endpoint = "https://msg.mram.com.bd/miscapi/{$apiKey}/getBalance";
-            $response = Http::withoutVerifying()->timeout(6)->get($endpoint);
+            $response = Http::withoutVerifying()
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    'Accept' => '*/*',
+                ])
+                ->withOptions([
+                    'curl' => [
+                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                        CURLOPT_TIMEOUT => 8,
+                        CURLOPT_CONNECTTIMEOUT => 4,
+                    ],
+                ])
+                ->timeout(8)
+                ->get($endpoint);
 
             if ($response->successful()) {
                 $body = trim($response->body());
