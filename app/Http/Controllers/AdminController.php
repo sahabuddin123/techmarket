@@ -661,9 +661,6 @@ class AdminController extends Controller
             if ($pathaoDriver->isConfigured() && $pathaoDriver->isEnabled()) {
                 $pathaoStores = \Illuminate\Support\Facades\Cache::remember('pathao_stores_list', 1800, fn() => $pathaoDriver->getStores());
                 $pathaoCities = \Illuminate\Support\Facades\Cache::remember('pathao_cities_list', 1800, fn() => $pathaoDriver->getCities());
-            } else {
-                $pathaoStores = $pathaoDriver->getStores();
-                $pathaoCities = $pathaoDriver->getCities();
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning('Pathao order show fetch failed: ' . $e->getMessage());

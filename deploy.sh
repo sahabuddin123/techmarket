@@ -104,6 +104,10 @@ $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('meta_pixel_id', '10
 echo "🚚 Syncing Steadfast Courier API Gateway and credentials..."
 $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('steadfast_base_url', 'https://portal.packzy.com/api/v1', 'courier'); \App\Models\Setting::set('steadfast_api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a', 'courier'); \App\Models\Setting::set('steadfast_secret_key', 'm6ix2y3fambxbu0o6aguvkox', 'courier'); \App\Models\Setting::set('steadfast_enabled', '1', 'courier');" || true
 
+# 5g. SYNC M-RAM SMS GATEWAY CONFIGURATION
+echo "📱 Syncing M-RAM SMS Gateway (msg.mram.com.bd)..."
+$PHP_RUN artisan tinker --execute="\$gw = \App\Models\SmsGateway::firstOrNew(['slug' => 'mram']); \$gw->name = 'M-RAM Technologies'; \$gw->driver = 'mram'; \$gw->is_active = true; \$gw->is_default = true; \$gw->status_notes = 'Official M-RAM Technologies SMS API (msg.mram.com.bd) with masking 8809601017199.'; \$gw->settings = ['base_url' => 'https://msg.mram.com.bd/smsapi', 'sender_id' => '8809601017199']; \$gw->setEncryptedCredentials(['api_key' => 'C40002956aa1a646106c41.09766335', 'sender_id' => '8809601017199']); \$gw->save(); \App\Models\SmsGateway::where('id', '!=', \$gw->id)->update(['is_default' => false]);" || true
+
 # 5f. SANITIZE OPENSSL & REMOVE DANGEROUS OVERRIDES THAT CRASH PHP-FPM
 echo "🔐 Sanitizing OpenSSL configuration and removing any PHP-FPM pool overrides..."
 unset OPENSSL_CONF 2>/dev/null || true

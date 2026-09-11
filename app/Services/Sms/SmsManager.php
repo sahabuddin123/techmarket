@@ -7,6 +7,7 @@ use App\Services\Sms\Providers\BulkSmsBdProvider;
 use App\Services\Sms\Providers\GenericHttpSmsProvider;
 use App\Services\Sms\Providers\GreenWebProvider;
 use App\Services\Sms\Providers\MimsmsProvider;
+use App\Services\Sms\Providers\MramSmsProvider;
 use InvalidArgumentException;
 
 class SmsManager
@@ -48,6 +49,7 @@ class SmsManager
             'bulksmsbd' => new BulkSmsBdProvider($credentials, $settings),
             'mimsms' => new MimsmsProvider($credentials, $settings),
             'greenweb' => new GreenWebProvider($credentials, $settings),
+            'mram' => new MramSmsProvider($credentials, $settings),
             'generic_http' => new GenericHttpSmsProvider($credentials, $settings),
             default => throw new InvalidArgumentException("Unsupported SMS driver [{$gateway->driver}]."),
         };
@@ -59,6 +61,18 @@ class SmsManager
     public static function seedDefaultGateways(): void
     {
         $gateways = [
+            [
+                'name' => 'M-RAM Technologies',
+                'slug' => 'mram',
+                'driver' => 'mram',
+                'is_active' => false,
+                'is_default' => false,
+                'settings' => [
+                    'base_url' => 'https://msg.mram.com.bd/smsapi',
+                    'sender_id' => '8809601017199',
+                ],
+                'status_notes' => 'Official M-RAM Technologies SMS API (msg.mram.com.bd) for Bangladesh.',
+            ],
             [
                 'name' => 'BulkSMS BD',
                 'slug' => 'bulksmsbd',

@@ -282,44 +282,67 @@ class CourierController extends Controller
     /**
      * Refresh live tracking status of a shipment.
      */
-    public function track(Shipment $shipment)
+    public function track(Request $request, Shipment $shipment)
     {
-        $target = $shipment->order_id 
-            ? redirect()->route('admin.orders.show', $shipment->order_id)
-            : redirect()->route('admin.shipments');
-
         try {
             $result = $this->courierManager->trackShipment($shipment);
 
-            if (!($result['success'] ?? false)) {
-                return $target->with('error', $result['message'] ?? 'Failed to refresh tracking status.');
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => $result['success'] ?? false,
+                    'message' => ($result['success'] ?? false)
+                        ? "Live tracking updated. Status: {$shipment->fresh()->courier_status}"
+                        : ($result['message'] ?? 'Failed to refresh tracking status.'),
+                    'shipment' => $shipment->fresh(['statusHistories.user']),
+                ]);
             }
 
-            return $target->with('success', "Live tracking updated. Status: {$shipment->fresh()->courier_status}");
+            if (!($result['success'] ?? false)) {
+                return back()->with('error', $result['message'] ?? 'Failed to refresh tracking status.');
+            }
+
+            return back()->with('success', "Live tracking updated. Status: {$shipment->fresh()->courier_status}");
         } catch (\Throwable $e) {
-            return $target->with('error', 'Tracking sync error: ' . $e->getMessage());
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tracking sync error: ' . $e->getMessage(),
+                ], 500);
+            }
+            return back()->with('error', 'Tracking sync error: ' . $e->getMessage());
         }
     }
 
     /**
      * Cancel a shipment with courier.
      */
-    public function cancel(Shipment $shipment)
+    public function cancel(Request $request, Shipment $shipment)
     {
-        $target = $shipment->order_id 
-            ? redirect()->route('admin.orders.show', $shipment->order_id)
-            : redirect()->route('admin.shipments');
-
         try {
             $result = $this->courierManager->cancelShipment($shipment);
 
-            if (!($result['success'] ?? false)) {
-                return $target->with('error', $result['message'] ?? 'Failed to cancel shipment.');
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => $result['success'] ?? false,
+                    'message' => ($result['success'] ?? false)
+                        ? 'Shipment cancelled successfully.'
+                        : ($result['message'] ?? 'Failed to cancel shipment.'),
+                ]);
             }
 
-            return $target->with('success', 'Shipment cancelled successfully.');
+            if (!($result['success'] ?? false)) {
+                return back()->with('error', $result['message'] ?? 'Failed to cancel shipment.');
+            }
+
+            return back()->with('success', 'Shipment cancelled successfully.');
         } catch (\Throwable $e) {
-            return $target->with('error', 'Shipment cancellation error: ' . $e->getMessage());
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Shipment cancellation error: ' . $e->getMessage(),
+                ], 500);
+            }
+            return back()->with('error', 'Shipment cancellation error: ' . $e->getMessage());
         }
     }
 }

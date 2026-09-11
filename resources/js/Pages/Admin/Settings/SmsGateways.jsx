@@ -216,6 +216,51 @@ export default function SmsGateways({ gateways = [] }) {
 
               {/* Dynamic Credentials Inputs */}
               <div className="space-y-4">
+                {(activeGateway.slug === 'mram' || activeGateway.driver === 'mram') && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="sm:col-span-2">
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">M-RAM API Key *</label>
+                      <div className="relative">
+                        <input
+                          type={showSecret ? 'text' : 'password'}
+                          value={data.credentials.api_key || ''}
+                          onChange={(e) => setData('credentials', { ...data.credentials, api_key: e.target.value })}
+                          placeholder={activeGateway.masked_credentials?.api_key ? `•••••••••••••••• (${activeGateway.masked_credentials.api_key})` : "Enter M-RAM API Key (e.g. C40002956aa1a646106c41.09766335)"}
+                          className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSecret(!showSecret)}
+                          className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                        >
+                          {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Approved Sender ID / Number Masking *</label>
+                      <input
+                        type="text"
+                        value={data.credentials.sender_id || ''}
+                        onChange={(e) => setData('credentials', { ...data.credentials, sender_id: e.target.value })}
+                        placeholder={activeGateway.masked_credentials?.sender_id ? activeGateway.masked_credentials.sender_id : "e.g. 8809601017199"}
+                        className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">HTTP API Base Endpoint</label>
+                      <input
+                        type="text"
+                        value={data.settings?.base_url || 'https://msg.mram.com.bd/smsapi'}
+                        onChange={(e) => setData('settings', { ...data.settings, base_url: e.target.value })}
+                        className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-hidden font-mono"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {activeGateway.slug === 'bulksmsbd' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="sm:col-span-2">

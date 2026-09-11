@@ -352,12 +352,15 @@ class SteadfastCourierService implements CourierServiceInterface
                 CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2,
-                CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1',
                 CURLOPT_TCP_NODELAY => 1,
-                CURLOPT_TIMEOUT => 12,
-                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_TIMEOUT => 6,
+                CURLOPT_CONNECTTIMEOUT => 3,
                 CURLOPT_HTTPHEADER => $headers,
             ];
+
+            if (defined('CURLOPT_SSL_CIPHER_LIST')) {
+                $opts[CURLOPT_SSL_CIPHER_LIST] = 'DEFAULT@SECLEVEL=1';
+            }
 
             if (strtoupper($method) === 'POST') {
                 $opts[CURLOPT_POST] = true;
@@ -389,14 +392,13 @@ class SteadfastCourierService implements CourierServiceInterface
             return $streamResult;
         }
 
-        // 3. Tertiary Fallback: Laravel Http client with identical cURL options
+        // 3. Tertiary Fallback: Laravel Http client
         try {
             $http = Http::withoutVerifying()
                 ->withOptions([
                     'curl' => [
                         CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1',
                         CURLOPT_TCP_NODELAY => 1,
                     ],
                 ])
@@ -407,7 +409,7 @@ class SteadfastCourierService implements CourierServiceInterface
                     'Accept' => 'application/json',
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
                 ])
-                ->timeout(10);
+                ->timeout(5);
 
             $response = strtoupper($method) === 'POST'
                 ? $http->post($url, $payload)
