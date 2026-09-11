@@ -38,6 +38,13 @@ fi
 
 echo "✔ Using PHP Binary: $PHP_BIN ($("$PHP_BIN" -r 'echo PHP_VERSION;'))"
 
+# Auto-unblock putenv in aaPanel / VPS php.ini if disabled
+for php_ini in /www/server/php/*/etc/php.ini /etc/php/*/fpm/php.ini /etc/php/*/cli/php.ini; do
+    if [ -f "$php_ini" ] && grep -q "putenv" "$php_ini"; then
+        sed -i 's/,putenv//g; s/putenv,//g; s/putenv//g' "$php_ini" 2>/dev/null || true
+    fi
+done
+
 # 2. AUTO-DETECT COMPOSER BINARY
 COMPOSER_PATH=""
 for candidate in \

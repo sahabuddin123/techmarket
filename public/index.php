@@ -7,7 +7,9 @@ define('LARAVEL_START', microtime(true));
 
 // Configure OpenSSL legacy renegotiation support for external API gateways
 if (file_exists($sslCnf = __DIR__.'/../config/openssl_legacy.cnf')) {
-    putenv("OPENSSL_CONF={$sslCnf}");
+    if (function_exists('putenv')) {
+        @putenv("OPENSSL_CONF={$sslCnf}");
+    }
     $_ENV['OPENSSL_CONF'] = $sslCnf;
     $_SERVER['OPENSSL_CONF'] = $sslCnf;
 }

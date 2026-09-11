@@ -335,7 +335,9 @@ class SteadfastCourierService implements CourierServiceInterface
         // Ensure OPENSSL_CONF points to legacy renegotiation config if available
         $sslCnf = base_path('config/openssl_legacy.cnf');
         if (file_exists($sslCnf)) {
-            putenv("OPENSSL_CONF={$sslCnf}");
+            if (function_exists('putenv')) {
+                @putenv("OPENSSL_CONF={$sslCnf}");
+            }
             $_ENV['OPENSSL_CONF'] = $sslCnf;
         }
 
