@@ -6,7 +6,6 @@ use App\Services\Sms\SmsCalculator;
 use App\Services\Sms\SmsGatewayInterface;
 use App\Services\Sms\SmsMessage;
 use App\Services\Sms\SmsResponse;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class MramSmsProvider implements SmsGatewayInterface
@@ -64,31 +63,17 @@ class MramSmsProvider implements SmsGatewayInterface
         ];
 
         try {
-            $response = Http::withoutVerifying()
-                ->asForm()
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                    'Accept' => '*/*',
-                ])
-                ->withOptions([
-                    'curl' => [
-                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
-                        CURLOPT_TIMEOUT => 10,
-                        CURLOPT_CONNECTTIMEOUT => 4,
-                    ],
-                ])
-                ->timeout(10)
-                ->post($baseUrl, $payload);
-
-            $rawBody = trim($response->body());
+            $result = $this->sendHttpRequest('POST', $baseUrl, $payload);
+            $rawBody = trim($result['body']);
+            $httpCode = $result['status'];
 
             // Check if response is a JSON object
-            $json = $response->json();
+            $json = json_decode($rawBody, true);
             if (is_array($json)) {
                 $status = strtolower((string)($json['status'] ?? ''));
                 $statusCode = (string)($json['status_code'] ?? ($json['response_code'] ?? ''));
 
-                if ($response->successful() && ($status === 'success' || $statusCode === '100' || $statusCode === '200')) {
+                if ($result['ok'] && ($status === 'success' || $statusCode === '100' || $statusCode === '200')) {
                     return SmsResponse::success(
                         messageId: (string)($json['message_id'] ?? ($json['id'] ?? uniqid('mram_'))),
                         rawResponse: $json
@@ -96,7 +81,7 @@ class MramSmsProvider implements SmsGatewayInterface
                 }
 
                 $errMsg = $json['error_message'] ?? ($json['msg'] ?? ($json['message'] ?? 'M-RAM API error.'));
-                return SmsResponse::failure($errMsg, $json, $response->status());
+                return SmsResponse::failure($errMsg, $json, $httpCode);
             }
 
             // M-RAM plain text / status code response handling
@@ -104,29 +89,29 @@ class MramSmsProvider implements SmsGatewayInterface
                 return SmsResponse::failure(
                     self::STATUS_CODES[$rawBody] . " (Code: {$rawBody})",
                     ['code' => $rawBody, 'raw' => $rawBody],
-                    $response->status()
+                    $httpCode
                 );
             }
 
             // Check for success responses: "SMS SUBMITTED: ID - ...", numeric message ID, or 200 HTTP code without known errors
-            if ($response->successful()) {
+            if ($result['ok']) {
                 if (stripos($rawBody, 'SUBMITTED') !== false || stripos($rawBody, 'SUCCESS') !== false || !preg_match('/^(100[0-9]|1010|2001)$/', $rawBody)) {
                     $messageId = $rawBody;
-                    if (preg_match('/ID\s*[-:]\s*([0-9a-zA-Z]+)/i', $rawBody, $matches)) {
-                        $messageId = $matches[1];
+                    if (preg_match('/ID\s*[-:]\s*([0-9a-zA-Z_\.\-]+)/i', $rawBody, $matches)) {
+                        $messageId = trim($matches[1]);
                     }
 
                     return SmsResponse::success(
                         messageId: (string)$messageId,
-                        rawResponse: ['response' => $rawBody]
+                        rawResponse: ['response' => $rawBody, 'transport' => $result['method']]
                     );
                 }
             }
 
             return SmsResponse::failure(
-                "M-RAM error response: {$rawBody}",
+                "M-RAM error response: " . ($rawBody ?: "HTTP {$httpCode} - Connection failed"),
                 ['raw' => $rawBody],
-                $response->status()
+                $httpCode
             );
         } catch (\Throwable $e) {
             Log::error('M-RAM SMS Send Exception: ' . $e->getMessage(), [
@@ -164,28 +149,19 @@ class MramSmsProvider implements SmsGatewayInterface
             }
 
             // Fallback check via getPrice endpoint if getBalance format differed
-            $priceRes = Http::withoutVerifying()
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                ])
-                ->withOptions([
-                    'curl' => [
-                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
-                        CURLOPT_TIMEOUT => 8,
-                        CURLOPT_CONNECTTIMEOUT => 4,
-                    ],
-                ])
-                ->timeout(8)
-                ->get("https://msg.mram.com.bd/miscapi/{$apiKey}/getPrice");
+            $priceRes = $this->sendHttpRequest('GET', "https://msg.mram.com.bd/miscapi/{$apiKey}/getPrice");
 
-            if ($priceRes->successful() && !empty($priceRes->json())) {
-                return [
-                    'success' => true,
-                    'message' => "M-RAM SMS Gateway Connected Successfully! (Sender ID: {$senderId})",
-                ];
+            if ($priceRes['ok']) {
+                $decoded = json_decode($priceRes['body'], true);
+                if (is_array($decoded) && !empty($decoded)) {
+                    return [
+                        'success' => true,
+                        'message' => "M-RAM SMS Gateway Connected Successfully! (Sender ID: {$senderId})",
+                    ];
+                }
             }
 
-            $raw = trim($priceRes->body());
+            $raw = trim($priceRes['body']);
             return [
                 'success' => false,
                 'message' => 'Unable to verify account with M-RAM SMS Gateway. Response: ' . ($raw ?: 'Connection timeout / No response from msg.mram.com.bd'),
@@ -210,23 +186,10 @@ class MramSmsProvider implements SmsGatewayInterface
 
         try {
             $endpoint = "https://msg.mram.com.bd/miscapi/{$apiKey}/getBalance";
-            $response = Http::withoutVerifying()
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                    'Accept' => '*/*',
-                ])
-                ->withOptions([
-                    'curl' => [
-                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
-                        CURLOPT_TIMEOUT => 8,
-                        CURLOPT_CONNECTTIMEOUT => 4,
-                    ],
-                ])
-                ->timeout(8)
-                ->get($endpoint);
+            $res = $this->sendHttpRequest('GET', $endpoint);
 
-            if ($response->successful()) {
-                $body = trim($response->body());
+            if ($res['ok']) {
+                $body = trim($res['body']);
                 // Expected format: "Your Balance is:BDT 10.07" or raw numeric float
                 if (preg_match('/[0-9]+(?:\.[0-9]+)?/', $body, $matches)) {
                     return (float)$matches[0];
@@ -237,5 +200,115 @@ class MramSmsProvider implements SmsGatewayInterface
         }
 
         return null;
+    }
+
+    /**
+     * Resilient HTTP Request Executor with OpenSSL 3 TLS renegotiation protection.
+     * Automatically falls back to PHP native SSL stream if cURL drops the connection.
+     */
+    protected function sendHttpRequest(string $method, string $url, array $payload = []): array
+    {
+        $isPost = strtoupper($method) === 'POST';
+        $content = $isPost ? http_build_query($payload) : '';
+        $headers = [
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+            "Accept: */*",
+        ];
+
+        if ($isPost) {
+            $headers[] = "Content-Type: application/x-www-form-urlencoded";
+            $headers[] = "Content-Length: " . strlen($content);
+        } else {
+            if (!empty($payload)) {
+                $url .= (str_contains($url, '?') ? '&' : '?') . http_build_query($payload);
+            }
+        }
+
+        // 1. Primary: Native PHP cURL with IPv4 & OpenSSL compatibility options
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            $opts = [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2,
+                CURLOPT_TCP_NODELAY => 1,
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_CONNECTTIMEOUT => 4,
+                CURLOPT_HTTPHEADER => $headers,
+            ];
+
+            if (defined('CURLOPT_SSL_CIPHER_LIST')) {
+                $opts[CURLOPT_SSL_CIPHER_LIST] = 'DEFAULT@SECLEVEL=1';
+            }
+
+            if ($isPost) {
+                $opts[CURLOPT_POST] = true;
+                $opts[CURLOPT_POSTFIELDS] = $content;
+            }
+
+            curl_setopt_array($ch, $opts);
+            $body = curl_exec($ch);
+            $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlErrNo = curl_errno($ch);
+            curl_close($ch);
+
+            // If cURL succeeded and didn't fail with OpenSSL error 56
+            if ($curlErrNo === 0 && !empty($body)) {
+                return [
+                    'ok' => $httpCode >= 200 && $httpCode < 300,
+                    'status' => $httpCode,
+                    'body' => $body,
+                    'method' => 'curl',
+                ];
+            }
+        }
+
+        // 2. Secondary: PHP Native SSL Stream (Immune to OpenSSL 3 TLS renegotiation drop)
+        $ctx = stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+                'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
+            ],
+            'http' => [
+                'method' => strtoupper($method),
+                'header' => implode("\r\n", $headers),
+                'content' => $isPost ? $content : null,
+                'timeout' => 8,
+                'ignore_errors' => true,
+            ],
+        ]);
+
+        $body = @file_get_contents($url, false, $ctx);
+        $httpCode = 200;
+
+        if (isset($http_response_header)) {
+            foreach ($http_response_header as $line) {
+                if (preg_match('/^HTTP\/[0-9\.]+\s+([0-9]+)/', $line, $m)) {
+                    $httpCode = (int)$m[1];
+                }
+            }
+        }
+
+        if ($body !== false && strlen($body) > 0) {
+            return [
+                'ok' => $httpCode >= 200 && $httpCode < 300,
+                'status' => $httpCode,
+                'body' => $body,
+                'method' => 'stream',
+            ];
+        }
+
+        return [
+            'ok' => false,
+            'status' => 500,
+            'body' => '',
+            'method' => 'failed',
+        ];
     }
 }
