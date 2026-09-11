@@ -104,39 +104,26 @@ $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('meta_pixel_id', '10
 echo "🚚 Syncing Steadfast Courier API Gateway and credentials..."
 $PHP_RUN artisan tinker --execute="\App\Models\Setting::set('steadfast_base_url', 'https://portal.packzy.com/api/v1', 'courier'); \App\Models\Setting::set('steadfast_api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a', 'courier'); \App\Models\Setting::set('steadfast_secret_key', 'm6ix2y3fambxbu0o6aguvkox', 'courier'); \App\Models\Setting::set('steadfast_enabled', '1', 'courier');" || true
 
-# 5f. CONFIGURE OPENSSL 3.0 LEGACY RENEGOTIATION ON LINUX VPS
-echo "🔐 Configuring OpenSSL 3.0 legacy renegotiation compatibility..."
-CURRENT_DIR="$(pwd)"
-OPENSSL_LEGACY_CNF="$CURRENT_DIR/config/openssl_legacy.cnf"
-export OPENSSL_CONF="$OPENSSL_LEGACY_CNF"
+# 5f. SANITIZE OPENSSL & REMOVE DANGEROUS OVERRIDES THAT CRASH PHP-FPM
+echo "🔐 Sanitizing OpenSSL configuration and removing any PHP-FPM pool overrides..."
+unset OPENSSL_CONF 2>/dev/null || true
 
-if [ -f "/etc/ssl/openssl.cnf" ] && ! grep -q "UnsafeLegacyRenegotiation" /etc/ssl/openssl.cnf; then
-    echo "🔧 Appending UnsafeLegacyRenegotiation to /etc/ssl/openssl.cnf..."
-    cp /etc/ssl/openssl.cnf "/etc/ssl/openssl.cnf.bak.$(date +%s)" 2>/dev/null || true
-    if grep -q "\[system_default_sect\]" /etc/ssl/openssl.cnf; then
-        sed -i '/\[system_default_sect\]/a Options = UnsafeLegacyRenegotiation\nOptions = UnsafeLegacyServerConnect' /etc/ssl/openssl.cnf 2>/dev/null || true
-    else
-        cat << 'EOF' >> /etc/ssl/openssl.cnf
-
-[openssl_init]
-ssl_conf = ssl_sect
-
-[ssl_sect]
-system_default = system_default_sect
-
-[system_default_sect]
-Options = UnsafeLegacyRenegotiation
-Options = UnsafeLegacyServerConnect
-EOF
-    fi
-fi
-
-# Ensure aaPanel / Ubuntu PHP-FPM pools pass OPENSSL_CONF
+# Remove any injected env[OPENSSL_CONF] from PHP-FPM pool configs
 for pool_conf in /www/server/php/*/etc/php-fpm.d/www.conf /etc/php/*/fpm/pool.d/www.conf; do
-    if [ -f "$pool_conf" ] && ! grep -q "OPENSSL_CONF" "$pool_conf"; then
-        echo "env[OPENSSL_CONF] = $OPENSSL_LEGACY_CNF" >> "$pool_conf" 2>/dev/null || true
+    if [ -f "$pool_conf" ] && grep -q "OPENSSL_CONF" "$pool_conf"; then
+        echo "🧹 Cleaning OPENSSL_CONF from $pool_conf..."
+        sed -i '/OPENSSL_CONF/d' "$pool_conf" 2>/dev/null || true
     fi
 done
+
+# If /etc/ssl/openssl.cnf has backup from previous edits, safely restore the original clean config
+if ls /etc/ssl/openssl.cnf.bak.* 1>/dev/null 2>&1; then
+    FIRST_BAK=$(ls -t /etc/ssl/openssl.cnf.bak.* 2>/dev/null | tail -n 1)
+    if [ -f "$FIRST_BAK" ]; then
+        echo "♻ Restoring clean original /etc/ssl/openssl.cnf from $FIRST_BAK..."
+        cp "$FIRST_BAK" /etc/ssl/openssl.cnf 2>/dev/null || true
+    fi
+fi
 
 
 # 6. STORAGE LINK

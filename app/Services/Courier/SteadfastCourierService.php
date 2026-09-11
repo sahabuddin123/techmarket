@@ -332,14 +332,6 @@ class SteadfastCourierService implements CourierServiceInterface
         $apiKey = $apiKey ?: ($this->apiKey ?: config('services.steadfast.api_key', 'ku6vnpqkizhiqphdkltzy00pyd7gqa0a'));
         $secretKey = $secretKey ?: ($this->secretKey ?: config('services.steadfast.secret_key', 'm6ix2y3fambxbu0o6aguvkox'));
 
-        // Ensure OPENSSL_CONF points to legacy renegotiation config if available
-        $sslCnf = base_path('config/openssl_legacy.cnf');
-        if (file_exists($sslCnf)) {
-            if (function_exists('putenv')) {
-                @putenv("OPENSSL_CONF={$sslCnf}");
-            }
-            $_ENV['OPENSSL_CONF'] = $sslCnf;
-        }
 
         $headers = [
             "Api-Key: {$apiKey}",
