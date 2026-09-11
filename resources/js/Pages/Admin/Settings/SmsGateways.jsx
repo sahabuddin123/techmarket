@@ -91,24 +91,37 @@ export default function SmsGateways({ gateways = [] }) {
     setTestResult(null);
 
     try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
       const response = await axios.post(`/admin/settings/sms-gateways/${activeGateway.id}/test`, {
         test_phone: withPhone ? testPhone : null,
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+        }
       });
 
       setTestResult({
-        success: response.data.success,
-        message: response.data.message,
-        balance: response.data.balance,
-        details: response.data.details,
+        success: Boolean(response.data?.success),
+        message: response.data?.message || (response.data?.success ? 'Gateway connected successfully!' : 'Connection test failed.'),
+        balance: response.data?.balance,
+        details: response.data?.details,
       });
 
       if (withPhone) {
         setShowTestModal(false);
       }
     } catch (err) {
+      console.error('SMS Gateway test error:', err);
+      const serverMsg = err.response?.data?.message 
+        || (err.response?.status === 419 ? 'CSRF Session expired. Please refresh the page and try again.' : null)
+        || (err.response?.status === 504 ? 'Gateway timeout from provider server.' : null)
+        || (typeof err.response?.data === 'string' && err.response.data.includes('<html') ? `Server error (HTTP ${err.response.status}). Please check logs.` : null)
+        || err.message;
+
       setTestResult({
         success: false,
-        message: err.response?.data?.message || 'Connection test failed.',
+        message: serverMsg || 'Connection test failed.',
         details: err.response?.data?.error || err.message,
       });
     } finally {
@@ -167,8 +180,13 @@ export default function SmsGateways({ gateways = [] }) {
             {testResult.success ? <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" /> : <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />}
             <div className="space-y-1">
               <div className="font-bold">{testResult.message}</div>
-              {testResult.balance !== undefined && (
+              {testResult.balance !== undefined && testResult.balance !== null && (
                 <div className="font-mono text-[11px]">Account Balance: ৳{testResult.balance}</div>
+              )}
+              {testResult.details && (
+                <div className="font-mono text-[10px] opacity-80 mt-1">
+                  {typeof testResult.details === 'object' ? JSON.stringify(testResult.details) : String(testResult.details)}
+                </div>
               )}
             </div>
           </div>

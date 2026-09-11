@@ -226,38 +226,49 @@ class SmsController extends Controller
      */
     public function testGateway(Request $request, SmsGateway $smsGateway)
     {
-        $testPhone = $request->input('test_phone');
-        $driver = $this->smsManager->createDriver($smsGateway);
+        try {
+            $testPhone = $request->input('test_phone');
+            $driver = $this->smsManager->createDriver($smsGateway);
 
-        if (!empty($testPhone)) {
-            if (!SmsMessage::isValidBdPhone($testPhone)) {
+            if (!empty($testPhone)) {
+                if (!SmsMessage::isValidBdPhone($testPhone)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid Bangladesh phone number. Please enter a valid 11-digit mobile number.',
+                    ], 422);
+                }
+
+                $testMsg = new SmsMessage(
+                    recipient: $testPhone,
+                    content: "Test SMS from " . Setting::get('site_name', 'TechMarket BD') . " via {$smsGateway->name}. Gateway operational!",
+                    eventKey: 'test.connection'
+                );
+
+                $response = $driver->send($testMsg);
+
+                $smsGateway->update(['last_tested_at' => now()]);
+
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid Bangladesh phone number. Please enter a valid 11-digit mobile number.',
-                ], 422);
+                    'success' => $response->success,
+                    'message' => $response->success ? "Test SMS sent successfully to {$testPhone}!" : "Test SMS failed: {$response->errorMessage}",
+                    'details' => $response->rawResponse,
+                ]);
             }
 
-            $testMsg = new SmsMessage(
-                recipient: $testPhone,
-                content: "Test SMS from " . Setting::get('site_name', 'TechMarket BD') . " via {$smsGateway->name}. Gateway operational!",
-                eventKey: 'test.connection'
-            );
-
-            $response = $driver->send($testMsg);
-
+            $result = $driver->testConnection();
             $smsGateway->update(['last_tested_at' => now()]);
 
+            return response()->json($result);
+        } catch (\Throwable $e) {
+            Log::error("SMS Gateway Test Exception [{$smsGateway->slug}]: " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
-                'success' => $response->success,
-                'message' => $response->success ? "Test SMS sent successfully to {$testPhone}!" : "Test SMS failed: {$response->errorMessage}",
-                'details' => $response->rawResponse,
+                'success' => false,
+                'message' => "Connection test failed: " . $e->getMessage(),
             ]);
         }
-
-        $result = $driver->testConnection();
-        $smsGateway->update(['last_tested_at' => now()]);
-
-        return response()->json($result);
     }
 
     /**
