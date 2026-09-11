@@ -177,13 +177,20 @@ class SmsController extends Controller
 
         if ($request->has('is_active')) {
             $smsGateway->is_active = $request->boolean('is_active');
+            if (!$smsGateway->is_active) {
+                $smsGateway->is_default = false;
+            }
         }
 
-        if ($request->has('is_default') && $request->boolean('is_default')) {
-            // Remove default flag from all other gateways
-            SmsGateway::where('id', '!=', $smsGateway->id)->update(['is_default' => false]);
-            $smsGateway->is_default = true;
-            $smsGateway->is_active = true;
+        if ($request->has('is_default')) {
+            if ($request->boolean('is_default')) {
+                // Remove default flag from all other gateways
+                SmsGateway::where('id', '!=', $smsGateway->id)->update(['is_default' => false]);
+                $smsGateway->is_default = true;
+                $smsGateway->is_active = true;
+            } else {
+                $smsGateway->is_default = false;
+            }
         }
 
         if ($request->has('settings')) {

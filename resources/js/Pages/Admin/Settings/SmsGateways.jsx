@@ -52,6 +52,40 @@ export default function SmsGateways({ gateways = [] }) {
     });
   };
 
+  const handleToggleActive = (checked) => {
+    setData('is_active', checked);
+    if (!checked) {
+      setData('is_default', false);
+    }
+    router.post(`/admin/settings/sms-gateways/${activeGateway.id}`, {
+      is_active: checked,
+      is_default: checked ? data.is_default : false,
+      settings: data.settings || {},
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setTestResult(null);
+      }
+    });
+  };
+
+  const handleToggleDefault = (checked) => {
+    setData('is_default', checked);
+    if (checked) {
+      setData('is_active', true);
+    }
+    router.post(`/admin/settings/sms-gateways/${activeGateway.id}`, {
+      is_active: true,
+      is_default: checked,
+      settings: data.settings || {},
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setTestResult(null);
+      }
+    });
+  };
+
   const handleTestConnection = async (withPhone = false) => {
     setTesting(true);
     setTestResult(null);
@@ -188,28 +222,41 @@ export default function SmsGateways({ gateways = [] }) {
                   <p className="text-slate-500 text-xs mt-0.5">{activeGateway.status_notes}</p>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-6">
                   {/* Enable/Disable Toggle */}
-                  <label className="flex items-center space-x-2 cursor-pointer select-none">
+                  <label className="relative inline-flex items-center cursor-pointer select-none group">
                     <input
                       type="checkbox"
-                      checked={data.is_active}
-                      onChange={(e) => setData('is_active', e.target.checked)}
+                      checked={Boolean(data.is_active)}
+                      onChange={(e) => handleToggleActive(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-10 h-5.5 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-indigo-600"></div>
-                    <span className="font-bold text-slate-700 dark:text-slate-300">Active</span>
+                    <div className="w-11 h-6 bg-slate-300 dark:bg-slate-700 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                    <div className="ms-2.5 flex flex-col">
+                      <span className={`font-bold text-xs transition-colors ${data.is_active ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                        {data.is_active ? 'Active' : 'Deactivated'}
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {data.is_active ? 'Click to deactivate' : 'Click to activate'}
+                      </span>
+                    </div>
                   </label>
 
-                  {/* Make Default Radio */}
+                  {/* Make Default Checkbox */}
                   <label className="flex items-center space-x-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
-                      checked={data.is_default}
-                      onChange={(e) => setData('is_default', e.target.checked)}
-                      className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
+                      checked={Boolean(data.is_default)}
+                      onChange={(e) => handleToggleDefault(e.target.checked)}
+                      disabled={!data.is_active}
+                      className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 disabled:opacity-40 cursor-pointer"
                     />
-                    <span className="font-bold text-slate-700 dark:text-slate-300">Set Default</span>
+                    <div className="flex flex-col">
+                      <span className={`font-bold text-xs ${data.is_default ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'}`}>
+                        Set Default
+                      </span>
+                      <span className="text-[10px] text-slate-400">Primary for Orders & OTP</span>
+                    </div>
                   </label>
                 </div>
               </div>
