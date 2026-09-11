@@ -136,6 +136,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'reviews*',
             'questions*',
             'product-alerts/*',
+            'admin/settings/courier/test',
+            'settings/courier/test',
         ]);
 
         $middleware->alias([
@@ -188,6 +190,12 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             if ($e instanceof \Illuminate\Session\TokenMismatchException) {
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'message' => 'Your session has expired. Please refresh the page and try again.',
+                        'session_expired' => true,
+                    ], 419);
+                }
                 return back()->with('message', 'Page expired, please try again.');
             }
         });

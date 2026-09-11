@@ -76,12 +76,16 @@ export default function CourierSettings({ settings = {}, providers = [] }) {
           headers: { 'Accept': 'application/json' }
         });
       } catch (apiErr) {
-        res = await axios.post('/admin/settings/courier/test', payload, {
-          headers: {
-            'Accept': 'application/json',
-            ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
-          }
-        });
+        if (apiErr.response?.data && typeof apiErr.response?.data?.success !== 'undefined') {
+          res = apiErr.response;
+        } else {
+          res = await axios.post('/admin/settings/courier/test', payload, {
+            headers: {
+              'Accept': 'application/json',
+              ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+            }
+          });
+        }
       }
 
       setTestResult({
